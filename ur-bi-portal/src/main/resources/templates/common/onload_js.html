@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="onloadJS">
+    <!-- 引入 Vue -->
+    <!-- <script src="/resources/js/vue.js"></script> -->
+    <script th:src="@{'/resources/js/vue.min.js'}"></script>
+    <!-- 筛选条件：数量、日期筛选 -->
+    <!--<script th:src="@{'/resources/filter/ur-components.js'}"></script>-->
+    <!-- 引入element组件库 -->
+    <script th:src="@{'/resources/js/element/lib/index.min.js'}"></script>
+
+    <script th:src="@{'/resources/js/axios.min.js'}"></script>
+    <script th:src="@{'/resources/js/es6-promise.auto.min.js'}"></script>
+
+    <script type='text/javascript' th:src="@{'/resources/js/jquery.min.js'}"></script>
+
+    <!-- 引入 自定义 -->
+    <script th:src="@{'/resources/default.js'}"></script>
+
+    <script th:src="@{'/resources/js/jquery-ui.js'}"></script>
+    <script th:src="@{'/resources/ur_dialog.js'}"></script>
+
+    <!-- element 多语言 -->
+    <!--   <script src="/resources/js/vue-i18n.js"></script>
+    <script src="/resources/js/locale/zh-CN.js"></script>
+    <script src="/resources/js/locale/en.js"></script> -->
+
+    <!-- iview -->
+    <script type='text/javascript' th:src="@{'/resources/js/iview.min.js'}"></script>
+
+	<div id="dialog"  style="display: none;">
+      <iframe id="dialogIframe" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"  src="" style=""></iframe>
+    </div>
+
+</div>
+</body>
+</html>

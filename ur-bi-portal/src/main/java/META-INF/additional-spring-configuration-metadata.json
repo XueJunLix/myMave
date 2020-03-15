@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "cas.server.host.url",
+    "type": "java.lang.String",
+    "description": "A description for 'cas.server.host.url'"
+  },
+  {
+    "name": "cas.server.host.login_url",
+    "type": "java.lang.String",
+    "description": "A description for 'cas.server.host.login_url'"
+  },
+  {
+    "name": "cas.server.host.logout_url",
+    "type": "java.lang.String",
+    "description": "A description for 'cas.server.host.logout_url'"
+  }
+]}

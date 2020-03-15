@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="/common/common_head :: commonHeader('文件管理')"></head>
+<body>
+<div id="app">
+    <div id="file-upload" style="margin-top: 20px; margin-left: 10px;">
+        <div style="margin-bottom: 5px;">
+            <el-date-picker
+                    v-model="queryCondition.dataDate"
+                    type="date"
+                    value-format="yyyyMMdd"
+                    placeholder="选择上传的日期">
+            </el-date-picker>
+            <el-select v-model="queryCondition.folder" default-first-option="true" placeholder="请选择上传的目录">
+                <el-option
+                        v-for="item in folderOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                </el-option>
+            </el-select>
+            <el-button type="text" @click="showUploadPanel">上传文件</el-button>
+            <el-button type="text" @click="loadTableData">查询</el-button>
+        </div>
+        <div>
+            <el-dialog
+                    title="上传文件"
+                    :visible.sync="dialogVisible"
+                    :onclose="handleClose"
+                    width="30%">
+                <el-form>
+                    <el-form-item>
+                        <el-upload ref="upload"
+                                   name="dataFiles"
+                                   accept=".xls,.xlsx"
+                                   :action="uploadAction"
+                                   :before-upload="beforeUpload"
+                                   :limit="1"
+                                   :file-list="dataFiles"
+                                   :auto-upload="true">
+                            <el-button slot="trigger" type="primary">上传文件</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传xls/xlsx 文件,每次只能上传一个</div>
+                        </el-upload>
+                    </el-form-item>
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="handleClose">关闭</el-button>
+              </span>
+            </el-dialog>
+        </div>
+        <div>
+            <el-table
+                    :data="this.queryResult.data"
+                    style="width: 100%">
+                <el-table-column v-for="col in cols" v-bind:key="col.prop" :prop="col.prop" :label="col.label">
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                @click="handleDownload(scope.$index, scope.row)">下载</el-button>
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+            </el-pagination>
+        </div>
+    </div>
+</div>
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="/common/onload_js :: onloadJS"></div>
+
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                queryCondition: {
+                    folder: 'EC',
+                    dataDate: ''
+                },
+                dialogVisible: false,
+                uploadDialogVisible: false,
+                uploadAction: '',
+                dataFiles: [],
+                tableData: [],
+                folderOptions: [{
+                    value: 'EC',
+                    label: '电商数据导入'
+                }],
+                queryResult:{
+                    totalRecordNum:0,
+                    currPage:1,
+                    pageSize:20
+                },
+                cols: [
+                    {
+                        label: '文件夹',
+                        prop: 'folder'
+                    },
+                    {
+                        label: '数据日期',
+                        prop: 'dataDate'
+                    },
+                    {
+                        label: '文件名',
+                        prop: 'originalFilename'
+                    },
+                    {
+                        label: '文件的大小（bytes）',
+                        prop: 'size'
+                    },
+                    {
+                        label: '创建时间',
+                        prop: 'createTime'
+                    },
+                    {
+                        label: '创建者（工号）',
+                        prop: 'createBy'
+                    }
+                ]
+            };
+        },
+        mounted: function () {
+            this.loadTableData();
+            var d = new Date();
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth() + 1;
+            var curr_year = d.getFullYear();
+            String(curr_month).length < 2 ? (curr_month = "0" + curr_month): curr_month;
+            String(curr_date).length < 2 ? (curr_date = "0" + curr_date): curr_date;
+            this.queryCondition.dataDate = curr_year + "" + curr_month +""+ curr_date;
+        },
+        methods: {
+            beforeUpload() {
+                // TODO 检查目录与文件上传日期是否已经选择
+            },
+            loadTableData() {
+                _this = this;
+
+                var url = /*[[@{/file-manage/listFiles}]]*/ '';
+                var page = this.queryResult.currPage;
+
+                if(page==null){
+                    page = 1;
+                }
+
+                var restRequest = new URRestRequest();
+                restRequest.setCurrPage(page);
+                restRequest.setPageSize(this.queryResult.pageSize);
+
+                //可以指定排序字段
+                //restRequest.addOrderBy("columnName??? desc");
+
+                if(this.expandCondition==true){
+                    //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+                    restRequest.addCondition("folder",this.queryCondition.folder,"eq");
+                    restRequest.addCondition("dataDate",this.queryCondition.dataDate,"eq");
+                }else{
+                    restRequest.addCondition(this.searchColumn,this.searchValue,"eq");
+                }
+
+                axios.post(url, restRequest.getRequestData())
+                    .then(function (response) {
+                        console.log(response);
+                        if(response.data.code == null || response.data.code != 0){
+                            _this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+                        }else{
+                            _this.$data.queryResult = response.data;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+                    });
+            },
+
+            showUploadPanel() {
+                this.dialogVisible = true;
+                var baseUrl = /*[[@{/file-manage/upload}]]*/ ''
+                this.uploadAction = baseUrl + '/' + this.queryCondition.folder + '/' + this.queryCondition.dataDate;
+            },
+            handleClose() {
+                this.dialogVisible = false;
+                this.dataFiles = [];
+                this.loadTableData();
+            },
+            handleCurrentChange(val){
+                this.queryResult.currPage = val;
+                this.loadTableData();
+            },
+            handleSizeChange(val){
+                this.queryResult.pageSize = val;
+                this.loadTableData();
+            },
+            handleDownload(index, row) {
+                var baseUrl = /*[[@{/file-manage/downloadFile}]]*/ ''
+                window.location = baseUrl + '/' + this.$data.queryResult.data[index]["id"];
+            },
+            handleDelete(index, row) {
+                var _this = this;
+                var tableData = this.$data.queryResult.data;
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    var baseUrl = /*[[@{/file-manage/delete}]]*/ ''
+                    axios.get(baseUrl + '/' + tableData[index]["id"]).then(function (response){
+                        console.log(response);
+                        if(response.data.code == null || response.data.code != 0){
+                            _this.$notify.error({title: '删除失败',message: response.data.message,offset: 100});
+                        }else{
+                            _this.$notify.info({title: '删除成功',message: '更新成功',offset: 100});
+                            _this.$data.showDialog = false;
+                        }
+                        _this.loadTableData();
+                    })
+                }).catch(() => {
+                    _this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            }
+        }
+    })
+    /*]]>*/
+</script>
+</html>

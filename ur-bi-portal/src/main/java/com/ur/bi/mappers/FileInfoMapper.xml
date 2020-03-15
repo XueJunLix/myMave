@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.bi.mappers.FileInfoMapper">
+    <resultMap id="FileInfoMap" type="com.ur.bi.model.FileInfo">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="uri" property="uri" jdbcType="VARCHAR"/>
+        <result column="path" property="path" jdbcType="VARCHAR"/>
+        <result column="original_filename" property="originalFilename" jdbcType="VARCHAR"/>
+        <result column="folder" property="folder" jdbcType="VARCHAR"/>
+        <result column="data_date" property="dataDate" jdbcType="VARCHAR"/>
+        <result column="filename" property="filename" jdbcType="VARCHAR"/>
+        <result column="size" property="size" jdbcType="DECIMAL"/>
+        <result column="deleted" property="deleted" jdbcType="BOOLEAN"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+        <result column="modify_by" property="modifyBy" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="tb">
+        t_hdfs_file_info
+    </sql>
+
+    <sql id="cols_all">
+        id,
+        <include refid="cols_exclude_id"/>
+    </sql>
+
+    <sql id="cols_exclude_id">
+        uri,
+        path,
+        original_filename,
+        folder,
+        data_date,
+        filename,
+        size,
+        deleted,
+        create_time,
+        create_by,
+        modify_time,
+        modify_by
+    </sql>
+
+    <sql id="vals_all">
+        #{id},
+        <include refid="vals"/>
+    </sql>
+
+    <sql id="vals">
+        #{uri},
+        #{path},
+        #{originalFilename},
+        #{folder},
+        #{dataDate},
+        #{filename},
+        #{size},
+        #{deleted},
+        now(),
+        #{createBy},
+        now(),
+        #{modifyBy}
+    </sql>
+
+    <sql id="criteria">
+        <if test="fileInfo.uri != null">AND uri = #{fileInfo.uri}</if>
+        <if test="fileInfo.path != null">AND path = #{fileInfo.path}</if>
+        <if test="fileInfo.originalFilename != null">AND original_filename = #{fileInfo.originalFilename}</if>
+        <if test="fileInfo.folder != null">AND folder = #{fileInfo.folder}</if>
+        <if test="fileInfo.dataDate != null">AND data_date = #{fileInfo.dataDate}</if>
+        <if test="fileInfo.filename != null">AND filename = #{fileInfo.filename}</if>
+        <if test="fileInfo.size != null">AND size = #{fileInfo.size}</if>
+        <if test="fileInfo.deleted != null">AND deleted = #{fileInfo.deleted}</if>
+        <if test="fileInfo.createTime != null">AND create_time = #{cfileInfo.reateTime}</if>
+        <if test="fileInfo.createBy != null">AND create_by = #{fileInfo.createBy}</if>
+        <if test="fileInfo.modifyTime != null">AND modify_time = #{fileInfo.modifyTime}</if>
+        <if test="fileInfo.modifyBy != null">AND modify_by = #{fileInfo.modifyBy}</if>
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        <selectKey keyProperty="id" resultType="String" order="BEFORE" >
+            select replace(uuid(),'-','')
+        </selectKey>
+        INSERT INTO
+        <include refid="tb"/>
+        (<include refid="cols_all"/>)
+        VALUES
+        (<include refid="vals_all"/>)
+    </insert>
+
+    <select id="findById" parameterType="string" resultMap="FileInfoMap">
+        SELECT
+        <include refid="cols_all"/>
+        FROM
+        <include refid="tb"/>
+        WHERE deleted = 0 AND id = #{id}
+    </select>
+
+    <select id="findByIds" parameterType="list" resultMap="FileInfoMap">
+        SELECT
+        <include refid="cols_all"/>
+        FROM
+        <include refid="tb"/>
+        WHERE
+        deleted = 0 AND
+        id IN
+        <foreach collection="list" open="(" separator="," close=")" item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="list" resultMap="FileInfoMap">
+        SELECT
+        <include refid="cols_all"/>
+        FROM
+        <include refid="tb"/>
+        <if test="fileInfo != null" >
+            <where>
+                deleted = 0 AND
+                <include refid="criteria"/>
+            </where>
+        </if>
+    </select>
+
+    <delete id="delete" parameterType="string">
+        UPDATE
+        <include refid="tb"/>
+        SET
+        deleted = 1,
+        modify_by = #{modifyBy}
+        WHERE id = #{id}
+    </delete>
+
+    <select id="count" resultType="int">
+        SELECT count(1)
+        FROM
+        <include refid="tb"/>
+        <where>
+            deleted = 0 AND
+            <if test="condList != null" >
+                <foreach item="cond" index="index" collection="condList" separator="and">
+                    <if test="cond.operator=='like'">
+                        ${cond.columnName}
+                        like CONCAT(CONCAT("%",#{cond.value}),"%")
+                    </if>
+                    <if test="cond.operator =='in'">
+                        ${cond.columnName} in
+                        <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </if>
+                    <if test="cond.operator!='like' and cond.operator!='in'">
+                        ${cond.columnName}
+                        <if test="cond.operator=='eq'">
+                            =
+                        </if>
+                        <if test="cond.operator=='ne'">
+                            !=
+                        </if>
+                        <if test="cond.operator=='lt'">
+                            &lt;
+                        </if>
+                        <if test="cond.operator=='gt'">
+                            &gt;
+                        </if>
+                        <if test="cond.operator=='le'">
+                            &lt;=
+                        </if>
+                        <if test="cond.operator=='ge'">
+                            &gt;=
+                        </if>
+                        #{cond.value}
+                    </if>
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="paging" resultMap="FileInfoMap">
+        SELECT id,
+        <include refid="cols_exclude_id"/>
+        FROM
+        <include refid="tb"/>
+        <where>
+            deleted = 0 AND
+            <if test="condList != null" >
+                <foreach item="cond" index="index" collection="condList" separator="and">
+                    <if test="cond.operator=='like'">
+                        ${cond.columnName}
+                        like CONCAT(CONCAT("%",#{cond.value}),"%")
+                    </if>
+                    <if test="cond.operator =='in'">
+                        ${cond.columnName} in
+                        <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </if>
+                    <if test="cond.operator!='like' and cond.operator!='in'">
+                        ${cond.columnName}
+                        <if test="cond.operator=='eq'">
+                            =
+                        </if>
+                        <if test="cond.operator=='ne'">
+                            !=
+                        </if>
+                        <if test="cond.operator=='lt'">
+                            &lt;
+                        </if>
+                        <if test="cond.operator=='gt'">
+                            &gt;
+                        </if>
+                        <if test="cond.operator=='le'">
+                            &lt;=
+                        </if>
+                        <if test="cond.operator=='ge'">
+                            &gt;=
+                        </if>
+                        #{cond.value}
+                    </if>
+                </foreach>
+            </if>
+        </where>
+        <if test="pageBean != null" >
+            limit #{pageBean.startRecordNum}, #{pageBean.perPageSize}
+        </if>
+    </select>
+</mapper>

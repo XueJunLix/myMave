@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head th:fragment="commonHeader(title)">
+    <meta charset="UTF-8"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="cache-control" content="no-cache"/>
+    <meta http-equiv="expires" content="0"/>
+    <title th:text="${title}"></title>
+
+    <!-- 数字日期筛选样式 -->
+    <!--<link rel="stylesheet" type="text/css" th:href="@{'/resources/filter/ur-main.css'}"/>-->
+    <!-- 引入样式 -->
+    <link rel="stylesheet" type="text/css" th:href="@{'/resources/css/bootstrap.min.css'}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{'/resources/element/index_original.css'}"/>
+    <!-- <link rel="stylesheet" type="text/css" href="/resources/element/index_ur.css"/> -->
+    <link rel="stylesheet" type="text/css" th:href="@{'/resources/font-awesome/css/font-awesome.min.css'}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{'/resources/default.css'}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{'/resources/css/jquery-ui.css'}"/>
+
+    <!-- iview -->
+    <link rel="stylesheet" type="text/css" th:href="@{'/resources/css/iview.min.css'}"/>
+  </head>
+</html>

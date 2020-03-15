@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.bi.mappers.MonthStandardMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.bi.model.MonthStandard" >
+    <id column="id" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="type" property="type" jdbcType="VARCHAR" javaType="String" />
+    <result column="year" property="year" jdbcType="INTEGER" javaType="Integer" />
+    <result column="season" property="season" jdbcType="VARCHAR" javaType="String" />
+    <result column="month" property="month" jdbcType="INTEGER" javaType="Integer" />
+    <result column="order_no" property="orderNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="plan_level" property="planLevel" jdbcType="VARCHAR" javaType="String" />
+    <result column="sale_level" property="saleLevel" jdbcType="VARCHAR" javaType="String" />
+    <result column="brand" property="brand" jdbcType="VARCHAR" javaType="String" />
+    <result column="serial" property="serial" jdbcType="VARCHAR" javaType="String" />
+    <result column="original_serial" property="originalSerial" jdbcType="VARCHAR" javaType="String" />
+    <result column="style" property="style" jdbcType="VARCHAR" javaType="String" />
+    <result column="goods_level" property="goodsLevel" jdbcType="VARCHAR" javaType="String" />
+    <result column="category" property="category" jdbcType="VARCHAR" javaType="String" />
+    <result column="sub_category" property="subCategory" jdbcType="VARCHAR" javaType="String" />
+    <result column="plan_shop_no" property="planShopNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="shop_no" property="shopNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="std_value" property="stdValue" jdbcType="DECIMAL" javaType="BigDecimal" />
+    <result column="std_max_value" property="stdMaxValue" jdbcType="DECIMAL" javaType="BigDecimal" />
+    <result column="std_min_value" property="stdMinValue" jdbcType="DECIMAL" javaType="BigDecimal" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="modify_by" property="modifyBy" jdbcType="VARCHAR" javaType="String" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id,type,year,season,month,order_no,plan_level,sale_level,brand,serial,original_serial,style,goods_level,category,sub_category,plan_shop_no,shop_no,std_value,std_max_value,std_min_value,create_time,create_by,modify_time,modify_by
+  </sql>
+  
+  <select id="getMonthStandardByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from t_config_month_standard
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertMonthStandard" parameterType="com.ur.bi.model.MonthStandard" >
+    <selectKey keyProperty="id" resultType="Integer" order="AFTER" >
+      select LAST_INSERT_ID()
+    </selectKey>
+    insert into t_config_month_standard (
+        id,type,year,season,month,order_no,plan_level,sale_level,brand,serial,original_serial,style,goods_level,category,sub_category,plan_shop_no,shop_no,std_value,std_max_value,std_min_value,create_time,create_by,modify_time,modify_by
+    )values(
+        #{id,jdbcType=INTEGER},#{type,jdbcType=VARCHAR},#{year,jdbcType=INTEGER},#{season,jdbcType=VARCHAR},#{month,jdbcType=INTEGER},#{orderNo,jdbcType=VARCHAR},#{planLevel,jdbcType=VARCHAR},#{saleLevel,jdbcType=VARCHAR},#{brand,jdbcType=VARCHAR},#{serial,jdbcType=VARCHAR},#{originalSerial,jdbcType=VARCHAR},#{style,jdbcType=VARCHAR},#{goodsLevel,jdbcType=VARCHAR},#{category,jdbcType=VARCHAR},#{subCategory,jdbcType=VARCHAR},#{planShopNo,jdbcType=VARCHAR},#{shopNo,jdbcType=VARCHAR},#{stdValue,jdbcType=DECIMAL},#{stdMaxValue,jdbcType=DECIMAL},#{stdMinValue,jdbcType=DECIMAL},#{createTime,jdbcType=TIMESTAMP},#{createBy,jdbcType=VARCHAR},#{modifyTime,jdbcType=TIMESTAMP},#{modifyBy,jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <update id="updateMonthStandardByPKSelective" parameterType="com.ur.bi.model.MonthStandard" >
+    update t_config_month_standard
+    <set>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="year != null" >
+        year = #{year,jdbcType=INTEGER},
+      </if>
+      <if test="season != null" >
+        season = #{season,jdbcType=VARCHAR},
+      </if>
+      <if test="month != null" >
+        month = #{month,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="planLevel != null" >
+        plan_level = #{planLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="saleLevel != null" >
+        sale_level = #{saleLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null" >
+        brand = #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="serial != null" >
+        serial = #{serial,jdbcType=VARCHAR},
+      </if>
+      <if test="originalSerial != null" >
+        original_serial = #{originalSerial,jdbcType=VARCHAR},
+      </if>
+      <if test="style != null" >
+        style = #{style,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsLevel != null" >
+        goods_level = #{goodsLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null" >
+        category = #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="subCategory != null" >
+        sub_category = #{subCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="planShopNo != null" >
+        plan_shop_no = #{planShopNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shopNo != null" >
+        shop_no = #{shopNo,jdbcType=VARCHAR},
+      </if>
+      <if test="stdValue != null" >
+        std_value = #{stdValue,jdbcType=DECIMAL},
+      </if>
+      <if test="stdMaxValue != null" >
+        std_max_value = #{stdMaxValue,jdbcType=DECIMAL},
+      </if>
+      <if test="stdMinValue != null" >
+        std_min_value = #{stdMinValue,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyBy != null" >
+        modify_by = #{modifyBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchMonthStandardCount" resultType="int" >
+    select count(*) from t_config_month_standard
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchMonthStandard" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from t_config_month_standard
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by id
+    	</if>
+    <if test="pageBean != null" >
+     	   limit #{pageBean.startRecordNum}, #{pageBean.perPageSize}
+    </if>
+  </select>
+  
+  <!-- manual added -->
+  
+</mapper>

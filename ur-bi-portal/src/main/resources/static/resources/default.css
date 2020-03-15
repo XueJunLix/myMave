@@ -1,0 +1,47 @@
+@charset "UTF-8";
+.ur-stack-label {
+    font-size: 12px;
+    color: #9b9b9b;
+    -webkit-transform-origin-x: 0;
+    -webkit-transform: scale(0.9166666);
+}
+
+.el-col {
+    padding-right: 15px;
+}
+
+.ur-drawer-mask {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(55, 55, 55, 0.6);
+    height: 100%;
+    z-index: 1000;
+}
+
+.search-panel-btn {
+    text-align: center;
+    padding-top: 20px;
+}
+
+.navbar-search {
+    background-color: #eef1f6;
+    /*height: 30px;*/
+    /*line-height: 30px;*/
+    margin-top: 3px;
+}
+
+.visibleColumns {
+    height: 400px;
+    overflow-y: auto;
+}
+
+.visibleColumns ul {
+    list-style: none;
+}
+
+.visibleColumns li {
+    line-height: 32px;
+}

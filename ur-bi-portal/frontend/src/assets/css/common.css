@@ -1,0 +1,289 @@
+body,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+ol {
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: normal;
+}
+
+a {
+    text-decoration: none;
+}
+
+p {
+    text-align: center;
+}
+
+ul,
+ol,
+li {
+    list-style: none;
+}
+
+input,
+button {
+    outline: none;
+    border: none;
+}
+
+* {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+
+/*---公共样式---*/
+
+html,
+body {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+
+
+/* ---块分区--- */
+
+.flex {
+    display: flex;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-2 {
+    flex: 2;
+}
+
+.flex-3 {
+    flex: 3;
+}
+
+.flex-4 {
+    flex: 4;
+}
+
+.flex-5 {
+    flex: 5;
+}
+
+.flex-6 {
+    flex: 6;
+}
+
+.flex-7 {
+    flex: 7;
+}
+
+.flex-8 {
+    flex: 8;
+}
+
+.flex-9 {
+    flex: 9;
+}
+
+.flex-10 {
+    flex: 10;
+}
+
+.flex-11 {
+    flex: 11;
+}
+
+.flex-12 {
+    flex: 12
+}
+
+.flex-13 {
+    flex: 13
+}
+
+.flex-14 {
+    flex: 14
+}
+
+.flex-15 {
+    flex: 15
+}
+
+.flex-16 {
+    flex: 16
+}
+
+.flex-17 {
+    flex: 17
+}
+
+.flex-18 {
+    flex: 18
+}
+
+.flex-19 {
+    flex: 19
+}
+
+.flex-20 {
+    flex: 20;
+}
+
+
+/* ---块的对齐方式--- */
+
+.flex-column {
+    flex-direction: column;
+}
+
+.flex-align-center {
+    align-items: center;
+}
+
+.flex-align-top {
+    align-items: flex-start;
+}
+
+.flex-align-bottom {
+    align-items: flex-end
+}
+
+.flex-justify-center {
+    justify-content: center;
+}
+
+.flex-justify-left {
+    justify-content: flex-start;
+}
+
+.flex-justify-right {
+    justify-content: flex-end;
+    display: flex;
+}
+
+.flex-justify-between {
+    justify-content: space-between;
+}
+
+.flex-justify-around {
+    justify-content: space-around;
+}
+
+.box-sizing {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.margin-bottom {
+    margin-bottom: 0.1rem;
+}
+
+.margin-right {
+    margin-right: 0.32rem;
+}
+
+.cancel-margin-bottom {
+    margin-bottom: 0;
+}
+
+.cancel-margin-right {
+    margin-right: 0;
+}
+
+.padding-l-r {
+    padding: 0 0.3%;
+}
+
+.padding-bottom {
+    padding-bottom: 0.1rem;
+}
+
+
+/* ---文字对齐方式--- */
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+
+/* ---副标题--- */
+
+.sub-title {
+    font-size: 0.07rem;
+}
+
+
+/* ---定位--- */
+
+.relative {
+    position: relative;
+}
+
+
+/* ---垂直居中--- */
+
+.absolute {
+    position: absolute;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+
+/*定义滚动条轨道 内阴影与圆角*/
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 0px #a8a9cc;
+    border-radius: 6px;
+}
+
+
+/*定义滑块 内阴影+圆角*/
+
+::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    -webkit-box-shadow: inset 0 0 10px #babcf3;
+}
+
+
+/*强制不换行*/
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.fixed {
+    position: fixed;
+}

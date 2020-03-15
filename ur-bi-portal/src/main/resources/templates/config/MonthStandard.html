@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="/common/common_head :: commonHeader('月度标准值配置')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="padding-top: 5px" v-loading="exportingFile" element-loading-text="正在生成导出文件">
+
+<nav class="navbar" style="background-color:#eef1f6">
+    <ul class="nav">
+      <li style="padding-left:20px">
+		  <el-select v-model="searchColumn" placeholder="请选择搜索字段" :clearable="true">
+		    <el-option label="自增id" value="id"></el-option>
+		    <el-option label="数据类型" value="type"></el-option>
+		    <el-option label="年份" value="year"></el-option>
+		    <el-option label="季节" value="season"></el-option>
+		    <el-option label="月份" value="month"></el-option>
+		    <el-option label="单号" value="orderNo"></el-option>
+		    <el-option label="planLevel" value="planLevel"></el-option>
+		    <el-option label="销售级别" value="saleLevel"></el-option>
+		    <el-option label="品牌编码" value="brand"></el-option>
+		    <el-option label="系列" value="serial"></el-option>
+		    <el-option label="原系列" value="originalSerial"></el-option>
+		    <el-option label="风格" value="style"></el-option>
+		    <el-option label="商品层" value="goodsLevel"></el-option>
+		    <el-option label="品类" value="category"></el-option>
+		    <el-option label="中品类" value="subCategory"></el-option>
+		    <el-option label="企划店铺编码" value="planShopNo"></el-option>
+		    <el-option label="店铺编码" value="shopNo"></el-option>
+		    <el-option label="stdValue" value="stdValue"></el-option>
+		    <el-option label="标准值上限" value="stdMaxValue"></el-option>
+		    <el-option label="标准值下限" value="stdMinValue"></el-option>
+		    <el-option label="创建时间" value="createTime"></el-option>
+		    <el-option label="创建者" value="createBy"></el-option>
+		    <el-option label="修改时间" value="modifyTime"></el-option>
+		    <el-option label="修改者" value="modifyBy"></el-option>
+		  </el-select> 
+      </li>
+      <li style="padding-left:20px">
+        <el-input v-model="searchValue" placeholder="请输入搜索内容"></el-input> 
+      </li>
+      <li style="padding-left:20px">
+        <el-button type="text" icon="search" v-on:click="clickSearchBtn">搜索</el-button>
+      </li>
+    </ul>
+	<el-switch v-model="expandCondition" off-text="展开" on-text="收缩"></el-switch>
+</nav>
+
+  <div class="card" v-if="expandCondition">  	
+
+	<div class="card-body">
+  <div class="row">
+  	<div class="col-md-12">
+		<el-form label-width="150px">
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="自增id">
+		    <el-input v-model="queryCondition.id" placeholder="自增id"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="数据类型">
+		    <el-input v-model="queryCondition.type" placeholder="数据类型"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="年份">
+		    <el-input v-model="queryCondition.year" placeholder="年份"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="季节">
+		    <el-input v-model="queryCondition.season" placeholder="季节"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="月份">
+		    <el-input v-model="queryCondition.month" placeholder="月份"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="单号">
+		    <el-input v-model="queryCondition.orderNo" placeholder="单号"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="planLevel">
+		    <el-input v-model="queryCondition.planLevel" placeholder="planLevel"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="销售级别">
+		    <el-input v-model="queryCondition.saleLevel" placeholder="销售级别"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="品牌编码">
+		    <el-input v-model="queryCondition.brand" placeholder="品牌编码"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="系列">
+		    <el-input v-model="queryCondition.serial" placeholder="系列"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="原系列">
+		    <el-input v-model="queryCondition.originalSerial" placeholder="原系列"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="风格">
+		    <el-input v-model="queryCondition.style" placeholder="风格"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="商品层">
+		    <el-input v-model="queryCondition.goodsLevel" placeholder="商品层"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="品类">
+		    <el-input v-model="queryCondition.category" placeholder="品类"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="中品类">
+		    <el-input v-model="queryCondition.subCategory" placeholder="中品类"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="企划店铺编码">
+		    <el-input v-model="queryCondition.planShopNo" placeholder="企划店铺编码"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="店铺编码">
+		    <el-input v-model="queryCondition.shopNo" placeholder="店铺编码"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="stdValue">
+		    <el-input v-model="queryCondition.stdValue" placeholder="stdValue"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="标准值上限">
+		    <el-input v-model="queryCondition.stdMaxValue" placeholder="标准值上限"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="标准值下限">
+		    <el-input v-model="queryCondition.stdMinValue" placeholder="标准值下限"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="创建时间">
+						    <el-date-picker v-model="queryCondition.createTime" type="datetime" placeholder="创建时间"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="创建者">
+		    <el-input v-model="queryCondition.createBy" placeholder="创建者"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="修改时间">
+						    <el-date-picker v-model="queryCondition.modifyTime" type="datetime" placeholder="修改时间"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="修改者">
+		    <el-input v-model="queryCondition.modifyBy" placeholder="修改者"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+		</el-form>
+  	</div>
+  </div>
+
+	<div class="text-center">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   
+
+	</div>
+  </div>
+</div>
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickAddBtn" icon="plus">添加</el-button>
+        <el-button v-on:click="clickUpdateBtn" icon="edit">修改</el-button>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-fileInfo" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+		<el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+		</el-pagination>
+</nav>
+
+        <el-table v-loading="queryingMonthStandard" :data="this.queryResult.data" :border="true" :highlight-current-row="true" :height="this.tableHeight" v-on:current-change="handleTableCurrentChange">
+          <el-table-column property="id" label="自增id" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="type" label="数据类型" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="year" label="年份" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="season" label="季节" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="month" label="月份" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="orderNo" label="单号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="planLevel" label="planLevel" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="saleLevel" label="销售级别" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="brand" label="品牌编码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="serial" label="系列" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="originalSerial" label="原系列" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="style" label="风格" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="goodsLevel" label="商品层" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="category" label="品类" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="subCategory" label="中品类" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="planShopNo" label="企划店铺编码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopNo" label="店铺编码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="stdValue" label="stdValue" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="stdMaxValue" label="标准值上限" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="stdMinValue" label="标准值下限" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTime" label="创建时间" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createBy" label="创建者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyTime" label="修改时间" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyBy" label="修改者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+
+	</div>
+</div>
+
+
+
+			<el-dialog ref="updatePanel" :title="dialogTitle" :visible.sync="showDialog"  v-loading="updatingMonthStandard" :lock-scroll="false" size="large">
+
+				  <div class="card-title">
+			        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+			        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+			      </div>
+
+				  <div class="card">
+				  	<div class="card-body">
+
+				  <div class="row">
+				  	<div class="col-md-12">
+						<el-form  label-width="150px" :rules="rules" ref="updateForm" :model="updateInstance" label-suffix=":">
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="自增id" prop="id">
+						    <el-input-number v-model="updateInstance.id" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="数据类型" prop="type">
+						    <el-input v-model="updateInstance.type" placeholder="数据类型"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="年份" prop="year">
+						    <el-input-number v-model="updateInstance.year" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="季节" prop="season">
+						    <el-input v-model="updateInstance.season" placeholder="季节"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="月份" prop="month">
+						    <el-input-number v-model="updateInstance.month" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="单号" prop="orderNo">
+						    <el-input v-model="updateInstance.orderNo" placeholder="单号"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="planLevel" prop="planLevel">
+						    <el-input v-model="updateInstance.planLevel" placeholder="planLevel"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="销售级别" prop="saleLevel">
+						    <el-input v-model="updateInstance.saleLevel" placeholder="销售级别"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="品牌编码" prop="brand">
+						    <el-input v-model="updateInstance.brand" placeholder="品牌编码"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="系列" prop="serial">
+						    <el-input v-model="updateInstance.serial" placeholder="系列"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="原系列" prop="originalSerial">
+						    <el-input v-model="updateInstance.originalSerial" placeholder="原系列"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="风格" prop="style">
+						    <el-input v-model="updateInstance.style" placeholder="风格"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="商品层" prop="goodsLevel">
+						    <el-input v-model="updateInstance.goodsLevel" placeholder="商品层"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="品类" prop="category">
+						    <el-input v-model="updateInstance.category" placeholder="品类"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="中品类" prop="subCategory">
+						    <el-input v-model="updateInstance.subCategory" placeholder="中品类"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="企划店铺编码" prop="planShopNo">
+						    <el-input v-model="updateInstance.planShopNo" placeholder="企划店铺编码"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="店铺编码" prop="shopNo">
+						    <el-input v-model="updateInstance.shopNo" placeholder="店铺编码"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="stdValue" prop="stdValue">
+						    <el-input v-model="updateInstance.stdValue" placeholder="stdValue"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="标准值上限" prop="stdMaxValue">
+						    <el-input v-model="updateInstance.stdMaxValue" placeholder="标准值上限"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="标准值下限" prop="stdMinValue">
+						    <el-input v-model="updateInstance.stdMinValue" placeholder="标准值下限"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="创建时间" prop="createTime">
+						    <el-date-picker v-model="updateInstance.createTime" type="datetime" placeholder="创建时间"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="创建者" prop="createBy">
+						    <el-input v-model="updateInstance.createBy" placeholder="创建者"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="修改时间" prop="modifyTime">
+						    <el-date-picker v-model="updateInstance.modifyTime" type="datetime" placeholder="修改时间"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="修改者" prop="modifyBy">
+						    <el-input v-model="updateInstance.modifyBy" placeholder="修改者"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+						</el-form>
+				  	</div>
+				  </div>
+
+				  </div>
+				</div>
+			</el-dialog>
+
+
+
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="/common/onload_js :: onloadJS"></div>
+
+  <script>
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  id:"",
+        	  type:"",
+        	  year:"",
+        	  season:"",
+        	  month:"",
+        	  orderNo:"",
+        	  planLevel:"",
+        	  saleLevel:"",
+        	  brand:"",
+        	  serial:"",
+        	  originalSerial:"",
+        	  style:"",
+        	  goodsLevel:"",
+        	  category:"",
+        	  subCategory:"",
+        	  planShopNo:"",
+        	  shopNo:"",
+        	  stdValue:"",
+        	  stdMaxValue:"",
+        	  stdMinValue:"",
+        	  createTime:"",
+        	  createBy:"",
+        	  modifyTime:"",
+        	  modifyBy:""
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          queryingMonthStandard:false,
+          updatingMonthStandard:false,
+          exportingFile:false,
+          expandCondition:false,
+          searchColumn: "",
+          searchValue: "",
+          updateInstance:{},
+          isUpdate:false,
+          dialogTitle:"",
+          showDialog:false,
+          rules: {
+        	  id: [
+                { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  type: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  year: [
+                { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  season: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  orderNo: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  planLevel: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  saleLevel: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  brand: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  serial: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  originalSerial: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  style: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  goodsLevel: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  category: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  subCategory: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  planShopNo: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  shopNo: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  createTime: [
+                { type:'date', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  createBy: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  modifyTime: [
+                { type:'date', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  modifyBy: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ]
+          },
+          tableHeight:500
+        }
+      },
+      created: function() {
+    	  this.tableHeight = $(document).height() - 115;
+    	  this.queryMonthStandard();
+      },
+      methods: {
+  		clickAddBtn() {
+			this.updateInstance = {};
+			this.isUpdate = false;
+			this.dialogTitle = '新增';
+			this.showDialog = true;
+		},
+		clickUpdateBtn() {
+			if(this.currInstance==null){
+				return;
+			}
+			this.updateInstance = this.currInstance;
+			this.isUpdate = true;
+			this.dialogTitle = '修改';
+			this.showDialog = true;
+		},
+		clickCancelBtn() {
+			this.showDialog = false;
+		},
+		clickSaveBtn() {
+	        this.$refs["updateForm"].validate((valid) => {
+	          if (valid) {
+				_this = this;
+				this.updatingMonthStandard = true;
+				if(this.isUpdate==false){
+					var url = '/MonthStandard/insert';
+					axios.post(url,this.updateInstance)
+					  .then(function (response) {
+					    console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '新增失败',message: response.data.message,offset: 100});
+					    	_this.$data.updatingMonthStandard = false;
+					    }else{
+						    _this.$notify.info({title: '新增成功',message: '新增成功',offset: 100});
+						    _this.$data.updatingMonthStandard = false;
+						    _this.$data.showDialog = false;
+					    }
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '新增数据失败，请联系系统管理员',offset: 100});
+					  });
+				}else{
+					var url = '/MonthStandard/update';
+					axios.put(url,this.updateInstance)
+					  .then(function (response) {
+					    console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '更新失败',message: response.data.message,offset: 100});
+					    	_this.$data.updatingMonthStandard = false;
+					    }else{
+						    _this.$notify.info({title: '更新成功',message: '更新成功',offset: 100});
+						    _this.$data.updatingMonthStandard = false;
+						    _this.$data.showDialog = false;
+					    }
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '更新数据失败，请联系系统管理员',offset: 100});
+					  });
+				}
+	          } else {
+	            console.log('error submit!!');
+	            return false;
+	          }
+	        });
+
+		},
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryMonthStandard();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryMonthStandard();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryMonthStandard();
+    	},
+        queryMonthStandard() {
+          _this = this;
+
+          var url = '/MonthStandard/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+          //restRequest.addOrderBy("columnName??? desc");
+
+          if(this.expandCondition==true){
+	          //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	          restRequest.addCondition("id",this.queryCondition.id,"eq");
+	          restRequest.addCondition("type",this.queryCondition.type,"eq");
+	          restRequest.addCondition("year",this.queryCondition.year,"eq");
+	          restRequest.addCondition("season",this.queryCondition.season,"eq");
+	          restRequest.addCondition("month",this.queryCondition.month,"eq");
+	          restRequest.addCondition("orderNo",this.queryCondition.orderNo,"eq");
+	          restRequest.addCondition("planLevel",this.queryCondition.planLevel,"eq");
+	          restRequest.addCondition("saleLevel",this.queryCondition.saleLevel,"eq");
+	          restRequest.addCondition("brand",this.queryCondition.brand,"eq");
+	          restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+	          restRequest.addCondition("originalSerial",this.queryCondition.originalSerial,"eq");
+	          restRequest.addCondition("style",this.queryCondition.style,"eq");
+	          restRequest.addCondition("goodsLevel",this.queryCondition.goodsLevel,"eq");
+	          restRequest.addCondition("category",this.queryCondition.category,"eq");
+	          restRequest.addCondition("subCategory",this.queryCondition.subCategory,"eq");
+	          restRequest.addCondition("planShopNo",this.queryCondition.planShopNo,"eq");
+	          restRequest.addCondition("shopNo",this.queryCondition.shopNo,"eq");
+	          restRequest.addCondition("stdValue",this.queryCondition.stdValue,"eq");
+	          restRequest.addCondition("stdMaxValue",this.queryCondition.stdMaxValue,"eq");
+	          restRequest.addCondition("stdMinValue",this.queryCondition.stdMinValue,"eq");
+	          restRequest.addCondition("createTime",this.queryCondition.createTime,"eq");
+	          restRequest.addCondition("createBy",this.queryCondition.createBy,"eq");
+	          restRequest.addCondition("modifyTime",this.queryCondition.modifyTime,"eq");
+	          restRequest.addCondition("modifyBy",this.queryCondition.modifyBy,"eq");
+          }else{
+        	  restRequest.addCondition(this.searchColumn,this.searchValue,"eq");
+          }
+
+          this.$data.queryingMonthStandard = true;
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+              console.log(response);
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.queryingMonthStandard = false;
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.queryingMonthStandard = false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  		clickExportBtn(){
+		          _this = this;
+		          var url = '/MonthStandard/export';
+
+		          var restRequest = new URRestRequest();
+
+          //可以指定排序字段
+          //restRequest.addOrderBy("columnName??? desc");
+
+          if(this.expandCondition==true){
+	          //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	          restRequest.addCondition("id",this.queryCondition.id,"eq");
+	          restRequest.addCondition("type",this.queryCondition.type,"eq");
+	          restRequest.addCondition("year",this.queryCondition.year,"eq");
+	          restRequest.addCondition("season",this.queryCondition.season,"eq");
+	          restRequest.addCondition("month",this.queryCondition.month,"eq");
+	          restRequest.addCondition("orderNo",this.queryCondition.orderNo,"eq");
+	          restRequest.addCondition("planLevel",this.queryCondition.planLevel,"eq");
+	          restRequest.addCondition("saleLevel",this.queryCondition.saleLevel,"eq");
+	          restRequest.addCondition("brand",this.queryCondition.brand,"eq");
+	          restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+	          restRequest.addCondition("originalSerial",this.queryCondition.originalSerial,"eq");
+	          restRequest.addCondition("style",this.queryCondition.style,"eq");
+	          restRequest.addCondition("goodsLevel",this.queryCondition.goodsLevel,"eq");
+	          restRequest.addCondition("category",this.queryCondition.category,"eq");
+	          restRequest.addCondition("subCategory",this.queryCondition.subCategory,"eq");
+	          restRequest.addCondition("planShopNo",this.queryCondition.planShopNo,"eq");
+	          restRequest.addCondition("shopNo",this.queryCondition.shopNo,"eq");
+	          restRequest.addCondition("stdValue",this.queryCondition.stdValue,"eq");
+	          restRequest.addCondition("stdMaxValue",this.queryCondition.stdMaxValue,"eq");
+	          restRequest.addCondition("stdMinValue",this.queryCondition.stdMinValue,"eq");
+	          restRequest.addCondition("createTime",this.queryCondition.createTime,"eq");
+	          restRequest.addCondition("createBy",this.queryCondition.createBy,"eq");
+	          restRequest.addCondition("modifyTime",this.queryCondition.modifyTime,"eq");
+	          restRequest.addCondition("modifyBy",this.queryCondition.modifyBy,"eq");
+          }else{
+        	  restRequest.addCondition(this.searchColumn,this.searchValue,"eq");
+          }
+
+		          this.$data.exportingFile = true;
+
+		          axios.post(url,restRequest.getRequestData())
+		            .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+					    	_this.$data.exportingFile = false;
+					    }else{
+			              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+			              _this.$data.exportingFile = false;
+			              //downloadFile(downloadLink);
+			              downloadFileReName(response.data.data.fileName,response.data.data.extName,'月度标准值列表');
+					    }
+
+		            })
+		            .catch(function (error) {
+		              console.log(error);
+		              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+		            });
+			},
+          clickResetBtn() {
+            for(var key in this.queryCondition){
+            	this.queryCondition[key] = "";
+            }
+          }
+        }
+    })
+    /*]]>*/
+  </script>
+</html>
