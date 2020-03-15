@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('demo')"></head>
+
+<style scoped>
+	[v-cloak] {
+		display: none;
+	}
+
+	.el-button {
+		box-shadow: 2px 2px 2px #CCCCCC
+	}
+	.el-table .el-button{
+		box-shadow: 0px 0px 0px #CCCCCC !important;
+	}
+	.el-input.is-disabled .el-input__inner{
+		color: #060505cc;
+		border-color: #dcdfe6;
+		background-color: white;
+	}
+	.el-form-item.is-error .el-input__inner, .el-form-item.is-error .el-input__inner:focus, .el-form-item.is-error .el-textarea__inner, .el-form-item.is-error .el-textarea__inner:focus, .el-message-box__input input.invalid, .el-message-box__input input.invalid:focus{
+		border-color: #F56C6C !important;
+	}
+	.el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus{
+		border-color: #67C23A !important;
+	}
+
+	html,
+	body {
+		height: 100%;
+	}
+
+	#app {
+		width: 100%;
+		height: 100%;
+		/*display: flex;*/
+	}
+
+	#app1 {
+		width: 100%;
+		display: flex;
+		height: 100%;
+		flex-direction: column;
+	}
+
+	.titlebox {
+		height: 40px;
+		line-height: 40px;
+		padding: 0px 10px;
+		font-size: 18px;
+		font-weight: bold;
+	}
+
+	.titlebox .MYcontainer {
+		font-size: 18px;
+		font-weight: bold;
+		border-bottom: 1px dashed #CCCCCC;
+	}
+	body .el-table th.gutter{
+		display: table-cell!important;
+	}
+	.ctrbox {
+		height: 45px;
+		padding: 0 10px;
+	}
+
+	.ctrbox .MYcontainer {
+		background: white;
+		/*border-bottom: 1px dashed #CCCCCC;*/
+	}
+
+	.mainbox {
+		flex: 1;
+		width: 100;
+		overflow: auto;
+	}
+
+	.mainbox .MYcontainer {
+		margin-bottom: 10px;
+		padding: 0 10px;
+		background: linear-gradient(to top, rgb(251, 241, 241), rgb(236, 244, 251));
+		border-radius: 10px;
+	}
+
+	.formtitle {
+		width: 100%;
+		height: 40px;
+		line-height: 40px;
+		text-align: center;
+
+		/* background: #f8f1f2; */
+		/* border-radius: 10px; */
+		margin-bottom: 10px !important;
+		border-bottom: 1px solid #ccc;
+		font-size: 18px;
+
+	}
+
+	.el-form-item {
+		margin-left: 0px;
+		margin-bottom: 0px;
+		margin-bottom: 2px;
+	}
+
+	.el-form-item__label {
+		color: #666666 !important;
+	}
+
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+	}
+
+	.ckg .el-form-item__content {
+
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.itembox .ckg {
+		flex: 1;
+
+		display: flex;
+	}
+
+	.el-form {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.el-form-item {
+		flex: 1;
+	}
+
+	.itembigbox {
+		flex: 1;
+		display: flex;
+	}
+
+	.itembox {
+		flex: 1;
+		display: flex;
+		/*background: yellow;*/
+		display: flex;
+		justify-content: flex-start;
+	}
+
+	.el-textarea__inner {
+		min-height: 80px !important;
+		max-height: 80px !important;
+	}
+
+	.itembox .el-input__inner {
+		font-size: 12px;
+	}
+
+	.el-select-dropdown__item {
+		font-size: 12px;
+	}
+
+	.el-upload-list--picture .el-upload-list__item {
+		width: 400px;
+	}
+
+	.el-upload-list__item {
+		width: 400px;
+	}
+
+	.el-dialog__body {
+		padding: 5px 20px;
+		flex: 1;
+		height: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	fieldset, img{
+		max-height: 100%;
+		max-width: 100%;
+		height: 100%;
+	}
+	.el-dialog {
+		height: 80%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.el-image {
+		width: 100%;
+		height: 100%;
+	}
+
+	.tupiantextbox {
+		padding: 5px;
+	}
+
+	.el-progress.is-success .el-progress__text .el-icon-circle-check:before {
+		color: #67c23a;
+	}
+
+	.icontupian:hover {
+		color: blue;
+		cursor: pointer;
+	}
+
+	.tupian-box {
+		max-width: 500px;
+		width: 500px;
+		height: 87px;
+		display: flex;
+		border: 1px solid #ccc;
+		background: white;
+		border-radius: 5px;
+		overflow: hidden;
+		margin-bottom: 5px;
+		position: relative;
+
+	}
+
+	.tupian-info-desc {
+		height: 50px;
+		border-bottom: 1px dashed #ebecf1;
+	}
+
+	.tupian-img {
+		width: 85px;
+		height: 85px;
+		background: #f5f7fa;
+		display: flex;
+		text-align: center;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.tupian-img > img {
+		max-width: 100%;
+		height: 100%;
+
+	}
+
+	.tupian-info {
+		width: 100px;
+		flex: 1;
+		padding: 5px;
+		border-left: 1px dashed #ebecf1;
+	}
+
+	.tupian-info-name, .tupian-info-time {
+		height: 25px;
+		line-height: 25px;
+		text-align: left;
+		font-size: 12px;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	.tupian-info-icon {
+		height: 30px;
+		line-height: 14px;
+		text-align: right;
+		font-size: 42px;
+
+	}
+
+	.el-progress {
+		position: absolute;
+		bottom: -2px;
+		left: 70px;
+		line-height: 1;
+		width: 329px;
+	}
+	.el-table .cell{
+		height: 39px;
+		line-height: 39px;
+		font-size: 12px;
+	}
+	.el-form-item__error{
+		top: 76%;
+	}
+	.el-table .el-textarea__inner{
+		max-height: 32px !important;
+		min-height: 32px !important;
+	}
+	.el-table .el-form-item__content{
+		flex: 1;
+		height:39px;
+		display: flex !important;
+		align-items: center !important;
+	}
+	.red{
+		color: red;
+	}
+	.el-select .el-tag{
+		margin: 4px 0 2px 6px;
+	}
+</style>
+
+</head>
+
+<body>
+
+<div id='app' v-cloak v-loading="Submitloading">
+	<div id='app1'  v-show="showapp">
+		<div class="titlebox">
+			{{tittletip}}
+		</div>
+		<div class="ctrbox">
+			<div class="MYcontainer">
+				<el-button  @click="submitForm('form')" type="primary" plain>保存</el-button>
+				<el-button  type="info" plain @click="toback">
+					<!--"/mat/materialList"-->
+					返回
+				</el-button>
+			</div>
+		</div>
+		<div class="mainbox">
+			<el-form class="demo-ruleForm"
+					 :line-message="true"
+					 label-position='right'
+					 ref="form"
+					 :model="form"
+					 label-width="100px"
+					 enctype="multipart/form-data"
+					 style='display: flex;margin:2px 10px;border-radius:10px'
+			>
+				<div class="MYcontainer">
+			<div class="formtitle">
+				店铺基本信息
+			</div>
+			<div class="itembigbox">
+				<div class="itembox">
+					<el-form-item label="店铺编号">
+						<el-input
+								size='small'
+								v-model.trim="form.code"
+								type='text'
+								disabled>
+						</el-input>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="店铺名称">
+						<el-input
+								size='small'
+								v-model.trim="form.name"
+								type='text'
+								disabled>
+						</el-input>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="合同面积">
+						<el-input
+								size='small'
+								v-model.trim="form.name"
+								type='text'
+								disabled>
+						</el-input>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="销售预算">
+						<el-input
+								size='small'
+								v-model.trim="form.name"
+								type='text'
+								disabled>
+						</el-input>
+					</el-form-item>
+				</div>
+			</div>
+
+			<div class="itembigbox">
+				<div class="itembox">
+					<el-form-item label="类型" prop="categoryA" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+						<el-select size="small" @change="tochangeL" v-model="form.categoryA" placeholder="请选择"
+								   style='width:100%;'>
+							<el-option v-for="(item,key) in categoryAs" :label="item" :value="key"></el-option>
+						</el-select>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="销售级别" prop="categoryB" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+						<el-select
+								size="small"
+								@change="tochangeM"
+								v-model="form.categoryB"
+								placeholder="请选择"
+								style='width:100%;'>
+							<el-option v-for="(item,key) in allCategoryB[form.categoryA]" :label="item"
+									   :value="key"></el-option>
+						</el-select>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="销售预算">
+						<el-input
+								size='small'
+								v-model.trim="form.name"
+								type='text'
+								disabled>
+						</el-input>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="跨层" prop="categoryB" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+						<el-select
+								size="small"
+								@change="tochangeM"
+								v-model="form.categoryB"
+								placeholder="请选择"
+								style='width:100%;'>
+							<el-option v-for="(item,key) in allCategoryB[form.categoryA]" :label="item"
+									   :value="key"></el-option>
+						</el-select>
+					</el-form-item>
+				</div>
+
+			</div>
+
+			<div class="itembigbox">
+				<div class="itembox">
+					<el-form-item label="童装" prop="unit" style='width:100%;'>
+						<el-select
+								size="small"
+								v-model="form.unit"
+								placeholder="请选择" style='width:100%;'>
+							<el-option v-for="(item,key) in units" :label="item" :value="key"></el-option>
+						</el-select>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="街铺" prop="syqy"  style='width:100%;'>
+						<el-select size="small" v-model="form.syqy" placeholder="请选择"  style='width:100%;'>
+							<el-option v-for="(item,key) in useAreas" :label="item" :value="key"></el-option>
+						</el-select>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="外仓" prop="oldCodeMat"  style='width:100%;'>
+						<!--<el-input v-model="form.oldCodeMat"></el-input>-->
+						<el-select size="small" style="width: 100%;"
+								   v-model="form.oldCodeMat"
+								   filterable
+								   remote
+								   clearable
+								   reserve-keyword
+								   placeholder=""
+								   :remote-method="remoteMethod"
+								   :loading="oldCodeMatloading">
+							<el-option
+									v-for="item in options4"
+									:key="item.value"
+									:label="item.label"
+									:value="item.value"
+
+							>
+
+							</el-option>
+						</el-select>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="人员编制" style='width:100%;' prop="makeIe" >
+						<el-input size="small" v-model="form.makeIe"></el-input>
+					</el-form-item>
+				</div>
+
+			</div>
+
+			<div class="itembigbox">
+				<div class="itembox">
+					<el-form-item label="品牌" prop="syqy"  style='width:100%;'>
+						<el-select size="small" v-model="form.syqy" placeholder="请选择"  style='width:100%;'>
+							<el-option v-for="(item,key) in useAreas" :label="item" :value="key"></el-option>
+						</el-select>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="店铺形象" prop="oldCodeMat"  style='width:100%;'>
+						<!--<el-input v-model="form.oldCodeMat"></el-input>-->
+						<el-select size="small" style="width: 100%;"
+								   v-model="form.oldCodeMat"
+								   filterable
+								   remote
+								   clearable
+								   reserve-keyword
+								   placeholder=""
+								   :remote-method="remoteMethod"
+								   :loading="oldCodeMatloading">
+							<el-option
+									v-for="item in options4"
+									:key="item.value"
+									:label="item.label"
+									:value="item.value"
+
+							>
+
+							</el-option>
+						</el-select>
+					</el-form-item>
+				</div>
+
+				<div class="itembox">
+					<el-form-item label="大区" style='width:100%;' prop="makeIe" >
+						<el-input size="small" v-model="form.makeIe"></el-input>
+					</el-form-item>
+				</div>
+
+				<div class="itembox">
+					<el-form-item label="小区" style='width:100%;'>
+						<el-input size="small" type='text' v-model.trim="form.color"></el-input>
+					</el-form-item>
+				</div>
+			</div>
+
+			<div class="itembigbox">
+				<div class="itembox">
+					<el-form-item label="禁用" style='width:100%;'>
+
+						<el-select size="small" v-model="form.buyGroup" placeholder="请选择" style='width:100%;'>
+							<el-option :label="item"
+									   :value="key"
+									   v-for="(item,key) in buyGroup"></el-option>
+						</el-select>
+					</el-form-item>
+				</div>
+
+			</div>
+			<div class="itembigbox">
+				<div class="itembox ckg">
+
+				</div>
+				<div class="itembox" style='width:100%;'>
+				</div>
+			</div>
+			<div class="itembigbox">
+			</div>
+
+
+ <!-- 店铺时间  start-->
+			<div class="formtitle">
+				店铺时间节点
+			</div>
+			<div class="itembigbox">
+				<div class="itembox">
+					<el-form-item label="预计开业时间:">
+						<el-input
+								size='small'
+								v-model.trim="form.code"
+								type='date'
+								disabled>
+						</el-input>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="预计工程交场时间:">
+						<el-input
+								size='small'
+								v-model.trim="form.name"
+								type='date'
+								disabled>
+						</el-input>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="预计工程进场时间:">
+						<el-input
+								size='small'
+								v-model.trim="form.name"
+								type='date'
+								disabled>
+						</el-input>
+					</el-form-item>
+				</div>
+			</div>
+
+			<div class="itembigbox">
+				<div class="itembox">
+					<el-form-item label="实际开业时间:">
+						<el-input
+								size='small'
+								v-model.trim="form.code"
+								type='date'
+								disabled>
+						</el-input>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="实际工程交场时间:">
+						<el-input
+								size='small'
+								v-model.trim="form.name"
+								type='date'
+								disabled>
+						</el-input>
+					</el-form-item>
+				</div>
+				<div class="itembox">
+					<el-form-item label="实际工程进场时间:">
+						<el-input
+								size='small'
+								v-model.trim="form.name"
+								type='date'
+								disabled>
+						</el-input>
+					</el-form-item>
+				</div>
+			</div>
+
+			<div class="itembigbox">
+				<div class="itembox ckg">
+
+				</div>
+				<div class="itembox" style='width:100%;'>
+				</div>
+			</div>
+			<div class="itembigbox">
+			</div>
+			<!-- 店铺时间  end-->
+
+					<!-- 店铺地址  start-->
+					<div class="formtitle">
+						店铺地址
+					</div>
+					<div class="itembigbox">
+						<div class="itembox">
+							<el-form-item label="所属国家:" prop="syqy"  style='width:100%;'>
+								<el-select size="small" v-model="form.syqy" placeholder="请选择"  style='width:100%;'>
+									<el-option v-for="(item,key) in useAreas" :label="item" :value="key"></el-option>
+								</el-select>
+							</el-form-item>
+						</div>
+
+						<div class="itembox">
+							<el-form-item label="所属省份:" prop="syqy"  style='width:100%;'>
+								<el-select size="small" v-model="form.syqy" placeholder="请选择"  style='width:100%;'>
+									<el-option v-for="(item,key) in useAreas" :label="item" :value="key"></el-option>
+								</el-select>
+							</el-form-item>
+						</div>
+
+						<div class="itembox">
+							<el-form-item label="所属城市:" prop="syqy"  style='width:100%;'>
+								<el-select size="small" v-model="form.syqy" placeholder="请选择"  style='width:100%;'>
+									<el-option v-for="(item,key) in useAreas" :label="item" :value="key"></el-option>
+								</el-select>
+							</el-form-item>
+						</div>
+
+						<div class="itembox">
+							<el-form-item label="邮政编码:">
+								<el-input
+										size='small'
+										v-model.trim="form.name"
+										type='text'
+										disabled>
+								</el-input>
+							</el-form-item>
+						</div>
+					</div>
+
+					<div class="itembigbox">
+						<div class="itembox">
+							<el-form-item label="地区:">
+								<el-input
+										size='small'
+										v-model.trim="form.code"
+										type='text'
+										disabled>
+								</el-input>
+							</el-form-item>
+						</div>
+						<div class="itembox">
+							<el-form-item label="详细地址:">
+								<el-input
+										size='small'
+										v-model.trim="form.name"
+										type='text'
+										style='width:100%;'
+								>
+								</el-input>
+							</el-form-item>
+						</div>
+					</div>
+
+					<div class="itembigbox">
+						<div class="itembox ckg">
+
+						</div>
+						<div class="itembox" style='width:100%;'>
+						</div>
+					</div>
+					<div class="itembigbox">
+					</div>
+					<!-- 店铺地址  end-->
+
+			</el-form>
+
+		</div>
+
+		<div class="MYcontainer">
+			<div class="formtitle">
+				明细
+			</div>
+			<el-table
+					:row-key="tablekey"
+					border
+					@selection-change="handleSelectionChange"
+					ref="multipleTable"
+					:data="form.materialInfoList"
+					tooltip-effect="dark"
+					style="width: 100%;border-radius:10px;overflow:hidden; margin-top: 10px;"
+
+			>
+
+
+				<el-table-column
+						label="职位"
+						min-width='150'
+						align='center'
+						:render-header="renderHeader">
+					<template slot-scope="scope">
+						<el-form-item
+								label-width="0px"
+								:prop="'materialInfoList.' + scope.$index + '.matCode'"
+								:rules="[{ required: true, message: '  ', trigger:['change','blur'] }]">
+							<el-input
+									disabled
+									size='small'
+									placeholder=""
+									v-model="scope.row.matCode">
+								<el-button
+										size='small'
+										slot="append"
+										icon="el-icon-search"
+										@click="tanchuWLbox(scope.$index)"
+								></el-button>
+							</el-input>
+						</el-form-item>
+					</template>
+				</el-table-column>
+
+				<el-table-column
+						label="物料名称"
+						min-width='150'
+						align='center'
+						:render-header="renderHeader">
+					<template slot-scope="scope">
+						<el-form-item
+								label-width="0px"
+								ref="matName"
+								:prop="'materialInfoList.' + scope.$index + '.matName'"
+								:rules="[{ required: true, message: '  ', trigger:['blur','change'] }]">
+							<el-input
+									disabled
+									size='small'
+									placeholder=""
+									v-model="scope.row.matName"
+							></el-input>
+						</el-form-item>
+					</template>
+				</el-table-column>
+
+				<el-table-column
+						label="规格"
+						min-width='100'
+						align='center'
+				>
+					<template slot-scope="scope">
+						<el-form-item
+								label-width="0px"
+								ref="mobilephone"
+						>
+							<el-input
+									disabled
+									size='small'
+									placeholder=""
+									v-model="scope.row.matSpec"
+									@keyup.native="scope.row.matSpec=scope.row.matSpec.replace(/[^0-9]/ig,'')"
+							></el-input>
+						</el-form-item>
+					</template>
+				</el-table-column>
+				<el-table-column
+						label="基本数量"
+						min-width='60'
+						align='center'>
+					<template slot-scope="scope">
+						<el-form-item style='daiplay:flex' label-width="0px">
+							<el-input
+									size='small'
+									placeholder=""
+									v-model="scope.row.basicQut"
+									@keyup.native="scope.row.basicQut=scope.row.basicQut.replace(/[^0-9]/ig,'')"
+							></el-input>
+						</el-form-item>
+					</template>
+				</el-table-column>
+
+				<el-table-column
+						label="基本单位"
+						min-width='60'
+						align='center'>
+					<template slot-scope="scope">
+						<el-form-item
+								label-width="0px"
+						>
+							<el-input
+									disabled
+									size='small'
+									placeholder=""
+									v-model="scope.row.baseUnit"
+									@keyup.native="scope.row.matSpec=scope.row.matSpec.replace(/[^0-9]/ig,'')"
+							></el-input>
+
+
+						</el-form-item>
+
+					</template>
+				</el-table-column>
+
+				<el-table-column
+						label="备注"
+						width='250'
+						align='center'>
+					<template slot-scope="scope">
+						<el-form-item
+								label-width="0px"
+						>
+							<el-input
+									type="textarea"
+									size='small'
+									v-model="scope.row.remarks"
+									placeholder=""></el-input>
+
+						</el-form-item>
+					</template>
+				</el-table-column>
+
+				<el-table-column
+
+						label="操作"
+						min-width="100"
+						align='center' >
+					<template slot-scope="scope">
+						<!--<el-button size='small'>维护采购价格</el-button>-->
+						<el-button
+								size='small'
+								@click.native.prevent="deleteRow(scope.$index, form.materialInfoList)"
+								type="danger" plain>
+							删除
+						</el-button>
+					</template>
+				</el-table-column>
+
+			</el-table>
+			<div>
+				<el-button @click='addhuoyuan' icon='el-icon-folder-add' size='small' style='margin: 10px 0;' type="primary">新增</el-button>
+			</div>
+		</div>
+		</el-form>
+
+		<el-dialog :visible.sync="dialogTableVisible" width="95%" :fullscreen='fullscreen'>
+
+
+
+			<div slot="title">
+				<el-button size="small" @click="tofullscreen">全屏|缩小</el-button>
+			</div>
+			<iframe :src="WLtkurl" frameborder="0" style="width: 100%;height: 100%;">
+
+			</iframe>
+		</el-dialog>
+
+	</div>
+
+
+</div>
+</div>
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			// 图片上传url
+			imageUrl: 'http://192.168.13.38:8686/admin/sys/file/image/',
+			uploadUrl: 'http://192.168.13.38:8686/admin/sys/file/upload/',
+			downURL: 'http://192.168.13.38:8686/admin/sys/file/download/',
+			deleteUrl: 'http://192.168.13.38:8686/admin/sys/file/delete/',
+			editWLurl:'/mat/editMaterial',
+			WLtkurl:'/mat/tkMaterialList',
+			WLguizeinfo:'',
+			WLshiliinfo:'',
+			WLguize:{
+				DMZ:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'灰色通体砖S001'},
+				QMZ:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'灰色通体砖S001'},
+				DMSC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'蓝天碧玉大理石'},
+				QMSC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'蓝天碧玉大理石'},
+				DMBC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'格纹铝型材饰面板'},
+				QMBC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'ABS造型板'},
+				THBC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'沙面不锈钢板'},
+				DMJC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'深灰格纹地毯'},
+				QMJC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'咖啡色漆软陶板'},
+				THJC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'咖啡色肌理漆软陶板'},
+				GDHJ:{WLguizeinfo:'名称+型号',WLshiliinfo:'墙身架A(A为型号)'},
+				HDHJ:{WLguizeinfo:'名称+型号',WLshiliinfo:'中岛展台A(A为型号)'},
+				DX:{WLguizeinfo:'型号+名称',WLshiliinfo:'900*800*180电箱,IC65N1P16A空开'},
+				BGJS:{WLguizeinfo:'物料原有名称',WLshiliinfo:'A4文件柜'},
+				SYJDJ:{WLguizeinfo:'物料原有名称',WLshiliinfo:'大摆码车'},
+				XFSB:{WLguizeinfo:'按供应商物料名称',WLshiliinfo:'消防门报警装置'},
+				YJSB:{WLguizeinfo:'按供应商物料名称',WLshiliinfo:'应急灯'},
+				FDSB:{WLguizeinfo:'按供应商物料名称',WLshiliinfo:'1170声磁系统天线'},
+				DSP:{WLguizeinfo:'型号+名称',WLshiliinfo:'P5LED屏,P5LED弧形屏'},
+				JKXT:{WLguizeinfo:'品牌/供应商+小类',WLshiliinfo:'海视康威监控系统'},
+				YXXT:{WLguizeinfo:'品牌/供应商+小类',WLshiliinfo:'BOSE音响系统'},
+				SD:{WLguizeinfo:'区域/功能+名称',WLshiliinfo:'入口射灯(名称是由供应商提供应商物料名称)'},
+				SD:{WLguizeinfo:'区域/功能+名称',WLshiliinfo:'入口筒灯(名称是由供应商提供应商物料名称)'},
+				ZSD:{WLguizeinfo:'区域/功能+名称',WLshiliinfo:'男装中岛展台吊灯'},
+				BSP:{WLguizeinfo:'内容/形式+小类名称',WLshiliinfo:'男试衣间MALE FITTING ROOM导向标识牌；非员工勿入标识牌…'},
+				LOGO:{WLguizeinfo:'名称+安装工艺+发光工艺',WLshiliinfo:'H150全称背装亚克力无边正发光字'},
+				WJPJ:{WLguizeinfo:'按供应商物料名称',WLshiliinfo:'大U型收边条'}
+			},
+
+			// 加载loding
+			oldCodeMatloading: false,  //旧物料编码loading
+			Submitloading: false,  //提交loading
+
+			showapp:false,
+			// 图片预览
+			dialogVisible: false, //图片预览弹框
+			dialogImageUrl: '',   //图片预览地址
+			form: [[${material}]],
+			// 远程搜索
+			fullscreen:false,
+
+			options4:[[${tenStrArray}]],   //旧物料编码下拉数据
+			list: [],  //旧物料编码全部数据
+			states: [[${strArray}]],  //旧物料编码全部数据
+
+			brandTypes: [[${brandType}]], //品牌
+			units: [[${unit}]],  //单位
+			categoryAs: [[${categoryA}]],  //大类
+			allCategoryB: [[${allCategoryB}]],  //所有中类
+			allCategoryC: [[${allCategoryC}]],  //所有小类
+			matTypes: [[${matType}]],  ///物料类型
+			useAreas: [[${useArea}]],  //使用区域
+			matStatus: [[${matStatus}]],   //物料状态
+			shopImage: [[${shopImage}]],   //店铺形象
+			oldCodeMat: [[${oldCodeMat}]],   //旧物料编码
+			tittletip: [[${createOrEdit}]],   //新增|编辑
+			buyGroup:[[${buyGroup}]],   //采购组
+			fileList: [],  //图片列表
+			tablekey(row){
+				return row
+			},
+			selectData:[],
+			dialogTableVisible:false
+		},
+
+		created(){
+			this.Submitloading = true;
+		},
+		mounted() {
+			console.log([[${useArea}]])
+			setTimeout(()=>{
+				this.Submitloading = false;
+			this.showapp=true;
+		},300)
+			this.tochangeS(this.form.categoryC)
+
+			// 旧物料编码所有数据处理成｛label value｝形式
+			this.handelOldCodeMat();
+
+			// 处理店铺形象的数据格式
+			this.changeshopImageName();
+
+			console.log(this.form)
+
+
+
+		},
+		methods: {
+
+
+			// 处理旧物料编码
+			handelOldCodeMat(){
+				this.list = this.states.map(item => {
+					return { value: item, label: item };
+			});
+			},
+
+			// 旧物料编码搜索
+			remoteMethod(query) {
+				if (query !== '') {
+					this.oldCodeMatloading = true;
+					setTimeout(() => {
+						this.oldCodeMatloading = false;
+					this.options4 = this.list.filter(item => {
+						return item.label.toLowerCase()
+								.indexOf(query.toLowerCase()) > -1;
+
+				});
+				}, 200);
+				} else {
+					this.options4 = [];
+				}
+			},
+
+			// 只输入数字
+			onlyNum() {
+				if (!(event.keyCode == 46) && !(event.keyCode == 8) && !(event.keyCode == 37) && !(event.keyCode == 39)) {
+					if (!((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105))) {
+						event.returnValue = false;
+					}
+				}
+			},
+
+			// 处理店铺形象数据格式
+			changeshopImageName() {
+				// console.log(this.form.shopImage)
+				if ([[${material.shopImage}]] == '' || [[${material.shopImage}]] == null) {
+
+					this.form.shopImage = [];
+				} else {
+					this.form.shopImage=[[${material.shopImage}]].split(',');
+				}
+
+
+
+			},
+			num(dataname, obj) {
+				console.log(dataname, obj)
+				// this.form.long = obj.replace(/[^\d.]/g, "");
+				this.form[dataname] = obj.replace(/[^\d]/g, ""); //清除"数字"和"."以外的字符
+				this.form[dataname] = obj.replace(/^\./g, ""); //验证第一个字符是数字
+				this.form[dataname] = obj.replace(/\.{2,}/g, "."); //只保留第一个, 清除多余的
+				this.form[dataname] = obj.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+				this.form[dataname] = obj.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+
+			},
+
+			//					文件上传
+			handlePreview(file) {
+				console.log(file);
+			},
+			handleExceed(files, fileList) {
+				this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+			},
+			beforeRemove(file, fileList) {
+				return this.$confirm(`确定移除 ${ file.name }？`);
+			},
+			//	图片列表删除方法_________________________________
+			handletupianRemove(file, fileList) {
+				// 进行图片列表赋值
+				this.form.ImageUrl = fileList;
+				// 进行图片列表校验
+				this.$refs.form.validateField('ImageUrl');
+			},
+			handlePictureCardPreview2(file) {
+				this.dialogImageUrl = file.url;
+				this.dialogVisible = true;
+				console.log(file)
+			},
+
+			// 表单保存————————————————————————————
+			submitForm(formName) {
+				// 表单校验
+				this.$refs[formName].validate((valid) => {
+					// 如果校验成功
+					if (valid) {
+						// 开启提交loding弹层
+						this.Submitloading = true;
+
+						// 1先处理店铺形象数据格式
+						// 复制一份表单数据
+						let formcopy = JSON.stringify(this.form);
+						formcopy = JSON.parse(formcopy);
+
+						// 处理店铺形象：数组转字符串
+						formcopy.shopImage = formcopy.shopImage.toString();
+						console.log(formcopy)
+						//发送表单保存
+						axios.post('saveMaterial', formcopy, {headers: {'Content-Type': 'application/json;charset=UTF-8'}})
+								.then(response => {
+							if(response.data.code==null||response.data.code!=0){
+							this.Submitloading = false;
+							this.$message.error('保存失败');
+						}else{
+							this.Submitloading = false;
+							this.$message.success('保存成功');
+							setTimeout(()=>{
+								if(this.tittletip=='新增'||this.tittletip=='复制'){
+								window.open(`${this.editWLurl}?id=${response.data.data}`,'_self')
+							}else if(this.tittletip=='编辑'){
+								window.open('materialList','_self')
+							}
+						},300)
+						}
+					}).catch(response => {
+							this.Submitloading = false;
+						this.$message.error('系统异常,新增失败');
+					});
+					} else {
+
+						this.$message.error('必填项不能为空');
+				return false;
+			}
+			});
+			},
+
+			tochangeL(val, row) {
+				this.form.categoryB = '';
+				this.form.categoryC = '';
+				this.tochangeS(this.form.categoryC)
+			},
+			tochangeM(val, row) {
+
+				this.form.categoryC = '';
+				this.tochangeS(this.form.categoryC)
+			},
+			tochangebrandType() {
+				this.form.shopImage = [];
+			},
+
+			handlePreview(file) {
+				console.log(file);
+			},
+
+
+			handlePictureCardPreview(file) {
+				this.dialogImageUrl = file.url;
+				this.dialogVisible = true;
+			},
+			handleDownload(file) {
+				console.log(file)
+				// window.open()
+				// alert('我要下载：'+file.name)
+			},
+			// 图片上传成功
+			handlesuccess(response, file, fileList) {
+				// console.log(response)
+				//
+				// this.$message.success(file.name+'上传成功！！');
+				//
+				// this.form.files.push(response.returnObject[0])
+				// console.log(this.form.files)
+				// this.loading=false;
+			},
+			// 图片上传失败
+			handleerrors(err, file, fileList) {
+
+				// this.$message.error(file.name+'上传失败！！');
+				//
+				// this.loading=false;
+			},
+
+			// 图片删除
+
+			handleRemove(file) {
+
+				console.log(file)
+				this.fileList.forEach((item, index) => {
+					if (file.uid == item.uid) {
+					this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						this.fileList.splice(index, 1)
+						this.$message({
+							type: 'success',
+							message: '删除成功!'
+						});
+				}).catch(() => {
+						this.$message({
+							type: 'info',
+							message: '已取消删除'
+						});
+				});
+
+
+				}
+			});
+			},
+			handleprogress(event, file, fileList) {
+				console.log(fileList)
+				this.form.files.push(file);
+				// this.loading=true;
+				console.log(file)
+			},
+			tolook(item, index) {
+				console.log(this.dialogImageUrl)
+				this.dialogImageUrl = `${this.imageUrl}${item.abbfileName}`;
+				this.dialogVisible = true;
+			},
+			todelete(item, index) {
+
+				let Uid
+				if (item.id) {
+					Uid = item.id;
+				} else {
+					Uid = item.response.returnObject.id;
+				}
+
+				// console.log(Uid)
+				this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					axios.get(`${this.deleteUrl}${Uid}`)
+							.then(response => {
+						if (response.data.success == true) {
+					this.form.files.splice(index, 1)
+					this.$message({
+						type: 'success',
+						message: '删除成功!'
+					});
+				} else {
+					this.$message({
+						type: 'error',
+						message: '删除失败!'
+					});
+				}
+			}).catch(response => {
+					this.$message({
+						type: 'error',
+						message: '删除失败!'
+					});
+
+			})
+			}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
+				return
+			});
+			},
+			toback(){
+				window.open('materialList','_self')
+			},
+			changebrandType(val){
+
+				let UR = this.shopImage['01'];
+				let JGO = this.shopImage['03'];
+				let newObj = {};
+
+				Object.assign(newObj,UR,JGO);
+				console.log(newObj)
+				let array = []
+				val.forEach(item=>{
+					array.push(newObj[item]);
+			})
+				this.form.shopImageName=array;
+				this.form.shopImageName=this.form.shopImageName.join(',')
+				// console.log(this.form.shopImageName)
+			},
+			tochangeS(value){
+				if(this.WLguize[value]==undefined){
+					this.WLguizeinfo='暂无';
+					this.WLshiliinfo='暂无';
+				}else{
+					this.WLguizeinfo=this.WLguize[value].WLguizeinfo;
+					this.WLshiliinfo=this.WLguize[value].WLshiliinfo;
+				}
+			},
+			deleteRow(index, rows){
+				rows.splice(index, 1);
+			},
+			addhuoyuan(){
+				let gooditem = {
+					rowNo:'',
+					matCode:'',
+					matName:'',
+					matSpec:'',
+					basicQut:'',
+					baseUnit:'',
+					remarks:'',
+					deleted:'',
+				}
+				this.form.materialInfoList.push(gooditem)
+				console.log(this.form.materialInfoList)
+			},
+			tanchuWLbox(index){
+				console.log(index);
+				let WLtkurl ='/mat/tkMaterialList'
+				this.WLtkurl=WLtkurl + '?index='+index;
+				this.dialogTableVisible=true;
+
+			},
+
+			handleSelectionChange(data) {
+				this.selectData = data;
+				//
+			}, // 多选高亮选中行
+			tofullscreen(){
+				this.fullscreen=!this.fullscreen;
+			},
+
+			renderHeader(h, {
+				column,
+				$index
+			}) {
+				return h('div', {
+					attrs: {
+						class: 'cell' //ele原来样式
+					},
+					domProps: {
+						innerHTML: '<span class="red">* </span>' + column.label
+					}
+				})
+			}
+		}
+
+	})
+</script>
+
+</body>
+
+</html>

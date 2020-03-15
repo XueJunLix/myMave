@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.admin.role.mappers.AdminRoleInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.admin.role.model.AdminRoleInfo" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="ROLE_CODE" property="roleCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" javaType="String" />
+    <result column="MEMO" property="memo" jdbcType="VARCHAR" javaType="String" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID,ROLE_CODE,ROLE_NAME,MEMO,STATUS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME
+  </sql>
+  
+  <select id="getAdminRoleInfoByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from ADMIN_ROLE_INFO
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertAdminRoleInfo" parameterType="com.ur.admin.role.model.AdminRoleInfo"  useGeneratedKeys="true" keyProperty="id">
+    insert into ADMIN_ROLE_INFO (
+        ROLE_CODE,ROLE_NAME,MEMO,STATUS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME
+    )values(
+        #{roleCode,jdbcType=VARCHAR},#{roleName,jdbcType=VARCHAR},#{memo,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP}
+    )
+  </insert>
+  
+  <update id="updateAdminRoleInfoByPKSelective" parameterType="com.ur.admin.role.model.AdminRoleInfo" >
+    update ADMIN_ROLE_INFO
+    <set>
+      <if test="roleCode != null" >
+        ROLE_CODE = #{roleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="roleName != null" >
+        ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null" >
+        MEMO = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchAdminRoleInfoCount" resultType="int" >
+    select count(*) from ADMIN_ROLE_INFO
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT('%',#{cond.value}),'%')
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchAdminRoleInfo" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from ADMIN_ROLE_INFO
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT('%',#{cond.value}),'%')
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by ID
+    	</if>
+    <if test="pageBean != null" >
+     	   Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+
+  <!-- manual added -->
+  
+</mapper>

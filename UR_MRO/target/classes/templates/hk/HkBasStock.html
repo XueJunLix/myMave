@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="/common/common_head :: commonHeader('HkBasStock')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="padding-top: 5px" v-loading="exportingFile" element-loading-text="正在生成导出文件">
+
+<nav class="navbar" style="background-color:#eef1f6">
+    <ul class="nav">
+      <li style="padding-left:20px">
+		  <el-select v-model="searchColumn" placeholder="请选择搜索字段" :clearable="true">
+		    <el-option label="companyid" value="companyid"></el-option>
+		    <el-option label="stockid" value="stockid"></el-option>
+		    <el-option label="stockcode" value="stockcode"></el-option>
+		    <el-option label="stockname" value="stockname"></el-option>
+		    <el-option label="operationareaid" value="operationareaid"></el-option>
+		    <el-option label="areaid" value="areaid"></el-option>
+		    <el-option label="dakid" value="dakid"></el-option>
+		    <el-option label="invstruid" value="invstruid"></el-option>
+		    <el-option label="address" value="address"></el-option>
+		    <el-option label="telphone" value="telphone"></el-option>
+		    <el-option label="fax" value="fax"></el-option>
+		    <el-option label="manage" value="manage"></el-option>
+		    <el-option label="area" value="area"></el-option>
+		    <el-option label="unitid" value="unitid"></el-option>
+		    <el-option label="stockproperty" value="stockproperty"></el-option>
+		    <el-option label="stockpropertyid" value="stockpropertyid"></el-option>
+		    <el-option label="stocktype" value="stocktype"></el-option>
+		    <el-option label="stocktypeid" value="stocktypeid"></el-option>
+		    <el-option label="checkflag" value="checkflag"></el-option>
+		    <el-option label="isobject" value="isobject"></el-option>
+		    <el-option label="costcalc" value="costcalc"></el-option>
+		    <el-option label="isstorer" value="isstorer"></el-option>
+		    <el-option label="remark" value="remark"></el-option>
+		    <el-option label="allowused" value="allowused"></el-option>
+		    <el-option label="modifydtm" value="modifydtm"></el-option>
+		    <el-option label="bigshopbatchmovedate" value="bigshopbatchmovedate"></el-option>
+		    <el-option label="bigshopbatchmovetime" value="bigshopbatchmovetime"></el-option>
+		    <el-option label="initaccountdate" value="initaccountdate"></el-option>
+		    <el-option label="initflag" value="initflag"></el-option>
+		    <el-option label="qxflag" value="qxflag"></el-option>
+		    <el-option label="vendcustid" value="vendcustid"></el-option>
+		    <el-option label="initstorerflag" value="initstorerflag"></el-option>
+		    <el-option label="isfreeze" value="isfreeze"></el-option>
+		    <el-option label="enabledstate" value="enabledstate"></el-option>
+		    <el-option label="retailpriceprojid" value="retailpriceprojid"></el-option>
+		    <el-option label="departmentid" value="departmentid"></el-option>
+		    <el-option label="lan" value="lan"></el-option>
+		    <el-option label="cardcompanyno" value="cardcompanyno"></el-option>
+		    <el-option label="benefitbelongid" value="benefitbelongid"></el-option>
+		    <el-option label="mobilephone" value="mobilephone"></el-option>
+		    <el-option label="email" value="email"></el-option>
+		    <el-option label="iswmsstorer" value="iswmsstorer"></el-option>
+		    <el-option label="boxpickin" value="boxpickin"></el-option>
+		    <el-option label="hadtoin" value="hadtoin"></el-option>
+		    <el-option label="isvendmatstock" value="isvendmatstock"></el-option>
+		  </el-select> 
+      </li>
+      <li style="padding-left:20px">
+        <el-input v-model="searchValue" placeholder="请输入搜索内容"></el-input> 
+      </li>
+      <li style="padding-left:20px">
+        <el-button type="text" icon="search" v-on:click="clickSearchBtn">搜索</el-button>
+      </li>
+    </ul>
+	<el-switch v-model="expandCondition" off-text="展开" on-text="收缩"></el-switch>
+</nav>
+
+  <div class="card" v-if="expandCondition">  	
+
+	<div class="card-body">
+  <div class="row">
+  	<div class="col-md-12">
+		<el-form label-width="150px">
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="companyid">
+		    <el-input v-model="queryCondition.companyid" placeholder="companyid"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="stockid">
+		    <el-input v-model="queryCondition.stockid" placeholder="stockid"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="stockcode">
+		    <el-input v-model="queryCondition.stockcode" placeholder="stockcode"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="stockname">
+		    <el-input v-model="queryCondition.stockname" placeholder="stockname"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="operationareaid">
+		    <el-input v-model="queryCondition.operationareaid" placeholder="operationareaid"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="areaid">
+		    <el-input v-model="queryCondition.areaid" placeholder="areaid"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="dakid">
+		    <el-input v-model="queryCondition.dakid" placeholder="dakid"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="invstruid">
+		    <el-input v-model="queryCondition.invstruid" placeholder="invstruid"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="address">
+		    <el-input v-model="queryCondition.address" placeholder="address"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="telphone">
+		    <el-input v-model="queryCondition.telphone" placeholder="telphone"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="fax">
+		    <el-input v-model="queryCondition.fax" placeholder="fax"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="manage">
+		    <el-input v-model="queryCondition.manage" placeholder="manage"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="area">
+		    <el-input v-model="queryCondition.area" placeholder="area"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="unitid">
+		    <el-input v-model="queryCondition.unitid" placeholder="unitid"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="stockproperty">
+		    <el-input v-model="queryCondition.stockproperty" placeholder="stockproperty"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="stockpropertyid">
+		    <el-input v-model="queryCondition.stockpropertyid" placeholder="stockpropertyid"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="stocktype">
+		    <el-input v-model="queryCondition.stocktype" placeholder="stocktype"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="stocktypeid">
+		    <el-input v-model="queryCondition.stocktypeid" placeholder="stocktypeid"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="checkflag">
+		    <el-input v-model="queryCondition.checkflag" placeholder="checkflag"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="isobject">
+		    <el-input v-model="queryCondition.isobject" placeholder="isobject"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="costcalc">
+		    <el-input v-model="queryCondition.costcalc" placeholder="costcalc"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="isstorer">
+		    <el-input v-model="queryCondition.isstorer" placeholder="isstorer"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="remark">
+		    <el-input v-model="queryCondition.remark" placeholder="remark"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="allowused">
+		    <el-input v-model="queryCondition.allowused" placeholder="allowused"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="modifydtm">
+						    <el-date-picker v-model="queryCondition.modifydtm" type="datetime" placeholder="modifydtm"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="bigshopbatchmovedate">
+		    <el-input v-model="queryCondition.bigshopbatchmovedate" placeholder="bigshopbatchmovedate"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="bigshopbatchmovetime">
+		    <el-input v-model="queryCondition.bigshopbatchmovetime" placeholder="bigshopbatchmovetime"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="initaccountdate">
+		    <el-input v-model="queryCondition.initaccountdate" placeholder="initaccountdate"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="initflag">
+		    <el-input v-model="queryCondition.initflag" placeholder="initflag"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="qxflag">
+		    <el-input v-model="queryCondition.qxflag" placeholder="qxflag"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="vendcustid">
+		    <el-input v-model="queryCondition.vendcustid" placeholder="vendcustid"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="initstorerflag">
+		    <el-input v-model="queryCondition.initstorerflag" placeholder="initstorerflag"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="isfreeze">
+		    <el-input v-model="queryCondition.isfreeze" placeholder="isfreeze"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="enabledstate">
+		    <el-input v-model="queryCondition.enabledstate" placeholder="enabledstate"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="retailpriceprojid">
+		    <el-input v-model="queryCondition.retailpriceprojid" placeholder="retailpriceprojid"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="departmentid">
+		    <el-input v-model="queryCondition.departmentid" placeholder="departmentid"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="lan">
+		    <el-input v-model="queryCondition.lan" placeholder="lan"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="cardcompanyno">
+		    <el-input v-model="queryCondition.cardcompanyno" placeholder="cardcompanyno"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="benefitbelongid">
+		    <el-input v-model="queryCondition.benefitbelongid" placeholder="benefitbelongid"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="mobilephone">
+		    <el-input v-model="queryCondition.mobilephone" placeholder="mobilephone"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="email">
+		    <el-input v-model="queryCondition.email" placeholder="email"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="iswmsstorer">
+		    <el-input v-model="queryCondition.iswmsstorer" placeholder="iswmsstorer"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="boxpickin">
+		    <el-input v-model="queryCondition.boxpickin" placeholder="boxpickin"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="hadtoin">
+		    <el-input v-model="queryCondition.hadtoin" placeholder="hadtoin"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="isvendmatstock">
+		    <el-input v-model="queryCondition.isvendmatstock" placeholder="isvendmatstock"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+		</el-form>
+  	</div>
+  </div>
+
+	<div class="text-center">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   
+
+	</div>
+  </div>
+</div>
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickAddBtn" icon="plus">添加</el-button>
+        <el-button v-on:click="clickUpdateBtn" icon="edit">修改</el-button>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+		<el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+		</el-pagination>
+</nav>
+
+        <el-table v-loading="queryingHkBasStock" :data="this.queryResult.data" :border="true" :highlight-current-row="true" :height="this.tableHeight" v-on:current-change="handleTableCurrentChange">
+          <el-table-column property="companyId" label="companyid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="stockId" label="stockid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="stockCode" label="stockcode" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="stockName" label="stockname" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="operationareaid" label="operationareaid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="areaid" label="areaid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="dakid" label="dakid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="invstruid" label="invstruid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="address" label="address" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="telphone" label="telphone" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="fax" label="fax" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="manage" label="manage" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="area" label="area" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="unitid" label="unitid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="stockproperty" label="stockproperty" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="stockpropertyid" label="stockpropertyid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="stocktype" label="stocktype" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="stocktypeid" label="stocktypeid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="checkflag" label="checkflag" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isobject" label="isobject" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="costcalc" label="costcalc" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isstorer" label="isstorer" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="remark" label="remark" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="allowUsed" label="allowused" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifydtm" label="modifydtm" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="bigshopbatchmovedate" label="bigshopbatchmovedate" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="bigshopbatchmovetime" label="bigshopbatchmovetime" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="initaccountdate" label="initaccountdate" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="initflag" label="initflag" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="qxflag" label="qxflag" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="vendcustid" label="vendcustid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="initstorerflag" label="initstorerflag" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isfreeze" label="isfreeze" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="enabledstate" label="enabledstate" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="retailpriceprojid" label="retailpriceprojid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="departmentid" label="departmentid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="lan" label="lan" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cardcompanyno" label="cardcompanyno" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="benefitbelongid" label="benefitbelongid" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="mobilephone" label="mobilephone" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="email" label="email" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="iswmsstorer" label="iswmsstorer" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="boxpickin" label="boxpickin" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="hadtoin" label="hadtoin" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isvendmatstock" label="isvendmatstock" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+
+	</div>
+</div>
+
+
+
+			<el-dialog ref="updatePanel" :title="dialogTitle" :visible.sync="showDialog"  v-loading="updatingHkBasStock" :lock-scroll="false" size="large">
+
+				  <div class="card-title">
+			        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+			        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+			      </div>
+
+				  <div class="card">
+				  	<div class="card-body">
+
+				  <div class="row">
+				  	<div class="col-md-12">
+						<el-form  label-width="150px" :rules="rules" ref="updateForm" :model="updateInstance" label-suffix=":">
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="companyid" prop="companyid">
+						    <el-input v-model="updateInstance.companyid" placeholder="companyid"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="stockid" prop="stockid">
+						    <el-input v-model="updateInstance.stockid" placeholder="stockid"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="stockcode" prop="stockcode">
+						    <el-input v-model="updateInstance.stockcode" placeholder="stockcode"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="stockname" prop="stockname">
+						    <el-input v-model="updateInstance.stockname" placeholder="stockname"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="operationareaid" prop="operationareaid">
+						    <el-input v-model="updateInstance.operationareaid" placeholder="operationareaid"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="areaid" prop="areaid">
+						    <el-input v-model="updateInstance.areaid" placeholder="areaid"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="dakid" prop="dakid">
+						    <el-input v-model="updateInstance.dakid" placeholder="dakid"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="invstruid" prop="invstruid">
+						    <el-input v-model="updateInstance.invstruid" placeholder="invstruid"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="address" prop="address">
+						    <el-input v-model="updateInstance.address" placeholder="address"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="telphone" prop="telphone">
+						    <el-input v-model="updateInstance.telphone" placeholder="telphone"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="fax" prop="fax">
+						    <el-input v-model="updateInstance.fax" placeholder="fax"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="manage" prop="manage">
+						    <el-input v-model="updateInstance.manage" placeholder="manage"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="area" prop="area">
+						    <el-input v-model="updateInstance.area" placeholder="area"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="unitid" prop="unitid">
+						    <el-input v-model="updateInstance.unitid" placeholder="unitid"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="stockproperty" prop="stockproperty">
+						    <el-input-number v-model="updateInstance.stockproperty" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="stockpropertyid" prop="stockpropertyid">
+						    <el-input v-model="updateInstance.stockpropertyid" placeholder="stockpropertyid"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="stocktype" prop="stocktype">
+						    <el-input-number v-model="updateInstance.stocktype" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="stocktypeid" prop="stocktypeid">
+						    <el-input v-model="updateInstance.stocktypeid" placeholder="stocktypeid"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="checkflag" prop="checkflag">
+						    <el-input-number v-model="updateInstance.checkflag" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="isobject" prop="isobject">
+						    <el-input-number v-model="updateInstance.isobject" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="costcalc" prop="costcalc">
+						    <el-input-number v-model="updateInstance.costcalc" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="isstorer" prop="isstorer">
+						    <el-input-number v-model="updateInstance.isstorer" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="remark" prop="remark">
+						    <el-input v-model="updateInstance.remark" placeholder="remark"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="allowused" prop="allowused">
+						    <el-input-number v-model="updateInstance.allowused" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="modifydtm" prop="modifydtm">
+						    <el-date-picker v-model="updateInstance.modifydtm" type="datetime" placeholder="modifydtm"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="bigshopbatchmovedate" prop="bigshopbatchmovedate">
+						    <el-input v-model="updateInstance.bigshopbatchmovedate" placeholder="bigshopbatchmovedate"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="bigshopbatchmovetime" prop="bigshopbatchmovetime">
+						    <el-input v-model="updateInstance.bigshopbatchmovetime" placeholder="bigshopbatchmovetime"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="initaccountdate" prop="initaccountdate">
+						    <el-input v-model="updateInstance.initaccountdate" placeholder="initaccountdate"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="initflag" prop="initflag">
+						    <el-input v-model="updateInstance.initflag" placeholder="initflag"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="qxflag" prop="qxflag">
+						    <el-input v-model="updateInstance.qxflag" placeholder="qxflag"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="vendcustid" prop="vendcustid">
+						    <el-input v-model="updateInstance.vendcustid" placeholder="vendcustid"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="initstorerflag" prop="initstorerflag">
+						    <el-input v-model="updateInstance.initstorerflag" placeholder="initstorerflag"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="isfreeze" prop="isfreeze">
+						    <el-input v-model="updateInstance.isfreeze" placeholder="isfreeze"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="enabledstate" prop="enabledstate">
+						    <el-input-number v-model="updateInstance.enabledstate" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="retailpriceprojid" prop="retailpriceprojid">
+						    <el-input v-model="updateInstance.retailpriceprojid" placeholder="retailpriceprojid"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="departmentid" prop="departmentid">
+						    <el-input v-model="updateInstance.departmentid" placeholder="departmentid"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="lan" prop="lan">
+						    <el-input-number v-model="updateInstance.lan" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="cardcompanyno" prop="cardcompanyno">
+						    <el-input v-model="updateInstance.cardcompanyno" placeholder="cardcompanyno"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="benefitbelongid" prop="benefitbelongid">
+						    <el-input v-model="updateInstance.benefitbelongid" placeholder="benefitbelongid"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="mobilephone" prop="mobilephone">
+						    <el-input v-model="updateInstance.mobilephone" placeholder="mobilephone"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="email" prop="email">
+						    <el-input v-model="updateInstance.email" placeholder="email"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="iswmsstorer" prop="iswmsstorer">
+						    <el-input-number v-model="updateInstance.iswmsstorer" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="boxpickin" prop="boxpickin">
+						    <el-input-number v-model="updateInstance.boxpickin" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="hadtoin" prop="hadtoin">
+						    <el-input-number v-model="updateInstance.hadtoin" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="isvendmatstock" prop="isvendmatstock">
+						    <el-input-number v-model="updateInstance.isvendmatstock" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+</el-row>
+						</el-form>
+				  	</div>
+				  </div>
+
+				  </div>
+				</div>
+			</el-dialog>
+
+
+
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="/common/onload_js :: onloadJS"></div>
+
+  <script>
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  companyid:"",
+        	  stockid:"",
+        	  stockcode:"",
+        	  stockname:"",
+        	  operationareaid:"",
+        	  areaid:"",
+        	  dakid:"",
+        	  invstruid:"",
+        	  address:"",
+        	  telphone:"",
+        	  fax:"",
+        	  manage:"",
+        	  area:"",
+        	  unitid:"",
+        	  stockproperty:"",
+        	  stockpropertyid:"",
+        	  stocktype:"",
+        	  stocktypeid:"",
+        	  checkflag:"",
+        	  isobject:"",
+        	  costcalc:"",
+        	  isstorer:"",
+        	  remark:"",
+        	  allowused:"",
+        	  modifydtm:"",
+        	  bigshopbatchmovedate:"",
+        	  bigshopbatchmovetime:"",
+        	  initaccountdate:"",
+        	  initflag:"",
+        	  qxflag:"",
+        	  vendcustid:"",
+        	  initstorerflag:"",
+        	  isfreeze:"",
+        	  enabledstate:"",
+        	  retailpriceprojid:"",
+        	  departmentid:"",
+        	  lan:"",
+        	  cardcompanyno:"",
+        	  benefitbelongid:"",
+        	  mobilephone:"",
+        	  email:"",
+        	  iswmsstorer:"",
+        	  boxpickin:"",
+        	  hadtoin:"",
+        	  isvendmatstock:""
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          queryingHkBasStock:false,
+          updatingHkBasStock:false,
+          exportingFile:false,
+          expandCondition:false,
+          searchColumn: "",
+          searchValue: "",
+          updateInstance:{},
+          isUpdate:false,
+          dialogTitle:"",
+          showDialog:false,
+          rules: {
+        	  companyid: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  stockid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  stockcode: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  stockname: [
+                { max: 80, message: '长度不能超过80', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  operationareaid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  areaid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  dakid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  invstruid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  address: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  telphone: [
+                { max: 60, message: '长度不能超过60', trigger: 'blur' }
+              ],
+        	  fax: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  manage: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  area: [
+                { max: 24, message: '长度不能超过24', trigger: 'blur' }
+              ],
+        	  unitid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  stockpropertyid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  stocktype: [
+                { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  stocktypeid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  checkflag: [
+                { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  isobject: [
+                { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  remark: [
+                { max: 250, message: '长度不能超过250', trigger: 'blur' }
+              ],
+        	  allowused: [
+                { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  modifydtm: [
+                { type:'date', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  bigshopbatchmovedate: [
+                { max: 16, message: '长度不能超过16', trigger: 'blur' }
+              ],
+        	  bigshopbatchmovetime: [
+                { max: 16, message: '长度不能超过16', trigger: 'blur' }
+              ],
+        	  initaccountdate: [
+                { max: 16, message: '长度不能超过16', trigger: 'blur' }
+              ],
+        	  initflag: [
+                { max: 1, message: '长度不能超过1', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  qxflag: [
+                { max: 1, message: '长度不能超过1', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  vendcustid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  initstorerflag: [
+                { max: 1, message: '长度不能超过1', trigger: 'blur' }
+              ],
+        	  isfreeze: [
+                { max: 1, message: '长度不能超过1', trigger: 'blur' }
+              ],
+        	  retailpriceprojid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  departmentid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  lan: [
+                { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  cardcompanyno: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  benefitbelongid: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  mobilephone: [
+                { max: 60, message: '长度不能超过60', trigger: 'blur' }
+              ],
+        	  email: [
+                { max: 60, message: '长度不能超过60', trigger: 'blur' }
+              ],
+          },
+          tableHeight:500
+        }
+      },
+      created: function() {
+    	  this.tableHeight = $(document).height() - 115;
+    	  this.queryHkBasStock();
+      },
+      methods: {
+  		clickAddBtn() {
+			this.updateInstance = {};
+			this.isUpdate = false;
+			this.dialogTitle = '新增';
+			this.showDialog = true;
+		},
+		clickUpdateBtn() {
+			if(this.currInstance==null){
+				return;
+			}
+			this.updateInstance = this.currInstance;
+			this.isUpdate = true;
+			this.dialogTitle = '修改';
+			this.showDialog = true;
+		},
+		clickCancelBtn() {
+			this.showDialog = false;
+		},
+		clickSaveBtn() {
+	        this.$refs["updateForm"].validate((valid) => {
+	          if (valid) {
+				_this = this;
+				this.updatingHkBasStock = true;
+				if(this.isUpdate==false){
+					var url = '/HkBasStock/insert';
+					axios.post(url,this.updateInstance)
+					  .then(function (response) {
+					    console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '新增失败',message: response.data.message,offset: 100});
+					    	_this.$data.updatingHkBasStock = false;
+					    }else{
+						    _this.$notify.info({title: '新增成功',message: '新增成功',offset: 100});
+						    _this.$data.updatingHkBasStock = false;
+						    _this.$data.showDialog = false;
+					    }
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '新增数据失败，请联系系统管理员',offset: 100});
+					  });
+				}else{
+					var url = '/HkBasStock/update';
+					axios.put(url,this.updateInstance)
+					  .then(function (response) {
+					    console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '更新失败',message: response.data.message,offset: 100});
+					    	_this.$data.updatingHkBasStock = false;
+					    }else{
+						    _this.$notify.info({title: '更新成功',message: '更新成功',offset: 100});
+						    _this.$data.updatingHkBasStock = false;
+						    _this.$data.showDialog = false;
+					    }
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '更新数据失败，请联系系统管理员',offset: 100});
+					  });
+				}
+	          } else {
+	            console.log('error submit!!');
+	            return false;
+	          }
+	        });
+
+		},
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryHkBasStock();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryHkBasStock();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryHkBasStock();
+    	},
+        queryHkBasStock() {
+          _this = this;
+
+          var url = '/HkBasStock/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+          //restRequest.addOrderBy("columnName??? desc");
+
+          if(this.expandCondition==true){
+	          //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	          restRequest.addCondition("companyid",this.queryCondition.companyid,"eq");
+	          restRequest.addCondition("stockid",this.queryCondition.stockid,"eq");
+	          restRequest.addCondition("stockcode",this.queryCondition.stockcode,"eq");
+	          restRequest.addCondition("stockname",this.queryCondition.stockname,"eq");
+	          restRequest.addCondition("operationareaid",this.queryCondition.operationareaid,"eq");
+	          restRequest.addCondition("areaid",this.queryCondition.areaid,"eq");
+	          restRequest.addCondition("dakid",this.queryCondition.dakid,"eq");
+	          restRequest.addCondition("invstruid",this.queryCondition.invstruid,"eq");
+	          restRequest.addCondition("address",this.queryCondition.address,"eq");
+	          restRequest.addCondition("telphone",this.queryCondition.telphone,"eq");
+	          restRequest.addCondition("fax",this.queryCondition.fax,"eq");
+	          restRequest.addCondition("manage",this.queryCondition.manage,"eq");
+	          restRequest.addCondition("area",this.queryCondition.area,"eq");
+	          restRequest.addCondition("unitid",this.queryCondition.unitid,"eq");
+	          restRequest.addCondition("stockproperty",this.queryCondition.stockproperty,"eq");
+	          restRequest.addCondition("stockpropertyid",this.queryCondition.stockpropertyid,"eq");
+	          restRequest.addCondition("stocktype",this.queryCondition.stocktype,"eq");
+	          restRequest.addCondition("stocktypeid",this.queryCondition.stocktypeid,"eq");
+	          restRequest.addCondition("checkflag",this.queryCondition.checkflag,"eq");
+	          restRequest.addCondition("isobject",this.queryCondition.isobject,"eq");
+	          restRequest.addCondition("costcalc",this.queryCondition.costcalc,"eq");
+	          restRequest.addCondition("isstorer",this.queryCondition.isstorer,"eq");
+	          restRequest.addCondition("remark",this.queryCondition.remark,"eq");
+	          restRequest.addCondition("allowused",this.queryCondition.allowused,"eq");
+	          restRequest.addCondition("modifydtm",this.queryCondition.modifydtm,"eq");
+	          restRequest.addCondition("bigshopbatchmovedate",this.queryCondition.bigshopbatchmovedate,"eq");
+	          restRequest.addCondition("bigshopbatchmovetime",this.queryCondition.bigshopbatchmovetime,"eq");
+	          restRequest.addCondition("initaccountdate",this.queryCondition.initaccountdate,"eq");
+	          restRequest.addCondition("initflag",this.queryCondition.initflag,"eq");
+	          restRequest.addCondition("qxflag",this.queryCondition.qxflag,"eq");
+	          restRequest.addCondition("vendcustid",this.queryCondition.vendcustid,"eq");
+	          restRequest.addCondition("initstorerflag",this.queryCondition.initstorerflag,"eq");
+	          restRequest.addCondition("isfreeze",this.queryCondition.isfreeze,"eq");
+	          restRequest.addCondition("enabledstate",this.queryCondition.enabledstate,"eq");
+	          restRequest.addCondition("retailpriceprojid",this.queryCondition.retailpriceprojid,"eq");
+	          restRequest.addCondition("departmentid",this.queryCondition.departmentid,"eq");
+	          restRequest.addCondition("lan",this.queryCondition.lan,"eq");
+	          restRequest.addCondition("cardcompanyno",this.queryCondition.cardcompanyno,"eq");
+	          restRequest.addCondition("benefitbelongid",this.queryCondition.benefitbelongid,"eq");
+	          restRequest.addCondition("mobilephone",this.queryCondition.mobilephone,"eq");
+	          restRequest.addCondition("email",this.queryCondition.email,"eq");
+	          restRequest.addCondition("iswmsstorer",this.queryCondition.iswmsstorer,"eq");
+	          restRequest.addCondition("boxpickin",this.queryCondition.boxpickin,"eq");
+	          restRequest.addCondition("hadtoin",this.queryCondition.hadtoin,"eq");
+	          restRequest.addCondition("isvendmatstock",this.queryCondition.isvendmatstock,"eq");
+          }else{
+        	  restRequest.addCondition(this.searchColumn,this.searchValue,"eq");
+          }
+
+          this.$data.queryingHkBasStock = true;
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+              console.log(response);
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.queryingHkBasStock = false;
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.queryingHkBasStock = false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  		clickExportBtn(){
+		          _this = this;
+		          var url = '/HkBasStock/export';
+
+		          var restRequest = new URRestRequest();
+
+          //可以指定排序字段
+          //restRequest.addOrderBy("columnName??? desc");
+
+          if(this.expandCondition==true){
+	          //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	          restRequest.addCondition("companyid",this.queryCondition.companyid,"eq");
+	          restRequest.addCondition("stockid",this.queryCondition.stockid,"eq");
+	          restRequest.addCondition("stockcode",this.queryCondition.stockcode,"eq");
+	          restRequest.addCondition("stockname",this.queryCondition.stockname,"eq");
+	          restRequest.addCondition("operationareaid",this.queryCondition.operationareaid,"eq");
+	          restRequest.addCondition("areaid",this.queryCondition.areaid,"eq");
+	          restRequest.addCondition("dakid",this.queryCondition.dakid,"eq");
+	          restRequest.addCondition("invstruid",this.queryCondition.invstruid,"eq");
+	          restRequest.addCondition("address",this.queryCondition.address,"eq");
+	          restRequest.addCondition("telphone",this.queryCondition.telphone,"eq");
+	          restRequest.addCondition("fax",this.queryCondition.fax,"eq");
+	          restRequest.addCondition("manage",this.queryCondition.manage,"eq");
+	          restRequest.addCondition("area",this.queryCondition.area,"eq");
+	          restRequest.addCondition("unitid",this.queryCondition.unitid,"eq");
+	          restRequest.addCondition("stockproperty",this.queryCondition.stockproperty,"eq");
+	          restRequest.addCondition("stockpropertyid",this.queryCondition.stockpropertyid,"eq");
+	          restRequest.addCondition("stocktype",this.queryCondition.stocktype,"eq");
+	          restRequest.addCondition("stocktypeid",this.queryCondition.stocktypeid,"eq");
+	          restRequest.addCondition("checkflag",this.queryCondition.checkflag,"eq");
+	          restRequest.addCondition("isobject",this.queryCondition.isobject,"eq");
+	          restRequest.addCondition("costcalc",this.queryCondition.costcalc,"eq");
+	          restRequest.addCondition("isstorer",this.queryCondition.isstorer,"eq");
+	          restRequest.addCondition("remark",this.queryCondition.remark,"eq");
+	          restRequest.addCondition("allowused",this.queryCondition.allowused,"eq");
+	          restRequest.addCondition("modifydtm",this.queryCondition.modifydtm,"eq");
+	          restRequest.addCondition("bigshopbatchmovedate",this.queryCondition.bigshopbatchmovedate,"eq");
+	          restRequest.addCondition("bigshopbatchmovetime",this.queryCondition.bigshopbatchmovetime,"eq");
+	          restRequest.addCondition("initaccountdate",this.queryCondition.initaccountdate,"eq");
+	          restRequest.addCondition("initflag",this.queryCondition.initflag,"eq");
+	          restRequest.addCondition("qxflag",this.queryCondition.qxflag,"eq");
+	          restRequest.addCondition("vendcustid",this.queryCondition.vendcustid,"eq");
+	          restRequest.addCondition("initstorerflag",this.queryCondition.initstorerflag,"eq");
+	          restRequest.addCondition("isfreeze",this.queryCondition.isfreeze,"eq");
+	          restRequest.addCondition("enabledstate",this.queryCondition.enabledstate,"eq");
+	          restRequest.addCondition("retailpriceprojid",this.queryCondition.retailpriceprojid,"eq");
+	          restRequest.addCondition("departmentid",this.queryCondition.departmentid,"eq");
+	          restRequest.addCondition("lan",this.queryCondition.lan,"eq");
+	          restRequest.addCondition("cardcompanyno",this.queryCondition.cardcompanyno,"eq");
+	          restRequest.addCondition("benefitbelongid",this.queryCondition.benefitbelongid,"eq");
+	          restRequest.addCondition("mobilephone",this.queryCondition.mobilephone,"eq");
+	          restRequest.addCondition("email",this.queryCondition.email,"eq");
+	          restRequest.addCondition("iswmsstorer",this.queryCondition.iswmsstorer,"eq");
+	          restRequest.addCondition("boxpickin",this.queryCondition.boxpickin,"eq");
+	          restRequest.addCondition("hadtoin",this.queryCondition.hadtoin,"eq");
+	          restRequest.addCondition("isvendmatstock",this.queryCondition.isvendmatstock,"eq");
+          }else{
+        	  restRequest.addCondition(this.searchColumn,this.searchValue,"eq");
+          }
+
+		          this.$data.exportingFile = true;
+
+		          axios.post(url,restRequest.getRequestData())
+		            .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+					    	_this.$data.exportingFile = false;
+					    }else{
+			              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+			              _this.$data.exportingFile = false;
+			              downloadFile(downloadLink);
+					    }
+
+		            })
+		            .catch(function (error) {
+		              console.log(error);
+		              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+		            });
+			},
+          clickResetBtn() {
+            for(var key in this.queryCondition){
+            	this.queryCondition[key] = "";
+            }
+          }
+        }
+    })
+    /*]]>*/
+  </script>
+</html>

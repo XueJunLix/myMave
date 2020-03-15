@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('过程数据')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="display: none;" v-loading="loading" :element-loading-text="loadText" v-show="isLoad">
+<Drawer  title="查询面板" v-model="expandCondition" width="50%">
+	<el-row>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">年份</div>
+	  <el-date-picker v-model="queryCondition.year" type="year" value-format="yyyy" placeholder="选择年份" style="width: 100%;"></el-date-picker>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">季节</div>
+	  <el-select  v-model="queryCondition.season"  placeholder="请选择季节"   
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in seasonItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">月份</div>
+	  <el-select  v-model="queryCondition.month"  placeholder="请选择月份"   
+								   align="left"  size="small" :clearable="true"  style="width: 100%;">
+								   	<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+								          :label="item" :value="item"></el-option>
+				</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+	  	  <el-col :span="12">
+	  <div class="ur-stack-label">数据类型</div>
+	  <el-select  v-model="queryCondition.dataType"  placeholder="请选择数据类型" v-on:change="changeDataType"
+								   align="left"  size="small" :clearable="true"  style="width: 100%;">
+								           <el-option v-for="(item,key) in dataTypeItems" :key="key" align="left" 
+								           :label="item" :value="key"></el-option>
+				</el-select>
+	  </el-col>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">品牌</div>
+	  <el-select  v-model="queryCondition.brand"  placeholder="请选择品牌"   
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in brandItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  
+	</el-row>
+	<el-row v-if="showQueryRangeValue">
+	<el-col :span="24" >
+	  <div class="ur-stack-label">{{selectRangeValueName}}</div>
+	   <el-select  v-model="queryCondition.rangeValue"  placeholder="请选择"   filterable="true" :multiple="true"
+								   align="left"  size="small" :clearable="true"  style="width: 100%;">
+								   	<el-option v-for="(item,key) in rangeValueItems" :key="key" align="left" 
+								           :label="item" :value="key"></el-option>
+				</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+	 <el-col :span="12">
+	  <div class="ur-stack-label">系列</div>
+	   <el-select  v-model="queryCondition.serial"  placeholder="请选择系列"   filterable="true"
+							   align="left"  size="small" :clearable="true" v-on:change="changeSerial"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">原系列</div>
+	  <el-select  v-model="queryCondition.originalSerial"  placeholder="请选择原系列"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">风格</div>
+			<el-select  v-model="queryCondition.style"  placeholder="请选择风格"   
+							   align="left"  size="small" :clearable="true"  :multiple="true" style="width: 100%;">
+							   	<el-option v-for="(item,index) in styleItems" :key="index" align="left"
+							          :label="item.svalue" :value="item.skey"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">商品层</div>
+	  <el-select  v-model="queryCondition.goodsLevel"  placeholder="请选择商品层"    :multiple="true" filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in goodsLevelItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+     <el-col :span="12">
+	  <div class="ur-stack-label">品类</div>
+	  <el-select  v-model="queryCondition.category"  placeholder="请选择品类"  :multiple="true" v-on:change="changeCategory" filterable="true"
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in categoryItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">中品类</div>
+	  <el-select  v-model="queryCondition.subCategory"  placeholder="请选择品类"  :multiple="true" filterable="true"
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,index)  in subCategoryItems" :key="index" align="left"
+							          :label="item.svalue" :value="item.skey"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>
+	 <div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+</Drawer>
+
+<Drawer  title="查询面板" v-model="expandCondition1" width="50%">
+ <el-row>
+  <el-col :span="12">
+  <div class="ur-stack-label">年份</div>
+  <el-date-picker v-model="queryCondition1.year" type="year" value-format="yyyy" placeholder="选择年份"  style="width: 100%;"></el-date-picker>
+  </el-col>
+  <el-col :span="12">
+  <div class="ur-stack-label">月份</div>
+  <el-select  v-model="queryCondition1.month"  placeholder="请选择月份"   
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+							          :label="item" :value="item"></el-option>
+			</el-select>
+  </el-col>
+  <el-col :span="12">
+  <div class="ur-stack-label">系列</div>
+  <el-select  v-model="queryCondition1.serial"  placeholder="请选择系列"   
+							   align="left"  size="small" :clearable="true" v-on:change="changeSerial"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+  </el-col>
+  <el-col :span="12">
+  <div class="ur-stack-label">原系列</div>
+  <el-select  v-model="queryCondition1.originalSerial"  placeholder="请选择原系列"   
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+  </el-col>
+ </el-row>
+  <el-row>
+  
+  <el-col :span="12">
+  <div class="ur-stack-label">风格</div>
+  <el-select  v-model="queryCondition1.style"  placeholder="请选择风格"   :multiple="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,index) in styleItems" :key="index" align="left"
+							          :label="item.svalue" :value="item.skey"></el-option>
+			</el-select>
+  </el-col>
+  <el-col :span="12">
+  <div class="ur-stack-label">商品层</div>
+  <el-select  v-model="queryCondition1.goodsLevel"  placeholder="请选择商品层"  :multiple="true" 
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in goodsLevelItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			</el-select>
+  </el-col>
+  <el-col :span="12">
+  <div class="ur-stack-label">品类</div>
+  <el-select  v-model="queryCondition1.category"  placeholder="请选择品类"  :multiple="true"   v-on:change="changeCategory" 
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in categoryItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+  </el-col>
+   <el-col :span="12">
+  <div class="ur-stack-label">中品类</div>
+  <el-select  v-model="queryCondition1.subCategory"  placeholder="请选择中品类"  :multiple="true" 
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							    <el-option v-for="(item,index) in subCategoryItems" :key="index" align="left" 
+							          :label="item.svalue" :value="item.skey"></el-option>
+			</el-select>
+  </el-col>
+ </el-row>
+  <div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+</Drawer> 
+
+
+
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+<el-tabs type="border-card" v-on:tab-click="changeTab">
+  <el-tab-pane>
+  <span slot="label"><i class="fa fa-table" aria-hidden="true"></i> 过程数据</span>
+   <nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition"></el-switch>
+	</el-tooltip>
+</nav>
+<nav class="navbar">
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+		<el-pagination :page-size="20" :pager-count="4" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next">
+	</el-pagination>
+</nav>
+
+        <el-table id="data_table_0" stripe="" border="true"  :data="this.queryResult.data" :highlight-current-row="true" :height="this.tableHeight">
+          <el-table-column fixed="left" property="dataTypeName" label="数据类型" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column fixed="left" property="year" label="年" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column fixed="left" property="seasonName" label="季节" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column fixed="left" property="month" label="月" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column fixed="left" v-if="showRangeValueColumn" property="rangeValueName" :label="selectRangeValueName" min-width="200" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="brandName" label="品牌" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="serialName" label="系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="originalSerialName" label="原系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="styleName" label="风格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="goodsLevelName" label="商品层" min-width="70" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="categoryName" label="品类" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="subCategoryName" label="中品类" min-width="80" :show-overflow-tooltip="true"></el-table-column>   
+          <el-table-column v-for="(item, index) in this.valueColumns" :property="item.valueField" :label="item.valueFieldName" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTime" label="创建时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createByName" label="创建者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+         </el-table>
+   </el-tab-pane>
+  <el-tab-pane><span slot="label"><i class="fa fa-table" aria-hidden="true"></i> 平均单价SKU过程数据</span>
+   <nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition1"></el-switch>
+	</el-tooltip>
+</nav>
+<nav class="navbar">
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickExportBtn1"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+	<el-pagination :page-size="20" :pager-count="4" :total="queryResult1.totalRecordNum" :current-page="queryResult1.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next">
+	</el-pagination>
+</nav>
+
+        <el-table id="data_table_1"  border="true" stripe="" :data="this.queryResult1.data" :highlight-current-row="true" :height="this.tableHeight">
+          <el-table-column property="year" label="年份" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="month" label="月份" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="goodsNo" label="款号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="colorName" label="色号" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="skuNo" label="货号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="brandName" label="品牌" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="serialName" label="系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="originalSerialName" label="原系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="styleName" label="风格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="goodsLevelName" label="商品层" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="categoryName" label="品类" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="subCategoryName" label="中品类" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="tagPrice" label="吊牌价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="distributionQuantity" label="配货数" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="totalWarehousesQuantity" label="累计入库数" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTime" label="创建时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createBy" label="创建者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+  </el-tab-pane>
+</el-tabs>
+	</div>
+</div>
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  year:"",
+        	  season:"",
+        	  month:"",
+        	  dataType:"unit_price_process_data",
+        	  rangeType:"",
+        	  rangeValue:[],
+        	  brand:"",
+        	  serial:"",
+        	  originalSerial:"",
+        	  style:[],
+        	  goodsLevel:[],
+        	  category:[],
+        	  subCategory:[],
+          },
+          queryCondition1:{
+        	  year:"",
+        	  month:"",
+        	  serial:"",
+        	  originalSerial:"",
+        	  style:[],
+        	  goodsLevel:[],
+        	  category:[],
+        	  subCategory:[],
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          queryResult1:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          expandText:"展开查询面板",
+          expandCondition:false,
+          expandCondition1:false,
+          tableHeight:500,
+          monthItems:[1,2,3,4,5,6,7,8,9,10,11,12],
+          seasonItems:[[${seasonItems}]],
+          serialItems:[[${serialItems}]],
+          allStyleItems:[[${styleItems}]],
+          styleItems:[],
+          styleItems1:[],
+          goodsLevelItems:[[${goodsLevelItems}]],
+          categoryItems:[[${categoryItems}]],
+          allSubCategoryItems:[[${subCategoryItems}]],
+          brandItems:[[${brandItems}]],
+          dataTypeItems:{},
+          dataTypeMap:[[${dataTypeMap}]],
+          //allRangeTypeItems:[[${allRangeTypeItems}]],
+          dataTypeAndRangeValueMappingMapping:[[${dataTypeAndRangeValueMappingMapping}]],
+          allValueColumns:[[${allValueColumns}]],
+          subCategoryItems:[],
+          subCategoryItems1:[],
+          activeTabIndex:0,
+          loading:false,
+          loadText:"查询数据中。。。",
+          importing:false,
+          valueColumns:{},
+          selectRangeValueName:"店铺",
+          rangeValueItems:[],
+          selectRangeType:"planShopNo",
+          showQueryRangeValue:true,
+          showRangeValueColumn:true,
+        }
+      },
+      created: function() {
+    	  this.isLoad = true;
+    	  this_let = this;
+    	  this.queryCondition.year=new Date();
+    	  if(this.dataTypeMap){
+    		  for(var item in this.dataTypeMap){
+    			  this.dataTypeItems[item]=this.dataTypeMap[item].dataTypeName;
+              }
+    	  }
+    	  this.changeDataType();
+    	  this.initTableTitle();
+      },
+      methods: {
+    	handleCurrentChange(val){
+    		if(this.activeTabIndex==0){
+    			this.queryResult.currPage = val;
+        		this.queryPlanProcessData();
+    		}else if(this.activeTabIndex==1){
+    			this.queryResult1.currPage = val;
+        		this.queryAveragePriceSku();
+    		}
+    	},
+    	handleSizeChange(val){
+    		if(this.activeTabIndex==0){
+    			this.queryResult.pageSize = val;
+    			this.queryPlanProcessData();
+    		}else if(this.activeTabIndex==1){
+    			this.queryResult1.pageSize = val;
+    			this.queryAveragePriceSku();
+    		}
+    	},
+    	clickSearchBtn(){
+    		if(this.activeTabIndex==0){
+    			this.queryResult.currPage = 1;
+    			this.queryPlanProcessData();
+    		}else if(this.activeTabIndex==1){
+    			this.queryResult1.currPage = 1;
+    			this.queryAveragePriceSku();
+    		}
+    		
+    	},
+    	queryPlanProcessData(){
+    		_this = this;
+    	    if(!this.queryCondition.dataType){
+    	    	this.$notify({title: '警告',message: "请选择数据类型！",offset: 100,type:'warning'});
+    			return;
+    	    }
+            var url = '/PlanProcessData/search';
+            var restRequest = new URRestRequest();
+            var page = this.queryResult.currPage;
+            var pageSize=this.queryResult.pageSize;
+            
+            if(page==null){
+          	  page = 1;
+            }
+            if(pageSize==null){
+          	  pageSize=20;
+            }
+            restRequest.setCurrPage(page);
+            restRequest.setPageSize(pageSize);
+	  	    restRequest.addCondition("year",this.queryCondition.year,"eq");
+	  	    restRequest.addCondition("season",this.queryCondition.season,"eq");
+	  	    restRequest.addCondition("month",this.queryCondition.month,"eq");
+	  	    restRequest.addCondition("dataType",this.queryCondition.dataType,"eq");
+	  	    restRequest.addCondition("rangeValue",this.queryCondition.rangeValue.join(","),"in");
+	  	    restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+	  	    restRequest.addCondition("originalSerial",this.queryCondition.originalSerial,"eq");
+	  	    restRequest.addCondition("style",this.queryCondition.style.join(","),"in");
+	  	    restRequest.addCondition("goodsLevel",this.queryCondition.goodsLevel.join(","),"in");
+	  	    restRequest.addCondition("category",this.queryCondition.category.join(","),"in");
+	  	    restRequest.addCondition("subCategory",this.queryCondition.subCategory.join(","),"in");
+            
+
+            this.loading = true;
+            this.loadText = "查询数据中...";
+            this.initTableTitle();
+            axios.post(url,restRequest.getRequestData())
+              .then(function (response) {
+  			    if(response.data.code==null||response.data.code!=0){
+  				  	_this.$data.queryResult = [];
+  			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});			    	
+  			    	_this.$data.loading = false;
+  			    }else{
+  			    	  if(!response.data.data){
+  					  	_this.$data.queryResult = [];
+  			    		_this.$notify({title: '警告',message: "没有满足查询条件的数据！",offset: 100,type:'warning'});
+  			    	  }else{
+  					    _this.$data.queryResult= response.data; 
+  			    	  }
+  			          
+  			    	  _this.expandCondition=false;
+  	                  _this.$data.loading = false;
+  			    }
+              })
+              .catch(function (error) {
+                console.log(error);
+                _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+              });
+    	},
+    	queryAveragePriceSku() {
+          _this = this;
+    
+          var url = '/AveragePriceSkuProcessData/search';
+          var restRequest = new URRestRequest();
+          var page = this.queryResult1.currPage;
+          var pageSize=this.queryResult1.pageSize;
+          
+          if(page==null){
+        	  page = 1;
+          }
+          if(pageSize==null){
+        	  pageSize=20;
+          }
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(pageSize);
+	      restRequest.addCondition("year",this.queryCondition1.year,"eq");
+	      restRequest.addCondition("month",this.queryCondition1.month,"eq");
+	      restRequest.addCondition("serial",this.queryCondition1.serial,"eq");
+	      restRequest.addCondition("originalSerial",this.queryCondition1.originalSerial,"eq");
+	      restRequest.addCondition("style",this.queryCondition1.style.join(","),"in");
+	      restRequest.addCondition("goodsLevel",this.queryCondition1.goodsLevel.join(","),"in");
+	      restRequest.addCondition("category",this.queryCondition1.category.join(","),"in");
+	      restRequest.addCondition("subCategory",this.queryCondition1.subCategory.join(","),"in");
+          
+
+          this.loading = true;
+          this.loadText = "查询数据中...";
+          
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+			    if(response.data.code==null||response.data.code!=0){
+				  	_this.$data.queryResult1 = [];
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});			    	
+			    	_this.$data.loading = false;
+			    }else{
+			    	  if(!response.data.data){
+					  	_this.$data.queryResult1 = [];
+			    		_this.$notify({title: '警告',message: "没有满足查询条件的数据！",offset: 100,type:'warning'});
+			    	  }else{
+					    _this.$data.queryResult1 = response.data; 
+			    	  }
+			          
+			    	  _this.expandCondition1=false;
+	                  _this.$data.loading = false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+          clickExportBtn(){
+        	  if(!this.queryCondition.year){
+        		  this.$notify({title: '警告',message: "请选择年份！",offset: 100,type:'warning'});
+        		  return;
+        	  }
+        	  if(!this.queryCondition.month){
+        		  this.$notify({title: '警告',message: "请选择月份！",offset: 100,type:'warning'});
+        		  return;
+        	  }
+	          if(!this.queryResult.data){
+        		  this.$notify({title: '警告',message: "请先查询出数据再导出！",offset: 100,type:'warning'});
+        		  return;
+        	  }
+	          
+		          _this = this;
+		          var url = '/PlanProcessData/export/'+this.queryCondition.dataType;
+		          var restRequest = new URRestRequest();
+
+
+		          restRequest.addCondition("year",this.queryCondition.year,"eq");
+			  	  restRequest.addCondition("season",this.queryCondition.season,"eq");
+			  	  restRequest.addCondition("month",this.queryCondition.month,"eq");
+			  	  restRequest.addCondition("dataType",this.queryCondition.dataType,"eq");
+			  	  restRequest.addCondition("rangeValue",this.queryCondition.rangeValue.join(","),"in");
+			  	  restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+			  	  restRequest.addCondition("originalSerial",this.queryCondition.originalSerial,"eq");
+			  	  restRequest.addCondition("style",this.queryCondition.style.join(","),"in");
+			  	  restRequest.addCondition("goodsLevel",this.queryCondition.goodsLevel.join(","),"in");
+			  	  restRequest.addCondition("category",this.queryCondition.category.join(","),"in");
+			  	  restRequest.addCondition("subCategory",this.queryCondition.subCategory.join(","),"in");
+
+		          this.$data.loading = true;
+		          this.$data.loadText = "导出数据中...";
+
+		          axios.post(url,restRequest.getRequestData())
+		            .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+					    	_this.$data.loading = false;
+					    }else{
+			              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+			              _this.$data.loading = false;
+			              downloadFile(downloadLink);
+					    }
+
+		            })
+		            .catch(function (error) {
+		              console.log(error);
+		              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+		            });
+			},
+	  		clickExportBtn1(){
+        	  if(!this.queryCondition1.year){
+        		  this.$notify({title: '警告',message: "请选择年份！",offset: 100,type:'warning'});
+        		  return;
+        	  }
+        	  if(!this.queryCondition1.month){
+        		  this.$notify({title: '警告',message: "请选择月份！",offset: 100,type:'warning'});
+        		  return;
+        	  }
+	          if(!this.queryResult1.data){
+        		  this.$notify({title: '警告',message: "请先查询出数据再导出！",offset: 100,type:'warning'});
+        		  return;
+        	  }
+	          
+		          _this = this;
+		          var url = '/AveragePriceSkuProcessData/export';
+		          var restRequest = new URRestRequest();
+
+
+		          restRequest.addCondition("year",this.queryCondition1.year,"eq");
+		          restRequest.addCondition("month",this.queryCondition1.month,"eq");
+		          restRequest.addCondition("serial",this.queryCondition1.serial,"eq");
+		          restRequest.addCondition("originalSerial",this.queryCondition1.originalSerial,"eq");
+		          restRequest.addCondition("style",this.queryCondition1.style.join(","),"in");
+		          restRequest.addCondition("goodsLevel",this.queryCondition1.goodsLevel.join(","),"in");
+		          restRequest.addCondition("category",this.queryCondition1.category.join(","),"in");
+		          restRequest.addCondition("subCategory",this.queryCondition1.subCategory.join(","),"in");
+
+		          this.$data.loading = true;
+		          this.$data.loadText = "导出数据中...";
+
+		          axios.post(url,restRequest.getRequestData())
+		            .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+					    	_this.$data.loading = false;
+					    }else{
+			              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+			              _this.$data.loading = false;
+			              downloadFile(downloadLink);
+					    }
+
+		            })
+		            .catch(function (error) {
+		              console.log(error);
+		              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+		            });
+			},
+          clickResetBtn() {
+				if(this.activeTabIndex==0){
+					this.queryCondition.year="";
+					this.queryCondition.season="";
+					this.queryCondition.month="";
+					this.queryCondition.dataType="";
+					this.queryCondition.rangeType=[];
+					this.queryCondition.rangeValue="";
+					this.queryCondition.brand="";
+					this.queryCondition.serial="";
+					this.queryCondition.originalSerial="";
+					this.queryCondition.style=[];
+					this.queryCondition.goodsLevel=[];
+					this.queryCondition.category=[];
+					this.queryCondition.subCategory=[];
+	    		}else if(this.activeTabIndex==1){
+	    			this.queryCondition1.year="";
+	    			this.queryCondition1.month="";
+	    			this.queryCondition1.serial="";
+	    			this.queryCondition1.originalSerial="";
+	    			this.queryCondition1.style=[];
+	    			this.queryCondition1.goodsLevel=[];
+	    			this.queryCondition1.category=[];
+	    			this.queryCondition1.subCategory=[];
+	    		}
+          },
+		  changeSerial(){			  
+        	  if(this.activeTabIndex==0){
+                	this.styleItems=[];
+                	this.queryCondition.style=[];
+                	if(this.queryCondition.serial){
+                		var serial=this.queryCondition.serial;
+                		for(var i=0;i<this.allStyleItems.length;i++){
+                			if(this.allStyleItems[i].parentKey===serial){
+                				this.styleItems.push(this.allStyleItems[i]);
+                			}
+                		}
+                	}
+              }else if(this.activeTabIndex==1){
+                	this.styleItems1=[];
+                	this.queryCondition1.style=[];
+                	if(this.queryCondition1.serial){
+                		var serial=this.queryCondition1.serial;
+                		for(var i=0;i<this.allStyleItems.length;i++){
+                			if(this.allStyleItems[i].parentKey===serial){
+                				this.styleItems1.push(this.allStyleItems[i]);
+                			}
+                		}
+                	}
+              }
+	      },changeCategory(){
+	    	  if(this.activeTabIndex==0){
+	    			this.subCategoryItems=[];
+	  	      	if(this.queryCondition.category){
+	  	      		var category = this.queryCondition.category;
+	  	          	for(var i=0;i<this.allSubCategoryItems.length;i++){
+	  	          		for(var j=0;j<category.length;j++){
+	  	          			if(category[j]===this.allSubCategoryItems[i].parentKey){
+	  	          				this.subCategoryItems.push(this.allSubCategoryItems[i]);
+	  	          			}
+	  	          		}
+	  	          	}	
+	  	      	}
+	          }else if(this.activeTabIndex==1){
+	          	this.subCategoryItems1=[];
+	  	      	if(this.queryCondition1.category){
+	  	      		var category = this.queryCondition1.category;
+	  	          	for(var i=0;i<this.allSubCategoryItems.length;i++){
+	  	          		for(var j=0;j<category.length;j++){
+	  	          			if(category[j]===this.allSubCategoryItems[i].parentKey){
+	  	          				this.subCategoryItems1.push(this.allSubCategoryItems[i]);
+	  	          			}
+	  	          		}
+	  	          	}	
+	  	      	}
+	          }
+	      },changeTab(tab, event){
+	    	  this.activeTabIndex=tab.index;
+	      },
+	      changeDataType(){
+	    	  //根据数据类型，范围类型动态显示范围值下拉框的显示及数据集
+	    	  this.queryCondition.rangeValue=[];
+	    	  if(this.queryCondition.dataType){
+	    		  this.showQueryRangeValue=false;
+	    		  if(this.dataTypeMap){
+	    			  var dataTypeBo=this.dataTypeMap[this.queryCondition.dataType];
+	    			  if(dataTypeBo){
+	    				  this.rangeValueItems=this.dataTypeAndRangeValueMappingMapping[this.queryCondition.dataType];
+				    	  if(this.rangeValueItems){	 
+				    		  this.selectRangeValueName=dataTypeBo.rangeTypeName;
+				    		  this.showQueryRangeValue=true;  	    				
+				    	  }
+	    			  }
+	    		  }
+		      }
+	      }
+	      ,initTableTitle(){
+	    	  //根据数据类型动态 初始化表头信息
+	    	  this.showRangeValueColumn=false;
+	    	  if(this.dataTypeMap){
+	    		  var dataType=this.queryCondition.dataType;
+	    		  var dataTypeBo=this.dataTypeMap[dataType];
+	    		  if(dataTypeBo){
+	    			  //value字段表头信息
+	    			  this.valueColumns=this.allValueColumns[dataType];
+	    			  if(dataTypeBo.rangeType){
+	    				  this.showRangeValueColumn=true; 
+	    				  this.selectRangeValueName=dataTypeBo.rangeTypeName;
+	    			  }	    			  
+	    		  }
+	    	  }
+	      }
+        }
+    });
+  
+    
+    $(document).ready(function(){    
+    	$(document).keydown(function (e) {
+    	    if ( e.which == 13) {	   
+    	    	if(this_let.expandCondition===true){
+    	    		this_let.clickSearchBtn();
+    	    	}else{
+    	    		this_let.expandCondition=true;
+    	    	}    	        
+    	    }
+    	});  
+    	$(window).load(function(){
+    		this_let.tableHeight =$(window).height() -$("#data_table_"+this_let.activeTabIndex).offset().top-1;
+        });
+    	
+    	$(window).resize(function(){
+    		this_let.tableHeight =$(window).height() -$("#data_table_"+this_let.activeTabIndex).offset().top-1;
+    	});    	
+    });
+    /*]]>*/
+  </script>
+</html>

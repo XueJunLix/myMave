@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="cache-control" content="no-cache"/>
+    <meta http-equiv="expires" content="0"/>
+    <title>login</title>
+
+    <!-- 引入样式 -->
+    <link rel="stylesheet" type="text/css" href="/resources/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/resources/element/index_original.css"/>
+    <link rel="stylesheet" type="text/css" href="/resources/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="/resources/css/swiper.min.css"/>
+
+
+    <link rel="stylesheet" type="text/css" href="/resources/font-awesome/css/font-awesome.min.css"/>
+
+</head>
+
+<style>
+    [v-cloak] {
+        display: none;
+    }
+
+    html, body {
+        height: 100%;
+        width: 100%;
+    }
+
+    #app {
+        height: 100%;
+        width: 100%;
+        background-image: url('/resources/images/1.jpg' , '/resources/images/2.jpg' , '/resources/images/3.jpg' , '/resources/images/4.jpg');
+
+    }
+
+    #app1 {
+        height: 100%;
+        width: 100%;
+        display: flex;
+    }
+
+    .el-carousel {
+        flex: 1;
+        width: 100%;
+    }
+
+    .el-carousel img {
+        width: 100%;
+    }
+
+    .login-container {
+        width: 400px;
+        height: 240px;
+        background: rgba(48, 49, 51, 0.4);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-top: -120px;
+        margin-left: -200px;
+        z-index: 999;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .login-container .login-tittle {
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        color: white;
+        border-bottom: 1px solid #f5f7fa;
+
+    }
+
+    .login-container .login-btn {
+        width: 100%;
+        height: 38px;
+        line-height: 60px;
+        color: white;
+        display: flex;
+        justify-content: center;
+    }
+
+
+    .login-container .login-input {
+        width: 100%;
+        height: 120px;
+        margin-top: 19px;
+    }
+
+    .el-form-item {
+        margin: 10px;
+    }
+
+    .el-input__inner {
+        border: 1px solid white;
+    }
+
+    .el-form-item__label {
+        color: white;
+        font-size: 16px !important;
+    }
+
+    .el-form-item__error {
+        color: #F56C6C;
+        font-size: 12px;
+        line-height: 1;
+        padding-top: 0px;
+        position: absolute;
+        top: 91%;
+        left: 0;
+    }
+
+    .el-form-item.is-required:not(.is-no-asterisk) .el-form-item__label-wrap > .el-form-item__label:before, .el-form-item.is-required:not(.is-no-asterisk) > .el-form-item__label:before {
+        display: none;
+    }
+</style>
+
+<body>
+
+<div id='app' v-cloak v-loading="loading2"
+     element-loading-text="加载中..."
+     element-loading-spinner="el-icon-loading"
+     element-loading-background="rgba(0, 0, 0, 0.8)">
+    <div id='app1'>
+        <div class="swiper-container" style="height: 100%;width: 100%;">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" v-for="(item,index) in dialogImageUrl" :key="index">
+                    <img :src="item" alt="" style="width: 100%;height: 100%;">
+                </div>
+            </div>
+            <div class="swiper-pagination swiper-pagination-white"></div>
+        </div>
+        <div class="login-container">
+            <div class="login-tittle">MRO2.0 登录</div>
+            <div class="login-input">
+                <el-form ref='formLoginData' :label-position="labelPosition" label-width="60px" :model="formLoginData">
+                    <el-form-item
+                            label="账号"
+                            style="color: white;"
+                            prop="username"
+                            :rules="[{required: true, message: '账号不能为空', trigger:['change','blur'] }]"
+                    >
+                        <el-input @keyup.enter.native="keyEnterPress"
+                                  v-model.trim="formLoginData.username"
+                                  prefix-icon="">
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item label="密码" style="color: white;" prop="password"
+                                  :rules="[{required: true, message: '密码不能为空', trigger:['change','blur']},{}]">
+                        <el-input @keyup.enter.native="keyEnterPress"
+                                  v-model.trim="formLoginData.password" type="password"></el-input>
+                    </el-form-item>
+
+                </el-form>
+            </div>
+            <div class="login-btn">
+                <el-button type="primary" @click="submitForm('formLoginData')">登录</el-button>
+                <el-button @click="resetForm('formLoginData')">重置</el-button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+<div>
+
+    <!-- 引入 Vue -->
+    <!-- <script src="/resources/js/vue.js"></script> -->
+    <script src="/resources/js/vue.min.js"></script>
+    <!-- 引入element组件库 -->
+    <script src="/resources/js/element/lib/index.min.js"></script>
+
+    <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+    <script src="/resources/js/axios.min.js"></script>
+    <script src="/resources/js/es6-promise.auto.min.js"></script>
+
+    <script type='text/javascript' src="/resources/js/jquery.1.4.2-min.js"></script>
+
+    <!-- 引入 自定义 -->
+    <script src="/resources/default.js"></script>
+
+    <!--<script src="/resources/js/jquery-ui.js"></script>-->
+    <script src="/resources/ur_dialog.js"></script>
+    <script src="/resources/js/swiper.min.js"></script>
+    <!-- element 多语言 -->
+    <!--   <script src="/resources/js/vue-i18n.js"></script>
+    <script src="/resources/js/locale/zh-CN.js"></script>
+    <script src="/resources/js/locale/en.js"></script> -->
+
+    <!-- iview -->
+    <script type='text/javascript' src="/resources/js/iview.min.js"></script>
+
+    <div id="dialog" style="display: none;">
+        <iframe id="dialogIframe" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"
+                allowtransparency="yes" src="" style=""></iframe>
+    </div>
+
+</div>
+<script>
+    /*<![CDATA[*/
+
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                FormUrl: '',        //表单提交地址
+                labelPosition: 'right',     //表单排列方式
+                formLoginData: {
+                    username: '',
+                    password: ''
+                },
+                dialogImageUrl: ['/resources/images/1.jpg', '/resources/images/2.jpg', '/resources/images/3.jpg'],
+                loading2: false
+            }
+        },
+        created: function () {
+            //用于在iframe中会话过期后跳转到顶部页面展示登录页面，而不是在iframe中显示登录页面
+            if (window != top) {
+                top.location.href = window.location.href;
+            }
+        },
+        mounted() {
+            var swiper = new Swiper('.swiper-container', {
+                autoplay: true,
+                speed: 3000,
+                spaceBetween: 2000,
+                effect: 'fade',
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: false,
+                },
+                fadeEffect: {
+                    crossFade: true,
+                }
+            });
+        },
+
+        methods: {
+            keyEnterPress() {
+                this.submitForm('formLoginData');
+            },
+
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            submitForm(formName) {
+                this.loading2 = true;
+                this.$refs[formName].validate((valid) = > {
+                    if(valid) {
+                        let data = new FormData();
+                        data.append("username", this.formLoginData.username);
+                        data.append("password", this.formLoginData.password);
+
+                        axios.post('/login', data)
+                            .then(response = > {
+                            if(response.data.errcode == 'ok'
+                    )
+                        {
+                            this.$message.success(response.data.errmsg);
+                            window.open('main/index', '_self');
+                        }
+                    else
+                        if (response.data.errcode == 'no') {
+                            this.$message.error(response.data.errmsg);
+                            this.formLoginData.password = '';
+                            this.formLoginData.username = '';
+                        }
+                    })
+                    .
+                        catch(error = > {
+                            this.loading2 = false;
+                        this.$message.error('登录失败,请重新输入!');
+                        this.formLoginData.password = '';
+                        this.formLoginData.username = '';
+
+                    })
+                        ;
+                    } else {
+                        this.loading2 = false;
+                console.log('error submit!!');
+                return false;
+            }
+            })
+                ;
+            }
+        }
+    })
+    /*]]>*/
+</script>
+
+</html>

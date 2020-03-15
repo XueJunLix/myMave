@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head th:include="common/common_head :: commonHeader('角色管理')"></head>
+<style>
+    #app{
+        /*min-width: 1200px;*/
+        /*width: 1200px;*/
+    }
+.article_tit{
+
+    display: block;
+    /* height: 40px; */
+    line-height: 40px;
+    background: #fbfbfb;
+    padding-left: 10px;
+    font-weight: bolder;
+    /* margin: 5px 0; */
+    border-bottom: 1px dashed #ececec;
+    margin-bottom: 10px;
+}
+    .card-title{
+        padding: 10px ;
+        padding-bottom:0px;
+    }
+    [v-cloak]{
+        display: none;
+    }
+    .itembox{
+        border: 1px solid #e4e4e4;
+        padding-top: 10px;
+
+    }
+    .usercheck{
+        margin: 10px;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    .el-checkbox{
+        margin: 5px;
+        background: white;
+    }
+    .el-checkbox.is-bordered.el-checkbox--medium{
+        margin-left: 10px;
+    }
+    .el-checkbox.is-bordered+.el-checkbox.is-bordered{
+        margin-left: 5px;
+    }
+
+
+</style>
+<body class="article_bg">
+
+<div id="app"  style="padding: 10px">
+	<p class="article_tit">角色管理</p>
+	<div class="clearfix"></div>
+    <div class="card-title">
+        <el-button v-on:click="clickSaveBtn" plain type="primary"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存
+        </el-button>
+        <el-button v-on:click="clickCancelBtn" plain type="info"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消
+        </el-button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <el-form label-width="80px" :model="adminRoleInfo" label-suffix=":" :rules="rules" ref="newJobForm">
+                    	<el-row class="itembox">
+	                        <el-row>
+	                            <el-col :span="5">
+	                                <el-form-item label="角色编码" prop="roleCode" label-width="100px">
+	                                    <el-input v-model="adminRoleInfo.roleCode" placeholder="角色编码"
+	                                              ></el-input>
+	                                </el-form-item>
+	                            </el-col>
+	                        </el-row>
+	                        <el-row>
+	                            <el-col :span="5">
+	                                <el-form-item label="角色名称" prop="roleName" label-width="100px">
+	                                    <el-input v-model="adminRoleInfo.roleName" placeholder="角色名称"
+	                                              ></el-input>
+	                                </el-form-item>
+	                            </el-col>
+	                        </el-row>
+	                        <el-row>
+	                            <el-col :span="2">
+	                                <el-form-item label="状态" prop="status">
+	                                    <el-checkbox v-model="adminRoleInfo.status" :true-label=1
+	                                                 :false-label=0 :checked="true"></el-checkbox>
+	                                </el-form-item>
+	                            </el-col>
+	                        </el-row>
+	                    </el-row>
+                    </el-form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                adminRoleInfo:[[${adminRoleInfo}]],
+                isUpdate:[[${isUpdate}]],
+                rules: {
+                    roleName: [
+                        {required: true, message: '该字段不能为空', trigger: 'blur'}
+                    ],
+                    roleCode: [
+                        {required: true, message: '该字段不能为空', trigger: 'blur'}
+                    ]
+                }
+            }
+        },
+        created: function () {
+        },
+        methods: {
+            clickCancelBtn() {
+                window.history.back(-1);
+            },
+            clickSaveBtn() {
+                this.$refs["newJobForm"].validate((valid) => {
+                    if (valid) {
+                    	//alert(this.adminRoleInfo.roleCode + "====:" + this.adminRoleInfo.roleName + "====" + this.adminRoleInfo.status);
+                    	_this = this;
+                        //this.adminRoleInfo.privilegeKeyList = _this.$refs.tree.getCheckedKeys();
+                        var url = "/role/InsertAdminRoleInfo";
+                        axios.post(url, this.adminRoleInfo)
+                            .then(function (response) {
+                                if (response.data.code == null || response.data.code != 0) {
+                                    _this.$notify.warning({title: '提示!', message: response.data.message, offset: 100});
+                                } else {
+                                    alert("操作成功!");
+                                    window.history.back(-1);
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                                _this.$notify.error({title: '错误', message: '操作数据失败，请联系系统管理员', offset: 100});
+                            });
+
+                    } else {
+                        console.log("红色*号内容不能为空!");
+                    }
+                });
+            }
+        }
+    })
+    /*]]>*/
+</script>
+</html>

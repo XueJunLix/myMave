@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('成衣图片')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="padding-top: 5px;"
+>
+
+<!--<nav class="navbar" style="background-color:#eef1f6; height: 30px;line-height: 30px;">-->
+   <!--<el-tooltip :content="expandText" placement="top">-->
+	   <!--<el-switch v-model="expandCondition" v-on:change="setScreenHeight()"></el-switch>-->
+	<!--</el-tooltip>-->
+<!--</nav>-->
+
+  <div class="card" id="cardDiv" style="">
+	<div style="padding: 3px !important;" class="card-body">
+  <div class="row">
+  	<div class="col-md-12">
+		<el-form label-position="left">
+<el-row>
+	<!--<el-col :span="6">-->
+		  <!--<el-form-item label="行动" label-width="70px">-->
+		  <!--<el-select style="width: 190px;"   v-model="queryCondition.type" align="left" size="small" :clearable="true">-->
+	   <!--<el-option v-for="(item,key) in typeItems" align="left"  :label="item" :value="key"></el-option>-->
+		<!--</el-select>-->
+		  <!--</el-form-item>-->
+	<!--</el-col>-->
+	<el-col :span="6">
+		  <el-form-item label="SKU" label-width="70px">
+		    <el-input style="width: 190px;"   v-model="queryCondition.sku"
+		    placeholder=""></el-input>
+		  </el-form-item>
+	</el-col>
+	<!--<el-col style="width: 210px;">-->
+		  <!--<el-form-item label="创建人" label-width="70px">-->
+		    <!--<el-input style="width: 130px;"   v-model="queryCondition.createBy" -->
+		    <!--placeholder="创建人"></el-input>-->
+		  <!--</el-form-item>-->
+	<!--</el-col>-->
+	<el-col style="width: 180px;">
+		<el-button v-on:click="clickSearchBtn" type="primary">
+		<i class="fa fa-search" aria-hidden="true" style="padding-right:2px"></i>查询</el-button>
+		<!--<el-button v-on:click="clickResetBtn" type="primary">-->
+		<!--<i class="fa fa-eraser" aria-hidden="true" style="padding-right:2px"></i>重置</el-button>   -->
+	</el-col>
+</el-row>
+		</el-form>
+  	</div>
+  </div>
+
+	
+  </div>
+</div>
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+		<img :src="queryCondition.cyPicUrl" style="width:450px;height:600px; border: 1px solid #eee;"/>
+
+
+	</div>
+</div>
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+	  
+  let this_let; 
+  var vm = new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  sku:"",
+			  picUrl:[[${picUrl}]],
+			  cyPicUrl:""
+          }
+        }
+      },
+      created: function() {
+      },
+      methods: {
+    	clickSearchBtn(){
+	  		if(this.queryCondition.sku.length>2){
+				this.queryCondition.cyPicUrl=this.queryCondition.picUrl+"/sys/file/cyImageOnZ?designNoOrBarCode="+this.queryCondition.sku.substr(0,this.queryCondition.sku.length-2)+"_L&color="+this.queryCondition.sku.substr(this.queryCondition.sku.length-2,this.queryCondition.sku.length);
+			}else{
+				alert('请输入正确的SKU！');
+			}
+
+    	}
+        }
+    })
+//    var dialogCallback = function() {
+//    		closedialog();
+//    		vm.clickSearchBtn();
+//    }
+    
+//  $(document).ready(function(){
+//  	$(window).load(function(){
+//  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+//      });
+//
+//  	$(window).resize(function(){
+//  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+//  	});
+//  });
+  
+    /*]]>*/
+  </script>
+</html>

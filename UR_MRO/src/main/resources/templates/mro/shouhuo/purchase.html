@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('demo')"></head>
+		<style scoped>
+			[v-cloak] {
+				display: none;
+			}
+			
+			.el-button {
+				box-shadow: 2px 2px 2px #CCCCCC
+			}
+			
+			html,
+			body {
+				height: 100%;
+			}
+			
+			#app {
+				width: 100%;
+				height: 100%;
+				/*display: flex;*/
+			}
+			
+			#app1 {
+				width: 100%;
+				display: flex;
+				height: 100%;
+				flex-direction: column;
+			}
+			
+			.titlebox {
+				height: 40px;
+				line-height: 40px;
+				padding: 5px;
+			}
+			
+			.titlebox .MYcontainer {
+				font-size: 18px;
+				font-weight: bold;
+				border-bottom: 1px dashed #CCCCCC;
+			}
+			
+			.ctrbox {
+				height: 50px;
+				padding: 5px;
+			}
+			
+			.ctrbox .MYcontainer {
+				width: 712px;
+				background: white;
+				/*border-bottom: 1px dashed #CCCCCC;*/
+			}
+			
+			.mainbox {
+				    padding: 0 5px;
+				height: 100%;
+				overflow: auto;
+				display: flex;
+				overflow: auto;
+				flex-direction: row;
+				justify-content: center;
+			}
+			
+			.mainbox .MYcontainer {
+				width: 100%;
+				/*background: linear-gradient(to top, rgb(255, 255, 255), rgb(218, 232, 251));*/
+				border-radius: 10px;
+				margin-bottom: 10px;
+				
+				/*box-shadow: 2px 2px 2px #ccc;*/
+			}
+			
+			.formtitle {
+				width: 100%;
+				height: 40px;
+				text-align: center;
+				line-height: 40px;
+				margin-bottom: 10px;
+				font-size: 18px;
+				border-radius: 10px;
+			}
+			
+			.formtitle .el-form-item {
+				margin-left: 10px;
+				margin-bottom: 22px;
+				margin-right: 20px;
+			}
+			
+			.el-form-item__label {
+				color: #666666 !important;
+			}
+			
+			input::-webkit-outer-spin-button,
+			input::-webkit-inner-spin-button {
+				-webkit-appearance: none;
+			}
+			
+			.ckg .el-form-item__content {
+				/*width: 61px !important;*/
+				/*margin-left: 0 !important;*/
+				display: flex;
+				justify-content: space-between;
+			}
+			
+			.el-form-item__content {
+				display: flex;
+				justify-content: space-between;
+				margin-left: 0 !important;
+			}
+			
+			.itembox .ckg {
+				flex: 1;
+				display: flex;
+			}
+			
+			.el-form {
+				/* flex-direction: column; */
+				margin: 2px;
+				/*border: 1px solid #CCCCCC;*/
+				width: 100% !important;
+				align-content: flex-start;
+			}
+			
+			.el-form-item {
+				flex: 1;
+				margin-bottom: 0 !important;
+			}
+			
+			.itembox {
+				flex: 1;
+				height: 40px;
+				/*background: #ccc;*/
+				margin: 5px;
+
+			}
+			
+			.itembigbox {
+				flex: 1;
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				background: white;
+			}
+			
+
+			
+			.topbox {
+				min-height: 136px;
+				padding-bottom: 10px;
+				/*max-height: 200px;*/
+				/*overflow: auto;*/
+			}
+			
+			.bottombox {
+				/*flex: 1;*/
+				/*overflow: auto;*/
+				display: flex;
+				flex-direction: column;
+			}
+			
+			.el-input.is-disabled .el-input__inner {
+				/*background-color: #efefef !important;
+				border-color: #d8c2a7  !important;*/
+			}
+			
+			.red {
+				color: red;
+			}
+			
+			.el-table th div {
+				display: block !important;
+			}
+			
+			.el-icon-location:before {
+				color: red;
+			}
+			
+			.el-icon-star-off:before {
+				color: red;
+			}
+			
+			.el-table td,
+			.el-table th {
+				padding: 5px 0 !important;
+			}
+			
+			.el-form-item.is-success .el-input__inner {
+				border: 1px solid #67c23a;
+			}
+			
+			.el-input__suffix {
+				color: #67c23a;
+			}
+			
+			.el-textarea__inner {
+				max-height: 40px;
+			}
+			.el-input.is-disabled .el-input__inner{
+				border:0;
+				border-bottom: 1px solid #ccc;
+				background: white;
+				border-radius: 0;
+			}
+			.el-textarea.is-disabled .el-textarea__inner{
+				border:0;
+				border-bottom: 1px solid #ccc;
+				background: white;
+				border-radius: 0;
+			}
+		</style>
+
+
+
+	<body>
+
+		<div id='app' v-cloak>
+			<div id='app1'>
+
+				<!--<div class="titlebox">
+					<div class="MYcontainer">
+						<h1>{{titletex}}</h1>
+					</div>
+				</div>-->
+				<!--<div class="ctrbox">-->
+					<!--<div class="MYcontainer">-->
+						<!--<el-button @click="submitForm('form')" type="primary" plain>保存</el-button>-->
+						<!--<el-button type="info" plain>-->
+							<!--<a href="./SHyishou.html">返回</a>-->
+						<!--</el-button>-->
+					<!--</div>-->
+				<!--</div>-->
+				<div class="mainbox">
+					<el-form class="demo-dynamic" action="" ref="form" :model="form" label-width="80px" status-icon style='flex: 1;margin: 0 auto;width:40%;display: flex;flex-wrap: wrap;border-radius:10px;margin-bottom: 10px;background: white;'>
+						<div class="MYcontainer topbox">
+							<div class="formtitle">
+								采购订单
+							</div>
+
+							<div class="itembigbox">
+								<div class="itembox">
+									<el-form-item label="采购单号" style='daiplay:flex'>
+										<el-input placeholder="" v-model="form.name" class="input-with-select" disabled></el-input>
+										<!--<el-button icon="el-icon-search" style='box-shadow: 0px 0px 0px ;'></el-button>-->
+									</el-form-item>
+
+								</div>
+								<div class="itembox">
+									<el-form-item label="申请单号">
+										<el-input v-model.trim="form.name" disabled></el-input>
+									</el-form-item>
+
+								</div>
+
+							</div>
+							<div class="itembigbox">
+
+								<div class="itembox">
+									<el-form-item label="供应商">
+										<el-input v-model.trim="form.name" disabled></el-input>
+									</el-form-item>
+
+								</div>
+								<div class="itembox">
+									<el-form-item label="安装费">
+
+										<el-input v-model.trim="form.name" disabled></el-input>
+
+								</div>
+
+							</div>
+							<div class="itembigbox">
+								<div class="itembox">
+									<el-form-item label="运费" style='daiplay:flex'>
+										<el-input placeholder="" v-model="form.name" class="input-with-select" disabled></el-input>
+										<!--<el-button icon="el-icon-search" style='box-shadow: 0px 0px 0px ;'></el-button>-->
+									</el-form-item>
+
+								</div>
+								<div class="itembox">
+									<el-form-item label="其他费用" style='daiplay:flex'>
+										<el-input placeholder="" v-model="form.name" class="input-with-select" disabled></el-input>
+										<!--<el-button icon="el-icon-search" style='box-shadow: 0px 0px 0px ;'></el-button>-->
+									</el-form-item>
+
+									
+
+								</div>
+
+							</div>
+
+<div class="itembigbox">
+								<div class="itembox">
+									<el-form-item label="备注" style='daiplay:flex'>
+										<el-input disabled type='textarea' placeholder="" v-model="form.name" class="input-with-select"></el-input>
+									</el-form-item>
+								</div>
+								<div class="itembox">
+									<!--<el-form-item  style='daiplay:flex'>
+										<el-input type='textarea' placeholder="" v-model="form.name" class="input-with-select"></el-input>
+									</el-form-item>-->
+
+								</div>
+
+							</div>
+						</div>
+
+						<div class="MYcontainer bottombox">
+							<!--<div class="formtitle">
+								物料信息
+							</div>-->
+							<el-table border @selection-change="handleSelectionChange" ref="multipleTable" :data="form.tableData" tooltip-effect="dark" style="width: 100%;height:100%;border-radius:10px;overflow:hidden;">
+								<!--<el-table-column label="序号" align='center' type="index" width="50">
+								</el-table-column>-->
+								<el-table-column label="物料" v-if='ctrpeizhi.ct_cgdingdanhao' min-width='150' align='center'>
+									<template slot-scope="scope">
+										<el-form-item :prop="'tableData.' + scope.$index + '.cgdingdanhao'" :rules="[
+      { required: true, message: '', trigger:['change','blur'] }]">
+											<el-input v-model="scope.row.cgdingdanhao" placeholder="" disabled></el-input>
+										</el-form-item>
+									</template>
+								</el-table-column>
+								<el-table-column label="数量" v-if='ctrpeizhi.ct_dpbianhao' min-width='150' align='center'>
+									<template slot-scope="scope">
+										<el-form-item :prop="'tableData.' + scope.$index + '.dpbianhao'" :rules="[
+      { required: true, message: '', trigger:['change','blur'] }]">
+											<el-input v-model="scope.row.dpbianhao" placeholder="" disabled></el-input>
+										</el-form-item>
+									</template>
+								</el-table-column>
+
+								<el-table-column label="单价" v-if='ctrpeizhi.ct_dpname' min-width='150' align='center'>
+									<template slot-scope="scope">
+										<el-form-item :prop="'tableData.' + scope.$index + '.dpname'" :rules="[
+      { required: true, message: '', trigger:['change','blur'] }]">
+											<el-input v-model="scope.row.dpname" placeholder="" disabled></el-input>
+
+										</el-form-item>
+									</template>
+								</el-table-column>
+
+								<el-table-column label="金额" v-if='ctrpeizhi.ct_wlbianma' min-width='150' align='center'>
+									<template slot-scope="scope">
+										<el-form-item :prop="'tableData.' + scope.$index + '.wlbianma'" :rules="[
+      { required: true, message: '', trigger:['change','blur'] }]">
+											<el-input v-model="scope.row.wlbianma" placeholder="" disabled></el-input>
+										</el-form-item>
+									</template>
+								</el-table-column>
+
+							</el-table>
+							<!--<div style='margin: 10px 0;'>
+								<el-button @click='addhuoyuan' icon='el-icon-folder-add' size='small' style='margin: 10px 0;' type="primary">新增</el-button>
+							</div>-->
+						</div>
+						<div class="MYcontainer bottombox">
+							<div class="formtitle">
+								附件列表
+							</div>
+							<el-table @selection-change="handleSelectionChange" ref="multipleTable" :data="tupianData" tooltip-effect="dark" style="width: 100%;height:100%;border-radius:10px;overflow:hidden;">
+								<el-table-column label="文件名称" align='center'>
+									<template slot-scope="scope">
+										{{ scope.row.tupianname }}
+									</template>
+								</el-table-column>
+								<!--<el-table-column label="图片缩略图" v-if='ctrpeizhi.ct_name' align='center'>
+								<template slot-scope="scope">
+									<img :src="scope.row.tupianurl" style="height:80px;width:80px;cursor: pointer;" @click="handleEdit(scope.$index, scope.row)" />
+									<el-dialog :visible.sync="dialogVisible">
+										<img :src="dialogImageUrl" alt="" style="width:450px;max-width: 100%;max-height: 100%;display: block; margin: 0 auto;">
+									</el-dialog>
+								</template>
+							</el-table-column>-->
+
+								<el-table-column label="操作" align='center'>
+									<template slot-scope="scope">
+										<el-button size='small'>下载</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+
+							<!--<div>
+							<el-button @click='addtupian'>新增</el-button>
+						</div>-->
+
+						</div>
+					</el-form>
+					
+				</div>
+			</div>
+		</div>
+		<div th:include="common/onload_js :: onloadJS"></div>
+		<script th:inline="javascript">
+			var vm = new Vue({
+				el: '#app',
+				data: {
+					ctrpeizhi: {
+						ct_cgdingdanhao: true,
+						ct_dpbianhao: true,
+						ct_dpname: true,
+						ct_wlbianma: true,
+						ct_wlname: true,
+						ct_xiaolei: true,
+						ct_chang: true,
+						ct_kuan: true,
+						ct_gao: true,
+						ct_jbdanwei: true,
+						ct_jbdwshuliang: true,
+						ct_bgqshuju: true,
+						ct_biangeliang: true,
+						ct_bgyuanyin: true,
+						ct_yjsyriqi: true,
+						ct_beizhu: true
+
+					},
+
+					tupianData: [{
+						tupianname: '我是文件1',
+						tupianurl: 'http://img.alicdn.com/bao/uploaded/i6/TB1THwHvXzqK1RjSZSgRpZpAVXa_051548.jpg',
+						tupiancaozuo: ''
+					}],
+					titletex: '',
+					dialogImageUrl: '',
+					dialogVisible: false,
+					form: {
+						wltype: '',
+						bianma: '',
+						name: '',
+						tableData: []
+					},
+					dialogVisible: false,
+					dialogdaochu: false
+				},
+				mounted() {
+					if(window.location.search.split("&")[0].split("=")[1] == '1') {
+						this.titletex = '新增';
+					} else {
+						this.titletex = '编辑';
+					}
+				},
+				methods: {
+					renderHeader(h, {
+						column,
+						$index
+					}) {
+						return h('div', {
+							attrs: {
+								class: 'cell' //ele原来样式
+							},
+							domProps: {
+								innerHTML: '<span class="red">* </span>' + column.label
+							}
+						})
+					},
+					//					renderHeader(h, {
+					//						column
+					//					}) { // h即为cerateElement的简写，具体可看vue官方文档
+					//						return h(
+					//							'div', [
+					//								h('span', column.label),
+					//								h('i', {
+					//
+					//									class: 'el-icon-star-off',
+					//									style: 'margin-left:5px;color：red'
+					//								})
+					//							],
+					//						);
+					//					},
+
+					deleteRow(index, rows) {
+						rows.splice(index, 1);
+					},
+					addhuoyuan() {
+						let gooditem = {
+
+							cgdingdanhao: '',
+							dpbianhao: '',
+							dpname: '',
+							wlbianma: '',
+							wlname: '',
+							xiaolei: '',
+							chang: '',
+							kuan: '',
+							gao: '',
+							jbdanwei: '',
+							jbdwshuliang: '',
+							bgqshuju: '',
+							biangeliang: '',
+							bgyuanyin: '',
+							yjsyriqi: '',
+							beizhu: ''
+						}
+						this.form.tableData.push(gooditem)
+					},
+					onSubmit() {
+
+						console.log(this.form.tableDate);
+
+					},
+					//					文件上传
+					handleRemove(file, fileList) {
+						console.log(file, fileList);
+					},
+					handlePreview(file) {
+						console.log(file);
+					},
+					handleExceed(files, fileList) {
+						this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+					},
+					beforeRemove(file, fileList) {
+						return this.$confirm(`确定移除 ${ file.name }？`);
+					},
+
+					//					图片上传
+					handleRemove2(file, fileList) {
+						console.log(file, fileList);
+					},
+					handlePictureCardPreview2(file) {
+						this.dialogImageUrl = file.url;
+						this.dialogVisible = true;
+					},
+
+					submitForm(formName) {
+
+						this.$refs[formName].validate((valid) => {
+							//							console.log();
+							console.log(this.form.tableData[0].jiagekaishi - this.form.tableData[0].jiagejieshu);
+							if(valid) {
+								alert('submit!');
+							} else {
+								console.log('error submit!!');
+								return false;
+							}
+						});
+					},
+					handleSelectionChange(data) {
+						this.selectData = data;
+						//					
+					}, // 多选高亮选中行
+					handleEdit(index, row) {
+						this.dialogVisible = true;
+						this.dialogImageUrl = row.tupianurl;
+
+					},
+
+				}
+
+			})
+		</script>
+
+	</body>
+
+</html>

@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('店铺主数据')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="display: none;"
+ v-show="isLoad" v-loading="appLoading" :element-loading-text="appLoadingText">
+ <nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition"></el-switch>
+	</el-tooltip>
+	
+	
+	<el-popover
+  width="200"
+  trigger="click">
+  <div class="visibleColumns">
+  <ul>
+  <li><el-switch v-model="visibleColumns.shopTypeName" inactive-text="店铺类别"></el-switch></li>
+    <li><el-switch v-model="visibleColumns.goodsAreaName" inactive-text="商品分区"></el-switch></li>
+    <li><el-switch v-model="visibleColumns.distributionLevelName" inactive-text="配货等级"></el-switch></li>
+    <li><el-switch v-model="visibleColumns.densityTypeName" inactive-text="密度类型"></el-switch></li>
+    <li><el-switch v-model="visibleColumns.enabledName" inactive-text="是否启用"></el-switch></li>
+    <li><el-switch v-model="visibleColumns.stockId" inactive-text="仓库ID"></el-switch></li>
+    <li><el-switch v-model="visibleColumns.stockName" inactive-text="仓库名称"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.shopEnglishName" inactive-text="店铺英文名"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.brand" inactive-text="品牌"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.country" inactive-text="国家"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.area" inactive-text="大区"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.subArea" inactive-text="小区"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.province" inactive-text="省份"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.city" inactive-text="城市"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.salesLevel" inactive-text="销售级别"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.shopEmail" inactive-text="店铺邮箱"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.temperaturezone" inactive-text="温度带"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.address" inactive-text="详细地址"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.status" inactive-text="店铺经营状态"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.cityLevel" inactive-text="城市级别"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.synchroTime" inactive-text="同步时间"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.createTime" inactive-text="创建时间"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.createByName" inactive-text="创建者"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.modifyTime" inactive-text="修改时间"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.modifyByName" inactive-text="修改者"></el-switch></li></ul>  
+  </div>
+  <el-tag size="mini" slot="reference">列 显示 / 隐藏</el-tag>
+</el-popover>
+</nav>
+
+ <Drawer  title="查询面板" v-model="expandCondition" width="60%">
+ <el-row>
+  <el-col :span="6">
+    <div class="ur-stack-label">企划店铺编码</div>
+    <el-select :filterable="true" v-model="queryCondition.planShopNo" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true" style="width: 100%;">
+					<el-option v-for="(item,key) in planShopNoItems" align="left" :label="item" :value="key"></el-option>
+				</el-select>
+  </el-col>
+  <el-col :span="6">
+    <div class="ur-stack-label">店铺类别</div>
+    <el-select v-model="queryCondition.shopType" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+				<el-option v-for="(item,key) in shopTypeItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+  </el-col>
+  <el-col :span="6">
+    <div class="ur-stack-label">是否启用</div>
+    <el-select v-model="queryCondition.enabled" placeholder="请选择" align="left" size="small" :clearable="true" :multiple="true"   style="width: 100%;">
+				<el-option v-for="(item,key) in enabledItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+  </el-col>
+  <el-col :span="6">
+    <div class="ur-stack-label">国家</div>
+    <el-select v-model="queryCondition.country" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"   style="width: 100%;">
+				<el-option v-for="(item,key) in countryItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+  </el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="6">
+    <div class="ur-stack-label">店铺编码</div>
+    <el-select :filterable="true" v-model="queryCondition.shopNo" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+					<el-option v-for="(item,key) in shopNoItems" align="left" :label="item" :value="key"></el-option>
+				</el-select>
+    </el-col>
+    <el-col :span="6">
+    <div class="ur-stack-label">商品分区</div>
+    <el-select v-model="queryCondition.goodsArea" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+					<el-option v-for="(item,key) in goodsAreaItems" align="left" :label="item" :value="key"></el-option>
+				</el-select>
+    </el-col>
+    <el-col :span="6">
+    <div class="ur-stack-label">配货等级</div>
+    <el-select v-model="queryCondition.distributionLevel" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+				<el-option v-for="(item,key) in distributionLevelItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+    </el-col>
+    <el-col :span="6">
+    <div class="ur-stack-label">城市</div>
+    <el-select :filterable="true" v-model="queryCondition.city" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+				<el-option v-for="(item,key) in cityItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+    </el-col>
+  </el-row>
+   <el-row>
+    <el-col :span="6">
+    <div class="ur-stack-label">店铺名称</div>
+    <el-select :filterable="true" v-model="queryCondition.shopName" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+					<el-option v-for="(item,key) in shopNameItems" align="left" size="small" :label="item" :value="key"></el-option>
+				</el-select>
+    </el-col>
+    <el-col :span="6">
+    <div class="ur-stack-label">密度类型</div>
+    <el-select v-model="queryCondition.densityType" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+				<el-option v-for="(item,key) in densityTypeItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+    </el-col>
+    <el-col :span="6">
+    <div class="ur-stack-label">大区</div>
+    <el-select v-model="queryCondition.area" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+				<el-option v-for="(item,key) in areaItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+    </el-col>
+    <el-col :span="6">
+    <div class="ur-stack-label">小区</div>
+    <el-select :filterable="true" v-model="queryCondition.subArea" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+				<el-option v-for="(item,key) in subAreaItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="6">
+    <div class="ur-stack-label">店铺英文名</div>
+    <el-select :filterable="true" v-model="queryCondition.shopEnglishName" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+					<el-option v-for="(item,key) in shopEnglishNameItems" align="left" :label="item" :value="key"></el-option>
+				</el-select>
+    </el-col>
+    <el-col :span="6">
+    <div class="ur-stack-label">仓库ID</div>
+    <el-select :filterable="true" v-model="queryCondition.stockId" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+					<el-option v-for="(item,key) in stockIdItems" align="left" :label="item" :value="key"></el-option>
+				</el-select>
+    </el-col>
+    <el-col :span="6">
+    <div class="ur-stack-label">温度带</div>
+    <el-select v-model="queryCondition.temperaturezone" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+				<el-option v-for="(item,key) in temperaturezoneItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+    </el-col>
+    <el-col :span="6">
+    <div class="ur-stack-label">品牌</div>
+    <el-select v-model="queryCondition.brand" placeholder="品牌" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+				<el-option v-for="(item,key) in brandItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="12">
+    <div class="ur-stack-label">仓库名称</div>
+    <el-select :filterable="true" v-model="queryCondition.stockName" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+					<el-option v-for="(item,key) in stockNameItems" align="left" :label="item" :value="key"></el-option>
+				</el-select>
+    </el-col>
+    <el-col :span="6">
+    <div class="ur-stack-label">销售级别</div>
+    <el-select v-model="queryCondition.salesLevel" placeholder="销售级别" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+				<el-option v-for="(item,key) in salesLevelItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+    </el-col>
+    
+  </el-row>
+   <div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+ </Drawer>
+
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickAddBtn" icon="plus">新增</el-button>
+        <el-button v-on:click="clickUpdateBtn" icon="edit">修改</el-button>
+        <!-- <el-button v-on:click="clickDeleteBtn" icon="delete">删除</el-button> -->
+        <el-button v-on:click="clickImportBtn"><i class="fa fa-upload" aria-hidden="true" style="padding-right:5px"></i>导入</el-button>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+        <el-button v-on:click="clickSynchroBtn"><i class="fa fa-dot-circle-o" aria-hidden="true" style="padding-right:5px"></i>同步</el-button>
+        <el-button v-on:click="clickUploadImageBtn">图片管理</el-button>
+      </li>
+    </ul>
+    <el-dialog title="提示"  :visible.sync="deleteDialogVisible"  width="20%">
+	  <span>确定要删除这  {{multipleSelection.length}} 项吗?</span>
+	  <span slot="footer" class="dialog-footer">
+	    <el-button v-on:click="deleteDialogVisible = false">取 消</el-button>
+	    <el-button type="primary" v-on:click="delSummitBtn">确 定</el-button>
+	  </span>
+	</el-dialog>
+	
+	<el-dialog ref="uploadPanel" :visible.sync="uploadDialogVisible" >
+		 <a href="/template/ShopMasterDataTemplate.xlsx" style="font-size: 15px; color: red;">模版下载</a>
+		  <!-- <div style="margin-top: 10px; margin-left: -5px; color: #000;">
+			 	“导入”功能是新增导入的数据，不会覆盖已有数据；故导入前，请先删除原有数据。</div> -->
+			    <div style="height: 50px;"></div>
+         		<el-form style="width: 30rem;"
+         		  class="form uploadform">
+	         		 <el-form-item>
+		         		<el-upload  ref="upload"  action="/ShopMasterData/importExcel" 
+		         		 	:before-upload="beforeUpload" :limit="1"
+			         		:file-list="fileList"  :auto-upload='true' :show-upload-list="false" 
+			         		:on-success="handleUploadSuccess"
+			         		:on-error="handleUploadError">
+			                <el-button slot="trigger"  type="primary">点击上传</el-button>
+			           		<div slot="tip" class="el-upload__tip">只能上传xls/xlsx 文件,每次只能上传一个</div>
+		            	</el-upload>
+	            	</el-form-item>
+            	</el-form>
+	</el-dialog>
+      
+	<el-pagination :page-size="20" :pager-count="4" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next">
+	</el-pagination>
+</nav>
+
+        <el-table id="data_table"  stripe="" v-loading="queryingShopMasterData" :data="this.queryResult.data" :border="true" :highlight-current-row="true" 
+        :height="this.tableHeight" ref="multipleTable" v-on:row-click="handleRowClick"
+        v-on:current-change="handleTableCurrentChange" v-on:selection-change="handleSelectionChange">
+        <!-- v-on:row-click="handleSelectionChange"  -->
+          <el-table-column fixed="left" type="selection"  width="45"></el-table-column>
+          <!-- <el-table-column property="id" label="自增id" min-width="120" :show-overflow-tooltip="true"></el-table-column> -->
+          <el-table-column property="planShopNo" label="企划店铺编码" min-width="100" fixed="left" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopNo" label="店铺编码" min-width="100" fixed="left" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopName" label="店铺名称" min-width="180" fixed="left" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.shopTypeName" property="shopTypeName" label="店铺类别" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.goodsAreaName" property="goodsAreaName" label="商品分区" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.distributionLevelName" property="distributionLevelName" label="配货等级" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.densityTypeName" property="densityTypeName" label="密度类型" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.enabledName" property="enabledName" label="是否启用" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.stockId" property="stockId" label="仓库ID" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.stockName" property="stockName" label="仓库名称" min-width="180" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.shopEnglishName" property="shopEnglishName" label="店铺英文名" min-width="180" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.brand" property="brand" label="品牌" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.country" property="country" label="国家" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.area" property="area" label="大区" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.subArea" property="subArea" label="小区" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.province" property="province" label="省份" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.city" property="city" label="城市" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.salesLevel" property="salesLevel" label="销售级别" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.shopEmail" property="shopEmail" label="店铺邮箱" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <!-- <el-table-column property="longitude" label="经度" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="latitude" label="纬度" min-width="80" :show-overflow-tooltip="true"></el-table-column> -->
+          <el-table-column v-if="visibleColumns.temperaturezone" property="temperaturezone" label="温度带" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.address" property="address" label="详细地址" min-width="200" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.status" property="status" label="店铺经营状态" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.cityLevel" property="cityLevel" label="城市级别" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.synchroTime" property="synchroTime" label="同步时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.createTime" property="createTime" label="创建时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.createByName" property="createByName" label="创建者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.modifyTime" property="modifyTime" label="修改时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.modifyByName" property="modifyByName" label="修改者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+	</div>
+</div>
+
+<!-- 	<el-dialog ref="addPanel" :title="dialogTitle" :visible.sync="showAddDialog" 
+			 v-loading="addingShopMasterData" :lock-scroll="false" size="large" width="50%"> -->
+			 	  <Drawer  :title="dialogTitle" v-model="showAddDialog" width="50%" :mask-closable="false">
+		<div class="card-title">
+	       <el-button v-on:click="clickAddSaveBtn"><i class="fa fa-save" 
+	       aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+	       <el-button v-on:click="clickAddCancelBtn"><i class="fa fa-eraser" 
+	       aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+	    </div>
+	
+	  <div class="card">
+	  <div class="card-body">
+	  <div class="row">
+	  	<div class="col-md-12">
+			<el-form   :rules="rules" ref="addForm" :model="addInstance" label-suffix=":">
+				<el-row>
+					<el-col :span="24">
+						<el-form-item label="店铺类别" prop="shopType" label-width="120px">
+						  	<el-select v-model="addInstance.shopType" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in shopTypeItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						  <el-form-item label="企划店铺编码" prop="planShopNo" label-width="120px">
+						    <el-input v-model="addInstance.planShopNo" :controls="false"></el-input>
+						  </el-form-item>
+					</el-col>
+					<el-col :span="24">
+						  <el-form-item label="店铺名称" prop="shopName" label-width="120px">
+						    <el-input v-model="addInstance.shopName" :controls="false"></el-input>
+						  </el-form-item>
+					</el-col>
+					<el-col :span="24">
+						  <el-form-item label="店铺编码" prop="shopNo" label-width="120px">
+						    <el-input v-model="addInstance.shopNo" :controls="false" ></el-input>
+						  </el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="商品分区" prop="goodsArea" label-width="120px">
+						  	<el-select v-model="addInstance.goodsArea" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in goodsAreaItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="配货等级" prop="distributionLevel" label-width="120px">
+						  	<el-select v-model="addInstance.distributionLevel" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in distributionLevelItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="密度类型" prop="densityType" label-width="120px">
+						  	<el-select v-model="addInstance.densityType" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in densityTypeItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="是否启用" prop="enabled" label-width="120px">
+						  	<el-select v-model="addInstance.enabled" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in enabledItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="国家" prop="countryCode" label-width="120px">
+						  	<el-select v-model="addInstance.countryCode" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in countryItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+			</el-form>
+	  	</div>
+	  </div>
+
+	  </div>
+	  </div>
+	  </Drawer>
+<!-- 	</el-dialog> -->
+	<!-- <el-dialog ref="updatePanel" :title="dialogTitle" :visible.sync="showDialog" 
+	 v-loading="updatingShopMasterData" :lock-scroll="false" size="large"> -->
+	 	  <Drawer  :title="dialogTitle" v-model="showDialog" width="50%" :mask-closable="false">
+		  <div class="card-title">
+	        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+	        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+	      </div>
+
+		  <div class="card">
+		  	<div class="card-body">
+
+		  <div class="row">
+		  	<div class="col-md-12">
+			<el-form   :rules="rules" ref="updateForm" :model="updateInstance" label-suffix=":">
+				<el-row>
+					<el-col :span="24">
+						<el-form-item label="店铺类别" prop="shopType" label-width="120px">
+						  	<el-select v-model="updateInstance.shopType" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in shopTypeItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						  <el-form-item label="企划店铺编码" prop="planShopNo" label-width="120px">
+						    <el-input v-model="updateInstance.planShopNo" :disabled="true" :controls="false"></el-input>
+						  </el-form-item>
+					</el-col>
+					<el-col :span="24">
+						  <el-form-item label="店铺名称" prop="shopName" label-width="120px">
+						    <el-input v-model="updateInstance.shopName" :controls="false"></el-input>
+						  </el-form-item>
+					</el-col>
+					<el-col :span="24">
+						  <el-form-item label="店铺编码" prop="shopNo" label-width="120px">
+						    <el-input v-model="updateInstance.shopNo" :controls="false" ></el-input>
+						  </el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="商品分区" prop="goodsArea" label-width="120px">
+						  	<el-select v-model="updateInstance.goodsArea" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in goodsAreaItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="配货等级" prop="distributionLevel" label-width="120px">
+						  	<el-select v-model="updateInstance.distributionLevel" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in distributionLevelItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="密度类型" prop="densityType" label-width="120px">
+						  	<el-select v-model="updateInstance.densityType" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in densityTypeItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="是否启用" prop="enabled" label-width="120px">
+						  	<el-select v-model="updateInstance.enabled" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in enabledItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="国家" prop="countryCode" label-width="120px">
+						  	<el-select v-model="updateInstance.countryCode" align="left" :clearable="true">
+							 		<el-option v-for="(item,key) in countryItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+			</el-form>
+	  	</div>
+	  </div>
+
+	  </div>
+	  </div>
+	  </Drawer>
+	<!-- </el-dialog> -->
+	<!-- 店铺相关图片管理begin -->
+	<el-dialog ref="updateImagePanel" title="店铺相关图片管理" :visible.sync="updateImageDialogVisible" 
+	  :lock-scroll="false" fullscreen="true">
+		  <div class="card" v-loading="loadingImage">
+		  	<div class="card-body">
+		  <div class="row">
+		  	<div class="col-md-12">
+			<el-form label-suffix=":">
+				<el-row>
+					<el-col :span="8">
+						<el-form-item label="店铺" label-width="100px">
+							<el-select :filterable="true" v-model="updateImageCondition.planShopNo"  v-on:change="queryImage" 
+							placeholder="请选择" align="left" size="small" :clearable="true"  style="width: 100%;">
+					<el-option v-for="(item,key) in shopItems" align="left" size="small" :label="item" :value="key"></el-option>
+				</el-select>
+						</el-form-item>
+					</el-col>
+					
+				</el-row>
+				<el-row>
+				<el-col :span="8">
+						<el-form-item label="图片分类" label-width="100px">
+							<el-select :filterable="true" v-model="updateImageCondition.type" placeholder="请选择" align="left" size="small" :clearable="true"  style="width: 100%;">
+					<el-option v-for="(item,key) in shopAttachmenttTypeItems" align="left" size="small" :label="item" :value="key"></el-option>
+				</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="8">
+					<el-upload  ref="upload"  :action="uploadImageUrl" 
+		         		 	:before-upload="beforeUploadImage" :limit="1"
+			         		:file-list="imageFileList"  :auto-upload='true' :show-upload-list="false" 
+			         		:on-success="handleUploadImageSuccess"
+			         		:on-error="handleUploadImageError">
+			                <el-button slot="trigger"  type="primary">点击上传</el-button>
+			           		<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb,每次只能上传一个</div>
+		            	</el-upload>
+					</el-col>
+				</el-row>
+				<el-row>
+  <el-col :span="8" v-for="(item, index) in updateImageList" style="margin-bottom:2px;margin-right:1px;width:250px;">
+    <el-card :body-style="{ padding: '0px' }" style="">
+    <div style="float:left;width:100%;text-align:center;font-size:12px;">
+    <img v-bind:src="imageUrl+'/'+item.abbfileName" style="width:250px; height: 200px; max-width:250px; max-height: 250px;border: 1px solid #eee;" />    
+    <div style="width:100%;">分类：{{shopAttachmenttTypeItems[item.com2]}}</div>
+    <div style="width:100%;">操作人：{{ item.createdByName }}</div>
+    <div style="width:100%;">操作时间：{{ item.createdTime }}</div>
+    <div style="width:100%;margin-bottom:2px;">
+    <el-button v-on:click="deleteImage(item.id,index)" size="small" type="danger">删除</el-button>
+    <a v-bind:href="downloadImageUrl+'/'+item.abbfileName" size="small" class="el-button el-button--small el-button--primary">下载</a>
+    </div>
+         <!--  {{ item.createdByName }}
+          <time class="time">{{ item.createdTime }}</time> -->
+          
+      </div>
+    </el-card>
+  </el-col>
+</el-row>
+			</el-form>
+	  	</div>
+	  </div>
+	  </div>
+	  </div>
+	</el-dialog>
+	<!-- 店铺相关图片管理end -->
+	
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+	  
+  let this_let; 
+  var vm = new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  shopType:[],
+        	  planShopNo:[],
+        	  goodsArea:[],
+        	  distributionLevel:[],
+        	  densityType:[],
+        	  enabled:[],
+        	  stockId:[],
+        	  stockName:[],
+        	  shopNo:[],
+        	  shopName:[],
+        	  synchroTime:"",
+        	  shopEnglishName:[],
+        	  brand:[],
+        	  country:[],
+        	  area:[],
+        	  subArea:[],
+        	  city:[],
+        	  salesLevel:[],
+        	  shopEmail:"",
+        	  longitude:"",
+        	  latitude:"",
+        	  temperaturezone:[],
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20,
+        	  
+          },
+          queryingShopMasterData:false,
+          updatingShopMasterData:false,
+          addingShopMasterData:false,
+          addInstance:{},
+          updateInstance:{},
+          isUpdate:false,
+          dialogTitle:"",
+          showDialog:false,
+          showAddDialog:false,
+          rules: {
+        	  shopType: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  planShopNo: [
+                  { max: 30, message: '长度不能超过30', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  goodsArea: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' }
+                ],
+          	  distributionLevel: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' }
+                ],
+          	  densityType: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' }
+                ],
+          	  enabled: [
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  shopNo: [
+                  { max: 100, message: '长度不能超过100', trigger: 'blur' }
+                ],
+          	  shopName: [
+                  { max: 100, message: '长度不能超过100', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+           	  countryCode: [
+                  { max: 20, message: '长度不能超过20', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          },
+          importingFile:false,
+          expandCondition:false,
+          expandText:"展开查询面板",
+          appLoading: false,
+          appLoadingText: "",
+          searchColumn: "",
+          searchValue: "",
+          updateInstance:{},
+          isUpdate:false,
+          goodsAreaItems:[[${goodsAreaItems}]],
+          distributionLevelItems:[[${distributionLevelItems}]],
+          densityTypeItems:[[${densityTypeItems}]],
+          enabledItems:[[${enabledItems}]],
+          shopTypeItems:[[${shopTypeItems}]],
+
+          planShopNoItems:[[${planShopNoItems}]],
+          shopNoItems:[[${shopNoItems}]],
+          shopNameItems:[[${shopNameItems}]],
+          shopEnglishNameItems:[[${shopEnglishNameItems}]],
+          stockIdItems:[[${stockIdItems}]],
+          stockNameItems:[[${stockNameItems}]],
+          brandItems:[[${brandItems}]],
+          countryItems:[[${countryItems}]],
+          areaItems:[[${areaItems}]],
+          subAreaItems:[[${subAreaItems}]],
+          cityItems:[[${cityItems}]],
+          salesLevelItems:[[${salesLevelItems}]],
+          temperaturezoneItems:[[${temperaturezoneItems}]],
+          
+          multipleSelection: [],
+          deleteDialogVisible: false,
+          uploadDialogVisible:false,
+          fileList: [],
+          isLoad: false,
+          tableHeight:500,
+          visibleColumns:{
+        	  shopTypeName:true,
+        	  goodsAreaName:true,
+        	  distributionLevelName:true,
+        	  densityTypeName:true,
+        	  enabledName:true,
+        	  stockId:true,
+        	  stockName:true,
+        	  shopEnglishName:true,
+        	  brand:true,
+        	  country:true,
+        	  area:true,
+        	  subArea:true,
+        	  province:true,
+        	  city:true,
+        	  salesLevel:true,
+        	  shopEmail:true,
+        	  temperaturezone:true,
+        	  address:true,
+        	  synchroTime:true,
+        	  createTime:true,
+        	  createByName:true,
+        	  modifyTime:true,
+        	  modifyByName:true,
+          },
+          uploadImageUrl: [[${uploadUrl}]],
+          downloadImageUrl: [[${downloadUrl}]],
+          imageUrl:[[${imageUrl}]],
+          shopItems:[[${shopItems}]],
+          shopAttachmenttTypeItems:[[${shopAttachmenttTypeItems}]],
+          updateImageDialogVisible:false,
+          updateImageList:[],
+          loadingImage:true,
+          imageFileList:[],
+          updateImageCondition:{
+        	planShopNo:"",
+        	type:""
+          }
+        }
+      },
+      created: function() {
+    	  this.isLoad = true;
+    	  this_let = this;
+    	  this.queryShopMasterData();
+      },
+      methods: {
+    	initAddInstance(){
+    		this.addInstance = {
+    			shopType:"",
+    			planShopNo:"",
+    			goodsArea:"",
+    			distributionLevel:"",
+    			densityType:"",
+    			enabled:"",
+    			shopNo:"",
+    			shopName:"",
+    			countryCode:"",
+            };
+    	},
+		clickAddBtn() {
+  			this.initAddInstance();
+  			this.isUpdate = false;
+  			this.dialogTitle = '新增';
+  			this.showAddDialog = true;
+  		},
+  		clickUpdateBtn() {
+  			//debugger;
+			if (this.multipleSelection.length == 0) {
+        		this.$message({showClose: true,message: '请选择一条数据,  左侧复选框 选中',type: 'error'});
+                return;
+            }
+			if (this.multipleSelection.length > 1) {
+        		this.$message({showClose: true,message: '只能选择一条数据,  左侧复选框 选中',type: 'error'});
+                return;
+            }
+			_this = this;
+			var url = '/ShopMasterData/'+this.multipleSelection[0].id;
+			axios.get(url) .then(function (response) {
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '修改数据查询失败，请刷新页面重试',message: response.data.message,offset: 100});
+			    	_this.$data.addingShopMasterData = false;
+			    }else{
+			    	console.log(response.data.data)
+			    	_this.updateInstance = response.data.data;
+			    	_this.updateInstance.enabled=_this.updateInstance.enabled+'';
+			    	_this.isUpdate = true;
+			    	_this.dialogTitle = '修改';
+			    	_this.showDialog = true;
+			    } 
+			  }).catch(function (error) {
+			    console.log(error);
+			    _this.$notify.error({title: '错误',message: '修改数据查询失败，请刷新页面重试!',offset: 100});
+			  });
+  		},
+  		clickAddCancelBtn() {
+			this.showAddDialog = false;
+			this.initAddInstance();
+		},
+		clickCancelBtn() {
+			this.showDialog = false;
+			this.updateInstance = {};
+		},
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryShopMasterData();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryShopMasterData();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryShopMasterData();
+    	},
+    	clickAddSaveBtn(){
+       	  this.$refs["addForm"].validate((valid) => {
+  	          if (valid) {
+  				_this = this;
+  				this.addingShopMasterData = true;
+	        	var url = '/ShopMasterData/insert';
+	        	if(this.addInstance.countryCode){
+	        		this.addInstance.country = this.countryItems[this.addInstance.countryCode];
+	        	}
+				axios.post(url,this.addInstance) .then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '新增失败',message: response.data.message,offset: 100});
+				    	_this.$data.addingShopMasterData = false;
+				    }else{
+					    _this.$notify.info({title: '新增成功',message: '新增成功',offset: 100});
+					    _this.$data.addingShopMasterData = false;
+					    _this.$data.showAddDialog = false;
+					    _this.queryShopMasterData(_this.queryResult.currPage);
+					    _this.initAddInstance();
+				    } 
+				  }).catch(function (error) {
+				    console.log(error);
+				    _this.$notify.error({title: '错误',message: '新增数据失败，请联系系统管理员',offset: 100});
+				  });
+	   	       } else {
+		            console.log('error submit!!');
+		            return false;
+		          }
+		       });
+        },  clickSaveBtn() {
+	        this.$refs["updateForm"].validate((valid) => {
+	          if (valid) {
+				_this = this;
+				this.updatingShopMasterData = true;
+					var url = '/ShopMasterData/update';
+		        	if(this.updateInstance.countryCode){
+		        		this.updateInstance.country = this.countryItems[this.updateInstance.countryCode];
+		        	}
+					console.log("修改时 ： "+JSON.stringify(this.updateInstance));
+					axios.put(url,this.updateInstance)
+					  .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '更新失败',message: response.data.message,offset: 100});
+					    	_this.$data.updatingShopMasterData = false;
+					    }else{
+						    _this.$notify.info({title: '更新成功',message: '更新成功',offset: 100});
+						    _this.$data.updatingShopMasterData = false;
+						    _this.$data.showDialog = false;
+						    _this.queryShopMasterData(_this.queryResult.currPage);
+					    }
+					  
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '更新数据失败，请联系系统管理员',offset: 100});
+					  });
+	          } else {
+	            console.log('error submit!!');
+	            return false;
+	          }
+	        });
+		},
+        queryShopMasterData() {
+          _this = this;
+
+          var url = '/ShopMasterData/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+	      //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	      restRequest.addCondition("shopType",this.queryCondition.shopType.join(","),"in");
+          restRequest.addCondition("planShopNo",this.queryCondition.planShopNo.join(","),"in");
+          restRequest.addCondition("goodsArea",this.queryCondition.goodsArea.join(","),"in");
+          restRequest.addCondition("distributionLevel",this.queryCondition.distributionLevel.join(","),"in");
+          restRequest.addCondition("densityType",this.queryCondition.densityType.join(","),"in");
+          //restRequest.addCondition("enabled",this.queryCondition.enabled,"eq");
+          restRequest.addCondition("enabled",this.queryCondition.enabled.join(","),"in");
+          restRequest.addCondition("stockId",this.queryCondition.stockId.join(","),"in");
+          restRequest.addCondition("stockName",this.queryCondition.stockName.join(","),"in");
+          restRequest.addCondition("shopNo",this.queryCondition.shopNo.join(","),"in");
+          restRequest.addCondition("shopName",this.queryCondition.shopName.join(","),"in");
+          restRequest.addCondition("shopEnglishName",this.queryCondition.shopEnglishName.join(","),"in");
+          restRequest.addCondition("brand",this.queryCondition.brand.join(","),"in");
+          restRequest.addCondition("countryCode",this.queryCondition.country.join(","),"in");
+          restRequest.addCondition("areaCode",this.queryCondition.area.join(","),"in");
+          restRequest.addCondition("subAreaCode",this.queryCondition.subArea.join(","),"in");
+          restRequest.addCondition("cityCode",this.queryCondition.city.join(","),"in");
+          restRequest.addCondition("salesLevel",this.queryCondition.salesLevel.join(","),"in");
+          restRequest.addCondition("temperaturezone",this.queryCondition.temperaturezone.join(","),"in");
+
+          this.$data.queryingShopMasterData = true;
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+              //console.log(response);
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.queryingShopMasterData = false;
+			    	_this.queryResult={
+				          	  totalRecordNum:0,
+				          	  currPage:1,
+				          	  pageSize:20
+				            };
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.queryingShopMasterData = false;
+	              _this.expandCondition=false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  	  clickExportBtn(){
+	          _this = this;
+	          var url = '/ShopMasterData/export';
+	
+	          var restRequest = new URRestRequest();
+	
+	          //可以指定排序字段
+		      //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	      restRequest.addCondition("shopType",this.queryCondition.shopType.join(","),"in");
+          restRequest.addCondition("planShopNo",this.queryCondition.planShopNo.join(","),"in");
+          restRequest.addCondition("goodsArea",this.queryCondition.goodsArea.join(","),"in");
+          restRequest.addCondition("distributionLevel",this.queryCondition.distributionLevel.join(","),"in");
+          restRequest.addCondition("densityType",this.queryCondition.densityType.join(","),"in");
+          //restRequest.addCondition("enabled",this.queryCondition.enabled,"eq");
+          restRequest.addCondition("enabled",this.queryCondition.enabled.join(","),"in");
+          restRequest.addCondition("stockId",this.queryCondition.stockId.join(","),"in");
+          restRequest.addCondition("stockName",this.queryCondition.stockName.join(","),"in");
+          restRequest.addCondition("shopNo",this.queryCondition.shopNo.join(","),"in");
+          restRequest.addCondition("shopName",this.queryCondition.shopName.join(","),"in");
+          restRequest.addCondition("shopEnglishName",this.queryCondition.shopEnglishName.join(","),"in");
+          restRequest.addCondition("brand",this.queryCondition.brand.join(","),"in");
+          restRequest.addCondition("countryCode",this.queryCondition.country.join(","),"in");
+          restRequest.addCondition("areaCode",this.queryCondition.area.join(","),"in");
+          restRequest.addCondition("subAreaCode",this.queryCondition.subArea.join(","),"in");
+          restRequest.addCondition("cityCode",this.queryCondition.city.join(","),"in");
+          restRequest.addCondition("salesLevel",this.queryCondition.salesLevel.join(","),"in");
+          restRequest.addCondition("temperaturezone",this.queryCondition.temperaturezone.join(","),"in");
+
+	          this.$data.importingFile = true;
+	
+	          axios.post(url,restRequest.getRequestData())
+	            .then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+				    	_this.$data.importingFile = false;
+				    }else{
+		              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+		              _this.$data.importingFile = false;
+		              downloadFile(downloadLink);
+				    }
+	
+	            })
+	            .catch(function (error) {
+	              console.log(error);
+	              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+	            });
+		  },
+          clickResetBtn() {
+            for(var key in this.queryCondition){
+            	this.queryCondition[key] =[];
+            }
+          },
+          clickImportBtn(){
+        	  this.uploadDialogVisible=true;
+          },
+          clickDeleteBtn(){
+        	  if (this.multipleSelection.length == 0) {
+	        		this.$message({showClose: true,message: '请至少选择一条数据,  左侧复选框 选中',type: 'error'});
+	                return;
+	            }
+	        	this.deleteDialogVisible = true;
+          },
+          handleRowClick(val){
+        	  this.$refs.multipleTable.toggleRowSelection(val);
+          },
+          handleSelectionChange(val) {
+              this.multipleSelection = val;
+          },
+          delSummitBtn(){
+	        	this.deleteDialogVisible = false;
+	        	var ids = [];
+	        	for(var i=0;i<this.multipleSelection.length;i++) {
+	        		ids.push(this.multipleSelection[i].id);
+	        	}
+	        	
+	        	 _this.$data.queryingShopMasterData = true;
+               var url = '/ShopMasterData/del';
+				 axios.put(url, ids).then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '删除失败',message: response.data.message,offset: 100});
+				    	_this.$data.queryingShopMasterData = false;
+				    }else{
+					    _this.$notify.info({title: '',message: '删除成功',offset: 100});
+					    _this.$data.queryingShopMasterData = false;
+					    _this.queryShopMasterData(_this.queryResult.currPage);
+				    }
+				  }).catch(function (error) {
+					console.log(error);
+				    _this.$notify.error({title: '错误',message: '删除数据失败，请联系系统管理员',offset: 100});
+				    _this.$data.queryingShopMasterData = false;
+				  });	
+	        },
+	        handleUploadSuccess(res,file,fileList){
+				this.fileList=[];
+				this.uploadDialogVisible=false;
+				if(JSON.stringify(res.success)==="false"){
+					//this.$message({message: '导入失败: ' + JSON.stringify(res.message), type: 'error' });
+					this.$notify.error({title: '导入失败',message: JSON.stringify(res.message),offset: 100,duration: 0});
+				}else{
+					this.$message({ message: '导入成功',type: 'success' });
+					 _this.queryShopMasterData(_this.queryResult.currPage);
+				}
+			},handleUploadError(err, file, fileList){
+   			    this.fileList=[];
+				this.uploadDialogVisible=false;
+				this.$message({message: '导入失败' + err, type: 'error' });
+			},
+			beforeUpload(file) {
+                let Xls = file.name.split('.');
+                if(Xls[1] === 'xls'||Xls[1] === 'xlsx'){
+                    return file
+                }else {
+                    this.$message.error('只能上传   xls、xlsx 文件');
+                    return false;
+                }
+            }, 
+			clickSynchroBtn(){
+				_this = this;
+				var url = '/ShopMasterData/synchro';
+				_this.appLoading = true;
+				_this.appLoadingText = "数据同步中...";
+				axios.post(url)
+	            .then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '同步失败',message: response.data.message,offset: 100});
+				    	_this.appLoading = false;
+				    }else{
+				    	_this.$notify.info({title: '同步成功',message: '同步成功',offset: 100});
+				    	_this.appLoading = false;
+				    	_this.queryShopMasterData(_this.queryResult.currPage);
+				    }
+	
+	            })
+	            .catch(function (error) {
+	              console.log(error);
+	              _this.$notify.error({title: '错误',message: '同步数据失败，请联系系统管理员',offset: 100});
+	              _this.appLoading = false;
+	            });
+			},
+			clickUploadImageBtn(){
+				this.updateImageCondition.planShopNo="";
+				this.updateImageCondition.type="";
+				this.updateImageList=[];
+				if(!this.currInstance){
+		        	this.$message({showClose: true,message: '请选择店铺！',type: 'error'});
+		            return;
+				}
+				this.updateImageCondition.planShopNo=this.currInstance.planShopNo;
+	            this.updateImageDialogVisible=true;
+				this.queryImage();
+			},
+			queryImage(){
+				if(!this.updateImageCondition.planShopNo){
+					return;
+				}
+				var _this=this;
+				//查询图片列表
+				var restRequest = new URRestRequest();
+	            restRequest.addCondition("com1",this.updateImageCondition.planShopNo,"eq");
+	            restRequest.addCondition("deleted","0","eq");	
+	            restRequest.addOrderBy("lastUpdatedTime asc");
+	            var url="/ScmAttachment/searchAll";
+	            this.loadingImage=true;
+	            this.updateImageList=[];
+	            axios.post(url,restRequest.getRequestData())
+	            .then(function (response) {
+	            	console.log(response);
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.loadingImage=false;
+				    }else{
+				    	_this.updateImageList=response.data.data;
+				    	_this.loadingImage=false;
+				    }
+	            })
+	            .catch(function (error) {
+	            	_this.loadingImage=false;
+	              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+	            });
+			},
+			deleteImage(id,index){
+				this.$confirm('确定删除该文件?', '提示', {
+			          confirmButtonText: '确定',
+			          cancelButtonText: '取消',
+			          type: 'warning'
+			        }).then(() => {
+			        	_this=this;
+						var url="/ScmAttachment/delete/"+id;
+						axios.get(url)
+		       		 .then(function (response) {
+						    if(response.data.code==null||response.data.code!=0){
+						    	_this.$notify.error({title: '错误',message: '删除失败，请联系系统管理员',offset: 100});
+						    }else{
+						    	_this.updateImageList.splice(index,1);
+						    }
+			            })
+			            .catch(function (error) {
+			            	_this.loadingImage=false;
+			              _this.$notify.error({title: '错误',message: '删除失败，请联系系统管理员',offset: 100});
+			            });
+			        }).catch(() => {});
+			},
+			handleUploadImageSuccess(response, file, fileList) {
+	        	 if(response && response.success){
+	        		 var _this=this;
+	        		 this.imageFileList=[];
+	        		 var attachment={
+	        				 id: response.returnObject[0].id,	
+	        		         name: response.returnObject[0].name,
+	        		         abbFileName: response.returnObject[0].abbFileName,
+	        		         filaName: response.returnObject[0].filaName,
+	        		         fileType: response.returnObject[0].fileType,
+	        		         image: 1,
+	        		         name: response.returnObject[0].name,
+	        		         size: response.returnObject[0].size,
+	        		         com1:this.updateImageCondition.planShopNo,
+	        		         com2:this.updateImageCondition.type,
+	        		         classname: "com.ur.plan.master.model.ShopMasterData",
+	        		 };
+	        		 var url="/ScmAttachment/update";
+	        		 axios.put(url,attachment)
+	        		 .then(function (response) {
+	 				    if(response.data.code==null||response.data.code!=0){
+	 				    	_this.$notify.error({title: '错误',message: '上传失败，请联系系统管理员',offset: 100});
+					    }else{
+					    	_this.updateImageCondition.type="";
+					    	_this.updateImageList.push(response.data.data);
+					    	_this.loadingImage=false;
+					    }
+		            })
+		            .catch(function (error) {
+		            	_this.loadingImage=false;
+		              _this.$notify.error({title: '错误',message: '上传失败，请联系系统管理员',offset: 100});
+		            });
+	        		 
+	        	 }else{
+	        		 this.$notify.error({title: '上传失败',message: "请联系管理员！",  offset: 100});
+	        	 }	        	
+	        }, 
+	        handleUploadImageError(err, file, fileList) {
+	        	this.$notify.error({title: '上传失败',message: response.data.message,  offset: 100});
+	        },
+	        beforeUploadImage(file){	  
+	        	if(!this.updateImageCondition.type){
+	        		this.$message.error('请选择图片分类!');
+	        		return false;
+	        	}else{
+	        		if(!this.updateImageCondition.planShopNo){
+	        			this.$message.error('请选择店铺!');
+		        		return false;
+	        		}else{
+	        			const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+			            const isLt2M = file.size / 1024 / 1024 < 2;
+
+			            if (!isJPG) {
+			              this.$message.error('图片只能是 JPG 格式!');
+			              return false;
+			            }else{
+			            	if (!isLt2M) {
+					              this.$message.error('图片大小不能超过 2MB!');
+					              return false;
+					        }else{
+					        	this.loadingImage=true;
+					        	return isJPG && isLt2M;	
+					        }
+			            }
+	        		}
+	        	}
+	        }
+        }
+    })
+    var dialogCallback = function() {
+    		closedialog();
+    		vm.clickSearchBtn();
+    }
+    
+  $(document).ready(function(){    
+	  $(document).keydown(function (e) {
+  	    if ( e.which == 13) {	   
+  	    	if(this_let.expandCondition===true){
+  	    		this_let.clickSearchBtn();	
+  	    	}else{
+  	    		this_let.expandCondition=true;
+  	    	}
+  	    }else if(e.which == 46){
+  	    	if(this_let.expandCondition===false){
+  	    		this_let.clickDeleteBtn();	
+  	    	}else{
+  	    		this_let.clickResetBtn();
+  	    	}
+  	    }
+  	}); 
+	  
+  	$(window).load(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+      });
+  	
+  	$(window).resize(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+  	});    	
+  });
+  
+    /*]]>*/
+  </script>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head th:include="common/common_head :: commonHeader('用户管理')"></head>
+
+<body class="article_bg">
+
+<div id="app" style="padding-top: 5px">
+    <p class="article_tit">用户信息管理</p>
+    <div class="clearfix" style="margin-bottom: 5px;"></div>
+    <div class="card-title">
+        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存
+        </el-button>
+        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消
+        </el-button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <el-form label-width="150px" label-suffix=":" :rules="rules" ref="updateForm" :model="adminUserInfoBO">
+                        <el-row>
+                            <el-form-item label="登录ID" prop="loginId">
+                                <el-input v-model="adminUserInfoBO.loginId" placeholder="登录ID" clearable="true"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row style="padding: 10px 0;">
+                            <el-form-item label="登录密码" prop="loginPassword">
+                                <el-input v-model="adminUserInfoBO.loginPassword" placeholder="登录密码"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                            <el-form-item label="用户名" prop="adminUserName">
+                                <el-input v-model="adminUserInfoBO.adminUserName" placeholder="用户名"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row style="padding: 10px 0;">
+                            <el-form-item label="工号" prop="adminUserCode">
+                                <el-input v-model="adminUserInfoBO.adminUserCode" placeholder="工号"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-col :span="8">
+                                <el-form-item label="用户类型" prop="adminUserType">
+                                    <el-select v-model="adminUserInfoBO.adminUserType">
+                                        <el-option v-for="(item,key) in adminUserTypeItems" :label="key" :value="item"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="用户职位" prop="adminUserPose">
+                                <el-input v-model="adminUserInfoBO.adminUserPose" placeholder="用户职位"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="用户部门" prop="adminUserDepartment">
+                                <el-input v-model="adminUserInfoBO.adminUserDepartment" placeholder="用户部门"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="用户公司" prop="adminUserCompany">
+                                <el-input v-model="adminUserInfoBO.adminUserCompany" placeholder="用户公司"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="用户电话" prop="adminUserTelephone">
+                                <el-input v-model="adminUserInfoBO.adminUserTelephone" placeholder="用户电话"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="用户手机" prop="adminUserMobile">
+                                <el-input v-model="adminUserInfoBO.adminUserMobile" placeholder="用户手机"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="邮箱" prop="adminUserEmail">
+                                <el-input v-model="adminUserInfoBO.adminUserEmail" placeholder="邮箱"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="店铺编码" prop="adminShopCode">
+                                <el-input v-model="adminUserInfoBO.adminShopCode" placeholder="xxx@ur.com.cn"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="状态" prop="status">
+                                <el-checkbox v-model="adminUserInfoBO.status" :true-label="1"
+                                             :false-label="0"></el-checkbox>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="备注" prop="memo">
+                                <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}"
+                                          placeholder="请输入内容" v-model="adminUserInfoBO.memo" style="width: 400px">
+                                </el-input>
+                            </el-form-item>
+                        </el-row>
+                    </el-form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                adminUserTypeItems: {
+                    "普通用户":1,
+                    "管理员用户":2
+                },
+                adminUserInfoBO:[[${adminUserInfoBO}]],
+                rules: {
+                    loginId:[{
+                        required: true,
+                        message: '请输入登录ID',
+                        trigger: 'blur'
+                    },
+                        {pattern:/^[a-zA-Z0-9_\.@]+?$/, message: '登陆ID格式只能为字母、数字、下划线、小数点、"@"！'}
+                    ],
+                    loginPassword:[
+                        {required: true, message: '密码不能为空!', trigger: 'blur'},
+                        {pattern:/([a-z]|[A-Z]|[0-9]){6,12}/, message: '密码格式必须且只包含字母和数字，长度6到12位'}
+                    ],
+                    adminUserCode: [
+                        {required: true, message: '请输入工号!', trigger: 'blur'}
+                    ],
+                    adminUserName: [
+                        {required: true, message: '请输入用户名!', trigger: 'blur'}
+                    ]
+                }
+            }
+        },
+        created: function () {
+        },
+        methods: {
+            clickCancelBtn() {
+                window.history.back(-1);
+            },
+            clickSaveBtn() {
+                this.$refs["updateForm"].validate((valid)=>{
+                    if(valid) {
+                        _this = this;
+                        var url = "/admin/insertAdminUserInfoList";
+                        axios.post(url, this.adminUserInfoBO)
+                            .then(function (response) {
+                                if (response.data.code == null || response.data.code != 0) {
+                                    _this.$notify.warning({title: '提示!', message: response.data.message, offset: 100});
+                                } else {
+                                    alert("操作成功!");
+                                    // window.location.href = "/admin/adminUserInfoList"
+                                    window.history.back(-1);
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                                _this.$notify.error({title: '错误', message: '操作数据失败，请联系系统管理员', offset: 100});
+                            });
+                    }else{
+                        console.log("error!");
+            }
+            });
+
+            }
+        }
+
+    })
+    /*]]>*/
+</script>
+</html>

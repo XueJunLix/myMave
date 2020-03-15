@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.sup.mappers.SupplierMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.sup.model.Supplier" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" javaType="String" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" javaType="String" />
+    <result column="OLD_CODE" property="oldCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHORT_NAME" property="shortName" jdbcType="NVARCHAR" javaType="String" />
+    <result column="FULL_NAME" property="fullName" jdbcType="NVARCHAR" javaType="String" />
+    <result column="PROCESSING_MODE" property="processingMode" jdbcType="VARCHAR" javaType="String" />
+    <result column="SITE_ADD" property="siteAdd" jdbcType="NVARCHAR" javaType="String" />
+    <result column="INDUSTRY_TYPE" property="industryType" jdbcType="VARCHAR" javaType="String" />
+    <result column="ARTIFICIAL_PERSOR" property="artificialPersor" jdbcType="VARCHAR" javaType="String" />
+    <result column="GENERAL_MANAGER" property="generalManager" jdbcType="VARCHAR" javaType="String" />
+    <result column="FOUNDING_TIME" property="foundingTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="REGISTERED_CAPITAL" property="registeredCapital" jdbcType="INTEGER" javaType="Integer" />
+    <result column="FLOOR_AREA" property="floorArea" jdbcType="INTEGER" javaType="Integer" />
+    <result column="COVERED_AREA" property="coveredArea" jdbcType="INTEGER" javaType="Integer" />
+    <result column="ENTERPRISE_PROPERTY" property="enterpriseProperty" jdbcType="VARCHAR" javaType="String" />
+    <result column="OWNER" property="owner" jdbcType="NVARCHAR" javaType="String" />
+    <result column="BUSINESS_CONCEPTS" property="businessConcepts" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="NATION" property="nation" jdbcType="NVARCHAR" javaType="String" />
+    <result column="PROVINCE" property="province" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CITY" property="city" jdbcType="NVARCHAR" javaType="String" />
+    <result column="ADDRESS" property="address" jdbcType="NVARCHAR" javaType="String" />
+    <result column="ZIP_CODE" property="zipCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="COMMENTS_ADDS" property="commentsAdds" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_PAPERS" property="commentsPapers" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_CERTIFICATES" property="commentsCertificates" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_MANAGERS" property="commentsManagers" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_WORKERS" property="commentsWorkers" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_EQUIPMENTS" property="commentsEquipments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_CUSTOMERS" property="commentsCustomers" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_BIZSCOPE" property="commentsBizscope" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_PARTNERS" property="commentsPartners" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="SUP_TYPE" property="supType" jdbcType="VARCHAR" javaType="String" />
+    <result column="BUY_GROUP" property="buyGroup" jdbcType="VARCHAR" javaType="String" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SUP_GROUP" property="supGroup" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUP_CAL_STATUS" property="supCalStatus" jdbcType="VARCHAR" javaType="String" />
+    <result column="MONTH_SETTLE" property="monthSettle" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUP_COOPERATION_WAY" property="supCooperationWay" jdbcType="VARCHAR" javaType="String" />
+    <result column="DJ_TYPE" property="djType" jdbcType="VARCHAR" javaType="String" />
+    <result column="COORDINATION" property="coordination" jdbcType="VARCHAR" javaType="String" />
+    <result column="EARNEST_STATUS" property="earnestStatus" jdbcType="VARCHAR" javaType="String" />
+    <result column="REGISTERNO" property="registerno" jdbcType="VARCHAR" javaType="String" />
+    <result column="QG_NUMBER" property="qgNumber" jdbcType="VARCHAR" javaType="String" />
+    <result column="LXR" property="lxr" jdbcType="VARCHAR" javaType="String" />
+    <result column="LXR_NUMBER" property="lxrNumber" jdbcType="VARCHAR" javaType="String" />
+    <result column="JX_COMMENTS" property="jxComments" jdbcType="VARCHAR" javaType="String" />
+    <result column="JX_ADDRESS" property="jxAddress" jdbcType="VARCHAR" javaType="String" />
+    <result column="LXR_EMAIL" property="lxrEmail" jdbcType="VARCHAR" javaType="String" />
+    <result column="UR_KFY" property="urKfy" jdbcType="VARCHAR" javaType="String" />
+    <result column="AFTER_NATION" property="afterNation" jdbcType="NVARCHAR" javaType="String" />
+    <result column="AFTER_PROVINCE" property="afterProvince" jdbcType="NVARCHAR" javaType="String" />
+    <result column="AFTER_CITY" property="afterCity" jdbcType="NVARCHAR" javaType="String" />
+    <result column="AFTER_ADDRESS" property="afterAddress" jdbcType="NVARCHAR" javaType="String" />
+    <result column="AFTER_ZIP_CODE" property="afterZipCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="AFTER_PHONE_NUMBER" property="afterPhoneNumber" jdbcType="NVARCHAR" javaType="String" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID,GROUP_ID,CODE,OLD_CODE,STATUS,SHORT_NAME,FULL_NAME,PROCESSING_MODE,SITE_ADD,INDUSTRY_TYPE,ARTIFICIAL_PERSOR,GENERAL_MANAGER,FOUNDING_TIME,REGISTERED_CAPITAL,FLOOR_AREA,COVERED_AREA,ENTERPRISE_PROPERTY,OWNER,BUSINESS_CONCEPTS,COMMENTS,NATION,PROVINCE,CITY,ADDRESS,ZIP_CODE,COMMENTS_ADDS,COMMENTS_PAPERS,COMMENTS_CERTIFICATES,COMMENTS_MANAGERS,COMMENTS_WORKERS,COMMENTS_EQUIPMENTS,COMMENTS_CUSTOMERS,COMMENTS_BIZSCOPE,COMMENTS_PARTNERS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,SUP_TYPE,BUY_GROUP,DELETED,SUP_GROUP,SUP_CAL_STATUS,MONTH_SETTLE,SUP_COOPERATION_WAY,DJ_TYPE,COORDINATION,EARNEST_STATUS,REGISTERNO,QG_NUMBER,LXR,LXR_NUMBER,JX_COMMENTS,JX_ADDRESS,LXR_EMAIL,UR_KFY,AFTER_NATION,AFTER_PROVINCE,AFTER_CITY,AFTER_ADDRESS,AFTER_ZIP_CODE,AFTER_PHONE_NUMBER
+  </sql>
+
+  <select id="getSupplierByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from SRM_SUP_SUPPLIER
+    where DELETED = '0' AND ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insertSupplier" keyProperty="id" useGeneratedKeys="true" parameterType="com.ur.mro.sup.model.Supplier">
+    insert into SRM_SUP_SUPPLIER (
+    GROUP_ID,CODE,OLD_CODE,STATUS,SHORT_NAME,FULL_NAME,PROCESSING_MODE,SITE_ADD,INDUSTRY_TYPE,ARTIFICIAL_PERSOR,GENERAL_MANAGER,FOUNDING_TIME,REGISTERED_CAPITAL,FLOOR_AREA,COVERED_AREA,ENTERPRISE_PROPERTY,OWNER,BUSINESS_CONCEPTS,COMMENTS,NATION,PROVINCE,CITY,ADDRESS,ZIP_CODE,COMMENTS_ADDS,COMMENTS_PAPERS,COMMENTS_CERTIFICATES,COMMENTS_MANAGERS,COMMENTS_WORKERS,COMMENTS_EQUIPMENTS,COMMENTS_CUSTOMERS,COMMENTS_BIZSCOPE,COMMENTS_PARTNERS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,SUP_TYPE,BUY_GROUP,DELETED,SUP_GROUP,SUP_CAL_STATUS,MONTH_SETTLE,SUP_COOPERATION_WAY,DJ_TYPE,COORDINATION,EARNEST_STATUS,REGISTERNO,QG_NUMBER,LXR,LXR_NUMBER,JX_COMMENTS,JX_ADDRESS,LXR_EMAIL,UR_KFY,AFTER_NATION,AFTER_PROVINCE,AFTER_CITY,AFTER_ADDRESS,AFTER_ZIP_CODE,AFTER_PHONE_NUMBER
+    )values(
+    #{groupId,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{oldCode,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR},#{shortName,jdbcType=NVARCHAR},#{fullName,jdbcType=NVARCHAR},#{processingMode,jdbcType=VARCHAR},#{siteAdd,jdbcType=NVARCHAR},#{industryType,jdbcType=VARCHAR},#{artificialPersor,jdbcType=VARCHAR},#{generalManager,jdbcType=VARCHAR},#{foundingTime,jdbcType=TIMESTAMP},#{registeredCapital,jdbcType=INTEGER},#{floorArea,jdbcType=INTEGER},#{coveredArea,jdbcType=INTEGER},#{enterpriseProperty,jdbcType=VARCHAR},#{owner,jdbcType=NVARCHAR},#{businessConcepts,jdbcType=NVARCHAR},#{comments,jdbcType=NVARCHAR},#{nation,jdbcType=NVARCHAR},#{province,jdbcType=NVARCHAR},#{city,jdbcType=NVARCHAR},#{address,jdbcType=NVARCHAR},#{zipCode,jdbcType=VARCHAR},#{commentsAdds,jdbcType=NVARCHAR},#{commentsPapers,jdbcType=NVARCHAR},#{commentsCertificates,jdbcType=NVARCHAR},#{commentsManagers,jdbcType=NVARCHAR},#{commentsWorkers,jdbcType=NVARCHAR},#{commentsEquipments,jdbcType=NVARCHAR},#{commentsCustomers,jdbcType=NVARCHAR},#{commentsBizscope,jdbcType=NVARCHAR},#{commentsPartners,jdbcType=NVARCHAR},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{supType,jdbcType=VARCHAR},#{buyGroup,jdbcType=VARCHAR},#{deleted,jdbcType=INTEGER},#{supGroup,jdbcType=VARCHAR},#{supCalStatus,jdbcType=VARCHAR},#{monthSettle,jdbcType=VARCHAR},#{supCooperationWay,jdbcType=VARCHAR},#{djType,jdbcType=VARCHAR},#{coordination,jdbcType=VARCHAR},#{earnestStatus,jdbcType=VARCHAR},#{registerno,jdbcType=VARCHAR},#{qgNumber,jdbcType=VARCHAR},#{lxr,jdbcType=VARCHAR},#{lxrNumber,jdbcType=VARCHAR},#{jxComments,jdbcType=VARCHAR},#{jxAddress,jdbcType=VARCHAR},#{lxrEmail,jdbcType=VARCHAR},#{urKfy,jdbcType=VARCHAR},#{afterNation,jdbcType=NVARCHAR},#{afterProvince,jdbcType=NVARCHAR},#{afterCity,jdbcType=NVARCHAR},#{afterAddress,jdbcType=NVARCHAR},#{afterZipCode,jdbcType=VARCHAR},#{afterPhoneNumber,jdbcType=NVARCHAR}
+    )
+  </insert>
+
+  <update id="deleteSupplier" parameterType="java.lang.Integer" >
+    UPDATE SRM_SUP_SUPPLIER SET SRM_SUP_SUPPLIER.DELETED = '1' ,LAST_UPDATED_TIME = CONVERT(varchar,GETDATE(),120)
+    WHERE SRM_SUP_SUPPLIER.ID  = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <update id="updateSupplierByPKSelective" parameterType="com.ur.mro.sup.model.Supplier" >
+    update SRM_SUP_SUPPLIER
+    <set>
+      <if test="groupId != null" >
+        GROUP_ID = #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="oldCode != null" >
+        OLD_CODE = #{oldCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="shortName != null" >
+        SHORT_NAME = #{shortName,jdbcType=NVARCHAR},
+      </if>
+      <if test="fullName != null" >
+        FULL_NAME = #{fullName,jdbcType=NVARCHAR},
+      </if>
+      <if test="processingMode != null" >
+        PROCESSING_MODE = #{processingMode,jdbcType=VARCHAR},
+      </if>
+      <if test="siteAdd != null" >
+        SITE_ADD = #{siteAdd,jdbcType=NVARCHAR},
+      </if>
+      <if test="industryType != null" >
+        INDUSTRY_TYPE = #{industryType,jdbcType=VARCHAR},
+      </if>
+      <if test="artificialPersor != null" >
+        ARTIFICIAL_PERSOR = #{artificialPersor,jdbcType=VARCHAR},
+      </if>
+      <if test="generalManager != null" >
+        GENERAL_MANAGER = #{generalManager,jdbcType=VARCHAR},
+      </if>
+      <if test="foundingTime != null" >
+        FOUNDING_TIME = #{foundingTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registeredCapital != null" >
+        REGISTERED_CAPITAL = #{registeredCapital,jdbcType=INTEGER},
+      </if>
+      <if test="floorArea != null" >
+        FLOOR_AREA = #{floorArea,jdbcType=INTEGER},
+      </if>
+      <if test="coveredArea != null" >
+        COVERED_AREA = #{coveredArea,jdbcType=INTEGER},
+      </if>
+      <if test="enterpriseProperty != null" >
+        ENTERPRISE_PROPERTY = #{enterpriseProperty,jdbcType=VARCHAR},
+      </if>
+      <if test="owner != null" >
+        OWNER = #{owner,jdbcType=NVARCHAR},
+      </if>
+      <if test="businessConcepts != null" >
+        BUSINESS_CONCEPTS = #{businessConcepts,jdbcType=NVARCHAR},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=NVARCHAR},
+      </if>
+      <if test="nation != null" >
+        NATION = #{nation,jdbcType=NVARCHAR},
+      </if>
+      <if test="province != null" >
+        PROVINCE = #{province,jdbcType=NVARCHAR},
+      </if>
+      <if test="city != null" >
+        CITY = #{city,jdbcType=NVARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=NVARCHAR},
+      </if>
+      <if test="zipCode != null" >
+        ZIP_CODE = #{zipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="commentsAdds != null" >
+        COMMENTS_ADDS = #{commentsAdds,jdbcType=NVARCHAR},
+      </if>
+      <if test="commentsPapers != null" >
+        COMMENTS_PAPERS = #{commentsPapers,jdbcType=NVARCHAR},
+      </if>
+      <if test="commentsCertificates != null" >
+        COMMENTS_CERTIFICATES = #{commentsCertificates,jdbcType=NVARCHAR},
+      </if>
+      <if test="commentsManagers != null" >
+        COMMENTS_MANAGERS = #{commentsManagers,jdbcType=NVARCHAR},
+      </if>
+      <if test="commentsWorkers != null" >
+        COMMENTS_WORKERS = #{commentsWorkers,jdbcType=NVARCHAR},
+      </if>
+      <if test="commentsEquipments != null" >
+        COMMENTS_EQUIPMENTS = #{commentsEquipments,jdbcType=NVARCHAR},
+      </if>
+      <if test="commentsCustomers != null" >
+        COMMENTS_CUSTOMERS = #{commentsCustomers,jdbcType=NVARCHAR},
+      </if>
+      <if test="commentsBizscope != null" >
+        COMMENTS_BIZSCOPE = #{commentsBizscope,jdbcType=NVARCHAR},
+      </if>
+      <if test="commentsPartners != null" >
+        COMMENTS_PARTNERS = #{commentsPartners,jdbcType=NVARCHAR},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="supType != null" >
+        SUP_TYPE = #{supType,jdbcType=VARCHAR},
+      </if>
+      <if test="buyGroup != null" >
+        BUY_GROUP = #{buyGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="supGroup != null" >
+        SUP_GROUP = #{supGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="supCalStatus != null" >
+        SUP_CAL_STATUS = #{supCalStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="monthSettle != null" >
+        MONTH_SETTLE = #{monthSettle,jdbcType=VARCHAR},
+      </if>
+      <if test="supCooperationWay != null" >
+        SUP_COOPERATION_WAY = #{supCooperationWay,jdbcType=VARCHAR},
+      </if>
+      <if test="djType != null" >
+        DJ_TYPE = #{djType,jdbcType=VARCHAR},
+      </if>
+      <if test="coordination != null" >
+        COORDINATION = #{coordination,jdbcType=VARCHAR},
+      </if>
+      <if test="earnestStatus != null" >
+        EARNEST_STATUS = #{earnestStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="registerno != null" >
+        REGISTERNO = #{registerno,jdbcType=VARCHAR},
+      </if>
+      <if test="qgNumber != null" >
+        QG_NUMBER = #{qgNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="lxr != null" >
+        LXR = #{lxr,jdbcType=VARCHAR},
+      </if>
+      <if test="lxrNumber != null" >
+        LXR_NUMBER = #{lxrNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="jxComments != null" >
+        JX_COMMENTS = #{jxComments,jdbcType=VARCHAR},
+      </if>
+      <if test="jxAddress != null" >
+        JX_ADDRESS = #{jxAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="lxrEmail != null" >
+        LXR_EMAIL = #{lxrEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="urKfy != null" >
+        UR_KFY = #{urKfy,jdbcType=VARCHAR},
+      </if>
+      <if test="afterNation != null" >
+        AFTER_NATION = #{afterNation,jdbcType=NVARCHAR},
+      </if>
+      <if test="afterProvince != null" >
+        AFTER_PROVINCE = #{afterProvince,jdbcType=NVARCHAR},
+      </if>
+      <if test="afterCity != null" >
+        AFTER_CITY = #{afterCity,jdbcType=NVARCHAR},
+      </if>
+      <if test="afterAddress != null" >
+        AFTER_ADDRESS = #{afterAddress,jdbcType=NVARCHAR},
+      </if>
+      <if test="afterZipCode != null" >
+        AFTER_ZIP_CODE = #{afterZipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="afterPhoneNumber != null" >
+        AFTER_PHONE_NUMBER = #{afterPhoneNumber,jdbcType=NVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchSupplierCount" resultType="int" >
+    select count(*) from SRM_SUP_SUPPLIER
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchSupplier" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from SRM_SUP_SUPPLIER
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by ID
+    	</if>
+    <if test="pageBean != null" >
+     	   Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+  <select id="getSupplierByNo" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_SUP_SUPPLIER
+    where
+    CODE = #{code,jdbcType=VARCHAR}
+    <if test="djType != null" >
+      and  DJ_TYPE = #{djType,jdbcType=VARCHAR},
+    </if>
+  </select>
+  <!-- manual added -->
+  
+</mapper>

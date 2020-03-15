@@ -1,0 +1,78 @@
+{
+  "groups": [
+    {
+      "name": "sap",
+      "type": "com.ur.common.model.Mat2SAPConfig",
+      "sourceType": "com.ur.common.model.Mat2SAPConfig"
+    },
+    {
+      "name": "shop",
+      "type": "com.ur.common.model.Shop2OAConfig",
+      "sourceType": "com.ur.common.model.Shop2OAConfig"
+    },
+    {
+      "name": "spring.datasource.mro-connection",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.ur.common.MroDatasourceConfig",
+      "sourceMethod": "testDataSource()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "sap.interfaces",
+      "type": "java.lang.String",
+      "sourceType": "com.ur.common.model.Mat2SAPConfig"
+    },
+    {
+      "name": "sap.password",
+      "type": "java.lang.String",
+      "sourceType": "com.ur.common.model.Mat2SAPConfig"
+    },
+    {
+      "name": "sap.url1",
+      "type": "java.lang.String",
+      "sourceType": "com.ur.common.model.Mat2SAPConfig"
+    },
+    {
+      "name": "sap.url2",
+      "type": "java.lang.String",
+      "sourceType": "com.ur.common.model.Mat2SAPConfig"
+    },
+    {
+      "name": "sap.url3",
+      "type": "java.lang.String",
+      "sourceType": "com.ur.common.model.Mat2SAPConfig"
+    },
+    {
+      "name": "sap.username",
+      "type": "java.lang.String",
+      "sourceType": "com.ur.common.model.Mat2SAPConfig"
+    },
+    {
+      "name": "shop.access-key",
+      "type": "java.lang.String",
+      "sourceType": "com.ur.common.model.Shop2OAConfig"
+    },
+    {
+      "name": "shop.access-secret",
+      "type": "java.lang.String",
+      "sourceType": "com.ur.common.model.Shop2OAConfig"
+    },
+    {
+      "name": "shop.employ-url",
+      "type": "java.lang.String",
+      "sourceType": "com.ur.common.model.Shop2OAConfig"
+    },
+    {
+      "name": "shop.store-info-url",
+      "type": "java.lang.String",
+      "sourceType": "com.ur.common.model.Shop2OAConfig"
+    },
+    {
+      "name": "shop.token-url",
+      "type": "java.lang.String",
+      "sourceType": "com.ur.common.model.Shop2OAConfig"
+    }
+  ],
+  "hints": []
+}

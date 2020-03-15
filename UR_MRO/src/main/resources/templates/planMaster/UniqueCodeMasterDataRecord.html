@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('唯一码主数据记录')"></head>
+
+<body>
+<div id="app" class="container-fluid" style="display: none;" v-loading="loading" :element-loading-text="loadText" v-show="isLoad">
+<!-- <el-tabs type="border-card" v-on:tab-click="changeTab">
+  <el-tab-pane>
+    <span slot="label"><i class="fa fa-cogs" aria-hidden="true"></i> 唯一码主数据</span> -->
+
+<nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition"></el-switch>
+	</el-tooltip>
+	
+	<el-popover
+  width="200"
+  trigger="click">
+  <div class="visibleColumns">
+  <ul> 
+    <li><el-switch v-model="visibleColumns.createTime" inactive-text="创建时间"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.createByName" inactive-text="创建者"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.modifyTime" inactive-text="修改时间"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.modifyByName" inactive-text="修改者"></el-switch></li></ul> 
+    <li><el-switch v-model="visibleColumns.recordTime" inactive-text="版本记录时间"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.recordByName" inactive-text="版本记录创建者"></el-switch></li> 
+  </div>
+  <el-tag size="mini" slot="reference">列 显示 / 隐藏</el-tag>
+</el-popover>
+</nav>
+
+<Drawer  title="查询面板" v-model="expandCondition" width="50%">
+	<el-row>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">年份</div>
+	  <el-date-picker v-model="queryCondition.year" type="year" value-format="yyyy" placeholder="选择年份" style="width: 100%;"></el-date-picker>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">季节</div>
+	  <el-select  v-model="queryCondition.season"  placeholder="请选择季节"   
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in seasonItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">月份</div>
+	  <el-select  v-model="queryCondition.month"  placeholder="请选择月份"   
+								   align="left"  size="small" :clearable="true"  style="width: 100%;">
+								   	<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+								          :label="item" :value="item"></el-option>
+				</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+
+	  <el-col :span="8">
+	  <div class="ur-stack-label">品牌</div>
+	  <el-select  v-model="queryCondition.brand"  placeholder="请选择品牌"   
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in brandItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	 <el-col :span="8">
+	  <div class="ur-stack-label">系列</div>
+	   <el-select  v-model="queryCondition.serial"  placeholder="请选择系列"   
+							   align="left"  size="small" :clearable="true" v-on:change="changeSerial"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">原系列</div>
+	  <el-select  v-model="queryCondition.originalSerial"  placeholder="请选择原系列"   
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">风格</div>
+	   <el-select  v-model="queryCondition.style"  placeholder="请选择风格"   
+							   align="left"  size="small" :clearable="true"  :multiple="true" style="width: 100%;">
+							   	<el-option v-for="(item,index) in styleItems" :key="index" align="left"
+							          :label="item.svalue" :value="item.skey"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">商品层</div>
+	  <el-select  v-model="queryCondition.goodsLevel"  placeholder="请选择商品层"    :multiple="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in goodsLevelItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+     <el-col :span="12">
+	  <div class="ur-stack-label">品类</div>
+	  <el-select  v-model="queryCondition.category"  placeholder="请选择品类"  :multiple="true" v-on:change="changeCategory" 
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in categoryItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">中品类</div>
+	  <el-select  v-model="queryCondition.subCategory"  placeholder="请选择品类"  :multiple="true"
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,index)  in subCategoryItems" :key="index" align="left"
+							          :label="item.svalue" :value="item.skey"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">版本号</div>
+	  <el-input v-model="queryCondition.versionNo" placeholder="版本号" style="width: 100%;"></el-input>
+	  </el-col>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">唯一码</div>
+	  <el-input v-model="queryCondition.uniqueCode" placeholder="包含唯一码" style="width: 100%;"></el-input>
+	  </el-col>
+	</el-row>
+	<div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+</Drawer>
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+    
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+    
+		<el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next">
+		</el-pagination>
+</nav>
+
+        <el-table id="data_table" stripe="" :data="this.queryResult.data" :border="true" :highlight-current-row="true" 
+            :height="this.tableHeight" v-on:current-change="handleTableCurrentChange">    
+          <el-table-column property="versionNo" label="版本号" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="brandName" label="品牌" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="year" label="年" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="seasonName" label="季节" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="month" label="月" min-width="60" :show-overflow-tooltip="true"></el-table-column>          
+          <el-table-column property="serialName" label="系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="originalSerialName" label="原系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="styleName" label="风格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="goodsLevelName" label="商品层" min-width="70" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="categoryName" label="品类" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="subCategoryName" label="中品类" min-width="80" :show-overflow-tooltip="true"></el-table-column>  
+		  <el-table-column property="cytypeName" label="类别" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+		  <el-table-column property="planModelNo" label="企划款号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="uniqueCode" label="唯一码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="orderTypeName" label="订单属性" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="originalDesignNo" label="原设计号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="orderNo" label="单号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="moduleNum" label="模块号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="price" label="单价" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="planCost" label="企划成本" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="intDepth" label="取整深度" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          
+          <el-table-column property="isInPlanName" label="是否企划内" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="remark" label="备注" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="displayGenreName" label="陈列类型" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="specifyTypeName" label="指定款" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="southNorthGenre" label="南北款" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="abGenre" label="AB款" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="processingModeName" label="加工方式" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="fabricPropertyName" label="面料特性" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="marketingDate" label="上市日期" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="moduleLevel" label="模块等级" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="orderModelName" label="下单方式" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="categoryBuyer" label="品类买手" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          
+          <el-table-column property="deletedName" label="是否删除" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="deletedReason" label="取消原因" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="statusName" label="企划款状态" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="codeStatusName" label="唯一码状态" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="pushResult" label="发布结果" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isReverseAuditName" label="是否反审" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="reverseAuditName" label="反审人" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="designNo" label="设计号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="colorNo" label="色号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isAuditName" label="是否审核" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="auditName" label="审核人" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.createTime" property="createTime" label="创建时间" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.createByName" property="createByName" label="创建者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.modifyTime" property="modifyTime" label="修改时间" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.modifyByName" property="modifyByName" label="修改者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.recordTime" property="recordTime" label="版本记录时间" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.recordByName" property="recordByName" label="版本记录者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+	</div>
+	
+</div>
+
+  <!-- </el-tab-pane>
+  
+  <el-tab-pane>
+  <span slot="label"><i class="fa fa-table" aria-hidden="true"></i> 检核数据</span> -->
+
+
+<!--   </el-tab-pane>
+</el-tabs> -->
+
+
+</div>
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+   <script  th:inline="javascript">
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  versionNo:"",
+        	  year:"",
+        	  season:"",
+        	  month:"",
+        	  brand:"",
+        	  serial:"",
+        	  originalSerial:"",
+        	  style:[],
+        	  goodsLevel:[],
+        	  category:[],
+        	  subCategory:[],
+        	  uniqueCode:"",
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          expandText:"展开查询面板",
+          expandCondition:false,
+          tableHeight:500,
+          monthItems:[1,2,3,4,5,6,7,8,9,10,11,12],
+          seasonItems:[[${seasonItems}]],
+          serialItems:[[${serialItems}]],
+          allStyleItems:[[${styleItems}]],
+          styleItems:[],
+          styleItems1:[],
+          goodsLevelItems:[[${goodsLevelItems}]],
+          categoryItems:[[${categoryItems}]],
+          allSubCategoryItems:[[${subCategoryItems}]],
+          subCategoryItems:[],
+          subCategoryItems1:[], 
+          brandItems:[[${brandItems}]],
+          shopItems: [[${shopItems}]],
+          checkValueColumns:[[${checkValueColumns}]],
+          loading:false,
+          loadText:"查询数据中。。。",
+          uploadDialogVisible:false,
+          fileList:[],
+          importing:false,
+          visibleColumns:{
+        	  recordTime: false,
+        	  recordByName: false,
+        	  createTime: false,
+        	  createByName: false,
+        	  modifyTime: false,
+        	  modifyByName: false,
+          },
+          activeTabIndex:0,
+          expandCondition1: false,
+          queryCondition1:{
+        	  year:"",
+        	  season:"",
+        	  month:"",
+        	  rangeType:"",
+        	  rangeValue:[],
+        	  brand:"",
+        	  serial:"",
+        	  originalSerial:"",
+        	  style:[],
+        	  goodsLevel:[],
+        	  category:[],
+        	  subCategory:[],
+        	  uniqueCode:"",
+          },
+          queryResult1:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+        }
+      },
+      mounted: function(){
+    	  
+      },
+      created: function() {
+    	  this.isLoad = true;
+    	  this_let = this;
+    	  this.queryCondition.year=new Date();
+      },
+      methods: {
+    	handleCurrentChange(val){
+    		if(this.activeTabIndex==0){
+	    		this.queryResult.currPage = val;
+			}else if(this.activeTabIndex==1){
+	    		//this.queryResult1.currPage = val;
+			}
+    		this.queryData();
+    	},
+		handleTableCurrentChange(currentRow) {
+    		console.log("handleTableCurrentChange:"+currentRow);
+			this.currInstance = currentRow;
+		},
+    	handleSizeChange(val){
+    		if(this.activeTabIndex==0){
+        		this.queryResult.pageSize = val;
+			}else if(this.activeTabIndex==1){
+	    		this.queryResult1.pageSize = val;
+			}
+    		this.queryData();
+    	},
+    	clickSearchBtn(){
+    		if(this.activeTabIndex==0){
+        		this.queryResult.currPage = 1;
+			}else if(this.activeTabIndex==1){
+	    		//this.queryResult1.currPage = 1;
+			}
+    		this.queryData();
+    	},
+    	changeSerial(){		
+    		if(this.activeTabIndex==0){
+              	this.styleItems=[];
+              	this.queryCondition.style=[];
+              	if(this.queryCondition.serial){
+              		var serial=this.queryCondition.serial;
+              		for(var i=0;i<this.allStyleItems.length;i++){
+              			if(this.allStyleItems[i].parentKey===serial){
+              				this.styleItems.push(this.allStyleItems[i]);
+              			}
+              		}
+              	}
+            }else if(this.activeTabIndex==1){
+              	 /* this.styleItems1=[];
+              	this.queryCondition1.style=[];
+              	if(this.queryCondition1.serial){
+              		var serial=this.queryCondition1.serial;
+              		for(var i=0;i<this.allStyleItems.length;i++){
+              			if(this.allStyleItems[i].parentKey===serial){
+              				this.styleItems1.push(this.allStyleItems[i]);
+              			}
+              		}
+              	}  */
+            }
+        },
+        changeCategory(){	
+  		  if(this.activeTabIndex==0){
+  			this.subCategoryItems=[];
+	      	if(this.queryCondition.category){
+	      		var category = this.queryCondition.category;
+	          	for(var i=0;i<this.allSubCategoryItems.length;i++){
+	          		for(var j=0;j<category.length;j++){
+	          			if(category[j]===this.allSubCategoryItems[i].parentKey){
+	          				this.subCategoryItems.push(this.allSubCategoryItems[i]);
+	          			}
+	          		}
+	          	}	
+	      	}
+          }else if(this.activeTabIndex==1){
+        	 /* this.subCategoryItems1=[];
+	      	if(this.queryCondition1.category){
+	      		var category = this.queryCondition1.category;
+	          	for(var i=0;i<this.allSubCategoryItems.length;i++){
+	          		for(var j=0;j<category.length;j++){
+	          			if(category[j]===this.allSubCategoryItems[i].parentKey){
+	          				this.subCategoryItems1.push(this.allSubCategoryItems[i]);
+	          			}
+	          		}
+	          	}	
+	      	}  */
+          }
+    	  
+        },
+        queryData() {
+          _this = this;
+          var url = '/UniqueCodeMasterDataRecord/search';
+          var restRequest = new URRestRequest();
+          if(this.activeTabIndex==0){
+        	  url = '/UniqueCodeMasterDataRecord/search';
+              var page = this.queryResult.currPage;
+        	  if(!this.queryCondition.year){
+        	  	this.$notify({title: '警告',message: "请选择年份！",offset: 100,type:'warning'});
+    			return;
+      		  }
+
+              if(page==null){
+            	  page = 1;
+              }
+
+              restRequest.setCurrPage(page);
+              restRequest.setPageSize(this.queryResult.pageSize);
+
+              //可以指定排序字段
+              //restRequest.addOrderBy("columnName??? desc");
+			  // 按年份、季节（秋冬、春夏）、系列、原系列、风格、商品层、品类、中品类降序
+	          restRequest.addOrderBy("year desc");
+	          restRequest.addOrderBy("season desc");
+	          restRequest.addOrderBy("month desc");
+	          restRequest.addOrderBy("serial desc");
+	          restRequest.addOrderBy("original_serial desc");
+	          restRequest.addOrderBy("style desc");
+	          restRequest.addOrderBy("goods_level desc");
+	          restRequest.addOrderBy("category desc");
+	          restRequest.addOrderBy("sub_category desc");
+
+    	     //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+    	     restRequest.addCondition("version_no",this.queryCondition.versionNo,"eq");
+    	     restRequest.addCondition("year",this.queryCondition.year,"eq");
+    	     restRequest.addCondition("season",this.queryCondition.season,"eq");
+    	     restRequest.addCondition("month",this.queryCondition.month,"eq");
+    	     restRequest.addCondition("brand",this.queryCondition.brand,"eq");
+    	     restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+    	     restRequest.addCondition("original_serial",this.queryCondition.originalSerial,"eq");
+    	     restRequest.addCondition("style",this.queryCondition.style.join(","),"in");
+    	     restRequest.addCondition("goods_level",this.queryCondition.goodsLevel.join(","),"in");
+    	     restRequest.addCondition("category",this.queryCondition.category.join(","),"in");
+    	     restRequest.addCondition("sub_category",this.queryCondition.subCategory.join(","),"in");
+    	     restRequest.addCondition("unique_code",this.queryCondition.uniqueCode,"like");
+
+          }else if(this.activeTabIndex==1){
+        	  
+          }
+          
+         this.loading = true;
+         this.loadText = "查询数据中...";
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+			    if(response.data.code==null||response.data.code!=0){
+			    	if(_this.activeTabIndex==0){
+	                    _this.$data.queryResult.data=[];
+	                }else if(_this.activeTabIndex==1){
+	                    //_this.$data.queryResult1.data=[];
+	                }
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.loading = false;
+			    }else{
+			    	if(!response.data.data){
+			    		_this.$notify({title: '警告',message: "没有满足查询条件的数据！",offset: 100,type:'warning'});
+			    	}
+			    	if(_this.activeTabIndex==0){
+			            _this.$data.queryResult = response.data;
+		                _this.expandCondition=false;
+	                }else if(_this.activeTabIndex==1){
+	  	                //_this.$data.queryResult1 = response.data;
+		                //_this.expandCondition1=false;
+	                }
+	                _this.$data.loading = false;
+			    }
+            })
+            .catch(function (error) {
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+          clickResetBtn() {
+        	  if(this.activeTabIndex==0){
+  				this.queryCondition.versionNo="";
+				this.queryCondition.year="";
+				this.queryCondition.season="";
+				this.queryCondition.month="";
+				this.queryCondition.brand="";
+				this.queryCondition.serial="";
+				this.queryCondition.originalSerial="";
+				this.queryCondition.style=[];
+				this.queryCondition.goodsLevel=[];
+				this.queryCondition.category=[];
+				this.queryCondition.subCategory=[];
+				this.queryCondition.uniqueCode="";
+              }else if(_this.activeTabIndex==1){
+            	
+              }
+          },
+
+          clickExportBtn(){
+              _this = this;
+              var url = '/UniqueCodeMasterDataRecord/export';
+              var restRequest = new URRestRequest();
+              if(this.activeTabIndex==0){
+          	    url = '/UniqueCodeMasterDataRecord/export';
+                  var page = this.queryResult.currPage;
+                  if(!this.queryCondition.year){
+                      this.$notify({title: '警告',message: "请选择年份！",offset: 100,type:'warning'});
+                      return;
+                  }
+                  /* if(!this.queryCondition.month){
+                      this.$notify({title: '警告',message: "请选择月份！",offset: 100,type:'warning'});
+                      return;
+                  }
+                  if(!this.queryCondition.season){
+                      this.$notify({title: '警告',message: "请选择季节！",offset: 100,type:'warning'});
+                      return;
+                  }
+                  if(!this.queryCondition.serial){
+                      this.$notify({title: '警告',message: "请选择系列！",offset: 100,type:'warning'});
+                      return;
+                  } */
+                  
+                  if(page==null){
+                      page = 1;
+                  }
+                  
+                  restRequest.setCurrPage(page);
+                  restRequest.setPageSize(this.queryResult.pageSize);
+                  
+                  //可以指定排序字段
+                  //restRequest.addOrderBy("columnName??? desc");
+				  // 按年份、季节（秋冬、春夏）、系列、原系列、风格、商品层、品类、中品类降序
+		          restRequest.addOrderBy("year desc");
+		          restRequest.addOrderBy("season desc");
+		          restRequest.addOrderBy("month desc");
+		          restRequest.addOrderBy("serial desc");
+		          restRequest.addOrderBy("original_serial desc");
+		          restRequest.addOrderBy("style desc");
+		          restRequest.addOrderBy("goods_level desc");
+		          restRequest.addOrderBy("category desc");
+		          restRequest.addOrderBy("sub_category desc");
+                  
+                  //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+                  restRequest.addCondition("year",this.queryCondition.year,"eq");
+                  restRequest.addCondition("season",this.queryCondition.season,"eq");
+                  restRequest.addCondition("month",this.queryCondition.month,"eq");
+                  restRequest.addCondition("brand",this.queryCondition.brand,"eq");
+                  restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+                  restRequest.addCondition("original_serial",this.queryCondition.originalSerial,"eq");
+                  restRequest.addCondition("style",this.queryCondition.style.join(","),"in");
+                  restRequest.addCondition("goods_level",this.queryCondition.goodsLevel.join(","),"in");
+                  restRequest.addCondition("category",this.queryCondition.category.join(","),"in");
+                  restRequest.addCondition("sub_category",this.queryCondition.subCategory.join(","),"in");
+                  restRequest.addCondition("version_no",this.queryCondition.versionNo,"eq");
+         	     restRequest.addCondition("unique_code",this.queryCondition.uniqueCode,"like");
+  		
+          		}else if(this.activeTabIndex==1){
+          			
+                }
+              
+    	      this.loading = true;
+              this.loadText = "导出数据中...";
+
+              axios.post(url,restRequest.getRequestData())
+                .then(function (response) {
+    			    if(response.data.code==null||response.data.code!=0){
+    			    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+    			    	_this.$data.loading = false;
+    			    }else{
+    	              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+    	              _this.$data.loading = false;
+    	              downloadFile(downloadLink);
+    			    }
+
+                })
+                .catch(function (error) {
+                  console.log(error);
+                  _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+                });
+          },
+        /* clickExportCancelBtn() {
+  			this.showExportDialog = false;
+  		},  */
+        clickImportBtn(){
+      	  this.uploadDialogVisible=true;
+        },
+        handleUploadSuccess(res,file,fileList){
+			this.fileList=[];
+			this.uploadDialogVisible=false;
+			if(JSON.stringify(res.success)==="false"){
+				this.$message({message: '导入失败: ' + JSON.stringify(res.message), type: 'error' });
+			}else{
+				this.$message({ message: '导入成功',type: 'success' });
+				//this.queryData();
+			}
+		},
+		handleUploadError(err, file, fileList){
+			this.fileList=[];
+			this.uploadDialogVisible=false;
+			this.$message({message: '导入失败' + err, type: 'error' });
+		},
+		beforeUpload(file) {
+            let Xls = file.name.split('.');
+            if(Xls[1] === 'xls'||Xls[1] === 'xlsx'){
+                return file
+            }else {
+                this.$message.error('只能上传   xls、xlsx 文件');
+                return false;
+            }
+        }, 
+        changeTab(tab, event){
+	    	  this.activeTabIndex=tab.index;
+	    },
+	    
+
+      }
+    });
+    $(document).ready(function(){    
+    	$(document).keydown(function (e) {
+    		if ( e.which == 13) {	
+    	    	if(this_let.activeTabIndex==0){
+        	    	if(this_let.expandCondition===true){
+        	    		this_let.clickSearchBtn();	
+        	    	}else{
+        	    		this_let.expandCondition=true;
+        	    	}
+    			}else if(this_let.activeTabIndex==1){
+        	    	if(this_let.expandCondition1===true){
+        	    		this_let.clickSearchBtn();	
+        	    	}else{
+        	    		this_let.expandCondition1=true;
+        	    	}
+    			}
+    	    }
+    	});  
+    	
+    	$(window).load(function(){
+    		this_let.tableHeight =$(window).height() -$("#data_table").offset().top-1;
+        });
+    	
+    	$(window).resize(function(){
+    		this_let.tableHeight =$(window).height() -$("#data_table").offset().top-1;
+    	});  
+    });
+    /*]]>*/
+  </script>
+</html>

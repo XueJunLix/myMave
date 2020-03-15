@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.shouhuo.mappers.WlHeadMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.shouhuo.model.WlHead" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="WL_NO" property="wlNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="WL_COMPANY" property="wlCompany" jdbcType="VARCHAR" javaType="String" />
+    <result column="KD_NO" property="kdNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_NO" property="shopNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_NAME" property="shopName" jdbcType="VARCHAR" javaType="String" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" javaType="String" />
+    <result column="CONTACTS" property="contacts" jdbcType="VARCHAR" javaType="String" />
+    <result column="CAR_NO" property="carNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="YJDD_TIME" property="yjddTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="SH_ADDR" property="shAddr" jdbcType="VARCHAR" javaType="String" />
+    <result column="COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SHOP_TEL" property="shopTel" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_CONTACTS" property="shopContacts" jdbcType="VARCHAR" javaType="String" />
+    <result column="PZ_TYPE" property="pzType" jdbcType="VARCHAR" javaType="String" />
+    <result column="EXPRESS_NAME" property="expressName" jdbcType="VARCHAR" javaType="String" />
+    <result column="ACTUAL_TIME" property="actualTime" jdbcType="TIMESTAMP" javaType="Date" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID,WL_NO,WL_COMPANY,KD_NO,SHOP_NO,SHOP_NAME,TEL,CONTACTS,CAR_NO,YJDD_TIME,SH_ADDR,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,SHOP_TEL,SHOP_CONTACTS,PZ_TYPE,EXPRESS_NAME,ACTUAL_TIME
+  </sql>
+  
+  <select id="getWlHeadByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from SRM_PO2GC_WLHEAD
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertWlHead" parameterType="com.ur.mro.shouhuo.model.WlHead" >
+    insert into SRM_PO2GC_WLHEAD (
+        WL_NO,WL_COMPANY,KD_NO,SHOP_NO,SHOP_NAME,TEL,CONTACTS,CAR_NO,YJDD_TIME,SH_ADDR,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,SHOP_TEL,SHOP_CONTACTS,PZ_TYPE,EXPRESS_NAME,ACTUAL_TIME
+    )values(
+        #{wlNo,jdbcType=VARCHAR},#{wlCompany,jdbcType=VARCHAR},#{kdNo,jdbcType=VARCHAR},#{shopNo,jdbcType=VARCHAR},#{shopName,jdbcType=VARCHAR},#{tel,jdbcType=VARCHAR},#{contacts,jdbcType=VARCHAR},#{carNo,jdbcType=VARCHAR},#{yjddTime,jdbcType=TIMESTAMP},#{shAddr,jdbcType=VARCHAR},#{comments,jdbcType=NVARCHAR},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=INTEGER},#{shopTel,jdbcType=VARCHAR},#{shopContacts,jdbcType=VARCHAR},#{pzType,jdbcType=VARCHAR},#{expressName,jdbcType=VARCHAR},#{actualTime,jdbcType=TIMESTAMP}
+    )
+  </insert>
+  
+  <update id="updateWlHeadByPKSelective" parameterType="com.ur.mro.shouhuo.model.WlHead" >
+    update SRM_PO2GC_WLHEAD
+    <set>
+      <if test="wlNo != null" >
+        WL_NO = #{wlNo,jdbcType=VARCHAR},
+      </if>
+      <if test="wlCompany != null" >
+        WL_COMPANY = #{wlCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="kdNo != null" >
+        KD_NO = #{kdNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shopNo != null" >
+        SHOP_NO = #{shopNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shopName != null" >
+        SHOP_NAME = #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+        CONTACTS = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="carNo != null" >
+        CAR_NO = #{carNo,jdbcType=VARCHAR},
+      </if>
+      <if test="yjddTime != null" >
+        YJDD_TIME = #{yjddTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shAddr != null" >
+        SH_ADDR = #{shAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=NVARCHAR},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="shopTel != null" >
+        SHOP_TEL = #{shopTel,jdbcType=VARCHAR},
+      </if>
+      <if test="shopContacts != null" >
+        SHOP_CONTACTS = #{shopContacts,jdbcType=VARCHAR},
+      </if>
+      <if test="pzType != null" >
+        PZ_TYPE = #{pzType,jdbcType=VARCHAR},
+      </if>
+      <if test="expressName != null" >
+        EXPRESS_NAME = #{expressName,jdbcType=VARCHAR},
+      </if>
+      <if test="actualTime != null" >
+        ACTUAL_TIME = #{actualTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchWlHeadCount" resultType="int" >
+    select count(*) from SRM_PO2GC_WLHEAD
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchWlHead" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from SRM_PO2GC_WLHEAD
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by ID
+    	</if>
+    <if test="pageBean != null" >
+     	   Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+  
+  <!-- manual added -->
+  
+</mapper>

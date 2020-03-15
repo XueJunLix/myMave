@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="/common/common_head :: commonHeader('Shop2GC')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="padding-top: 5px" v-loading="exportingFile" element-loading-text="正在生成导出文件">
+
+<nav class="navbar" style="background-color:#eef1f6">
+    <ul class="nav">
+      <li style="padding-left:20px">
+		  <el-select v-model="searchColumn" placeholder="请选择搜索字段" :clearable="true">
+		    <el-option label="id" value="id"></el-option>
+		    <el-option label="code" value="code"></el-option>
+		    <el-option label="name" value="name"></el-option>
+		    <el-option label="contractArea" value="contractArea"></el-option>
+		    <el-option label="salesBudget" value="salesBudget"></el-option>
+		    <el-option label="brandType" value="brandType"></el-option>
+		    <el-option label="type" value="type"></el-option>
+		    <el-option label="salesLevel" value="salesLevel"></el-option>
+		    <el-option label="imageLevel" value="imageLevel"></el-option>
+		    <el-option label="isCrossLayer" value="isCrossLayer"></el-option>
+		    <el-option label="reload" value="reload"></el-option>
+		    <el-option label="isStreetShop" value="isStreetShop"></el-option>
+		    <el-option label="outsideHouse" value="outsideHouse"></el-option>
+		    <el-option label="staffEstablishing" value="staffEstablishing"></el-option>
+		    <el-option label="expectedOpenTime" value="expectedOpenTime"></el-option>
+		    <el-option label="openTime" value="openTime"></el-option>
+		    <el-option label="expectedEngineeringDeliveryTime" value="expectedEngineeringDeliveryTime"></el-option>
+		    <el-option label="engineeringDeliveryTime" value="engineeringDeliveryTime"></el-option>
+		    <el-option label="expectedEngineeringApproachTime" value="expectedEngineeringApproachTime"></el-option>
+		    <el-option label="engineeringApproachTime" value="engineeringApproachTime"></el-option>
+		    <el-option label="country" value="country"></el-option>
+		    <el-option label="province" value="province"></el-option>
+		    <el-option label="city" value="city"></el-option>
+		    <el-option label="postcode" value="postcode"></el-option>
+		    <el-option label="address" value="address"></el-option>
+		    <el-option label="createdBy" value="createdBy"></el-option>
+		    <el-option label="createdTime" value="createdTime"></el-option>
+		    <el-option label="lastUpdatedBy" value="lastUpdatedBy"></el-option>
+		    <el-option label="lastUpdatedTime" value="lastUpdatedTime"></el-option>
+		    <el-option label="deleted" value="deleted"></el-option>
+		    <el-option label="invoiceHead" value="invoiceHead"></el-option>
+		    <el-option label="disabled" value="disabled"></el-option>
+		    <el-option label="area" value="area"></el-option>
+		    <el-option label="region" value="region"></el-option>
+		    <el-option label="district" value="district"></el-option>
+		  </el-select> 
+      </li>
+      <li style="padding-left:20px">
+        <el-input v-model="searchValue" placeholder="请输入搜索内容"></el-input> 
+      </li>
+      <li style="padding-left:20px">
+        <el-button type="text" icon="search" v-on:click="clickSearchBtn">搜索</el-button>
+      </li>
+    </ul>
+	<el-switch v-model="expandCondition" off-text="展开" on-text="收缩"></el-switch>
+</nav>
+
+  <div class="card" v-if="expandCondition">  	
+
+	<div class="card-body">
+  <div class="row">
+  	<div class="col-md-12">
+		<el-form label-width="150px">
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="id">
+		    <el-input v-model="queryCondition.id" placeholder="id"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="code">
+		    <el-input v-model="queryCondition.code" placeholder="code"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="name">
+		    <el-input v-model="queryCondition.name" placeholder="name"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="contractArea">
+		    <el-input v-model="queryCondition.contractArea" placeholder="contractArea"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="salesBudget">
+		    <el-input v-model="queryCondition.salesBudget" placeholder="salesBudget"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="brandType">
+		    <el-input v-model="queryCondition.brandType" placeholder="brandType"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="type">
+		    <el-input v-model="queryCondition.type" placeholder="type"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="salesLevel">
+		    <el-input v-model="queryCondition.salesLevel" placeholder="salesLevel"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="imageLevel">
+		    <el-input v-model="queryCondition.imageLevel" placeholder="imageLevel"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="isCrossLayer">
+		    <el-input v-model="queryCondition.isCrossLayer" placeholder="isCrossLayer"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="reload">
+		    <el-input v-model="queryCondition.reload" placeholder="reload"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="isStreetShop">
+		    <el-input v-model="queryCondition.isStreetShop" placeholder="isStreetShop"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="outsideHouse">
+		    <el-input v-model="queryCondition.outsideHouse" placeholder="outsideHouse"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="staffEstablishing">
+		    <el-input v-model="queryCondition.staffEstablishing" placeholder="staffEstablishing"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="expectedOpenTime">
+						    <el-date-picker v-model="queryCondition.expectedOpenTime" type="datetime" placeholder="expectedOpenTime"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="openTime">
+						    <el-date-picker v-model="queryCondition.openTime" type="datetime" placeholder="openTime"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="expectedEngineeringDeliveryTime">
+						    <el-date-picker v-model="queryCondition.expectedEngineeringDeliveryTime" type="datetime" placeholder="expectedEngineeringDeliveryTime"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="engineeringDeliveryTime">
+						    <el-date-picker v-model="queryCondition.engineeringDeliveryTime" type="datetime" placeholder="engineeringDeliveryTime"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="expectedEngineeringApproachTime">
+						    <el-date-picker v-model="queryCondition.expectedEngineeringApproachTime" type="datetime" placeholder="expectedEngineeringApproachTime"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="engineeringApproachTime">
+						    <el-date-picker v-model="queryCondition.engineeringApproachTime" type="datetime" placeholder="engineeringApproachTime"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="country">
+		    <el-input v-model="queryCondition.country" placeholder="country"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="province">
+		    <el-input v-model="queryCondition.province" placeholder="province"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="city">
+		    <el-input v-model="queryCondition.city" placeholder="city"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="postcode">
+		    <el-input v-model="queryCondition.postcode" placeholder="postcode"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="address">
+		    <el-input v-model="queryCondition.address" placeholder="address"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="createdBy">
+		    <el-input v-model="queryCondition.createdBy" placeholder="createdBy"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="createdTime">
+						    <el-date-picker v-model="queryCondition.createdTime" type="datetime" placeholder="createdTime"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="lastUpdatedBy">
+		    <el-input v-model="queryCondition.lastUpdatedBy" placeholder="lastUpdatedBy"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="lastUpdatedTime">
+						    <el-date-picker v-model="queryCondition.lastUpdatedTime" type="datetime" placeholder="lastUpdatedTime"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="deleted">
+		    <el-input v-model="queryCondition.deleted" placeholder="deleted"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="invoiceHead">
+		    <el-input v-model="queryCondition.invoiceHead" placeholder="invoiceHead"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="disabled">
+		    <el-input v-model="queryCondition.disabled" placeholder="disabled"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="area">
+		    <el-input v-model="queryCondition.area" placeholder="area"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="region">
+		    <el-input v-model="queryCondition.region" placeholder="region"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="district">
+		    <el-input v-model="queryCondition.district" placeholder="district"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+		</el-form>
+  	</div>
+  </div>
+
+	<div class="text-center">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   
+
+	</div>
+  </div>
+</div>
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickAddBtn" icon="plus">添加</el-button>
+        <el-button v-on:click="clickUpdateBtn" icon="edit">修改</el-button>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+		<el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+		</el-pagination>
+</nav>
+
+        <el-table v-loading="queryingShop2GC" :data="this.queryResult.data" :border="true" :highlight-current-row="true" :height="this.tableHeight" v-on:current-change="handleTableCurrentChange">
+          <el-table-column property="id" label="id" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="code" label="code" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="name" label="name" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="contractArea" label="contractArea" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="salesBudget" label="salesBudget" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="brandType" label="brandType" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="type" label="type" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="salesLevel" label="salesLevel" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="imageLevel" label="imageLevel" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isCrossLayer" label="isCrossLayer" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="reload" label="reload" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isStreetShop" label="isStreetShop" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="outsideHouse" label="outsideHouse" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="staffEstablishing" label="staffEstablishing" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="expectedOpenTime" label="expectedOpenTime" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="openTime" label="openTime" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="expectedEngineeringDeliveryTime" label="expectedEngineeringDeliveryTime" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="engineeringDeliveryTime" label="engineeringDeliveryTime" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="expectedEngineeringApproachTime" label="expectedEngineeringApproachTime" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="engineeringApproachTime" label="engineeringApproachTime" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="country" label="country" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="province" label="province" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="city" label="city" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="postcode" label="postcode" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="address" label="address" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createdBy" label="createdBy" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createdTime" label="createdTime" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="lastUpdatedBy" label="lastUpdatedBy" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="lastUpdatedTime" label="lastUpdatedTime" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="deleted" label="deleted" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="invoiceHead" label="invoiceHead" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="disabled" label="disabled" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="area" label="area" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="region" label="region" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="district" label="district" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+
+	</div>
+</div>
+
+
+
+			<el-dialog ref="updatePanel" :title="dialogTitle" :visible.sync="showDialog"  v-loading="updatingShop2GC" :lock-scroll="false" size="large">
+
+				  <div class="card-title">
+			        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+			        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+			      </div>
+
+				  <div class="card">
+				  	<div class="card-body">
+
+				  <div class="row">
+				  	<div class="col-md-12">
+						<el-form  label-width="150px" :rules="rules" ref="updateForm" :model="updateInstance" label-suffix=":">
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="id" prop="id">
+						    <el-input-number v-model="updateInstance.id" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="code" prop="code">
+						    <el-input v-model="updateInstance.code" placeholder="code"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="name" prop="name">
+						    <el-input v-model="updateInstance.name" placeholder="name"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="contractArea" prop="contractArea">
+						    <el-input v-model="updateInstance.contractArea" placeholder="contractArea"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="salesBudget" prop="salesBudget">
+						    <el-input v-model="updateInstance.salesBudget" placeholder="salesBudget"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="brandType" prop="brandType">
+						    <el-input v-model="updateInstance.brandType" placeholder="brandType"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="type" prop="type">
+						    <el-input v-model="updateInstance.type" placeholder="type"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="salesLevel" prop="salesLevel">
+						    <el-input v-model="updateInstance.salesLevel" placeholder="salesLevel"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="imageLevel" prop="imageLevel">
+						    <el-input v-model="updateInstance.imageLevel" placeholder="imageLevel"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="isCrossLayer" prop="isCrossLayer">
+						    <el-input v-model="updateInstance.isCrossLayer" placeholder="isCrossLayer"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="reload" prop="reload">
+						    <el-input v-model="updateInstance.reload" placeholder="reload"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="isStreetShop" prop="isStreetShop">
+						    <el-input v-model="updateInstance.isStreetShop" placeholder="isStreetShop"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="outsideHouse" prop="outsideHouse">
+						    <el-input v-model="updateInstance.outsideHouse" placeholder="outsideHouse"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="staffEstablishing" prop="staffEstablishing">
+						    <el-input v-model="updateInstance.staffEstablishing" placeholder="staffEstablishing"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="expectedOpenTime" prop="expectedOpenTime">
+						    <el-date-picker v-model="updateInstance.expectedOpenTime" type="datetime" placeholder="expectedOpenTime"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="openTime" prop="openTime">
+						    <el-date-picker v-model="updateInstance.openTime" type="datetime" placeholder="openTime"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="expectedEngineeringDeliveryTime" prop="expectedEngineeringDeliveryTime">
+						    <el-date-picker v-model="updateInstance.expectedEngineeringDeliveryTime" type="datetime" placeholder="expectedEngineeringDeliveryTime"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="engineeringDeliveryTime" prop="engineeringDeliveryTime">
+						    <el-date-picker v-model="updateInstance.engineeringDeliveryTime" type="datetime" placeholder="engineeringDeliveryTime"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="expectedEngineeringApproachTime" prop="expectedEngineeringApproachTime">
+						    <el-date-picker v-model="updateInstance.expectedEngineeringApproachTime" type="datetime" placeholder="expectedEngineeringApproachTime"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="engineeringApproachTime" prop="engineeringApproachTime">
+						    <el-date-picker v-model="updateInstance.engineeringApproachTime" type="datetime" placeholder="engineeringApproachTime"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="country" prop="country">
+						    <el-input v-model="updateInstance.country" placeholder="country"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="province" prop="province">
+						    <el-input v-model="updateInstance.province" placeholder="province"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="city" prop="city">
+						    <el-input v-model="updateInstance.city" placeholder="city"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="postcode" prop="postcode">
+						    <el-input v-model="updateInstance.postcode" placeholder="postcode"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="address" prop="address">
+						    <el-input v-model="updateInstance.address" placeholder="address"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="createdBy" prop="createdBy">
+						    <el-input v-model="updateInstance.createdBy" placeholder="createdBy"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="createdTime" prop="createdTime">
+						    <el-date-picker v-model="updateInstance.createdTime" type="datetime" placeholder="createdTime"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="lastUpdatedBy" prop="lastUpdatedBy">
+						    <el-input v-model="updateInstance.lastUpdatedBy" placeholder="lastUpdatedBy"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="lastUpdatedTime" prop="lastUpdatedTime">
+						    <el-date-picker v-model="updateInstance.lastUpdatedTime" type="datetime" placeholder="lastUpdatedTime"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="deleted" prop="deleted">
+						    <el-input-number v-model="updateInstance.deleted" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="invoiceHead" prop="invoiceHead">
+						    <el-input v-model="updateInstance.invoiceHead" placeholder="invoiceHead"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="disabled" prop="disabled">
+						    <el-input-number v-model="updateInstance.disabled" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="area" prop="area">
+						    <el-input v-model="updateInstance.area" placeholder="area"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="region" prop="region">
+						    <el-input v-model="updateInstance.region" placeholder="region"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="district" prop="district">
+						    <el-input v-model="updateInstance.district" placeholder="district"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+						</el-form>
+				  	</div>
+				  </div>
+
+				  </div>
+				</div>
+			</el-dialog>
+
+
+
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="/common/onload_js :: onloadJS"></div>
+
+  <script>
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  id:"",
+        	  code:"",
+        	  name:"",
+        	  contractArea:"",
+        	  salesBudget:"",
+        	  brandType:"",
+        	  type:"",
+        	  salesLevel:"",
+        	  imageLevel:"",
+        	  isCrossLayer:"",
+        	  reload:"",
+        	  isStreetShop:"",
+        	  outsideHouse:"",
+        	  staffEstablishing:"",
+        	  expectedOpenTime:"",
+        	  openTime:"",
+        	  expectedEngineeringDeliveryTime:"",
+        	  engineeringDeliveryTime:"",
+        	  expectedEngineeringApproachTime:"",
+        	  engineeringApproachTime:"",
+        	  country:"",
+        	  province:"",
+        	  city:"",
+        	  postcode:"",
+        	  address:"",
+        	  createdBy:"",
+        	  createdTime:"",
+        	  lastUpdatedBy:"",
+        	  lastUpdatedTime:"",
+        	  deleted:"",
+        	  invoiceHead:"",
+        	  disabled:"",
+        	  area:"",
+        	  region:"",
+        	  district:""
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          queryingShop2GC:false,
+          updatingShop2GC:false,
+          exportingFile:false,
+          expandCondition:false,
+          searchColumn: "",
+          searchValue: "",
+          updateInstance:{},
+          isUpdate:false,
+          dialogTitle:"",
+          showDialog:false,
+          rules: {
+        	  id: [
+                { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  code: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  name: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  contractArea: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  salesBudget: [
+                { max: 53, message: '长度不能超过53', trigger: 'blur' }
+              ],
+        	  brandType: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  type: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  salesLevel: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  imageLevel: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  isCrossLayer: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  reload: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  isStreetShop: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  outsideHouse: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  staffEstablishing: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  country: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  province: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  city: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  postcode: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  address: [
+                { max: 250, message: '长度不能超过250', trigger: 'blur' }
+              ],
+        	  createdBy: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  createdTime: [
+                { type:'date', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  lastUpdatedBy: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  lastUpdatedTime: [
+                { type:'date', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  deleted: [
+                { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  invoiceHead: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  area: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  region: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  district: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ]
+          },
+          tableHeight:500
+        }
+      },
+      created: function() {
+    	  this.tableHeight = $(document).height() - 115;
+    	  this.queryShop2GC();
+      },
+      methods: {
+  		clickAddBtn() {
+			this.updateInstance = {};
+			this.isUpdate = false;
+			this.dialogTitle = '新增';
+			this.showDialog = true;
+		},
+		clickUpdateBtn() {
+			if(this.currInstance==null){
+				return;
+			}
+			this.updateInstance = this.currInstance;
+			this.isUpdate = true;
+			this.dialogTitle = '修改';
+			this.showDialog = true;
+		},
+		clickCancelBtn() {
+			this.showDialog = false;
+		},
+		clickSaveBtn() {
+	        this.$refs["updateForm"].validate((valid) => {
+	          if (valid) {
+				_this = this;
+				this.updatingShop2GC = true;
+				if(this.isUpdate==false){
+					var url = '/Shop2GC/insert';
+					axios.post(url,this.updateInstance)
+					  .then(function (response) {
+					    console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '新增失败',message: response.data.message,offset: 100});
+					    	_this.$data.updatingShop2GC = false;
+					    }else{
+						    _this.$notify.info({title: '新增成功',message: '新增成功',offset: 100});
+						    _this.$data.updatingShop2GC = false;
+						    _this.$data.showDialog = false;
+					    }
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '新增数据失败，请联系系统管理员',offset: 100});
+					  });
+				}else{
+					var url = '/Shop2GC/update';
+					axios.put(url,this.updateInstance)
+					  .then(function (response) {
+					    console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '更新失败',message: response.data.message,offset: 100});
+					    	_this.$data.updatingShop2GC = false;
+					    }else{
+						    _this.$notify.info({title: '更新成功',message: '更新成功',offset: 100});
+						    _this.$data.updatingShop2GC = false;
+						    _this.$data.showDialog = false;
+					    }
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '更新数据失败，请联系系统管理员',offset: 100});
+					  });
+				}
+	          } else {
+	            console.log('error submit!!');
+	            return false;
+	          }
+	        });
+
+		},
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryShop2GC();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryShop2GC();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryShop2GC();
+    	},
+        queryShop2GC() {
+          _this = this;
+
+          var url = '/Shop2GC/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+          //restRequest.addOrderBy("columnName??? desc");
+
+          if(this.expandCondition==true){
+	          //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	          restRequest.addCondition("id",this.queryCondition.id,"eq");
+	          restRequest.addCondition("code",this.queryCondition.code,"eq");
+	          restRequest.addCondition("name",this.queryCondition.name,"eq");
+	          restRequest.addCondition("contractArea",this.queryCondition.contractArea,"eq");
+	          restRequest.addCondition("salesBudget",this.queryCondition.salesBudget,"eq");
+	          restRequest.addCondition("brandType",this.queryCondition.brandType,"eq");
+	          restRequest.addCondition("type",this.queryCondition.type,"eq");
+	          restRequest.addCondition("salesLevel",this.queryCondition.salesLevel,"eq");
+	          restRequest.addCondition("imageLevel",this.queryCondition.imageLevel,"eq");
+	          restRequest.addCondition("isCrossLayer",this.queryCondition.isCrossLayer,"eq");
+	          restRequest.addCondition("reload",this.queryCondition.reload,"eq");
+	          restRequest.addCondition("isStreetShop",this.queryCondition.isStreetShop,"eq");
+	          restRequest.addCondition("outsideHouse",this.queryCondition.outsideHouse,"eq");
+	          restRequest.addCondition("staffEstablishing",this.queryCondition.staffEstablishing,"eq");
+	          restRequest.addCondition("expectedOpenTime",this.queryCondition.expectedOpenTime,"eq");
+	          restRequest.addCondition("openTime",this.queryCondition.openTime,"eq");
+	          restRequest.addCondition("expectedEngineeringDeliveryTime",this.queryCondition.expectedEngineeringDeliveryTime,"eq");
+	          restRequest.addCondition("engineeringDeliveryTime",this.queryCondition.engineeringDeliveryTime,"eq");
+	          restRequest.addCondition("expectedEngineeringApproachTime",this.queryCondition.expectedEngineeringApproachTime,"eq");
+	          restRequest.addCondition("engineeringApproachTime",this.queryCondition.engineeringApproachTime,"eq");
+	          restRequest.addCondition("country",this.queryCondition.country,"eq");
+	          restRequest.addCondition("province",this.queryCondition.province,"eq");
+	          restRequest.addCondition("city",this.queryCondition.city,"eq");
+	          restRequest.addCondition("postcode",this.queryCondition.postcode,"eq");
+	          restRequest.addCondition("address",this.queryCondition.address,"eq");
+	          restRequest.addCondition("createdBy",this.queryCondition.createdBy,"eq");
+	          restRequest.addCondition("createdTime",this.queryCondition.createdTime,"eq");
+	          restRequest.addCondition("lastUpdatedBy",this.queryCondition.lastUpdatedBy,"eq");
+	          restRequest.addCondition("lastUpdatedTime",this.queryCondition.lastUpdatedTime,"eq");
+	          restRequest.addCondition("deleted",this.queryCondition.deleted,"eq");
+	          restRequest.addCondition("invoiceHead",this.queryCondition.invoiceHead,"eq");
+	          restRequest.addCondition("disabled",this.queryCondition.disabled,"eq");
+	          restRequest.addCondition("area",this.queryCondition.area,"eq");
+	          restRequest.addCondition("region",this.queryCondition.region,"eq");
+	          restRequest.addCondition("district",this.queryCondition.district,"eq");
+          }else{
+        	  restRequest.addCondition(this.searchColumn,this.searchValue,"eq");
+          }
+
+          this.$data.queryingShop2GC = true;
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+              console.log(response);
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.queryingShop2GC = false;
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.queryingShop2GC = false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  		clickExportBtn(){
+		          _this = this;
+		          var url = '/Shop2GC/export';
+
+		          var restRequest = new URRestRequest();
+
+          //可以指定排序字段
+          //restRequest.addOrderBy("columnName??? desc");
+
+          if(this.expandCondition==true){
+	          //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	          restRequest.addCondition("id",this.queryCondition.id,"eq");
+	          restRequest.addCondition("code",this.queryCondition.code,"eq");
+	          restRequest.addCondition("name",this.queryCondition.name,"eq");
+	          restRequest.addCondition("contractArea",this.queryCondition.contractArea,"eq");
+	          restRequest.addCondition("salesBudget",this.queryCondition.salesBudget,"eq");
+	          restRequest.addCondition("brandType",this.queryCondition.brandType,"eq");
+	          restRequest.addCondition("type",this.queryCondition.type,"eq");
+	          restRequest.addCondition("salesLevel",this.queryCondition.salesLevel,"eq");
+	          restRequest.addCondition("imageLevel",this.queryCondition.imageLevel,"eq");
+	          restRequest.addCondition("isCrossLayer",this.queryCondition.isCrossLayer,"eq");
+	          restRequest.addCondition("reload",this.queryCondition.reload,"eq");
+	          restRequest.addCondition("isStreetShop",this.queryCondition.isStreetShop,"eq");
+	          restRequest.addCondition("outsideHouse",this.queryCondition.outsideHouse,"eq");
+	          restRequest.addCondition("staffEstablishing",this.queryCondition.staffEstablishing,"eq");
+	          restRequest.addCondition("expectedOpenTime",this.queryCondition.expectedOpenTime,"eq");
+	          restRequest.addCondition("openTime",this.queryCondition.openTime,"eq");
+	          restRequest.addCondition("expectedEngineeringDeliveryTime",this.queryCondition.expectedEngineeringDeliveryTime,"eq");
+	          restRequest.addCondition("engineeringDeliveryTime",this.queryCondition.engineeringDeliveryTime,"eq");
+	          restRequest.addCondition("expectedEngineeringApproachTime",this.queryCondition.expectedEngineeringApproachTime,"eq");
+	          restRequest.addCondition("engineeringApproachTime",this.queryCondition.engineeringApproachTime,"eq");
+	          restRequest.addCondition("country",this.queryCondition.country,"eq");
+	          restRequest.addCondition("province",this.queryCondition.province,"eq");
+	          restRequest.addCondition("city",this.queryCondition.city,"eq");
+	          restRequest.addCondition("postcode",this.queryCondition.postcode,"eq");
+	          restRequest.addCondition("address",this.queryCondition.address,"eq");
+	          restRequest.addCondition("createdBy",this.queryCondition.createdBy,"eq");
+	          restRequest.addCondition("createdTime",this.queryCondition.createdTime,"eq");
+	          restRequest.addCondition("lastUpdatedBy",this.queryCondition.lastUpdatedBy,"eq");
+	          restRequest.addCondition("lastUpdatedTime",this.queryCondition.lastUpdatedTime,"eq");
+	          restRequest.addCondition("deleted",this.queryCondition.deleted,"eq");
+	          restRequest.addCondition("invoiceHead",this.queryCondition.invoiceHead,"eq");
+	          restRequest.addCondition("disabled",this.queryCondition.disabled,"eq");
+	          restRequest.addCondition("area",this.queryCondition.area,"eq");
+	          restRequest.addCondition("region",this.queryCondition.region,"eq");
+	          restRequest.addCondition("district",this.queryCondition.district,"eq");
+          }else{
+        	  restRequest.addCondition(this.searchColumn,this.searchValue,"eq");
+          }
+
+		          this.$data.exportingFile = true;
+
+		          axios.post(url,restRequest.getRequestData())
+		            .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+					    	_this.$data.exportingFile = false;
+					    }else{
+			              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+			              _this.$data.exportingFile = false;
+			              downloadFile(downloadLink);
+					    }
+
+		            })
+		            .catch(function (error) {
+		              console.log(error);
+		              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+		            });
+			},
+          clickResetBtn() {
+            for(var key in this.queryCondition){
+            	this.queryCondition[key] = "";
+            }
+          }
+        }
+    })
+    /*]]>*/
+  </script>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<script type="text/javascript">  
+	alert("登录用户会话失效，请重新登录！");
+	if (window != top){
+		top.location.href = "/login";   
+	} else {
+		window.location.href = "/login";
+	}
+</script>  
+</head>
+<body>
+</body>
+</html>

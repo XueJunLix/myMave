@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('操作管理')"></head>
+<body>
+<div id="app" class="article_bg">
+    <p class="article_tit">操作列表</p>
+    <div class="row" >
+    <div class="col-md-12">
+    <nav class="navbar">
+        <ul class="nav">
+            <li>
+                <el-button v-on:click="newJob()" icon="plus">新建</el-button>
+                <el-button v-on:click="clickUpdateBtn()" icon="edit" type="info">修改</el-button>
+            </li>
+        </ul>
+        <el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+        </el-pagination>
+    </nav>
+    <template>
+        <el-table :data="this.queryResult.data" :stripe="true"
+                  style="width:100%" v-on:current-change="handleTableCurrentChange">
+            <el-table-column prop="operationCode" label="操作代码"></el-table-column>
+            <el-table-column prop="operationName" label="操作名称"></el-table-column>
+        </el-table>
+    </template>
+    </div>
+    </div>
+</div>
+
+
+</body>
+
+
+<div th:include="common/onload_js :: onloadJS"></div>
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                queryResult: {
+                    totalRecordNum: 0,
+                    currPage: 1,
+                    pageSize: 20
+                }
+            }
+        },
+        created: function () {
+            this.tableHeight = $(document).height() - 115;
+            this.queryEnumGroup();
+        },
+        methods: {
+            clickUpdateBtn() {
+                if(this.currInstance==null){
+                    this.$message({
+                        message:"请点击一行再进行操作",
+                        type:'warning'
+                    });
+                    return;
+                }
+                window.location.href="/admin/adminOperationInfoManage?operationId=" + this.currInstance.operationId;
+            },
+            newJob(){
+                window.location.href="/admin/adminOperationInfoManage";
+            },
+            handleCurrentChange(val){
+                //var参数表示当前页,点击跳到所选页,设置当前页,调用查询
+                this.queryResult.currPage = val;
+                this.queryEnumGroup();
+            },
+            handleSizeChange(val) {
+                //var参数表示当前页大小,
+                this.queryResult.pageSize = val;
+                this.queryEnumGroup();
+            },
+            handleTableCurrentChange(currentRow) {
+                this.currInstance = currentRow;
+            },
+            queryEnumGroup() {
+                _this = this;
+                var url = '/admin/adminOperationInfoList/search';
+                var page = this.queryResult.currPage;
+                if(page==null){
+                    page = 1;
+                }
+
+                var restRequest = new URRestRequest();
+                restRequest.setCurrPage(page);
+                restRequest.setPageSize(this.queryResult.pageSize);
+
+                //可以指定排序字段
+                // restRequest.addOrderBy(this.getSequence());
+
+                // if(this.expandCondition==true){
+                //     //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+                //     restRequest.addCondition("id",this.queryCondition.id,"eq");
+                //     restRequest.addCondition("code",this.queryCondition.code,"eq");
+                //     restRequest.addCondition("name",this.queryCondition.name,"eq");
+                //     restRequest.addCondition("type",this.queryCondition.type,"eq");
+                //     restRequest.addCondition("descriptionCn",this.queryCondition.descriptionCn,"eq");
+                //     restRequest.addCondition("descriptionEn",this.queryCondition.descriptionEn,"eq");
+                //     restRequest.addCondition("createBy",this.queryCondition.createBy,"eq");
+                //     restRequest.addCondition("createTime",this.queryCondition.createTime,"eq");
+                //     restRequest.addCondition("modifyBy",this.queryCondition.modifyBy,"eq");
+                //     restRequest.addCondition("modifyTime",this.queryCondition.modifyTime,"eq");
+                // }else{
+                //     restRequest.addCondition(this.searchColumn,this.searchValue,"eq");
+                // }
+
+                axios.post(url,restRequest.getRequestData())
+                    .then(function (response) {
+                        console.log(response.data);
+                        if(response.data.code==null||response.data.code!=0){
+                            _this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+                            _this.$data.queryingEnumGroup = false;
+                        }else{
+                            _this.$data.queryResult = response.data;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+                    });
+            }
+
+        }
+        })
+
+    /*]]>*/
+</script>
+
+</html>

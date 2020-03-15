@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.shouhuo.mappers.WlItemMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.shouhuo.model.WlItem" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="WL_ID" property="wlId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SH_NO" property="shNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="ROW_NO" property="rowNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_CODE" property="matCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_NAME" property="matName" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_SPEC" property="matSpec" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_CZ" property="matCz" jdbcType="VARCHAR" javaType="String" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" javaType="String" />
+    <result column="SH_QUT" property="shQut" jdbcType="NUMERIC" javaType="String" />
+    <result column="S_TYPE" property="sType" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUP_SHNO" property="supShno" jdbcType="VARCHAR" javaType="String" />
+    <result column="COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="B_TYPE" property="bType" jdbcType="VARCHAR" javaType="String" />
+    <result column="M_TYPE" property="mType" jdbcType="VARCHAR" javaType="String" />
+    <result column="PR_NO" property="prNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="PO_NO" property="poNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="CH_NO" property="chNo" jdbcType="VARCHAR" javaType="String" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID,WL_ID,SH_NO,ROW_NO,MAT_CODE,MAT_NAME,MAT_SPEC,MAT_CZ,UNIT,SH_QUT,S_TYPE,SUP_SHNO,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,B_TYPE,M_TYPE,PR_NO,PO_NO,CH_NO
+  </sql>
+  
+  <select id="getWlItemByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from SRM_PO2GC_WLITEM
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertWlItem" parameterType="com.ur.mro.shouhuo.model.WlItem" >
+    insert into SRM_PO2GC_WLITEM (
+        WL_ID,SH_NO,ROW_NO,MAT_CODE,MAT_NAME,MAT_SPEC,MAT_CZ,UNIT,SH_QUT,S_TYPE,SUP_SHNO,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,B_TYPE,M_TYPE,PR_NO,PO_NO,CH_NO
+    )values(
+        #{wlId,jdbcType=INTEGER},#{shNo,jdbcType=VARCHAR},#{rowNo,jdbcType=VARCHAR},#{matCode,jdbcType=VARCHAR},#{matName,jdbcType=VARCHAR},#{matSpec,jdbcType=VARCHAR},#{matCz,jdbcType=VARCHAR},#{unit,jdbcType=VARCHAR},#{shQut,jdbcType=NUMERIC},#{sType,jdbcType=VARCHAR},#{supShno,jdbcType=VARCHAR},#{comments,jdbcType=NVARCHAR},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=INTEGER},#{bType,jdbcType=VARCHAR},#{mType,jdbcType=VARCHAR},#{prNo,jdbcType=VARCHAR},#{poNo,jdbcType=VARCHAR},#{chNo,jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <update id="updateWlItemByPKSelective" parameterType="com.ur.mro.shouhuo.model.WlItem" >
+    update SRM_PO2GC_WLITEM
+    <set>
+      <if test="wlId != null" >
+        WL_ID = #{wlId,jdbcType=INTEGER},
+      </if>
+      <if test="shNo != null" >
+        SH_NO = #{shNo,jdbcType=VARCHAR},
+      </if>
+      <if test="rowNo != null" >
+        ROW_NO = #{rowNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matCode != null" >
+        MAT_CODE = #{matCode,jdbcType=VARCHAR},
+      </if>
+      <if test="matName != null" >
+        MAT_NAME = #{matName,jdbcType=VARCHAR},
+      </if>
+      <if test="matSpec != null" >
+        MAT_SPEC = #{matSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="matCz != null" >
+        MAT_CZ = #{matCz,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="shQut != null" >
+        SH_QUT = #{shQut,jdbcType=NUMERIC},
+      </if>
+      <if test="sType != null" >
+        S_TYPE = #{sType,jdbcType=VARCHAR},
+      </if>
+      <if test="supShno != null" >
+        SUP_SHNO = #{supShno,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=NVARCHAR},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="bType != null" >
+        B_TYPE = #{bType,jdbcType=VARCHAR},
+      </if>
+      <if test="mType != null" >
+        M_TYPE = #{mType,jdbcType=VARCHAR},
+      </if>
+      <if test="prNo != null" >
+        PR_NO = #{prNo,jdbcType=VARCHAR},
+      </if>
+      <if test="poNo != null" >
+        PO_NO = #{poNo,jdbcType=VARCHAR},
+      </if>
+      <if test="chNo != null" >
+        CH_NO = #{chNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchWlItemCount" resultType="int" >
+    select count(*) from SRM_PO2GC_WLITEM
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchWlItem" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from SRM_PO2GC_WLITEM
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by ID
+    	</if>
+    <if test="pageBean != null" >
+     	   Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+  
+  <!-- manual added -->
+  
+</mapper>

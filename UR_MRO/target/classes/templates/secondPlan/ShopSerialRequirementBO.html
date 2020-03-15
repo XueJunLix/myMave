@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('单店系列需求')"></head>
+<style>
+ .el-table__header th{
+     padding: 5px 1px 5px 1px !important;
+     margin:0px 0px 0px 0px;
+     line-height:15px !important;
+  } 
+ .el-table__header th>div{
+     padding:0px 0px 0px 0px !important;
+     line-height:15px !important;
+     margin:0px 0px 0px 0px;
+     width:100% !important;
+     
+     
+   } 
+</style>
+<body>
+
+<div id="app" class="container-fluid" style="display: none;" v-loading="loading" :element-loading-text="loadText" v-show="isLoad">
+<!-- <el-tabs type="border-card" v-on:tab-click="changeTab">
+  <el-tab-pane>
+    <span slot="label"><i class="fa fa-cogs" aria-hidden="true"></i> 单店系列需求</span> -->    
+<nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition"></el-switch>
+	</el-tooltip>
+</nav>
+
+<Drawer  title="查询面板" v-model="expandCondition" width="40%">
+	<el-row>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">年份</div>
+	  <el-date-picker v-model="queryCondition.year" type="year" value-format="yyyy" placeholder="选择年份" style="width: 100%;"></el-date-picker>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">月份</div>
+	  <el-select  v-model="queryCondition.month"  placeholder="请选择月份"   
+								   align="left"  size="small" :clearable="true"  style="width: 100%;">
+								   	<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+								          :label="item" :value="item"></el-option>
+				</el-select>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">是否新店</div>
+	  <el-select  v-model="queryCondition.isNewShop"  placeholder="请选择"   
+								   align="left"  size="small" :clearable="true"  style="width: 100%;">
+								   	<el-option v-for="(item,index) in isNewShopItems" align="left" 
+								          :key="item.value" :label="item.label" :value="item.value"></el-option>
+				</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+	 <el-col :span="24">
+	  <div class="ur-stack-label">系列</div>
+	   <el-select  v-model="queryCondition.serial"  placeholder="请选择系列" multiple="true"  filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>	
+	<el-row>
+	<el-col :span="6">
+	  <div class="ur-stack-label">大区</div>
+	  <el-select  v-model="queryCondition.area"  placeholder="请选择"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in areaItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="6">
+	  <div class="ur-stack-label">商品分区</div>
+	  <el-select  v-model="queryCondition.goodsArea"  placeholder="请选择"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in goodsAreaItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="6">
+	  <div class="ur-stack-label">城市分类</div>
+	   <el-select  v-model="queryCondition.cityLevel"  placeholder="请选择"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in cityLevelItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="6">
+	  <div class="ur-stack-label">小区</div>
+	  <el-select  v-model="queryCondition.subArea"  placeholder="请选择"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in subAreaItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+	 <el-col :span="24">
+	  <div class="ur-stack-label">店铺</div>
+	   <el-select  v-model="queryCondition.planShopNo"  placeholder="请选择店铺"  multiple="true"  filterable="true"
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in shopItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>	
+	<el-row>
+	 <el-col :span="12">
+	  <div class="ur-stack-label">销售级别</div>
+	   <el-select  v-model="queryCondition.saleLevel"  placeholder="请选择" multiple="true"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in saleLevelItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">版本</div>
+	   <el-select  v-model="queryCondition.version"  placeholder="请选择"  multiple="true"  filterable="true"
+							   align="left"  size="small" :clearable="true"   style="width: 100%;">
+							   	<el-option v-for="(item,key) in versionItems" align="left" 
+							          :key="item.value" :label="item.label" :value="item.value"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>	
+	 <div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+</Drawer>
+
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickImportBtn()"><i class="fa fa-upload" aria-hidden="true" style="padding-right:5px"></i>导入</el-button>
+        <el-button v-on:click="clickExportBtn()"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+        <el-button v-on:click="clickSubmitBtn('2.3')"><i class="fa fa-level-up" aria-hidden="true" style="padding-right:5px"></i>提交</el-button>
+        <!-- <el-button v-on:click="clickSubmitBtn('2.5')"><i class="fa fa-level-up" aria-hidden="true" style="padding-right:5px"></i>2.5版本提交</el-button> -->
+      </li>
+    </ul>
+		<el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+		</el-pagination>
+</nav>
+
+    <el-dialog title="导入" :visible.sync="uploadDialogVisible" :close-on-click-modal="false">
+		 <a href="template/ShopSerialRequirementTemplate.xlsx" style="font-size: 15px; color: red;">模版下载</a>
+			    <div style="height: 50px;">此导入是按品牌+年+月+系列+原系列+店铺覆盖数据的</div>
+         		<el-form style="width: 30rem;"
+         		  class="form uploadform">
+	         		 <el-form-item>
+		         		<el-upload  ref="upload"  action="/ShopSerialRequirementBO/importExcel/Merchandise" 
+		         		 	:before-upload="beforeUpload" :limit="1"
+			         		:file-list="fileList"  :auto-upload='true' :show-upload-list="false" 
+			         		:on-success="handleUploadSuccess"
+			         		:on-error="handleUploadError">
+			                <el-button slot="trigger"  type="primary">点击上传</el-button>
+			           		<div slot="tip" class="el-upload__tip">只能上传xls/xlsx 文件,每次只能上传一个</div>
+		            	</el-upload>
+	            	</el-form-item>
+            	</el-form>
+	</el-dialog>
+	
+	<el-dialog title="提交" :visible.sync="submitDialogVisible" :close-on-click-modal="false">
+		 <el-form :inline="true" label-position="right" v-loading="committing" element-loading-text="提交数据中，请稍后。。。">	  
+		  <el-form-item label="品牌" label-width="70px">
+		   <el-select  v-model="submitCondition.brand"  placeholder="请选择季节"   
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in brandItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			</el-select>
+		  </el-form-item>
+		  <el-form-item label="年份" label-width="70px">
+		     <el-date-picker v-model="submitCondition.year" size="small" type="year" value-format="yyyy" placeholder="选择年份" style="width: 100%;"></el-date-picker>
+		  </el-form-item>		  
+		  <el-form-item label="月份" label-width="70px">
+		  <el-select  v-model="submitCondition.month"  placeholder="请选择月份"   
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+								          :label="item" :value="item"></el-option>
+			</el-select>
+		  </el-form-item>
+		  <el-form-item label="系列" label-width="70px">
+			  <el-select  v-model="submitCondition.serial"   style="width: 100%;"
+								   align="left"  size="small" :clearable="true">
+								   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			 </el-select>
+		  </el-form-item>
+		 <!--  <el-form-item label="大区" label-width="70px" v-if="this.submitVersion==='2.5'">
+			  <el-select  v-model="submitCondition.area"   style="width: 100%;"
+								   align="left"  size="small" :clearable="true">
+								   	<el-option v-for="(item,key) in areaItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			 </el-select>
+		  </el-form-item>	 -->	  
+	  </el-form>
+	  <span slot="footer" class="dialog-footer">
+	    <el-button v-on:click="submitDialogVisible = false" :disabled="committing">关闭</el-button>
+	    <el-button type="primary" v-on:click="commit" :disabled="committing">提交</el-button>
+	  </span>
+	</el-dialog>
+
+        <el-table  id="data_table" stripe="" :data="this.queryResult.data" :border="true" :highlight-current-row="true" :height="this.tableHeight" v-on:current-change="handleTableCurrentChange">
+          <el-table-column fixed="left" property="month" label="月" min-width="40" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column fixed="left" property="serialName" label="系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column fixed="left" property="shopName" label="店铺名称" min-width="180" :show-overflow-tooltip="true"></el-table-column>  
+          <el-table-column label="店铺资料">
+          <el-table-column property="brandName" label="品牌" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="year" label="年" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="originalSerialName" label="原系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopArea" label="大区" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="subArea" label="小区" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="goodsAreaName" label="商品分区" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cityLevel" label="城市分类" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="openTime" label="开业时间" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isNewShop" label="是否新店" min-width="50" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopPlanLevel" label="企划级别" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="salesLevel" label="销售级别" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="version" label="版本号" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isSubmit" label="是否提交" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          </el-table-column>
+          <el-table-column label="满场与宽度">
+          <el-table-column property="effectiveStandardSku" label="有效标准SKU" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="firstPlanNewProductPro" label="一次企划新品开发占比" min-width="120" :show-overflow-tooltip="true"  :formatter="formatPercent"></el-table-column>
+          <el-table-column property="firstPlanSku" label="一次企划SKU数" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="secondPlanNewProductPro" label="二次企划新品占比（转换满场）" min-width="120" :show-overflow-tooltip="true"  :formatter="formatPercent"></el-table-column>
+          <el-table-column property="secondPlanRequirementSku" label="二次企划需求SKU数" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="secondPlanFullRate" label="二次企划满场率" min-width="100" :show-overflow-tooltip="true"  :formatter="formatPercent"></el-table-column>
+          </el-table-column>
+          <el-table-column label="深度">
+          <el-table-column property="firstPlanAvgDep" label="一次企划平均深度" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="minDep" label="最低深度" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="maxDep" label="最高深度" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          </el-table-column>
+          <el-table-column label="平均单价">
+          <el-table-column property="unitPrice" label="平均单价" min-width="80" :show-overflow-tooltip="true" :formatter="formatMathRound"></el-table-column>
+          </el-table-column>
+          <el-table-column label="企划配销">
+          <el-table-column property="firstPlanAmount" label="一次企划金额" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="firstPlanDisVsSale" label="一次企划配销" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column label="新品配销比" min-width="80" :show-overflow-tooltip="true">
+           <template scope="scope">{{scope.row.minStandardDisVsSale}}-{{scope.row.maxStandardDisVsSale}}</template>
+           </el-table-column>
+          </el-table-column>
+          <el-table-column label="当月销售目标">
+          <el-table-column property="salesTargetAmount" label="全系列目标" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="serialPromotion" label="系列占比" min-width="100" :show-overflow-tooltip="true"  :formatter="formatPercent"></el-table-column>
+          <el-table-column property="serialSalesTargetAmount" label="系列目标" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="salesDiscount" label="新品销售折扣" min-width="100" :show-overflow-tooltip="true" :formatter="formatPercent"></el-table-column>
+          <el-table-column property="newProductSalesPro" label="新品销售占比" min-width="100" :show-overflow-tooltip="true" :formatter="formatPercent"></el-table-column>
+          <el-table-column property="serialSalesTargetTagAmount" label="系列新品目标吊牌额" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          </el-table-column>
+          <el-table-column label="二次企划调整">
+          <el-table-column property="secondPlanAdjustSku" label="二次企划需加/减SKU数" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="secondPlanDistributionVsSale" label="二次企划目标配销" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="preYearDisVsSale" label="去年同期配销" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="secondPlanAmount" label="二次企划金额" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="secondPlanDep" label="二次企划总深度" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="secondPlanAvgDep" label="二次企划平均深度" min-width="100" :show-overflow-tooltip="true" :formatter="formatMathRound"></el-table-column>
+          </el-table-column>
+          <el-table-column label="同年上月达成">
+          <el-table-column property="preFirstMonthSalesAmount" label="预估达成销售额" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="preFirstMonthSalesDiscount" label="销售折扣" min-width="100" :show-overflow-tooltip="true" :formatter="formatPercent"></el-table-column>
+          <el-table-column property="preFirstMonthAchievementRate" label="预估达成率" min-width="100" :show-overflow-tooltip="true" :formatter="formatPercent"></el-table-column>
+          <el-table-column property="preFirstMonthDisAvgDep" label="配货平均深度" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          </el-table-column>
+          <el-table-column label="同年上上月达成">
+          <el-table-column property="preSecondMonthSalesAmount" label="实际销售额" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="preSecondMonthSalesDiscount" label="销售折扣" min-width="100" :show-overflow-tooltip="true" :formatter="formatPercent"></el-table-column>
+          <el-table-column property="preSecondMonthAchievementRate" label="达成率" min-width="100" :show-overflow-tooltip="true" :formatter="formatPercent"></el-table-column>
+          <el-table-column property="preSecondMonthDisAvgDep" label="配货平均深度" min-width="100" :show-overflow-tooltip="true"></el-table-column>          
+          </el-table-column>
+          <el-table-column label="去年同期达成">
+          <el-table-column property="preYearSaleAmount" label="实际销售额" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="preYearSalesDiscount" label="销售折扣" min-width="80" :show-overflow-tooltip="true" :formatter="formatPercent"></el-table-column>
+          <el-table-column property="preYearAchievementRate" label="达成率" min-width="80" :show-overflow-tooltip="true" :formatter="formatPercent"></el-table-column>
+          </el-table-column>
+          <el-table-column label="其他">
+          <el-table-column property="remark" label="备注" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createByName" label="创建者" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTime" label="创建时间" min-width="140" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyByName" label="修改者" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyTime" label="修改时间" min-width="140" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="submitByName" label="提交人" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="submitTime" label="提交时间" min-width="140" :show-overflow-tooltip="true"></el-table-column>
+          </el-table-column>
+        </el-table>
+
+	</div>
+</div>
+
+	<!-- </el-tab-pane>
+	<el-tab-pane>
+	<span slot="label"><i class="fa fa-table" aria-hidden="true"></i> 单店系列需求检核</span>
+
+<nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition1"></el-switch>
+	</el-tooltip>
+</nav>
+
+<Drawer  title="查询面板" v-model="expandCondition1" width="40%">
+	<el-row>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">年份</div>
+	  <el-date-picker v-model="queryCondition1.year" type="year" value-format="yyyy" placeholder="选择年份" style="width: 100%;"></el-date-picker>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">月份</div>
+	  <el-select  v-model="queryCondition1.month"  placeholder="请选择月份"   
+								   align="left"  size="small" :clearable="true"  style="width: 100%;">
+								   	<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+								          :label="item" :value="item"></el-option>
+				</el-select>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">是否新店</div>
+	  <el-select  v-model="queryCondition1.isNewShop"  placeholder="请选择"   
+								   align="left"  size="small" :clearable="true"  style="width: 100%;">
+								   	<el-option v-for="(item,index) in isNewShopItems" align="left" 
+								          :key="item.value" :label="item.label" :value="item.value"></el-option>
+				</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+	 <el-col :span="24">
+	  <div class="ur-stack-label">系列</div>
+	   <el-select  v-model="queryCondition1.serial"  placeholder="请选择系列" multiple="true"  filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>	
+	<el-row>
+	<el-col :span="6">
+	  <div class="ur-stack-label">大区</div>
+	  <el-select  v-model="queryCondition1.area"  placeholder="请选择"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in areaItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="6">
+	  <div class="ur-stack-label">商品分区</div>
+	  <el-select  v-model="queryCondition1.goodsArea"  placeholder="请选择"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in goodsAreaItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="6">
+	  <div class="ur-stack-label">城市分类</div>
+	   <el-select  v-model="queryCondition1.cityLevel"  placeholder="请选择"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in cityLevelItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="6">
+	  <div class="ur-stack-label">小区</div>
+	  <el-select  v-model="queryCondition1.subArea"  placeholder="请选择"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in subAreaItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+	 <el-col :span="24">
+	  <div class="ur-stack-label">店铺</div>
+	   <el-select  v-model="queryCondition1.planShopNo"  placeholder="请选择店铺"  multiple="true"  filterable="true"
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in shopItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>	
+	<el-row>
+	 <el-col :span="12">
+	  <div class="ur-stack-label">销售级别</div>
+	   <el-select  v-model="queryCondition1.saleLevel"  placeholder="请选择" multiple="true"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in saleLevelItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>	
+	 <div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+</Drawer>
+
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickImportBtn()"><i class="fa fa-upload" aria-hidden="true" style="padding-right:5px"></i>导入</el-button>
+        <el-button v-on:click="clickExportBtn()"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+		<el-pagination :page-size="20" :total="queryResult1.totalRecordNum" :current-page="queryResult1.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+		</el-pagination>
+</nav>
+
+
+        <el-table  id="data_table" stripe="" :data="this.queryResult1.data" :border="true" :highlight-current-row="true" :height="this.tableHeight" v-on:current-change="handleTableCurrentChange">
+          <el-table-column fixed="left" property="month" label="月" min-width="40" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column fixed="left" property="serialName" label="系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column fixed="left" property="shopName" label="店铺名称" min-width="180" :show-overflow-tooltip="true"></el-table-column>  
+          <el-table-column property="brandName" label="品牌" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="year" label="年" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="originalSerialName" label="原系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopArea" label="大区" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="subArea" label="小区" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="goodsAreaName" label="商品分区" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cityLevel" label="城市分类" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="openTime" label="开业时间" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isNewShop" label="是否新店" min-width="50" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopPlanLevel" label="企划等级" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          
+          <el-table-column property="salesLevel" label="销售级别" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+		  <el-table-column property="serialSalesTargetAmount" label="系列销售目标金额" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="effectiveStandardSku" label="有效标准SKU" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="minDep" label="最低深度" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="maxDep" label="最高深度" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+       
+          <el-table-column label="系统建议结果">
+          <el-table-column property="secondPlanNewProductPro1" label="二次企划新品占比（转换满场）" min-width="120" :show-overflow-tooltip="true" :formatter="formatPercent"></el-table-column>
+          <el-table-column property="secondPlanRequirementSku1" label="二次企划需求SKU数" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="secondPlanFullRate1" label="二次企划满场率" min-width="100" :show-overflow-tooltip="true"  :formatter="formatPercent"></el-table-column>
+          <el-table-column property="secondPlanAvgDep1" label="二次企划平均深度" min-width="100" :show-overflow-tooltip="true" :formatter="formatMathRound"></el-table-column>
+          <el-table-column property="secondPlanAmount1" label="二次企划金额" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="secondPlanDistributionVsSale1" label="二次企划目标配销" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          </el-table-column>
+          <el-table-column label="商品调整结果（初版）">
+          <el-table-column property="secondPlanNewProductPro2" label="二次企划新品占比（转换满场）" min-width="120" :show-overflow-tooltip="true"  :formatter="formatPercent"></el-table-column>
+          <el-table-column property="secondPlanRequirementSku2" label="二次企划需求SKU数" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="secondPlanFullRate2" label="二次企划满场率" min-width="100" :show-overflow-tooltip="true"  :formatter="formatPercent"></el-table-column>
+          <el-table-column property="secondPlanAvgDep2" label="二次企划平均深度" min-width="100" :show-overflow-tooltip="true" :formatter="formatMathRound"></el-table-column>
+          <el-table-column property="secondPlanAmount2" label="二次企划金额" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="secondPlanDistributionVsSale2" label="二次企划目标配销" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="remark2" label="备注" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          </el-table-column>
+          <el-table-column label="零售调整结果 ">
+          <el-table-column property="secondPlanNewProductPro3" label="二次企划新品占比（转换满场）" min-width="120" :show-overflow-tooltip="true"  :formatter="formatPercent"></el-table-column>
+          <el-table-column property="secondPlanRequirementSku3" label="二次企划需求SKU数" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="secondPlanFullRate3" label="二次企划满场率" min-width="100" :show-overflow-tooltip="true"  :formatter="formatPercent"></el-table-column>
+          <el-table-column property="secondPlanAvgDep3" label="二次企划平均深度" min-width="100" :show-overflow-tooltip="true" :formatter="formatMathRound"></el-table-column>
+          <el-table-column property="secondPlanAmount3" label="二次企划金额" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="secondPlanDistributionVsSale3" label="二次企划目标配销" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="remark3" label="备注" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          </el-table-column>
+          <el-table-column label="商品调整结果（终版）">
+          <el-table-column property="secondPlanNewProductPro4" label="二次企划新品占比（转换满场）" min-width="120" :show-overflow-tooltip="true" :formatter="formatPercent"></el-table-column>
+          <el-table-column property="secondPlanRequirementSku4" label="二次企划需求SKU数" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="secondPlanFullRate4" label="二次企划满场率" min-width="100" :show-overflow-tooltip="true" :formatter="formatPercent"></el-table-column>
+          <el-table-column property="secondPlanAvgDep4" label="二次企划平均深度" min-width="100" :show-overflow-tooltip="true" :formatter="formatMathRound"></el-table-column>
+          <el-table-column property="secondPlanAmount4" label="二次企划金额" min-width="100" :show-overflow-tooltip="true" :formatter="formatMoney"></el-table-column>
+          <el-table-column property="secondPlanDistributionVsSale4" label="二次企划目标配销" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="remark4" label="备注" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          </el-table-column>
+          <el-table-column property="createByName" label="创建者" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTime" label="创建时间" min-width="140" :show-overflow-tooltip="true"></el-table-column>
+          
+        </el-table>
+
+	</div>
+</div>  
+  
+    </el-tab-pane>
+ 
+</el-tabs> -->
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  year:"",
+        	  month:"",
+        	  serial:[],	
+        	  planShopNo:[],
+        	  goodsArea:"",
+        	  area:"",
+              cityLevel:"",
+              subArea:"",
+              saleLevel:[],
+              isNewShop:"",
+              version:[],
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          loading:false,
+          loadText:"查询数据中。。。",
+          isLoad:true,
+          expandText:"展开查询面板",
+          expandCondition:false,
+          tableHeight:500,
+          serialItems:[[${serialItems}]],
+          goodsAreaItems:[[${goodsAreaItems}]],
+          areaItems:[[${areaItems}]],
+          cityLevelItems:[[${cityLevelItems}]],
+          subAreaItems:[[${subAreaItems}]],
+          saleLevelItems:[[${saleLevelItems}]],
+          shopItems:[[${shopItems}]],
+          exportPageSize:[[${exportPageSize}]],
+          monthItems:[1,2,3,4,5,6,7,8,9,10,11,12],
+          brandItems:[[${brandItems}]],
+          isNewShopItems:[{value:"否",label:"否"},{value:"是",label:"是"}],
+          versionItems:[{value:"2.1",label:"2.1"},{value:"2.2",label:"2.2"},{value:"2.3",label:"2.3"},{value:"2.4",label:"2.4"},{value:"2.5",label:"2.5"}],
+          uploadDialogVisible:false,
+          fileList:[],
+          importing:false,
+          submitDialogVisible: false,
+          committing:false,
+          submitCondition:{
+        	  brand:"01",
+        	  year:"",
+        	  month:"",
+        	  serial:"",	
+        	  area:"",
+          },
+          submitVersion:"",
+          activeTabIndex:0,
+          expandCondition1:false,
+          queryCondition1:{
+        	  year:"",
+        	  month:"",
+        	  serial:[],	
+        	  planShopNo:[],
+        	  goodsArea:"",
+        	  area:"",
+              cityLevel:"",
+              subArea:"",
+              saleLevel:[],
+              isNewShop:"",
+          },
+          queryResult1:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          
+          
+        }
+      },
+      created: function() {
+    	  this.isLoad = true;
+    	  this_let = this;
+      },
+      methods: {
+        changeTab(tab, event){
+	    	  this.activeTabIndex=tab.index;
+	    },
+		clickCancelBtn() {
+			this.showDialog = false;
+		},
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+			if(this.activeTabIndex==0){
+	    		this.queryResult.currPage = val;
+			}else if(this.activeTabIndex==1){
+	    		this.queryResult1.currPage = val;
+			}
+    		this.queryShopSerialRequirement();
+    	},
+    	handleSizeChange(val){
+    		if(this.activeTabIndex==0){
+        		this.queryResult.pageSize = val;
+			}else if(this.activeTabIndex==1){
+	    		this.queryResult1.pageSize = val;
+			}
+    		this.queryShopSerialRequirement();
+    	},
+    	clickSearchBtn(){
+    		if(this.activeTabIndex==0){
+        		this.queryResult.currPage = 1;
+			}else if(this.activeTabIndex==1){
+	    		this.queryResult1.currPage = 1;
+			}
+    		this.queryShopSerialRequirement();
+    	},
+        queryShopSerialRequirement() {
+          _this = this;
+
+          var url = '';
+
+          var restRequest = new URRestRequest();
+          if(this.activeTabIndex==0){
+        	  url = '/ShopSerialRequirementBO/search';
+              var page = this.queryResult.currPage;
+              if(page==null){
+            	  page = 1;
+              }
+              restRequest.setCurrPage(page);
+              restRequest.setPageSize(this.queryResult.pageSize);
+              restRequest.addCondition("a.year",this.queryCondition.year,"eq");
+              restRequest.addCondition("a.month",this.queryCondition.month,"eq");
+     	      restRequest.addCondition("a.serial",this.queryCondition.serial.join(","),"in");
+     	      restRequest.addCondition("b.shop_area_code",this.queryCondition.area,"eq");
+     	      restRequest.addCondition("s.goods_area",this.queryCondition.goodsArea,"eq");
+     	      restRequest.addCondition("s.city_level_code",this.queryCondition.cityLevel,"eq");
+     	      restRequest.addCondition("s.sub_area_code",this.queryCondition.subArea,"eq");
+     	      restRequest.addCondition("b.is_new_shop",this.queryCondition.isNewShop,"eq");
+     	      restRequest.addCondition("a.plan_shop_no",this.queryCondition.planShopNo.join(","),"in");
+     	      restRequest.addCondition("s.sales_level",this.queryCondition.saleLevel.join(","),"in");
+     	      restRequest.addCondition("a.version",this.queryCondition.version.join(","),"in");
+          }else if(this.activeTabIndex==1){
+        	  url = '/ShopSerialRequirementCheckBO/search';
+              var page = this.queryResult1.currPage;
+              if(page==null){
+            	  page = 1;
+              }
+              restRequest.setCurrPage(page);
+              restRequest.setPageSize(this.queryResult1.pageSize);
+              restRequest.addCondition("a.year",this.queryCondition1.year,"eq");
+              restRequest.addCondition("a.month",this.queryCondition1.month,"eq");
+     	      restRequest.addCondition("a.serial",this.queryCondition1.serial.join(","),"in");
+     	      restRequest.addCondition("a.shop_area_code",this.queryCondition1.area,"eq");
+     	      restRequest.addCondition("s.goods_area",this.queryCondition1.goodsArea,"eq");
+     	      restRequest.addCondition("s.city_level_code",this.queryCondition1.cityLevel,"eq");
+     	      restRequest.addCondition("s.sub_area_code",this.queryCondition1.subArea,"eq");
+     	      restRequest.addCondition("a.is_new_shop",this.queryCondition1.isNewShop,"eq");
+     	      restRequest.addCondition("a.plan_shop_no",this.queryCondition1.planShopNo.join(","),"in");
+     	      restRequest.addCondition("s.sales_level",this.queryCondition1.saleLevel.join(","),"in");
+		  }
+          
+          
+          
+          this.loading = true;
+          this.loadText = "查询数据中...";
+
+          axios.post(url,restRequest.getRequestData())
+          .then(function (response) {
+        	    if(_this.activeTabIndex==0){
+                    _this.$data.queryResult.data=[];
+                }else if(_this.activeTabIndex==1){
+                    _this.$data.queryResult1.data=[];
+                }
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.loading = false;
+			    }else{
+			    	if(!response.data.data){
+			    		_this.$notify({title: '警告',message: "没有满足查询条件的数据！",offset: 100,type:'warning'});
+			    	}
+	              _this.$data.loading = false;
+	              if(_this.activeTabIndex==0){
+		            _this.$data.queryResult = response.data;
+	                _this.expandCondition=false;
+                  }else if(_this.activeTabIndex==1){
+  	                _this.$data.queryResult1 = response.data;
+	                _this.expandCondition1=false;
+                  }
+			    }
+          })
+          .catch(function (error) {
+            _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+          });
+          },
+	  		clickExportBtn(){
+		          _this = this;
+		          if(_this.activeTabIndex==0){
+			          if(!this.queryCondition.year){
+		        		  this.$notify({title: '警告',message: "请选择年份！",offset: 100,type:'warning'});
+		        		  return;
+		        	  }
+			          if(!this.queryCondition.month){
+		        		  this.$notify({title: '警告',message: "请选择月份！",offset: 100,type:'warning'});
+		        		  return;
+		        	  }
+		        	  if(!this.queryResult.data){
+		    			  this.$notify({title: '警告',message: "请先查询出数据再导出！",offset: 100,type:'warning'});
+		    			  return;
+		    		  } 
+                  }else if(_this.activeTabIndex==1){
+    		          if(!this.queryCondition1.year){
+    	        		  this.$notify({title: '警告',message: "请选择年份！",offset: 100,type:'warning'});
+    	        		  return;
+    	        	  }
+    		          if(!this.queryCondition1.month){
+    	        		  this.$notify({title: '警告',message: "请选择月份！",offset: 100,type:'warning'});
+    	        		  return;
+    	        	  }
+    	        	  if(!this.queryResult1.data){
+    	    			  this.$notify({title: '警告',message: "请先查询出数据再导出！",offset: 100,type:'warning'});
+    	    			  return;
+    	    		  } 
+                  }
+	    		  this.$confirm('最多能导出'+this.exportPageSize+'行数据, 是否继续?', '提示', {
+	    	          confirmButtonText: '确定',
+	    	          cancelButtonText: '取消',
+	    	          type: 'warning'
+	    	        }).then(() => {
+	    	        	var url = '/ShopSerialRequirementBO/export';
+
+	  		          var restRequest = new URRestRequest();
+			          if(_this.activeTabIndex==0){
+			  		      url = '/ShopSerialRequirementBO/export';
+		  		          restRequest.addCondition("a.year",this.queryCondition.year,"eq");
+			  	          restRequest.addCondition("a.month",this.queryCondition.month,"eq");
+			  	 	      restRequest.addCondition("a.serial",this.queryCondition.serial.join(","),"in");
+			  	 	      restRequest.addCondition("b.shop_area_code",this.queryCondition.area,"eq");
+			  	 	      restRequest.addCondition("s.goods_area",this.queryCondition.goodsArea,"eq");
+			  	 	      restRequest.addCondition("s.city_level_code",this.queryCondition.cityLevel,"eq");
+			  	 	      restRequest.addCondition("s.sub_area_code",this.queryCondition.subArea,"eq");
+			  	 	      restRequest.addCondition("b.is_new_shop",this.queryCondition.isNewShop,"eq");
+			  	 	      restRequest.addCondition("a.plan_shop_no",this.queryCondition.planShopNo.join(","),"in");
+			  	 	      restRequest.addCondition("s.sales_level",this.queryCondition.saleLevel.join(","),"in");
+			  	 	      restRequest.addCondition("a.version",this.queryCondition.version.join(","),"in");
+	                  }else if(_this.activeTabIndex==1){
+	  	  		          url = '/ShopSerialRequirementCheckBO/export';
+	  	                  restRequest.addCondition("a.year",this.queryCondition1.year,"eq");
+		  	              restRequest.addCondition("a.month",this.queryCondition1.month,"eq");
+		  	     	      restRequest.addCondition("a.serial",this.queryCondition1.serial.join(","),"in");
+		  	     	      restRequest.addCondition("a.shop_area_code",this.queryCondition1.area,"eq");
+		  	     	      restRequest.addCondition("s.goods_area",this.queryCondition1.goodsArea,"eq");
+		  	     	      restRequest.addCondition("s.city_level_code",this.queryCondition1.cityLevel,"eq");
+		  	     	      restRequest.addCondition("s.sub_area_code",this.queryCondition1.subArea,"eq");
+		  	     	      restRequest.addCondition("a.is_new_shop",this.queryCondition1.isNewShop,"eq");
+		  	     	      restRequest.addCondition("a.plan_shop_no",this.queryCondition1.planShopNo.join(","),"in");
+		  	     	      restRequest.addCondition("s.sales_level",this.queryCondition1.saleLevel.join(","),"in");
+	                  }
+	  		          this.$data.loading = true;
+	  		          this.$data.loadText = "导出数据中...";
+
+	  		          axios.post(url,restRequest.getRequestData())
+	  		            .then(function (response) {
+	  					    if(response.data.code==null||response.data.code!=0){
+	  					    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+	  					    	_this.$data.loading = false;
+	  					    }else{
+	  			              //var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+	  			              _this.$data.loading = false;
+	  			              //downloadFile(downloadLink);
+	  			              downloadFileReName(response.data.data.fileName,response.data.data.extName,'二次企划单店系列需求表');
+	  					    }
+
+	  		            })
+	  		            .catch(function (error) {
+	  		              console.log(error);
+	  		              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+	  		            });
+	    	        }).catch(() => {
+	    	                   
+	    	        });
+			},
+          clickResetBtn() {
+			if(this.activeTabIndex==0){
+	            this.queryCondition.year="";
+	            this.queryCondition.month="";
+	            this.queryCondition.serial=[];	
+	            this.queryCondition.planShopNo=[];
+	            this.queryCondition.goodsArea="";
+	            this.queryCondition.area="";
+	            this.queryCondition.cityLevel="";
+	            this.queryCondition.subArea="";
+	            this.queryCondition.saleLevel=[];
+	            this.queryCondition.isNewShop="";
+	            this.queryCondition.version=[];
+			}else if(this.activeTabIndex==1){
+	            this.queryCondition1.year="";
+	            this.queryCondition1.month="";
+	            this.queryCondition1.serial=[];	
+	            this.queryCondition1.planShopNo=[];
+	            this.queryCondition1.goodsArea="";
+	            this.queryCondition1.area="";
+	            this.queryCondition1.cityLevel="";
+	            this.queryCondition1.subArea="";
+	            this.queryCondition1.saleLevel=[];
+	            this.queryCondition1.isNewShop="";
+			}
+          },
+          clickImportBtn(){
+	          this.uploadDialogVisible=true;
+		  }
+	      ,beforeUpload(file) {
+              let Xls = file.name.split('.');
+              if(Xls[1] === 'xls'||Xls[1] === 'xlsx'){
+            	  this.importing=true;
+                  return file
+              }else {
+                  this.$message.error('只能上传   xls、xlsx 文件');
+                  return false;
+              }
+          },handleUploadSuccess(res,file,fileList){
+				this.fileList=[];
+				this.uploadDialogVisible=false;
+				this.importing=false;
+				if(JSON.stringify(res.success)==="false"){
+					this.$message({message: '导入失败: ' + JSON.stringify(res.message), type: 'error',duration:0,showClose:true });
+				}else{
+					this.$message({ message: JSON.stringify(res.message),type: 'success' });
+					this.queryResult.currPage = 1;
+					//this.clickResetBtn();
+					this.queryShopSerialRequirement();
+				}
+			},handleUploadError(err, file, fileList){
+				this.importing=false;
+ 			    this.fileList=[];
+				this.uploadDialogVisible=false;
+				this.$message({message: '导入失败' + err, type: 'error' });
+			},clickSubmitBtn(version){
+				this.submitCondition.brand="01";
+				this.submitCondition.year="";
+				this.submitCondition.month="";
+				this.submitCondition.serial="";
+				this.submitCondition.area="";
+		          
+				this.submitVersion=version;
+				this.submitDialogVisible=true;
+			},commit(){
+				_this = this;
+				if(!this.submitCondition.brand){
+	        		  this.$notify({title: '警告',message: "请选择品牌！",offset: 100,type:'warning'});
+	        		  return;
+	        	}
+				if(!this.submitCondition.year){
+	        		  this.$notify({title: '警告',message: "请选择年份！",offset: 100,type:'warning'});
+	        		  return;
+	        	  }
+		          if(!this.submitCondition.month){
+	        		  this.$notify({title: '警告',message: "请选择月份！",offset: 100,type:'warning'});
+	        		  return;
+	        	  }
+	        	  if(!this.submitCondition.serial){
+	        		  this.$notify({title: '警告',message: "请选择系列！",offset: 100,type:'warning'});
+	        		  return;
+	        	  } 
+	        	  /* if(!this.submitCondition.area && this.submitVersion==='2.5'){
+	        		  this.$notify({title: '警告',message: "请选择大区！",offset: 100,type:'warning'});
+	        		  return;
+	        	  }  */
+	        	  this.$confirm('确定要提交吗?', '提示', {
+	    	          confirmButtonText: '确定',
+	    	          cancelButtonText: '取消',
+	    	          type: 'warning'
+	    	        }).then(() => {
+	    	            this.committing=true;
+	    	            var url ="";
+	    	            /* if(this.submitVersion==='2.5'){
+	    	            	url="/ShopSerialRequirementBO/commitByArea/sp/"+this.submitCondition.brand+"/"+this.submitCondition.year+"/"+this.submitCondition.month+"/"+this.submitCondition.serial+"/"+this.submitCondition.area;
+	    	            }else{ */
+	    	            	url="/ShopSerialRequirementBO/commit/"+this.submitCondition.brand+"/"+this.submitCondition.year+"/"+this.submitCondition.month+"/"+this.submitCondition.serial;	
+	    	            //}	    	        	
+	    	        	axios.get(url)
+	                    .then(function (response) { 
+	                    	console.log(response);
+	                    	_this.committing=false;
+	                    	if(response.data.code==null || response.data.code!=0){
+	          			    	_this.$notify.error({title: '失败',message: response.data.message,offset: 100,duration:0});	          			    	
+	          			    }else{
+	          			    	_this.$notify.success({title: '成功',message: response.data.message,offset: 100,duration:0});
+	          			    	_this.submitCondition.brand="";
+	          			    	_this.submitCondition.year="";
+	          			    	_this.submitCondition.month="";
+	          			    	_this.submitCondition.serial="";
+	          			    	_this.queryShopSerialRequirement();
+	          			    }
+	                    })
+	                    .catch(function (error) {
+	                    	  _this.committing=false;
+	                        _this.$notify.error({title: '错误',message: '失败，请联系系统管理员',offset: 100,duration:0});
+	                      });
+	    	        	
+	    	        }).catch(() => {
+	    	                   
+	    	        });
+			}
+        }
+    });
+  
+    $(document).ready(function(){    
+    	$(document).keydown(function (e) {
+    	    if ( e.which == 13) {	
+    	    	if(this_let.activeTabIndex==0){
+        	    	if(this_let.expandCondition===true){
+        	    		this_let.clickSearchBtn();	
+        	    	}else{
+        	    		this_let.expandCondition=true;
+        	    	}
+    			}else if(this_let.activeTabIndex==1){
+        	    	if(this_let.expandCondition1===true){
+        	    		this_let.clickSearchBtn();	
+        	    	}else{
+        	    		this_let.expandCondition1=true;
+        	    	}
+    			}
+    	    }else if(e.which == 46){
+    	    	if(this_let.activeTabIndex==0){
+        	    	if(this_let.expandCondition===false){
+        	    		
+        	    	}else{
+        	    		this_let.clickResetBtn();
+        	    	}
+    			}
+    	    }
+    	});  
+    	
+    	$(window).load(function(){
+    		this_let.tableHeight =$(window).height() -$("#data_table").offset().top-1;
+        });
+    	
+    	$(window).resize(function(){
+    		this_let.tableHeight =$(window).height() -$("#data_table").offset().top-1;
+    	});  
+    });
+    /*]]>*/
+  </script>
+</html>

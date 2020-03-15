@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.pic.mappers.AttachmentMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.pic.model.Attachment" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" javaType="String" />
+    <result column="NAME" property="name" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SIZE" property="size" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="ABBFILE_NAME" property="abbFileName" jdbcType="NVARCHAR" javaType="String" />
+    <result column="FILE_NAME" property="filaName" jdbcType="NVARCHAR" javaType="String" />
+    <result column="FILE_TYPE" property="fileType" jdbcType="NVARCHAR" javaType="String" />
+    <result column="ROW_ID" property="rowId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COM1" property="com1" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COM2" property="com2" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CLASSNAME" property="classname" jdbcType="VARCHAR" javaType="String" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="IMAGE" property="image" jdbcType="INTEGER" javaType="Integer" />
+    <result column="ASYC_IMAGE" property="asycImage" jdbcType="INTEGER" javaType="Integer" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID,GROUP_ID,NAME,SIZE,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,ABBFILE_NAME,FILE_NAME,FILE_TYPE,ROW_ID,COMMENTS,COM1,COM2,CLASSNAME,DELETED,IMAGE,ASYC_IMAGE
+  </sql>
+  
+  <select id="getAttachmentByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from SRM_SYS_ATTACHMENT
+    where ID = #{id,jdbcType=INTEGER} AND DELETED = '0'
+  </select>
+
+  <select id="getPicByRowId" resultMap="BaseResultMap" >
+    select
+      <include refid="Base_Column_List" />
+    from SRM_SYS_ATTACHMENT
+    where ROW_ID = #{rowId} AND FILE_TYPE IN ('jpg','png','jpeg') AND DELETED = '0'
+  </select>
+
+  <select id="getPicByRowIdAndClassName" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_SYS_ATTACHMENT
+    where ROW_ID = #{rowId} AND CLASSNAME = #{classname} AND DELETED = '0'
+  </select>
+
+  
+  <insert id="insertAttachment" parameterType="com.ur.mro.pic.model.Attachment" >
+    <selectKey keyProperty="id" resultType="Integer" order="AFTER" >
+      select LAST_INSERT_ID()
+    </selectKey>
+    insert into SRM_SYS_ATTACHMENT (
+        GROUP_ID,NAME,SIZE,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,ABBFILE_NAME,FILE_NAME,FILE_TYPE,ROW_ID,COMMENTS,COM1,COM2,CLASSNAME,DELETED,IMAGE,ASYC_IMAGE
+    )values(
+        #{groupId,jdbcType=VARCHAR},#{name,jdbcType=NVARCHAR},#{size,jdbcType=INTEGER},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{abbFileName,jdbcType=NVARCHAR},#{filaName,jdbcType=NVARCHAR},#{fileType,jdbcType=NVARCHAR},#{rowId,jdbcType=INTEGER},#{comments,jdbcType=NVARCHAR},#{com1,jdbcType=NVARCHAR},#{com2,jdbcType=NVARCHAR},#{classname,jdbcType=VARCHAR},#{deleted,jdbcType=INTEGER},#{image,jdbcType=INTEGER},#{asycImage,jdbcType=INTEGER}
+    )
+  </insert>
+  <insert id="insertBatchAttachment" parameterType="com.ur.mro.pic.model.Attachment" >
+    <selectKey keyProperty="id" resultType="Integer" order="AFTER" >
+      select LAST_INSERT_ID()
+    </selectKey>
+    insert into SRM_SYS_ATTACHMENT (
+    GROUP_ID,NAME,SIZE,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,ABBFILE_NAME,FILE_NAME,FILE_TYPE,ROW_ID,COMMENTS,COM1,COM2,CLASSNAME,DELETED,IMAGE,ASYC_IMAGE
+    )values
+    <foreach collection ="list" item="item" separator =",">
+      (
+      #{item.groupId,jdbcType=VARCHAR},#{item.name,jdbcType=NVARCHAR},#{item.size,jdbcType=INTEGER},#{item.createdBy,jdbcType=VARCHAR},#{item.createdTime,jdbcType=TIMESTAMP},#{item.lastUpdatedBy,jdbcType=VARCHAR},#{item.lastUpdatedTime,jdbcType=TIMESTAMP},#{item.abbFileName,jdbcType=NVARCHAR},#{item.filaName,jdbcType=NVARCHAR},#{item.fileType,jdbcType=NVARCHAR},#{item.rowId,jdbcType=INTEGER},#{item.comments,jdbcType=NVARCHAR},#{item.com1,jdbcType=NVARCHAR},#{item.com2,jdbcType=NVARCHAR},#{item.classname,jdbcType=VARCHAR},#{item.deleted,jdbcType=INTEGER},#{item.image,jdbcType=INTEGER},#{item.asycImage,jdbcType=INTEGER}
+      )
+
+    </foreach>
+  </insert>
+
+  <update id="updateAttachmentByPKSelective" parameterType="com.ur.mro.pic.model.Attachment" >
+    update SRM_SYS_ATTACHMENT
+    <set>
+      <if test="groupId != null" >
+        GROUP_ID = #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=NVARCHAR},
+      </if>
+      <if test="size != null" >
+        SIZE = #{size,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="abbFileName != null" >
+        ABBFILE_NAME = #{abbFileName,jdbcType=NVARCHAR},
+      </if>
+      <if test="filaName != null" >
+        FILE_NAME = #{filaName,jdbcType=NVARCHAR},
+      </if>
+      <if test="fileType != null" >
+        FILE_TYPE = #{fileType,jdbcType=NVARCHAR},
+      </if>
+      <if test="rowId != null" >
+        ROW_ID = #{rowId,jdbcType=INTEGER},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=NVARCHAR},
+      </if>
+      <if test="com1 != null" >
+        COM1 = #{com1,jdbcType=NVARCHAR},
+      </if>
+      <if test="com2 != null" >
+        COM2 = #{com2,jdbcType=NVARCHAR},
+      </if>
+      <if test="classname != null" >
+        CLASSNAME = #{classname,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="image != null" >
+        IMAGE = #{image,jdbcType=INTEGER},
+      </if>
+      <if test="asycImage != null" >
+        ASYC_IMAGE = #{asycImage,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchAttachmentCount" resultType="int" >
+    select count(*) from SRM_SYS_ATTACHMENT
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchAttachment" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from SRM_SYS_ATTACHMENT
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by ID
+    	</if>
+    <if test="pageBean != null" >
+     	   limit #{pageBean.startRecordNum}, #{pageBean.perPageSize}
+    </if>
+  </select>
+  
+  <!-- manual added -->
+  
+</mapper>

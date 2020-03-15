@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.shouhuo.mappers.DeliveryMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.shouhuo.model.Delivery" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="DELIVERY_NO" property="deliveryNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SH_NO" property="shNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_NO" property="shopNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_NAME" property="shopName" jdbcType="VARCHAR" javaType="String" />
+    <result column="COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CH_NO" property="chNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="DEL_DIFF_STATUS" property="delDiffStatus" jdbcType="VARCHAR" javaType="String" />
+    <result column="BRAND_TYPE" property="brandType" jdbcType="VARCHAR" javaType="String" />
+    <result column="GC_WL_STATUS" property="gcWlStatus" jdbcType="VARCHAR" javaType="String" />
+    <result column="FREIGHT" property="freight" jdbcType="NUMERIC" javaType="String" />
+    <result column="GOODS_SIGN_DATE" property="goodsSignDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="IS_SUBMIT" property="isSubmit" jdbcType="VARCHAR" javaType="String" />
+    <result column="BOXES" property="boxes" jdbcType="INTEGER" javaType="Integer" />
+    <result column="IS_COMPLETED" property="isCompleted" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_OUTNUMBER" property="isOutnumber" jdbcType="VARCHAR" javaType="String" />
+    <result column="DP_NAME" property="dpName" jdbcType="VARCHAR" javaType="String" />
+    <result column="DP_NO" property="dpNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SENDER_NO" property="senderNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SENDER_NAME" property="senderName" jdbcType="VARCHAR" javaType="String" />
+    <result column="RECEIVER_NO" property="receiverNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="RECEIVER_NAME" property="receiverName" jdbcType="VARCHAR" javaType="String" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID,DELIVERY_NO,SH_NO,SHOP_NO,SHOP_NAME,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,CH_NO,DEL_DIFF_STATUS,BRAND_TYPE,GC_WL_STATUS,FREIGHT,GOODS_SIGN_DATE,IS_SUBMIT,BOXES,IS_COMPLETED,IS_OUTNUMBER,DP_NAME,DP_NO,SENDER_NO,SENDER_NAME,RECEIVER_NO,RECEIVER_NAME
+  </sql>
+
+  <select id="getDeliveryByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_PO2GC_DELIVERY
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getQCHOUT" resultMap="BaseResultMap" >
+    SELECT ISNULL(SUM(di.QC_SH_QUT),0) AS QC_SH_QUT FROM SRM_PO2GC_DELIVERYITEM di
+                                inner join SRM_PO2GC_DELIVERY d on d.ID = di.DELIVERY_ID and d.DELETED=0
+                                WHERE di.DELETED='0'
+
+    <if test="deliveryNo != null" >
+      AND di.PO_NO=#{poNo,jdbcType=VARCHAR}
+    </if>
+    <if test="deliveryNo != null" >
+      AND di.MAT_CODE=#{matCode,jdbcType=VARCHAR}
+    </if>
+    <if test="deliveryNo != null" >
+      AND di.MAT_NAME= #{matName,jdbcType=VARCHAR}
+    </if>
+    <if test="deliveryNo != null" >
+      AND d.SHOP_NO= #{shopNo,jdbcType=VARCHAR}
+    </if>
+
+
+  </select>
+
+
+  <insert id="insertDelivery"  keyProperty="id" useGeneratedKeys="true" parameterType="com.ur.mro.shouhuo.model.Delivery" >
+    <selectKey keyProperty="id" resultType="Integer" order="AFTER" >
+      select LAST_INSERT_ID()
+    </selectKey>
+    insert into SRM_PO2GC_DELIVERY (
+    DELIVERY_NO,SH_NO,SHOP_NO,SHOP_NAME,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,CH_NO,DEL_DIFF_STATUS,BRAND_TYPE,GC_WL_STATUS,FREIGHT,GOODS_SIGN_DATE,IS_SUBMIT,BOXES,IS_COMPLETED,IS_OUTNUMBER,DP_NAME,DP_NO,SENDER_NO,SENDER_NAME,RECEIVER_NO,RECEIVER_NAME
+    )values(
+    #{deliveryNo,jdbcType=VARCHAR},#{shNo,jdbcType=VARCHAR},#{shopNo,jdbcType=VARCHAR},#{shopName,jdbcType=VARCHAR},#{comments,jdbcType=NVARCHAR},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=INTEGER},#{chNo,jdbcType=VARCHAR},#{delDiffStatus,jdbcType=VARCHAR},#{brandType,jdbcType=VARCHAR},#{gcWlStatus,jdbcType=VARCHAR},#{freight,jdbcType=NUMERIC},#{goodsSignDate,jdbcType=TIMESTAMP},#{isSubmit,jdbcType=VARCHAR},#{boxes,jdbcType=INTEGER},#{isCompleted,jdbcType=VARCHAR},#{isOutnumber,jdbcType=VARCHAR},#{dpName,jdbcType=VARCHAR},#{dpNo,jdbcType=VARCHAR},#{senderNo,jdbcType=VARCHAR},#{senderName,jdbcType=VARCHAR},#{receiverNo,jdbcType=VARCHAR},#{receiverName,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <update id="updateDeliveryByPKSelective" parameterType="com.ur.mro.shouhuo.model.Delivery" >
+    update SRM_PO2GC_DELIVERY
+    <set>
+      <if test="deliveryNo != null" >
+        DELIVERY_NO = #{deliveryNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shNo != null" >
+        SH_NO = #{shNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shopNo != null" >
+        SHOP_NO = #{shopNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shopName != null" >
+        SHOP_NAME = #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=NVARCHAR},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="chNo != null" >
+        CH_NO = #{chNo,jdbcType=VARCHAR},
+      </if>
+      <if test="delDiffStatus != null" >
+        DEL_DIFF_STATUS = #{delDiffStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="brandType != null" >
+        BRAND_TYPE = #{brandType,jdbcType=VARCHAR},
+      </if>
+      <if test="gcWlStatus != null" >
+        GC_WL_STATUS = #{gcWlStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="freight != null" >
+        FREIGHT = #{freight,jdbcType=NUMERIC},
+      </if>
+      <if test="goodsSignDate != null" >
+        GOODS_SIGN_DATE = #{goodsSignDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isSubmit != null" >
+        IS_SUBMIT = #{isSubmit,jdbcType=VARCHAR},
+      </if>
+      <if test="boxes != null" >
+        BOXES = #{boxes,jdbcType=INTEGER},
+      </if>
+      <if test="isCompleted != null" >
+        IS_COMPLETED = #{isCompleted,jdbcType=VARCHAR},
+      </if>
+      <if test="isOutnumber != null" >
+        IS_OUTNUMBER = #{isOutnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="dpName != null" >
+        DP_NAME = #{dpName,jdbcType=VARCHAR},
+      </if>
+      <if test="dpNo != null" >
+        DP_NO = #{dpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="senderNo != null" >
+        SENDER_NO = #{senderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="senderName != null" >
+        SENDER_NAME = #{senderName,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverNo != null" >
+        RECEIVER_NO = #{receiverNo,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverName != null" >
+        RECEIVER_NAME = #{receiverName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchDeliveryCount" resultType="int" >
+    select count(*) from SRM_PO2GC_DELIVERY
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchDelivery" resultMap="BaseResultMap" >
+    select
+    <choose>
+      <when test="selectFields != null">
+        <foreach item="field" index="index" collection="selectFields" separator=",">
+          ${field}
+        </foreach>
+      </when>
+      <otherwise>
+        <include refid="Base_Column_List" />
+      </otherwise>
+    </choose>
+    from SRM_PO2GC_DELIVERY
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    <if test='orderByList == null'>
+      order by ID
+    </if>
+    <if test="pageBean != null" >
+      limit #{pageBean.startRecordNum}, #{pageBean.perPageSize}
+    </if>
+  </select>
+
+  <select id="getDeliveryTotalCount" resultType="java.util.Map">
+    select SUM(a2.QC_SH_QUT) AS QC_SH_QUT ,a1.SHOP_NO  FROM SRM_PO2GC_DELIVERY a1
+    INNER JOIN SRM_PO2GC_DELIVERYITEM a2 ON a1.ID = a2.DELIVERY_ID AND a1.DELETED = 0 and a2.DELETED = 0
+    WHERE
+    a2.PO_NO=#{poNo}
+    and a2.MAT_CODE =#{matcode}
+    and a2.MAT_NAME=#{matName}
+    and a2.MAT_SPEC=#{matSpec}
+    and a2.PR_NO=#{prNo}
+
+    <if test='shopNo == null'>
+      and a2.SHOP_NO is NULL
+    </if>
+    <if test='shopNo != null'>
+      and a1.SHOP_NO={shopNo}
+    </if>
+
+    GROUP BY a1.SHOP_NO
+  </select>
+  <!-- manual added -->
+
+  <select id="getPurchasePOActualCount" resultType="java.util.Map">
+    SELECT ISNULL(OI.PURCHASE_ACTUAL_COUNT, OI.PURCHASE_COUNT) as PURCHASE_ACTUAL_COUNT  FROM SRM_PUR_PURCHASE_ORDER O
+    LEFT JOIN SRM_PUR_ORDER_INFO OI ON O.ID =OI.ORDER_ID WHERE OI.DELETED =0 AND O.DELETED = 0
+
+    AND O.ORDER_NO=#{poNo}
+    and OI.MAT_CODE =#{matCode}
+    and OI.MAT_NAME=#{matName}
+    and OI.MAT_SPEC=#{matSpec}
+    and OI.APPLY_ORDER_NO=#{prNo}
+
+    <if test='shopNo == null'>
+      and OI.SHOP_NO IS NULL
+    </if>
+    <if test='shopNo != null'>
+      and OI.SHOP_NO=#{shopNo}
+    </if>
+
+
+  </select>
+  <select id="getPurchaseSHActualCount" resultType="java.util.Map">
+    SELECT OI.PO_QUT as PURCHASE_ACTUAL_COUNT FROM SRM_PO2GC_GCSHHEAD O
+    LEFT JOIN SRM_PO2GC_GCSHITEM OI ON O.ID =OI.SH_ID WHERE OI.DELETED =0 AND O.DELETED = 0
+
+    AND OI.PO_NO=#{poNo}
+    and OI.MAT_CODE =#{matCode}
+    and OI.MAT_NAME=#{matName}
+    and OI.MAT_SPEC=#{matSpec}
+    and OI.PR_NO=#{prNo}
+
+    <if test='shopNo == null'>
+      and OI.SHOP_NO IS NULL
+    </if>
+    <if test='shopNo != null'>
+      and OI.SHOP_NO=#{shopNo}
+    </if>
+
+
+  </select>
+  <select id="getDeliveryByShNo"  resultMap="BaseResultMap">
+    select
+    <include  refid="Base_Column_List" />
+    from SRM_PO2GC_DELIVERY
+    where DELETED=0 AND  SH_NO = #{shNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

@@ -1,0 +1,86 @@
+GET http://localhost:9093/delivery/pro/info/PR171130003
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-30T042426.200.html
+
+###
+
+GET http://localhost:9093/delivery/pro/info/PR171130003
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-30T042025.200.html
+
+###
+
+GET http://localhost:9093/delivery/pro/info/PR171130003
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-30T041943.200.html
+
+###
+
+GET http://localhost:9093/delivery/pro/info/PR171130003
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-30T041911.200.html
+
+###
+
+GET http://localhost:9093/delivery/pro/info/PR171130003
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-30T041908.200.html
+
+###
+
+GET http://localhost:9093/delivery/pro/info//PR171130003
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-30T041818.200.html
+
+###
+
+GET http://localhost:9093/delivery/pro/info//PR171130003
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-30T041813.200.html
+
+###
+
+GET http://localhost:9093/delivery/pro/info//PR171130003
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-30T041804.200.html
+
+###
+
+GET http://localhost:9093/delivery//pro/info//PR171130003
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-30T041756.200.html
+
+###
+
+GET http://localhost:9093/delivery/pro/info/PR171130003
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-09-30T041650.200.html
+
+###
+
+POST http://localhost:9093/delivery/search
+Accept: */*
+Cache-Control: no-cache
+
+###
+

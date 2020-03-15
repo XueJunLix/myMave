@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.mat.mappers.MaterialMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.mat.model.Material" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_TYPE" property="matType" jdbcType="NVARCHAR" javaType="String" />
+    <result column="DESIGN_NO" property="designNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" javaType="String" />
+    <result column="GRID_NO" property="gridNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="DEV_CODE_MAT" property="devCodeMat" jdbcType="VARCHAR" javaType="String" />
+    <result column="OLD_CODE_MAT" property="oldCodeMat" jdbcType="VARCHAR" javaType="String" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" javaType="String" />
+    <result column="UNIT" property="unit" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SIDESEAL" property="sideseal" jdbcType="VARCHAR" javaType="String" />
+    <result column="GPERM2" property="gperm2" jdbcType="NUMERIC" javaType="String" />
+    <result column="BRAND_TYPE" property="brandType" jdbcType="NVARCHAR" javaType="String" />
+    <result column="MODULE_NO" property="moduleNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="CATEGORY_A" property="categoryA" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CATEGORY_B" property="categoryB" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CATEGORY_C" property="categoryC" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CATEGORY_D" property="categoryD" jdbcType="NVARCHAR" javaType="String" />
+    <result column="DENSITY" property="density" jdbcType="NVARCHAR" javaType="String" />
+    <result column="YARN_SPEC" property="yarnSpec" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SHRINK_RATE" property="shrinkRate" jdbcType="NVARCHAR" javaType="String" />
+    <result column="ING_DESCRIPTION" property="ingDescription" jdbcType="NVARCHAR" javaType="String" />
+    <result column="ING_COMMENTS" property="ingComments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="MAT_SOURCE" property="matSource" jdbcType="NVARCHAR" javaType="String" />
+    <result column="YEAR" property="year" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SEASON" property="season" jdbcType="NVARCHAR" javaType="String" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="NVARCHAR" javaType="String" />
+    <result column="PLAN_ORDER_NO" property="planOrderNo" jdbcType="NVARCHAR" javaType="String" />
+    <result column="TYPE" property="type" jdbcType="NVARCHAR" javaType="String" />
+    <result column="ORDER_TYPE" property="orderType" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SERIAL" property="serial" jdbcType="VARCHAR" javaType="String" />
+    <result column="STYLE" property="style" jdbcType="VARCHAR" javaType="String" />
+    <result column="BUSINESS_LEVEL" property="businessLevel" jdbcType="VARCHAR" javaType="String" />
+    <result column="CATEGORY" property="category" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUB_CATEGORY" property="subCategory" jdbcType="VARCHAR" javaType="String" />
+    <result column="DESIGNER" property="designer" jdbcType="VARCHAR" javaType="String" />
+    <result column="STYLENAME_AUTO" property="stylenameAuto" jdbcType="NVARCHAR" javaType="String" />
+    <result column="STYLENAME_CUSTOM" property="stylenameCustom" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SAMPLE" property="sample" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SILHOUETTE" property="silhouette" jdbcType="NVARCHAR" javaType="String" />
+    <result column="FABRIC_FEATURES" property="fabricFeatures" jdbcType="NVARCHAR" javaType="String" />
+    <result column="ELEMENT" property="element" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SLEEVE_TYPE" property="sleeveType" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COLLAR_TYPE" property="collarType" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CLO_LENGTH" property="cloLength" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SLEEVE_PANT_LENGTH" property="sleevePantLength" jdbcType="NVARCHAR" javaType="String" />
+    <result column="THICKNESS" property="thickness" jdbcType="NVARCHAR" javaType="String" />
+    <result column="BRAND" property="brand" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="STATUS" property="status" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SIZEGROUP_CODE" property="sizegroupCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="COST_PRICE" property="costPrice" jdbcType="NUMERIC" javaType="String" />
+    <result column="SPEC" property="spec" jdbcType="VARCHAR" javaType="String" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="EDITION" property="edition" jdbcType="VARCHAR" javaType="String" />
+    <result column="EDITION_TYPE" property="editionType" jdbcType="VARCHAR" javaType="String" />
+    <result column="INSALE_DATE" property="insaleDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="ITEM_NO" property="itemNo" jdbcType="INTEGER" javaType="Integer" />
+    <result column="LENDER" property="lender" jdbcType="VARCHAR" javaType="String" />
+    <result column="MADER" property="mader" jdbcType="VARCHAR" javaType="String" />
+    <result column="MARK" property="mark" jdbcType="VARCHAR" javaType="String" />
+    <result column="OLD_STYLE_NO" property="oldStyleNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="PAPER_SAMPLE" property="paperSample" jdbcType="VARCHAR" javaType="String" />
+    <result column="PIC_DATE" property="picDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="PLATE_TYPE" property="plateType" jdbcType="VARCHAR" javaType="String" />
+    <result column="POST_PROCESS" property="postProcess" jdbcType="VARCHAR" javaType="String" />
+    <result column="PRICE" property="price" jdbcType="FLOAT" javaType="String" />
+    <result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR" javaType="String" />
+    <result column="QC" property="qc" jdbcType="VARCHAR" javaType="String" />
+    <result column="SAMPLE_SIZE" property="sampleSize" jdbcType="VARCHAR" javaType="String" />
+    <result column="SKU" property="sku" jdbcType="VARCHAR" javaType="String" />
+    <result column="SMP_STATUS_MARK" property="smpStatusMark" jdbcType="VARCHAR" javaType="String" />
+    <result column="STOCK_SPACE" property="stockSpace" jdbcType="VARCHAR" javaType="String" />
+    <result column="STYLE_SOURCE" property="styleSource" jdbcType="VARCHAR" javaType="String" />
+    <result column="TAIL" property="tail" jdbcType="VARCHAR" javaType="String" />
+    <result column="TAILOR" property="tailor" jdbcType="VARCHAR" javaType="String" />
+    <result column="ATTACHMENT_ID" property="attachmentId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="MAT_GROUP" property="matGroup" jdbcType="VARCHAR" javaType="String" />
+    <result column="buy_Group" property="buyGroup" jdbcType="VARCHAR" javaType="String" />
+    <result column="REMARKS" property="remarks" jdbcType="VARCHAR" javaType="String" />
+    <result column="DESIGNER_NAME" property="designerName" jdbcType="VARCHAR" javaType="String" />
+    <result column="SB_STATUS" property="sbStatus" jdbcType="VARCHAR" javaType="String" />
+    <result column="SKU_COUNT" property="skuCount" jdbcType="INTEGER" javaType="Integer" />
+    <result column="MONTH_SETTLE" property="monthSettle" jdbcType="VARCHAR" javaType="String" />
+    <result column="DEM_FLAG" property="demFlag" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SLEEVE_LENGTH" property="sleeveLength" jdbcType="VARCHAR" javaType="String" />
+    <result column="DB_TYPE" property="dbType" jdbcType="VARCHAR" javaType="String" />
+    <result column="REF_SAMPLE_CODE" property="refSampleCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="OLD_STYLE" property="oldStyle" jdbcType="VARCHAR" javaType="String" />
+    <result column="APPLY_NO" property="applyNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="APPLY_SAMPLE" property="applySample" jdbcType="VARCHAR" javaType="String" />
+    <result column="BELOW_DATE" property="belowDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="ESTIMATE_PRICE" property="estimatePrice" jdbcType="NUMERIC" javaType="String" />
+    <result column="PROCESSING_MODE" property="processingMode" jdbcType="VARCHAR" javaType="String" />
+    <result column="SIZE_MARK" property="sizeMark" jdbcType="VARCHAR" javaType="String" />
+    <result column="PRODUCT_CODE" property="productCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="PURCHASE_BY" property="purchaseBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="PURCHASE_AMOUMT" property="purchaseAmoumt" jdbcType="NUMERIC" javaType="String" />
+    <result column="ORIGINAL_CUSTOMER" property="originalCustomer" jdbcType="VARCHAR" javaType="String" />
+    <result column="REF_DESIGN_NO" property="refDesignNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_PRO" property="isPro" jdbcType="VARCHAR" javaType="String" />
+    <result column="ESTIMATE_COST" property="estimateCost" jdbcType="NUMERIC" javaType="String" />
+    <result column="RETAIL_PRICE" property="retailPrice" jdbcType="NUMERIC" javaType="String" />
+    <result column="IN_OQR_MAKE_ORDER" property="inOqrMakeOrder" jdbcType="INTEGER" javaType="Integer" />
+    <result column="COMPREHENSIVE_COST" property="comprehensiveCost" jdbcType="NUMERIC" javaType="String" />
+    <result column="APPLICATION_CATEGORY" property="applicationCategory" jdbcType="VARCHAR" javaType="String" />
+    <result column="PURCHASED_COLOR" property="purchasedColor" jdbcType="VARCHAR" javaType="String" />
+    <result column="OVERSEAS_PURCHASE" property="overseasPurchase" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SALES_TRACKING" property="salesTracking" jdbcType="VARCHAR" javaType="String" />
+    <result column="CURRENT_HOLDER" property="currentHolder" jdbcType="VARCHAR" javaType="String" />
+    <result column="DELIVER_GOODS" property="deliverGoods" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CONSIGNOR" property="consignor" jdbcType="VARCHAR" javaType="String" />
+    <result column="DELIVERY_TIME" property="deliveryTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="GOODS_RECEIP" property="goodsReceip" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CONSIGNEE" property="consignee" jdbcType="VARCHAR" javaType="String" />
+    <result column="RECEIP_TIME" property="receipTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="SHIPPING_NOTE" property="shippingNote" jdbcType="VARCHAR" javaType="String" />
+    <result column="RECEIPT_NOTE" property="receiptNote" jdbcType="VARCHAR" javaType="String" />
+    <result column="PROCUREMENT_TIME" property="procurementTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="CHARACTERISTIC" property="characteristic" jdbcType="VARCHAR" javaType="String" />
+    <result column="PRODUCTION_CATEGORY" property="productionCategory" jdbcType="VARCHAR" javaType="String" />
+    <result column="PARTICIPATE_PRICE" property="participatePrice" jdbcType="INTEGER" javaType="Integer" />
+    <result column="PRICING_PEOPLE" property="pricingPeople" jdbcType="VARCHAR" javaType="String" />
+    <result column="PRICING_TIME" property="pricingTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="IS_PRICED" property="isPriced" jdbcType="VARCHAR" javaType="String" />
+    <result column="MATERIAL_CZ" property="materialCz" jdbcType="VARCHAR" javaType="String" />
+    <result column="PO_TYPE" property="poType" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAKE_IE" property="makeIe" jdbcType="VARCHAR" javaType="String" />
+    <result column="SAFE_INV" property="safeInv" jdbcType="NUMERIC" javaType="Double" />
+    <result column="STANDER_PRICE" property="standerPrice" jdbcType="NUMERIC" javaType="String" />
+    <result column="PO_TQDATE" property="poTqdate" jdbcType="INTEGER" javaType="Integer" />
+    <result column="DJ_TYPE" property="djType" jdbcType="VARCHAR" javaType="String" />
+    <result column="COLOR" property="color" jdbcType="VARCHAR" javaType="String" />
+    <result column="CLOPURCHASE" property="clopurchase" jdbcType="VARCHAR" javaType="String" />
+    <result column="CLOPURCHASE_TIME" property="clopurchaseTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="SHOP_IMAGE" property="shopImage" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_IMAGE_NAME" property="shopImageName" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_ZCGL" property="isZcgl" jdbcType="INTEGER" javaType="Integer" />
+    <result column="MAT_DEPICT" property="matDepict" jdbcType="VARCHAR" javaType="String" />
+    <result column="SYQY" property="syqy" jdbcType="VARCHAR" javaType="String" />
+    <result column="GLDBD" property="gldbd" jdbcType="VARCHAR" javaType="String" />
+    <result column="CHANG" property="chang" jdbcType="NUMERIC" javaType="Double" />
+    <result column="KUAN" property="kuan" jdbcType="NUMERIC" javaType="Double" />
+    <result column="GAO" property="gao" jdbcType="NUMERIC" javaType="Double" />
+  </resultMap>
+
+  
+  <sql id="Base_Column_List" >
+    ID,GROUP_ID,MAT_TYPE,DESIGN_NO,CODE,GRID_NO,DEV_CODE_MAT,OLD_CODE_MAT,NAME,UNIT,SIDESEAL,GPERM2,BRAND_TYPE,MODULE_NO,CATEGORY_A,CATEGORY_B,CATEGORY_C,CATEGORY_D,DENSITY,YARN_SPEC,SHRINK_RATE,ING_DESCRIPTION,ING_COMMENTS,MAT_SOURCE,YEAR,SEASON,ORDER_NO,PLAN_ORDER_NO,TYPE,ORDER_TYPE,SERIAL,STYLE,BUSINESS_LEVEL,CATEGORY,SUB_CATEGORY,DESIGNER,STYLENAME_AUTO,STYLENAME_CUSTOM,SAMPLE,SILHOUETTE,FABRIC_FEATURES,ELEMENT,SLEEVE_TYPE,COLLAR_TYPE,CLO_LENGTH,SLEEVE_PANT_LENGTH,THICKNESS,BRAND,COMMENTS,STATUS,SIZEGROUP_CODE,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,COST_PRICE,SPEC,DELETED,EDITION,EDITION_TYPE,INSALE_DATE,ITEM_NO,LENDER,MADER,MARK,OLD_STYLE_NO,PAPER_SAMPLE,PIC_DATE,PLATE_TYPE,POST_PROCESS,PRICE,PRODUCT_NAME,QC,SAMPLE_SIZE,SKU,SMP_STATUS_MARK,STOCK_SPACE,STYLE_SOURCE,TAIL,TAILOR,ATTACHMENT_ID,MAT_GROUP,buy_Group,REMARKS,DESIGNER_NAME,SB_STATUS,SKU_COUNT,MONTH_SETTLE,DEM_FLAG,SLEEVE_LENGTH,DB_TYPE,REF_SAMPLE_CODE,OLD_STYLE,APPLY_NO,APPLY_SAMPLE,BELOW_DATE,ESTIMATE_PRICE,PROCESSING_MODE,SIZE_MARK,PRODUCT_CODE,PURCHASE_BY,PURCHASE_AMOUMT,ORIGINAL_CUSTOMER,REF_DESIGN_NO,IS_PRO,ESTIMATE_COST,RETAIL_PRICE,IN_OQR_MAKE_ORDER,COMPREHENSIVE_COST,APPLICATION_CATEGORY,PURCHASED_COLOR,OVERSEAS_PURCHASE,SALES_TRACKING,CURRENT_HOLDER,DELIVER_GOODS,CONSIGNOR,DELIVERY_TIME,GOODS_RECEIP,CONSIGNEE,RECEIP_TIME,SHIPPING_NOTE,RECEIPT_NOTE,PROCUREMENT_TIME,CHARACTERISTIC,PRODUCTION_CATEGORY,PARTICIPATE_PRICE,PRICING_PEOPLE,PRICING_TIME,IS_PRICED,MATERIAL_CZ,PO_TYPE,MAKE_IE,SAFE_INV,STANDER_PRICE,PO_TQDATE,DJ_TYPE,COLOR,CLOPURCHASE,CLOPURCHASE_TIME,SHOP_IMAGE,SHOP_IMAGE_NAME,IS_ZCGL,MAT_DEPICT,SYQY,GLDBD,CHANG,KUAN,GAO
+  </sql>
+
+  <select id="getMaterialByCode" resultType="com.ur.mro.mat.model.Material" parameterType="java.lang.String" >
+    select
+    *
+    from SRM_MAT_MATERIAL
+    where  DELETED = 0 AND CODE = #{code,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getCodeNum" resultType="java.lang.String" parameterType="java.lang.String" >
+
+    select MAX(subCode) as NUMB from (select right(t.CODE,4) as subCode,t.*
+                        from SRM_MAT_MATERIAL t where  t.BRAND_TYPE=#{brandType,jdbcType=VARCHAR} and t.CATEGORY_C=#{categoryC,jdbcType=VARCHAR}  AND PATINDEX('%[A-Za-z]%', right(t.CODE,4))=0)  tt
+                        group by tt.CATEGORY_C
+  </select>
+
+
+
+
+  <select id="getMaterialByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from SRM_MAT_MATERIAL
+    where DELETED = '0' AND ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getOldMatCode" resultMap="BaseResultMap">
+    SELECT DISTINCT t.OLD_CODE_MAT FROM SRM_MAT_MATERIAL t
+    WHERE t.DELETED = 0 AND t.OLD_CODE_MAT is not NULL
+    AND t.OLD_CODE_MAT !=''
+  </select>
+  
+  <insert id="insertMaterial" keyProperty="id" useGeneratedKeys="true" parameterType="com.ur.mro.mat.model.Material" >
+    insert into SRM_MAT_MATERIAL (
+        GROUP_ID,MAT_TYPE,DESIGN_NO,CODE,GRID_NO,DEV_CODE_MAT,OLD_CODE_MAT,NAME,UNIT,SIDESEAL,GPERM2,BRAND_TYPE,MODULE_NO,CATEGORY_A,CATEGORY_B,CATEGORY_C,CATEGORY_D,DENSITY,YARN_SPEC,SHRINK_RATE,ING_DESCRIPTION,ING_COMMENTS,MAT_SOURCE,YEAR,SEASON,ORDER_NO,PLAN_ORDER_NO,TYPE,ORDER_TYPE,SERIAL,STYLE,BUSINESS_LEVEL,CATEGORY,SUB_CATEGORY,DESIGNER,STYLENAME_AUTO,STYLENAME_CUSTOM,SAMPLE,SILHOUETTE,FABRIC_FEATURES,ELEMENT,SLEEVE_TYPE,COLLAR_TYPE,CLO_LENGTH,SLEEVE_PANT_LENGTH,THICKNESS,BRAND,COMMENTS,STATUS,SIZEGROUP_CODE,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,COST_PRICE,SPEC,DELETED,EDITION,EDITION_TYPE,INSALE_DATE,ITEM_NO,LENDER,MADER,MARK,OLD_STYLE_NO,PAPER_SAMPLE,PIC_DATE,PLATE_TYPE,POST_PROCESS,PRICE,PRODUCT_NAME,QC,SAMPLE_SIZE,SKU,SMP_STATUS_MARK,STOCK_SPACE,STYLE_SOURCE,TAIL,TAILOR,ATTACHMENT_ID,MAT_GROUP,buy_Group,REMARKS,DESIGNER_NAME,SB_STATUS,SKU_COUNT,MONTH_SETTLE,DEM_FLAG,SLEEVE_LENGTH,DB_TYPE,REF_SAMPLE_CODE,OLD_STYLE,APPLY_NO,APPLY_SAMPLE,BELOW_DATE,ESTIMATE_PRICE,PROCESSING_MODE,SIZE_MARK,PRODUCT_CODE,PURCHASE_BY,PURCHASE_AMOUMT,ORIGINAL_CUSTOMER,REF_DESIGN_NO,IS_PRO,ESTIMATE_COST,RETAIL_PRICE,IN_OQR_MAKE_ORDER,COMPREHENSIVE_COST,APPLICATION_CATEGORY,PURCHASED_COLOR,OVERSEAS_PURCHASE,SALES_TRACKING,CURRENT_HOLDER,DELIVER_GOODS,CONSIGNOR,DELIVERY_TIME,GOODS_RECEIP,CONSIGNEE,RECEIP_TIME,SHIPPING_NOTE,RECEIPT_NOTE,PROCUREMENT_TIME,CHARACTERISTIC,PRODUCTION_CATEGORY,PARTICIPATE_PRICE,PRICING_PEOPLE,PRICING_TIME,IS_PRICED,MATERIAL_CZ,PO_TYPE,MAKE_IE,SAFE_INV,STANDER_PRICE,PO_TQDATE,DJ_TYPE,COLOR,CLOPURCHASE,CLOPURCHASE_TIME,SHOP_IMAGE,SHOP_IMAGE_NAME,IS_ZCGL,MAT_DEPICT,SYQY,GLDBD,CHANG,KUAN,GAO
+    )values(
+        #{groupId,jdbcType=VARCHAR},#{matType,jdbcType=NVARCHAR},#{designNo,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{gridNo,jdbcType=VARCHAR},#{devCodeMat,jdbcType=VARCHAR},#{oldCodeMat,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{unit,jdbcType=NVARCHAR},#{sideseal,jdbcType=VARCHAR},#{gperm2,jdbcType=NUMERIC},#{brandType,jdbcType=NVARCHAR},#{moduleNo,jdbcType=VARCHAR},#{categoryA,jdbcType=NVARCHAR},#{categoryB,jdbcType=NVARCHAR},#{categoryC,jdbcType=NVARCHAR},#{categoryD,jdbcType=NVARCHAR},#{density,jdbcType=NVARCHAR},#{yarnSpec,jdbcType=NVARCHAR},#{shrinkRate,jdbcType=NVARCHAR},#{ingDescription,jdbcType=NVARCHAR},#{ingComments,jdbcType=NVARCHAR},#{matSource,jdbcType=NVARCHAR},#{year,jdbcType=INTEGER},#{season,jdbcType=NVARCHAR},#{orderNo,jdbcType=NVARCHAR},#{planOrderNo,jdbcType=NVARCHAR},#{type,jdbcType=NVARCHAR},#{orderType,jdbcType=NVARCHAR},#{serial,jdbcType=VARCHAR},#{style,jdbcType=VARCHAR},#{businessLevel,jdbcType=VARCHAR},#{category,jdbcType=VARCHAR},#{subCategory,jdbcType=VARCHAR},#{designer,jdbcType=VARCHAR},#{stylenameAuto,jdbcType=NVARCHAR},#{stylenameCustom,jdbcType=NVARCHAR},#{sample,jdbcType=NVARCHAR},#{silhouette,jdbcType=NVARCHAR},#{fabricFeatures,jdbcType=NVARCHAR},#{element,jdbcType=NVARCHAR},#{sleeveType,jdbcType=NVARCHAR},#{collarType,jdbcType=NVARCHAR},#{cloLength,jdbcType=NVARCHAR},#{sleevePantLength,jdbcType=NVARCHAR},#{thickness,jdbcType=NVARCHAR},#{brand,jdbcType=NVARCHAR},#{comments,jdbcType=NVARCHAR},#{status,jdbcType=NVARCHAR},#{sizegroupCode,jdbcType=VARCHAR},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{costPrice,jdbcType=NUMERIC},#{spec,jdbcType=VARCHAR},#{deleted,jdbcType=INTEGER},#{edition,jdbcType=VARCHAR},#{editionType,jdbcType=VARCHAR},#{insaleDate,jdbcType=TIMESTAMP},#{itemNo,jdbcType=INTEGER},#{lender,jdbcType=VARCHAR},#{mader,jdbcType=VARCHAR},#{mark,jdbcType=VARCHAR},#{oldStyleNo,jdbcType=VARCHAR},#{paperSample,jdbcType=VARCHAR},#{picDate,jdbcType=TIMESTAMP},#{plateType,jdbcType=VARCHAR},#{postProcess,jdbcType=VARCHAR},#{price,jdbcType=FLOAT},#{productName,jdbcType=VARCHAR},#{qc,jdbcType=VARCHAR},#{sampleSize,jdbcType=VARCHAR},#{sku,jdbcType=VARCHAR},#{smpStatusMark,jdbcType=VARCHAR},#{stockSpace,jdbcType=VARCHAR},#{styleSource,jdbcType=VARCHAR},#{tail,jdbcType=VARCHAR},#{tailor,jdbcType=VARCHAR},#{attachmentId,jdbcType=INTEGER},#{matGroup,jdbcType=VARCHAR},#{buyGroup,jdbcType=VARCHAR},#{remarks,jdbcType=VARCHAR},#{designerName,jdbcType=VARCHAR},#{sbStatus,jdbcType=VARCHAR},#{skuCount,jdbcType=INTEGER},#{monthSettle,jdbcType=VARCHAR},#{demFlag,jdbcType=INTEGER},#{sleeveLength,jdbcType=VARCHAR},#{dbType,jdbcType=VARCHAR},#{refSampleCode,jdbcType=VARCHAR},#{oldStyle,jdbcType=VARCHAR},#{applyNo,jdbcType=VARCHAR},#{applySample,jdbcType=VARCHAR},#{belowDate,jdbcType=TIMESTAMP},#{estimatePrice,jdbcType=NUMERIC},#{processingMode,jdbcType=VARCHAR},#{sizeMark,jdbcType=VARCHAR},#{productCode,jdbcType=VARCHAR},#{purchaseBy,jdbcType=VARCHAR},#{purchaseAmoumt,jdbcType=NUMERIC},#{originalCustomer,jdbcType=VARCHAR},#{refDesignNo,jdbcType=VARCHAR},#{isPro,jdbcType=VARCHAR},#{estimateCost,jdbcType=NUMERIC},#{retailPrice,jdbcType=NUMERIC},#{inOqrMakeOrder,jdbcType=INTEGER},#{comprehensiveCost,jdbcType=NUMERIC},#{applicationCategory,jdbcType=VARCHAR},#{purchasedColor,jdbcType=VARCHAR},#{overseasPurchase,jdbcType=INTEGER},#{salesTracking,jdbcType=VARCHAR},#{currentHolder,jdbcType=VARCHAR},#{deliverGoods,jdbcType=INTEGER},#{consignor,jdbcType=VARCHAR},#{deliveryTime,jdbcType=TIMESTAMP},#{goodsReceip,jdbcType=INTEGER},#{consignee,jdbcType=VARCHAR},#{receipTime,jdbcType=TIMESTAMP},#{shippingNote,jdbcType=VARCHAR},#{receiptNote,jdbcType=VARCHAR},#{procurementTime,jdbcType=TIMESTAMP},#{characteristic,jdbcType=VARCHAR},#{productionCategory,jdbcType=VARCHAR},#{participatePrice,jdbcType=INTEGER},#{pricingPeople,jdbcType=VARCHAR},#{pricingTime,jdbcType=TIMESTAMP},#{isPriced,jdbcType=VARCHAR},#{materialCz,jdbcType=VARCHAR},#{poType,jdbcType=VARCHAR},#{makeIe,jdbcType=VARCHAR},#{safeInv,jdbcType=NUMERIC},#{standerPrice,jdbcType=NUMERIC},#{poTqdate,jdbcType=INTEGER},#{djType,jdbcType=VARCHAR},#{color,jdbcType=VARCHAR},#{clopurchase,jdbcType=VARCHAR},#{clopurchaseTime,jdbcType=TIMESTAMP},#{shopImage,jdbcType=VARCHAR},#{shopImageName,jdbcType=VARCHAR},#{isZcgl,jdbcType=INTEGER},#{matDepict,jdbcType=VARCHAR},#{syqy,jdbcType=VARCHAR},#{gldbd,jdbcType=VARCHAR},#{chang,jdbcType=NUMERIC},#{kuan,jdbcType=NUMERIC},#{gao,jdbcType=NUMERIC}
+    )
+  </insert>
+
+
+
+  <update id="updateBatchStatus" parameterType="java.util.List" >
+    UPDATE SRM_MAT_MATERIAL SET SRM_MAT_MATERIAL.STATUS = '2' WHERE id IN
+    <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+      #{item.id,jdbcType=INTEGER}
+    </foreach>
+  </update>
+
+  <update id="deletedMaterial"  parameterType="com.ur.mro.mat.model.Material" >
+      UPDATE SRM_MAT_MATERIAL
+    <set>
+      DELETED = #{deleted,jdbcType=INTEGER},
+      LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+    </set>
+      WHERE  DELETED = 0  AND ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--<update id="deleteMaterial" parameterType="java.util.List" >
+    UPDATE SRM_MAT_MATERIAL SET SRM_MAT_MATERIAL.DELETED = '1' ,LAST_UPDATED_TIME = CONVERT(varchar,GETDATE(),120) WHERE SRM_MAT_MATERIAL.ID IN
+    <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+      #{item.id,jdbcType=INTEGER}
+    </foreach>
+  </update>-->
+
+  <update id="updateBatchMaterialList" parameterType="java.util.List">
+    update SRM_MAT_MATERIAL
+    <trim prefix="set" suffixOverrides=",">
+    <trim prefix="CODE =case" suffix="end,">
+    <foreach collection="list" item="i" index="index">
+      <if test="i.code != null" >
+        when code=#{i.code} then #{i.code,jdbcType=NVARCHAR}
+      </if>
+    </foreach>
+    </trim>
+
+      <trim prefix="NAME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.name != null" >
+            when code=#{i.code} then #{i.name,jdbcType=NVARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="MAT_TYPE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.matType != null" >
+            when code=#{i.code} then #{i.matType,jdbcType=NVARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="buy_Group =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.buyGroup != null" >
+            when code=#{i.code} then #{i.buyGroup,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="BRAND_TYPE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.brandType != null" >
+            when code=#{i.code} then #{i.brandType,jdbcType=NVARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="SHOP_IMAGE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.shopImage != null" >
+            when code=#{i.code} then #{i.shopImage,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="SHOP_IMAGE_NAME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.shopImageName != null" >
+            when code=#{i.code} then #{i.shopImageName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="STATUS =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.status != null" >
+            when code=#{i.code} then #{i.status,jdbcType=NVARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="CATEGORY_A =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.categoryA != null" >
+            when code=#{i.code} then #{i.categoryA,jdbcType=NVARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="CATEGORY_B =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.categoryB != null" >
+            when code=#{i.code} then #{i.categoryB,jdbcType=NVARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="CATEGORY_C =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.categoryC != null" >
+            when code=#{i.code} then #{i.categoryC,jdbcType=NVARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="SPEC =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.spec != null" >
+            when code=#{i.code} then #{i.spec,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="MATERIAL_CZ =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.materialCz != null" >
+            when code=#{i.code} then #{i.materialCz,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PO_TYPE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.poType != null" >
+            when code=#{i.code} then #{i.poType,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="MAKE_IE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.makeIe != null" >
+            when code=#{i.code} then #{i.makeIe,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="COLOR =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.color != null" >
+            when code=#{i.code} then #{i.color,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="UNIT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.unit != null" >
+            when code=#{i.code} then #{i.unit,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="REMARKS =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.remarks != null" >
+            when code=#{i.code} then #{i.remarks,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="OLD_CODE_MAT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.oldCodeMat != null" >
+            when code=#{i.code} then #{i.oldCodeMat,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="SYQY =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.syqy != null" >
+            when code=#{i.code} then #{i.syqy,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where deleted = '0' AND code in
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      #{item.code}
+    </foreach>
+  </update>
+
+
+  <update id="updateMaterialByPKSelective"  parameterType="com.ur.mro.mat.model.Material" >
+    update SRM_MAT_MATERIAL
+    <set>
+      <if test="groupId != null" >
+        GROUP_ID = #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="matType != null" >
+        MAT_TYPE = #{matType,jdbcType=NVARCHAR},
+      </if>
+      <if test="designNo != null" >
+        DESIGN_NO = #{designNo,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="gridNo != null" >
+        GRID_NO = #{gridNo,jdbcType=VARCHAR},
+      </if>
+      <if test="devCodeMat != null" >
+        DEV_CODE_MAT = #{devCodeMat,jdbcType=VARCHAR},
+      </if>
+      <if test="oldCodeMat != null" >
+        OLD_CODE_MAT = #{oldCodeMat,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=NVARCHAR},
+      </if>
+      <if test="sideseal != null" >
+        SIDESEAL = #{sideseal,jdbcType=VARCHAR},
+      </if>
+      <if test="gperm2 != null" >
+        GPERM2 = #{gperm2,jdbcType=NUMERIC},
+      </if>
+      <if test="brandType != null" >
+        BRAND_TYPE = #{brandType,jdbcType=NVARCHAR},
+      </if>
+      <if test="moduleNo != null" >
+        MODULE_NO = #{moduleNo,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryA != null" >
+        CATEGORY_A = #{categoryA,jdbcType=NVARCHAR},
+      </if>
+      <if test="categoryB != null" >
+        CATEGORY_B = #{categoryB,jdbcType=NVARCHAR},
+      </if>
+      <if test="categoryC != null" >
+        CATEGORY_C = #{categoryC,jdbcType=NVARCHAR},
+      </if>
+      <if test="categoryD != null" >
+        CATEGORY_D = #{categoryD,jdbcType=NVARCHAR},
+      </if>
+      <if test="density != null" >
+        DENSITY = #{density,jdbcType=NVARCHAR},
+      </if>
+      <if test="yarnSpec != null" >
+        YARN_SPEC = #{yarnSpec,jdbcType=NVARCHAR},
+      </if>
+      <if test="shrinkRate != null" >
+        SHRINK_RATE = #{shrinkRate,jdbcType=NVARCHAR},
+      </if>
+      <if test="ingDescription != null" >
+        ING_DESCRIPTION = #{ingDescription,jdbcType=NVARCHAR},
+      </if>
+      <if test="ingComments != null" >
+        ING_COMMENTS = #{ingComments,jdbcType=NVARCHAR},
+      </if>
+      <if test="matSource != null" >
+        MAT_SOURCE = #{matSource,jdbcType=NVARCHAR},
+      </if>
+      <if test="year != null" >
+        YEAR = #{year,jdbcType=INTEGER},
+      </if>
+      <if test="season != null" >
+        SEASON = #{season,jdbcType=NVARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO = #{orderNo,jdbcType=NVARCHAR},
+      </if>
+      <if test="planOrderNo != null" >
+        PLAN_ORDER_NO = #{planOrderNo,jdbcType=NVARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=NVARCHAR},
+      </if>
+      <if test="orderType != null" >
+        ORDER_TYPE = #{orderType,jdbcType=NVARCHAR},
+      </if>
+      <if test="serial != null" >
+        SERIAL = #{serial,jdbcType=VARCHAR},
+      </if>
+      <if test="style != null" >
+        STYLE = #{style,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLevel != null" >
+        BUSINESS_LEVEL = #{businessLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null" >
+        CATEGORY = #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="subCategory != null" >
+        SUB_CATEGORY = #{subCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="designer != null" >
+        DESIGNER = #{designer,jdbcType=VARCHAR},
+      </if>
+      <if test="stylenameAuto != null" >
+        STYLENAME_AUTO = #{stylenameAuto,jdbcType=NVARCHAR},
+      </if>
+      <if test="stylenameCustom != null" >
+        STYLENAME_CUSTOM = #{stylenameCustom,jdbcType=NVARCHAR},
+      </if>
+      <if test="sample != null" >
+        SAMPLE = #{sample,jdbcType=NVARCHAR},
+      </if>
+      <if test="silhouette != null" >
+        SILHOUETTE = #{silhouette,jdbcType=NVARCHAR},
+      </if>
+      <if test="fabricFeatures != null" >
+        FABRIC_FEATURES = #{fabricFeatures,jdbcType=NVARCHAR},
+      </if>
+      <if test="element != null" >
+        ELEMENT = #{element,jdbcType=NVARCHAR},
+      </if>
+      <if test="sleeveType != null" >
+        SLEEVE_TYPE = #{sleeveType,jdbcType=NVARCHAR},
+      </if>
+      <if test="collarType != null" >
+        COLLAR_TYPE = #{collarType,jdbcType=NVARCHAR},
+      </if>
+      <if test="cloLength != null" >
+        CLO_LENGTH = #{cloLength,jdbcType=NVARCHAR},
+      </if>
+      <if test="sleevePantLength != null" >
+        SLEEVE_PANT_LENGTH = #{sleevePantLength,jdbcType=NVARCHAR},
+      </if>
+      <if test="thickness != null" >
+        THICKNESS = #{thickness,jdbcType=NVARCHAR},
+      </if>
+      <if test="brand != null" >
+        BRAND = #{brand,jdbcType=NVARCHAR},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=NVARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=NVARCHAR},
+      </if>
+      <if test="sizegroupCode != null" >
+        SIZEGROUP_CODE = #{sizegroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="costPrice != null" >
+        COST_PRICE = #{costPrice,jdbcType=NUMERIC},
+      </if>
+      <if test="spec != null" >
+        SPEC = #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="edition != null" >
+        EDITION = #{edition,jdbcType=VARCHAR},
+      </if>
+      <if test="editionType != null" >
+        EDITION_TYPE = #{editionType,jdbcType=VARCHAR},
+      </if>
+      <if test="insaleDate != null" >
+        INSALE_DATE = #{insaleDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="itemNo != null" >
+        ITEM_NO = #{itemNo,jdbcType=INTEGER},
+      </if>
+      <if test="lender != null" >
+        LENDER = #{lender,jdbcType=VARCHAR},
+      </if>
+      <if test="mader != null" >
+        MADER = #{mader,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null" >
+        MARK = #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="oldStyleNo != null" >
+        OLD_STYLE_NO = #{oldStyleNo,jdbcType=VARCHAR},
+      </if>
+      <if test="paperSample != null" >
+        PAPER_SAMPLE = #{paperSample,jdbcType=VARCHAR},
+      </if>
+      <if test="picDate != null" >
+        PIC_DATE = #{picDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="plateType != null" >
+        PLATE_TYPE = #{plateType,jdbcType=VARCHAR},
+      </if>
+      <if test="postProcess != null" >
+        POST_PROCESS = #{postProcess,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=FLOAT},
+      </if>
+      <if test="productName != null" >
+        PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="qc != null" >
+        QC = #{qc,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleSize != null" >
+        SAMPLE_SIZE = #{sampleSize,jdbcType=VARCHAR},
+      </if>
+      <if test="sku != null" >
+        SKU = #{sku,jdbcType=VARCHAR},
+      </if>
+      <if test="smpStatusMark != null" >
+        SMP_STATUS_MARK = #{smpStatusMark,jdbcType=VARCHAR},
+      </if>
+      <if test="stockSpace != null" >
+        STOCK_SPACE = #{stockSpace,jdbcType=VARCHAR},
+      </if>
+      <if test="styleSource != null" >
+        STYLE_SOURCE = #{styleSource,jdbcType=VARCHAR},
+      </if>
+      <if test="tail != null" >
+        TAIL = #{tail,jdbcType=VARCHAR},
+      </if>
+      <if test="tailor != null" >
+        TAILOR = #{tailor,jdbcType=VARCHAR},
+      </if>
+      <if test="attachmentId != null" >
+        ATTACHMENT_ID = #{attachmentId,jdbcType=INTEGER},
+      </if>
+      <if test="matGroup != null" >
+        MAT_GROUP = #{matGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="buyGroup != null" >
+        buy_Group = #{buyGroup,jdbcType=VARCHAR},
+      </if>
+        REMARKS = #{remarks,jdbcType=VARCHAR},
+      <if test="designerName != null" >
+        DESIGNER_NAME = #{designerName,jdbcType=VARCHAR},
+      </if>
+      <if test="sbStatus != null" >
+        SB_STATUS = #{sbStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCount != null" >
+        SKU_COUNT = #{skuCount,jdbcType=INTEGER},
+      </if>
+      <if test="monthSettle != null" >
+        MONTH_SETTLE = #{monthSettle,jdbcType=VARCHAR},
+      </if>
+      <if test="demFlag != null" >
+        DEM_FLAG = #{demFlag,jdbcType=INTEGER},
+      </if>
+      <if test="sleeveLength != null" >
+        SLEEVE_LENGTH = #{sleeveLength,jdbcType=VARCHAR},
+      </if>
+      <if test="dbType != null" >
+        DB_TYPE = #{dbType,jdbcType=VARCHAR},
+      </if>
+      <if test="refSampleCode != null" >
+        REF_SAMPLE_CODE = #{refSampleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="oldStyle != null" >
+        OLD_STYLE = #{oldStyle,jdbcType=VARCHAR},
+      </if>
+      <if test="applyNo != null" >
+        APPLY_NO = #{applyNo,jdbcType=VARCHAR},
+      </if>
+      <if test="applySample != null" >
+        APPLY_SAMPLE = #{applySample,jdbcType=VARCHAR},
+      </if>
+      <if test="belowDate != null" >
+        BELOW_DATE = #{belowDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="estimatePrice != null" >
+        ESTIMATE_PRICE = #{estimatePrice,jdbcType=NUMERIC},
+      </if>
+      <if test="processingMode != null" >
+        PROCESSING_MODE = #{processingMode,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeMark != null" >
+        SIZE_MARK = #{sizeMark,jdbcType=VARCHAR},
+      </if>
+      <if test="productCode != null" >
+        PRODUCT_CODE = #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseBy != null" >
+        PURCHASE_BY = #{purchaseBy,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseAmoumt != null" >
+        PURCHASE_AMOUMT = #{purchaseAmoumt,jdbcType=NUMERIC},
+      </if>
+      <if test="originalCustomer != null" >
+        ORIGINAL_CUSTOMER = #{originalCustomer,jdbcType=VARCHAR},
+      </if>
+      <if test="refDesignNo != null" >
+        REF_DESIGN_NO = #{refDesignNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isPro != null" >
+        IS_PRO = #{isPro,jdbcType=VARCHAR},
+      </if>
+      <if test="estimateCost != null" >
+        ESTIMATE_COST = #{estimateCost,jdbcType=NUMERIC},
+      </if>
+      <if test="retailPrice != null" >
+        RETAIL_PRICE = #{retailPrice,jdbcType=NUMERIC},
+      </if>
+      <if test="inOqrMakeOrder != null" >
+        IN_OQR_MAKE_ORDER = #{inOqrMakeOrder,jdbcType=INTEGER},
+      </if>
+      <if test="comprehensiveCost != null" >
+        COMPREHENSIVE_COST = #{comprehensiveCost,jdbcType=NUMERIC},
+      </if>
+      <if test="applicationCategory != null" >
+        APPLICATION_CATEGORY = #{applicationCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasedColor != null" >
+        PURCHASED_COLOR = #{purchasedColor,jdbcType=VARCHAR},
+      </if>
+      <if test="overseasPurchase != null" >
+        OVERSEAS_PURCHASE = #{overseasPurchase,jdbcType=INTEGER},
+      </if>
+      <if test="salesTracking != null" >
+        SALES_TRACKING = #{salesTracking,jdbcType=VARCHAR},
+      </if>
+      <if test="currentHolder != null" >
+        CURRENT_HOLDER = #{currentHolder,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverGoods != null" >
+        DELIVER_GOODS = #{deliverGoods,jdbcType=INTEGER},
+      </if>
+      <if test="consignor != null" >
+        CONSIGNOR = #{consignor,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryTime != null" >
+        DELIVERY_TIME = #{deliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="goodsReceip != null" >
+        GOODS_RECEIP = #{goodsReceip,jdbcType=INTEGER},
+      </if>
+      <if test="consignee != null" >
+        CONSIGNEE = #{consignee,jdbcType=VARCHAR},
+      </if>
+      <if test="receipTime != null" >
+        RECEIP_TIME = #{receipTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shippingNote != null" >
+        SHIPPING_NOTE = #{shippingNote,jdbcType=VARCHAR},
+      </if>
+      <if test="receiptNote != null" >
+        RECEIPT_NOTE = #{receiptNote,jdbcType=VARCHAR},
+      </if>
+      <if test="procurementTime != null" >
+        PROCUREMENT_TIME = #{procurementTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="characteristic != null" >
+        CHARACTERISTIC = #{characteristic,jdbcType=VARCHAR},
+      </if>
+      <if test="productionCategory != null" >
+        PRODUCTION_CATEGORY = #{productionCategory,jdbcType=VARCHAR},
+      </if>
+
+        PARTICIPATE_PRICE = #{participatePrice,jdbcType=INTEGER},
+
+      <if test="pricingPeople != null" >
+        PRICING_PEOPLE = #{pricingPeople,jdbcType=VARCHAR},
+      </if>
+      <if test="pricingTime != null" >
+        PRICING_TIME = #{pricingTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isPriced != null" >
+        IS_PRICED = #{isPriced,jdbcType=VARCHAR},
+      </if>
+      <if test="materialCz != null" >
+        MATERIAL_CZ = #{materialCz,jdbcType=VARCHAR},
+      </if>
+      <if test="poType != null" >
+        PO_TYPE = #{poType,jdbcType=VARCHAR},
+      </if>
+      <if test="makeIe != null" >
+        MAKE_IE = #{makeIe,jdbcType=VARCHAR},
+      </if>
+
+        SAFE_INV = #{safeInv,jdbcType=NUMERIC},
+
+      <if test="standerPrice != null" >
+        STANDER_PRICE = #{standerPrice,jdbcType=NUMERIC},
+      </if>
+      <if test="poTqdate != null" >
+        PO_TQDATE = #{poTqdate,jdbcType=INTEGER},
+      </if>
+      <if test="djType != null" >
+        DJ_TYPE = #{djType,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null" >
+        COLOR = #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="clopurchase != null" >
+        CLOPURCHASE = #{clopurchase,jdbcType=VARCHAR},
+      </if>
+      <if test="clopurchaseTime != null" >
+        CLOPURCHASE_TIME = #{clopurchaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="shopImage != null" >
+        SHOP_IMAGE = #{shopImage,jdbcType=VARCHAR},
+      </if>
+      <if test="shopImageName != null" >
+        SHOP_IMAGE_NAME = #{shopImageName,jdbcType=VARCHAR},
+      </if>
+      <if test="isZcgl != null" >
+        IS_ZCGL = #{isZcgl,jdbcType=INTEGER},
+      </if>
+      <if test="matDepict != null" >
+        MAT_DEPICT = #{matDepict,jdbcType=VARCHAR},
+      </if>
+      <if test="syqy != null" >
+        SYQY = #{syqy,jdbcType=VARCHAR},
+      </if>
+      <if test="gldbd != null" >
+        GLDBD = #{gldbd,jdbcType=VARCHAR},
+      </if>
+
+        CHANG = #{chang,jdbcType=NUMERIC},
+
+
+        KUAN = #{kuan,jdbcType=NUMERIC},
+
+
+        GAO = #{gao,jdbcType=NUMERIC},
+
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchMaterialCount" resultType="int" >
+    SELECT count(*) FROM
+    (
+    select * from SRM_MAT_MATERIAL
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT('%',#{cond.value}),'%')
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    ) tt WHERE  tt.DELETED = 0
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchMaterial" resultMap="BaseResultMap" >
+    select * from
+    (
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from SRM_MAT_MATERIAL
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT('%',#{cond.value}),'%')
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    ) tt WHERE  tt.DELETED = '0'
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    <if test='orderByList == null'>
+      order by ID DESC
+    </if>
+    <if test="pageBean != null" >
+      Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+
+  <select id="searchMaterialBylastUpdateTimeAndCode" resultMap="BaseResultMap">
+                SELECT
+                (SELECT F1.ABBFILE_NAME + ','FROM  SRM_SYS_ATTACHMENT F1 WHERE F1.ROW_ID= t.id  AND F1.ABBFILE_NAME is not null AND F1.FILE_TYPE IN ('png','jpg','jpeg') FOR XML PATH('')) as MODULE_NO,
+				CONVERT(varchar(100),t.LAST_UPDATED_TIME, 21) as LAST_UPDATED_TIME,
+				t.UNIT +'_'+ dbo.getDcSkeyBySvalue(t.UNIT,'UNIT') as UNIT,
+				CASE WHEN t.DELETED = 0 THEN t.STATUS ELSE '3' END STATUS,
+				t.NAME,
+				t.MAT_TYPE+dbo.getDcSkeyBySvalue('GC_matType',t.MAT_TYPE) as MAT_TYPE,
+				t.SPEC,t.CODE,
+				t.SHOP_IMAGE+'_'+t.SHOP_IMAGE_NAME as SHOP_IMAGE,
+				t.MATERIAL_CZ,
+				t.CATEGORY_A +'_'+ dbo.getDcSkeyBySvalue(t.CATEGORY_A,'GC_CategoryA') as CATEGORY_A,
+				t.CATEGORY_B +'_'+dbo.getDcSkeyBySvalue(t.CATEGORY_B,'GC_CategoryB') as CATEGORY_B,
+				t.CATEGORY_C+'_'+dbo.getDcSkeyBySvalue(t.CATEGORY_C,'GC_CategoryC')
+				+'_'+
+				CASE WHEN (SELECT dic.SCOM2 FROM SRM_SYS_DICTIONARY dic WHERE dic.DELETED = 0 AND dic.SGROUP = 'GC_CategoryC' AND dic.SKEY = t.CATEGORY_C) is NULL
+				THEN '1' ELSE '2' END CATEGORY_C,
+				t.PO_TYPE+'_'+dbo.getDcSkeyBySvalue(t.PO_TYPE,'GC_oldCodeMat')as PO_TYPE,
+				t.MAKE_IE,
+				t.SAFE_INV,
+				(SELECT MAX(pm.PURCHASE_PRICE) as PURCHASE_PRICE  FROM SRM_PRC_PRICE_HEAD ph
+				INNER JOIN SRM_PRC_MATINFO pm
+				ON ph.ID = pm.PRICE_ID
+				WHERE   (GETDATE() BETWEEN   pm.PRICE_START_DATE AND pm.PRICE_END_DATE ) AND ph.MAT_CODE = t.CODE) as price
+				FROM SRM_MAT_MATERIAL t
+				LEFT JOIN SRM_MAT_SOURCELIST t2
+				ON t.ID = t2.MATERIAL_ID
+				WHERE 1=1
+                <if test="code!=null and code!=''">
+                AND CODE = #{code,jdbcType=VARCHAR}
+                </if>
+                <if test="lastUpdatedTime!=null and lastUpdatedTime!=''">
+                AND t.LAST_UPDATED_TIME =#{lastUpdatedTime,jdbcType=TIMESTAMP}
+                </if>
+
+  </select>
+
+  <select id="getMatOrderByNo" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_MAT_MATERIAL
+    where
+    ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="djType != null" >
+      and  DJ_TYPE = #{djType,jdbcType=VARCHAR},
+    </if>
+  </select>
+</mapper>

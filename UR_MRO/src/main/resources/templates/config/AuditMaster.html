@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('审核配置')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="padding-top: 5px;display: none;" v-show="isLoad" v-loading="loading" :element-loading-text="loadText">
+
+<nav class="navbar" style="background-color:#eef1f6">
+    <ul class="nav">
+      <li style="padding-left:20px">
+        <el-input v-model="searchValue" placeholder="请输入搜索内容"></el-input> 
+      </li>
+      <li style="padding-left:20px">
+      <el-button icon="el-icon-search" type="primary" v-on:click="clickSearchBtn" circle="true"></el-button>        
+      </li>
+    </ul>
+</nav>
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickAddBtn" icon="plus">添加</el-button>
+        <el-button v-on:click="clickUpdateBtn" icon="edit">修改</el-button>
+      </li>
+    </ul>
+		<el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+		</el-pagination>
+</nav>
+
+        <el-table :data="this.queryResult.data" :border="true" :highlight-current-row="true" :height="this.tableHeight" v-on:current-change="handleTableCurrentChange">
+          <el-table-column property="id" label="主键ID" min-width="70" :show-overflow-tooltip="true"></el-table-column>          
+          <el-table-column property="code" label="编码" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="name" label="名称" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="remark" label="描述" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTime" label="创建时间" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createByName" label="创建者" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+
+	</div>
+</div>
+<el-dialog ref="updatePanel" :title="dialogTitle" :visible.sync="showDialog"  v-loading="updatingAuditMaster" :lock-scroll="false" fullscreen="true">
+				  <div class="card-title">
+			        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+			        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+			      </div>
+
+				  <div class="card">
+				  	<div class="card-body">
+
+				  <div class="row">
+				  	<div class="col-md-12">
+						<el-form  label-width="150px" :rules="rules" ref="updateForm" :model="updateInstance" label-suffix=":">
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="编码" prop="code">
+						    <el-input :disabled="isUpdate" v-model="updateInstance.code" placeholder="编码"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="名称" prop="name">
+						    <el-input v-model="updateInstance.name" placeholder="名称"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="描述" prop="remark">
+						    <el-input type="textarea" v-model="updateInstance.remark" :rows="2" placeholder="描述"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+<el-col :span="24">
+	<el-form-item label="新增系列权限">
+	<el-select v-model="addSerial" style="width: 200px;" :clearable="true">
+							 		<el-option v-for="(item,key) in serialItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+	<el-button type="primary" v-on:click="addSerialAudit" size="small">新增</el-button>
+	<el-button v-on:click="expandAll" size="small">{{expandText}}</el-button>   
+	</el-form-item>
+</el-col>
+			
+</el-row>
+<el-row>
+<template>
+<el-collapse v-model="activeNames">
+  <el-collapse-item :name="item.serial" v-for="(item,index) in updateInstance.serialList">
+  <template slot="title">
+  <div v-if="index%2==0" style="width:100%;background:oldlace;padding-left: 20px;font-weight: bold;">
+      {{serialItems[item.serial]}} 权限明细定义 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-button icon="el-icon-delete" v-on:click="deleteSerialAudit(index)" circle="true" type="danger" size="small"></el-button></div>
+      <div v-if="index%2!=0" style="width:100%;padding-left: 20px;font-weight: bold;">
+      {{serialItems[item.serial]}} 权限明细定义 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<el-button icon="el-icon-delete" v-on:click="deleteSerialAudit(index)" circle="true" type="danger" size="small"></el-button>
+      </div>
+    </template>
+    <template>
+  <!-- 系列明细 -->
+  <el-table :data="item.detailList" stripe="" :highlight-current-row="true">
+  <el-table-column type="expand">
+  <template slot-scope="scope">
+  <!-- 系列品类列表 -->
+  <el-card class="box-card">
+  <div slot="header" class="clearfix">
+    新增品类权限定义：<el-select v-model="addCategory" style="width: 200px;" :clearable="true">
+							 		<el-option v-for="(item,key) in categoryItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select> 
+							<el-button icon="el-icon-plus" type="primary"  v-on:click="addCategoryItem(index,scope.$index)" circle="true" size="small"></el-button>
+  </div>
+  <div >
+    <el-table :data="scope.row.detailList" stripe="" :highlight-current-row="true">
+	  <el-table-column label="执行品类">
+	    <template slot-scope="categoryScope">
+	    {{categoryItems[categoryScope.row.category]}}
+	    </template>
+	    </el-table-column>
+	  <el-table-column label="执行角色">
+	     <template slot-scope="categoryScope">
+	    <el-select v-model="categoryScope.row.auditRoleStr" :filterable="true" style="width: 200px;" :clearable="true">
+								 		<el-option v-for="(item,key) in roleItems" align="left" style="font-size:10px;"
+								          :label="item" :value="key">
+								        </el-option>
+								</el-select>
+	    </template>
+	    </el-table-column>
+	    <el-table-column label="操作">
+	    <template slot-scope="categoryScope">
+	     <el-button icon="el-icon-delete" v-on:click="deleteCategoryItem(index,scope.$index,categoryScope.$index)" circle="true" type="danger" size="small"></el-button>
+	    </template>
+    </el-table-column>
+  </el-table>
+  </div>
+</el-card>
+  </template>
+  </el-table-column>
+   <el-table-column label="序号" width="50">
+   <template slot-scope="scope">
+   {{scope.$index+1}}
+   </template>
+   </el-table-column>
+    <el-table-column prop="name" label="名称" width="120">
+    <template slot-scope="scope">
+    <el-input v-model="scope.row.name" :controls="false" style="width: 100px;"></el-input>
+    </template>
+    </el-table-column>
+    <el-table-column label="执行角色">
+    <template slot-scope="scope">
+    <el-select v-model="scope.row.auditRoleStr" :filterable="true" style="width: 200px;" :clearable="true">
+							 		<el-option v-for="(item,key) in roleItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+    </template>
+    </el-table-column>
+    <el-table-column label="操作">
+    <template slot-scope="scope">
+    <el-button icon="el-icon-plus" type="primary" v-on:click="addSerialItem(index,scope.$index,item.serial)" circle="true" size="small"></el-button>
+    <el-button icon="el-icon-arrow-up" v-on:click="moveUp(index,scope.$index)" circle="true" type="info" size="small"></el-button>
+    <el-button icon="el-icon-arrow-down" v-on:click="moveDown(index,scope.$index)" circle="true" type="info" size="small"></el-button>
+    <el-button icon="el-icon-delete" v-on:click="deleteSerialItem(index,scope.$index)" circle="true" type="danger" size="small"></el-button>
+    </template>
+    </el-table-column>
+  </el-table>
+  
+</template>
+  </el-collapse-item>
+</el-collapse>
+</template>
+</el-row>
+						</el-form>
+				  	</div>
+				  </div>
+
+				  </div>
+				</div>
+			</el-dialog>
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          loading:false,
+          loadText:"查询数据中...",
+          searchColumn: "",
+          searchValue: "",
+          dialogTitle:"",
+          showDialog:false,
+          tableHeight:500,
+          isLoad:false,
+          currInstance:{},
+          dialogTitle:"",
+          showDialog:false,
+          updateInstance:{code:"",name:"",remark:"",serialList:[]},
+          updatingAuditMaster:false,
+          rules: {
+        	  code: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  name: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  remark: [
+                { max: 300, message: '长度不能超过300', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ]
+          },
+          serialItems: [[${serialItems}]],
+          categoryItems: [[${categoryItems}]],
+          roleItems:[[${roleItems}]],
+          addSerial:"",
+          addCategory:"",
+          activeNames:[],
+          isUpdate:false,
+          isExpandAll:false,
+          expandText:"展开所有系列权限定义",
+        }
+      },
+      created: function() {    	  
+    	  this.queryAuditMaster();
+    	  this.isLoad=true;
+      },
+      methods: {
+  		clickAddBtn() {
+			this.updateInstance = {code:"",name:"",remark:"",serialList:[]};
+			this.isUpdate = false;
+			this.dialogTitle = '新增';
+			this.showDialog = true;
+			this.activeNames=[];
+		},
+		clickUpdateBtn() {
+			if(!this.currInstance){
+			    this.$notify.error({title: '失败',message: "请选择要修改的数据!",offset: 100,duration: 0});
+				return;
+			}
+			if(!this.currInstance.id){
+				this.$notify.error({title: '失败',message: "请选择要修改的数据!",offset: 100,duration: 0});
+				return;
+			}
+			this.activeNames=[];
+			var url = '/AuditMaster/'+this.currInstance.id;
+			_this=this;
+			axios.get(url)
+            .then(function (response) {
+            	console.log(response);
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    }else{
+			    	_this.isUpdate = true;
+			    	_this.dialogTitle = '修改';
+			    	_this.showDialog = true;
+			    	_this.updateInstance=response.data.data;
+			    }
+            })
+            .catch(function (error) {              
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+		},
+		clickCancelBtn() {
+			this.showDialog = false;
+		},
+		clickSaveBtn() {
+			var _this=this;
+			if(!this.updateInstance.serialList || this.updateInstance.serialList.length==0){
+				_this.$notify.error({title: '失败',message: "请至少设置一个系列的权限定义!",offset: 100,duration: 0});
+				return;
+			}
+			
+			var errorMessage="";
+			for(var i=0;i<this.updateInstance.serialList.length;i++){
+				var item=this.updateInstance.serialList[i];
+				if(!item.detailList || item.detailList.length==0){
+					errorMessage=this.serialItems[item.serial]+"系列未定义权限明细，请检查!";
+					break;
+				}else{
+					for(var j=0;j<item.detailList.length;j++){
+						var serialItem=item.detailList[j];
+						if(!serialItem.name){
+							errorMessage=this.serialItems[item.serial]+"系列第"+(j+1)+"行权限明细【名称】一列不能为空，请检查!";
+							break;
+						}
+						if(!serialItem.auditRoleStr){
+							errorMessage=this.serialItems[item.serial]+"系列第"+(j+1)+"行权限明细【执行角色】一列不能为空，请检查!";
+							break;
+						}
+						//系列下的品类校验
+						if(serialItem.detailList && serialItem.detailList.length>0){
+							for(var k=0;k<serialItem.detailList.length;k++){
+								var categoryItem=serialItem.detailList[k];
+								if(!categoryItem.auditRoleStr){
+									errorMessage=this.serialItems[item.serial]+"系列第"+(j+1)+"行权限明细的【"+this.categoryItems[categoryItem.category]+"】品类的【执行角色】一列不能为空，请检查!";
+									break;
+								}
+							}
+							if(errorMessage){
+								break;
+							}
+						}
+					}
+					if(errorMessage){
+						break;
+					}
+				}
+			}
+			if(errorMessage){
+				_this.$notify.error({title: '失败',message: errorMessage,offset: 100,duration: 0});
+				return;
+			}
+			
+			if(!this.isUpdate){
+				var url = '/AuditMaster/checkExists';
+				var restRequest = new URRestRequest();
+			    restRequest.addCondition("code",this.updateInstance.code,"eq");
+				axios.post(url,restRequest.getRequestData())
+					  .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '保存失败',message: response.data.message,offset: 100});
+					    }else{
+					    	_this.commitSave();
+					    }
+					  })
+					  .catch(function (error) {
+					    _this.$notify.error({title: '错误',message: '失败，请联系系统管理员',offset: 100});
+					  });
+			}else{
+				this.commitSave();
+			}
+		},
+		commitSave(){
+			this.$confirm('确定保存?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+
+					this.$refs["updateForm"].validate((valid) => {
+				          if (valid) {
+							_this = this;
+							this.updatingAuditMaster = true;
+								var url = '/AuditMaster/insert';
+								axios.post(url,this.updateInstance)
+								  .then(function (response) {
+								    console.log(response);
+								    if(response.data.code==null||response.data.code!=0){
+								    	_this.$notify.error({title: '保存失败',message: response.data.message,offset: 100});
+								    	_this.$data.updatingAuditMaster = false;
+								    }else{
+									    _this.$notify.info({title: '保存成功',message: '保存成功',offset: 100});
+									    _this.$data.updatingAuditMaster = false;
+									    _this.$data.showDialog = false;
+									    _this.queryAuditMaster();
+								    }
+								  })
+								  .catch(function (error) {
+								    console.log(error);
+								    _this.$notify.error({title: '错误',message: '新增数据失败，请联系系统管理员',offset: 100});
+								  });
+				          } else {
+				            console.log('error submit!!');
+				            return false;
+				          }
+				        });
+		        }).catch(() => {});
+		},
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryAuditMaster();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryAuditMaster();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryAuditMaster();
+    	},
+        queryAuditMaster() {
+          _this = this;
+
+          var url = '/AuditMaster/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+          restRequest.addOrderBy("createTime desc");
+	      restRequest.addCondition("code",this.searchValue,"like");
+	      restRequest.addCondition("name",this.searchValue,"like");
+	      restRequest.addCondition("remark",this.searchValue,"like");
+          
+          this.$data.loading = true;
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+              console.log(response);
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.loading = false;
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.loading = false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+          addSerialAudit(){
+        	  if(!this.addSerial){
+        		  return;
+        	  }
+        	  _this=this;
+        	  var exists=false;
+        	  if(this.updateInstance.serialList && this.updateInstance.serialList.length>0){
+        		  $.each(this.updateInstance.serialList,function(n,item) { 
+        			  if(_this.addSerial==item.serial){
+        				  exists=true;  
+        			  }
+        		  });
+        		  
+        	  }else{
+        		  this.updateInstance.serialList=[];
+        	  }
+        	  if(exists){
+        		  _this.$notify.error({title: '失败',message: "该系列的审核权限定义已存在！!",offset: 100,duration: 0});
+        		  return;
+        	  }
+        	  var serialVO=this.initAuditItem(this.addSerial,"",null);
+        	  serialVO.detailList.push(this.initAuditItem(this.addSerial,"",1));
+        	  this.updateInstance.serialList.push(serialVO);     
+        	  this.addSerial="";
+          },
+          deleteSerialAudit(index){
+        	  this.$confirm('确定删除该系列定义吗?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		        	this.updateInstance.serialList.splice(index,1);
+		        }).catch(() => {});
+          },
+          addSerialItem(index,itemIndex,serial){     
+        	  this.updateInstance.serialList[index].detailList.splice(itemIndex+1,0,this.initAuditItem(serial,"",itemIndex+2));
+          },
+          deleteSerialItem(index,itemIndex){
+        	  this.$confirm('确定删除该步骤?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		        	this.updateInstance.serialList[index].detailList.splice(itemIndex,1);
+		        }).catch(() => {});
+          },          
+          moveUp(index,itemIndex){
+  			  if(itemIndex>0){
+  				var thisObj = this.updateInstance.serialList[index].detailList[itemIndex];
+  				var preObj = this.updateInstance.serialList[index].detailList[itemIndex-1];
+  				this.updateInstance.serialList[index].detailList.splice(itemIndex-1,2,thisObj,preObj)
+  			  }
+  		  },
+  		  moveDown(index,itemIndex){
+  			  if(itemIndex<this.updateInstance.serialList[index].detailList.length-1){
+  				var thisObj = this.updateInstance.serialList[index].detailList[itemIndex];
+				var nextObj = this.updateInstance.serialList[index].detailList[itemIndex+1];
+				this.updateInstance.serialList[index].detailList.splice(itemIndex,2,nextObj,thisObj)
+  			  }
+  		  },
+          initAuditItem(serial,category,sort){
+        	  return {
+        		  serial:serial,
+        		  category:category,
+        		  sort:sort,
+        		  detailList:[]
+        	  };
+          },
+          expandAll(){
+        	  if(this.updateInstance && this.updateInstance.serialList && this.updateInstance.serialList.length>0){
+        		  this.activeNames=[];
+        		  if(this.isExpandAll===false){
+        			  for(var i=0;i<this.updateInstance.serialList.length;i++){
+            			  console.log(this.updateInstance.serialList[i].serial);
+            			  this.activeNames.push(this.updateInstance.serialList[i].serial);
+            		  }  
+        			  this.isExpandAll=true;
+        			  this.expandText="关闭所有系列权限定义";
+        		  }else{
+        			  this.isExpandAll=false;
+        			  this.expandText="展开所有系列权限定义";
+        		  }        		  
+		    	}
+          },
+          deleteCategoryItem(index,serialIndex,categoryIndex){
+        	  this.$confirm('确定删除该品类?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		        	this.updateInstance.serialList[index].detailList[serialIndex].detailList.splice(categoryIndex,1);
+		        }).catch(() => {}); 
+          },
+          addCategoryItem(index,serialIndex){
+        	  if(!this.addCategory){
+        		  return;
+        	  }
+        	  _this=this;
+        	  var exists=false;
+        	  if(this.updateInstance.serialList[index].detailList[serialIndex].detailList && this.updateInstance.serialList[index].detailList[serialIndex].detailList.length>0){
+        		  $.each(this.updateInstance.serialList[index].detailList[serialIndex].detailList,function(n,item) { 
+        			  if(_this.addCategory==item.category){
+        				  exists=true;  
+        			  }
+        		  });
+        		  
+        	  }else{
+        		  this.updateInstance.serialList[index].detailList[serialIndex].detailList=[]; 
+        	  }
+        	  if(exists){
+        		  _this.$notify.error({title: '失败',message: "该品类定义已存在！",offset: 100,duration: 0});
+        		  return;
+        	  }
+        	  var serialItemVO=this.updateInstance.serialList[index].detailList[serialIndex];
+        	  var categoryVO=this.initAuditItem(serialItemVO.serial,this.addCategory,serialIndex+1);
+        	  this.updateInstance.serialList[index].detailList[serialIndex].detailList.push(categoryVO);    
+        	  this.addCategory="";
+          }
+        }
+    })
+    /*]]>*/
+  </script>
+</html>

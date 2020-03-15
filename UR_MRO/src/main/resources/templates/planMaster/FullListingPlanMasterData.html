@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('上市满场计划主数据')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="padding-top: 5px; display: none;" v-loading="exportingFile"
+     v-show="isLoaded" element-loading-text="正在生成导出文件">
+
+    <nav class="navbar navbar-search">
+        <el-tooltip :content="expandText" placement="top">
+            <el-switch v-model="expandCondition"></el-switch>
+        </el-tooltip>
+    </nav>
+
+    <Drawer title="查询面板" v-model="expandCondition" width="35%">
+        <el-row>
+            <el-col :span="8">
+                <div class="ur-stack-label">年份</div>
+                <el-date-picker v-model="queryCondition.year" type="year" format="yyyy" value-format="yyyy"
+                                placeholder="年份" style="width: 100%;"></el-date-picker>
+            </el-col>
+            <el-col :span="8">
+                <div class="ur-stack-label">季节</div>
+                <el-select :filterable="true" v-model="queryCondition.bigSeason" placeholder="请选择"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,key) in seasonItems" align="left" :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="8">
+                <div class="ur-stack-label">月份</div>
+                <el-select :filterable="true" v-model="queryCondition.month" placeholder="请选择"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="item in monthItems" align="left" :label="item" :value="item"></el-option>
+                </el-select>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="8">
+                <div class="ur-stack-label">系列</div>
+                <el-select :filterable="true" v-model="queryCondition.serial" placeholder="请选择"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,key) in serialItems" align="left" :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="8">
+                <div class="ur-stack-label">品类</div>
+                <el-select :filterable="true" v-model="queryCondition.category" placeholder="请选择"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,key) in categoryItems" align="left" :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="8">
+                <div class="ur-stack-label">单号</div>
+                <el-input v-model="queryCondition.orderNo" placeholder="单号" style="width: 100%;"></el-input>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+                <div class="ur-stack-label">开始日期</div>
+                <el-date-picker v-model="queryCondition.beginDate" type="date" placeholder="开始日期" format="yyyy-MM-dd"
+                                value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
+            </el-col>
+            <el-col :span="12">
+                <div class="ur-stack-label">结束日期</div>
+                <el-date-picker v-model="queryCondition.endDate" type="date" placeholder="结束日期" format="yyyy-MM-dd"
+                                value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+                <div class="ur-stack-label">上市时间</div>
+                <el-date-picker v-model="queryCondition.listDate" type="date" placeholder="上市日期" format="yyyy-MM-dd"
+                                value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="6">
+                <el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style=""></i>查询
+                </el-button>
+            </el-col>
+            <el-col :span="6">
+                <el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style=""></i>重置
+                </el-button>
+            </el-col>
+        </el-row>
+    </Drawer>
+
+    <div class="clearfix" style="margin-bottom: 5px;"></div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <nav class="navbar">
+                <ul class="nav">
+                    <li>
+                        <el-button v-on:click="clickImportBtn"><i class="fa fa-upload" aria-hidden="true"
+                                                                  style="padding-right:5px"></i>导入
+                        </el-button>
+                        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true"
+                                                                  style="padding-right:5px"></i>导出
+                        </el-button>
+                    </li>
+                </ul>
+                <!--<el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage"-->
+                <!--v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange"-->
+                <!--layout="total, sizes, prev, pager, next, jumper"></el-pagination>-->
+
+                <div>共{{ queryResult.data.length }}条数据</div>
+            </nav>
+
+            <el-table v-loading="queryingFullListingPlanMasterData" :data="this.queryResult.data" :border="true"
+                      :highlight-current-row="true" :height="this.tableHeight"
+                      v-on:current-change="handleTableCurrentChange">
+                <el-table-column property="year" label="年" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="seasonName" label="季节" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="brandName" label="品牌" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="serialName" label="系列" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="originalSerialName" label="原系列" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="categoryName" label="品类" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="shopName" label="店铺名" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="month" label="月" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="orderNo" label="单号" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="listDate" label="上市日期" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="beginDate" label="开始日期" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="endDate" label="结束日期" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="solarTerms" label="24节气" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="holiday" label="节假日" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <!-- <el-table-column property="weekBeginFillRate" label="当周新品期初有效满场率" min-width="120" :show-overflow-tooltip="true"></el-table-column> -->
+                <el-table-column label="新品开发占比" min-width="120" :show-overflow-tooltip="true">
+                    <template scope="scope">
+                        {{scope.row.newProductProportionFormat}}%
+                    </template>
+                </el-table-column>
+                <!-- <el-table-column property="lifeCycleDigestibility" label="生命周期内消化率" min-width="120" :show-overflow-tooltip="true"></el-table-column> -->
+                <!-- <el-table-column property="themeExceedsLifeCycleRatio" label="主题款过生命周期占比" min-width="120" :show-overflow-tooltip="true"></el-table-column> -->
+                <!-- <el-table-column property="salesExceedsLifeCycleRatio" label="常销款过生命周期占比" min-width="120" :show-overflow-tooltip="true"></el-table-column> -->
+                <!-- <el-table-column property="baseExceedsLifeCycleRatio" label="基本款过生命周期占比" min-width="120" :show-overflow-tooltip="true"></el-table-column> -->
+                <!-- <el-table-column property="total" label="合计" min-width="120" :show-overflow-tooltip="true"></el-table-column> -->
+                <!-- <el-table-column property="weekEndFillRate" label="当周新品期初有效满场率" min-width="120" :show-overflow-tooltip="true"></el-table-column> -->
+
+                <template v-for="(value, key) in ordersTypeTitleMap" :key="key">
+                    <el-table-column :label="value + '开发占比合计'" min-width="120" :show-overflow-tooltip="true">
+                        <template scope="scope">
+                            {{scope.row.ordersDetailMap[key].totalFormat}}%
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="春" min-width="120" :show-overflow-tooltip="true">
+                        <template scope="scope">
+                            {{scope.row.ordersDetailMap[key].springFormat == null ? null :
+                            (scope.row.ordersDetailMap[key].springFormat + '%')}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="夏" min-width="120" :show-overflow-tooltip="true">
+                        <template scope="scope">
+                            {{scope.row.ordersDetailMap[key].summerFormat == null ? null :
+                            (scope.row.ordersDetailMap[key].summerFormat + '%')}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="秋" min-width="120" :show-overflow-tooltip="true">
+                        <template scope="scope">
+                            {{scope.row.ordersDetailMap[key].autumnFormat == null ? null :
+                            (scope.row.ordersDetailMap[key].autumnFormat + '%')}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="冬" min-width="120" :show-overflow-tooltip="true">
+                        <template scope="scope">
+                            {{scope.row.ordersDetailMap[key].winterFormat == null ? null :
+                            (scope.row.ordersDetailMap[key].winterFormat + '%')}}
+                        </template>
+                    </el-table-column>
+                </template>
+
+                <el-table-column property="remark" label="备注" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="createByName" label="创建者" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="createTime" label="创建时间" min-width="150"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="modifyByName" label="修改者" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column property="modifyTime" label="修改时间" min-width="150"
+                                 :show-overflow-tooltip="true"></el-table-column>
+            </el-table>
+        </div>
+    </div>
+
+    <el-dialog ref="uploadPanel" :visible.sync="showUploadDialog">
+        <a href="/template/FullListingPlanMasterDataTemplate.xlsx" style="font-size: 15px; color: red;">模版下载</a>
+        <div style="height: 50px;"></div>
+        <el-form style="width: 30rem;" v-loading="importing" element-loading-text="导入数据中，请耐心等待..."
+                 class="form uploadform">
+            <el-form-item>
+                <el-upload ref="upload" action="/FullListingPlanMasterData/importExcel"
+                           :before-upload="beforeUpload" :limit="1"
+                           :file-list="fileList" :auto-upload='true' :show-upload-list="false"
+                           :on-success="handleUploadSuccess"
+                           :on-error="handleUploadError">
+                    <el-button slot="trigger" type="primary" :disabled="importing">点击上传</el-button>
+                    <div slot="tip" class="el-upload__tip">只能上传xls/xlsx 文件,每次只能上传一个</div>
+                </el-upload>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
+</div>
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var vm = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                queryCondition: {
+                    year: "",
+                    month: "",
+                    orderNo: "",
+                    listDate: "",
+                    beginDate: "",
+                    endDate: "",
+                    bigSeason: "",
+                    serial: "",
+                    category: "",
+                },
+                queryResult: {
+                    totalRecordNum: 0,
+                    currPage: 1,
+                    pageSize: 20,
+                    data: []
+                },
+                queryingFullListingPlanMasterData: false,
+                updatingFullListingPlanMasterData: false,
+                exportingFile: false,
+                expandText: "展开查询面板",
+                expandCondition: false,
+                monthItems: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                seasonItems: [[${seasonItems}]],
+                serialItems: [[${serialItems}]],
+                categoryItems: [[${categoryItems}]],
+                updateInstance: {},
+                isUpdate: false,
+                dialogTitle: "",
+                showUpdateDialog: false,
+                showUploadDialog: false,
+                fileList: [],
+                importing: false,
+                isLoaded: false,
+                tableHeight: 500,
+                ordersTypeTitleMap: {}
+            }
+        },
+        created: function () {
+            this.isLoaded = true;
+            this.tableHeight = $(document).height() - 115;
+            this.queryFullListingPlanMasterData();
+        },
+        methods: {
+            clickCancelBtn() {
+                this.showDialog = false;
+            },
+            handleTableCurrentChange(currentRow) {
+                this.currInstance = currentRow;
+            },
+            handleCurrentChange(val) {
+                this.queryResult.currPage = val;
+                this.queryFullListingPlanMasterData();
+            },
+            handleSizeChange(val) {
+                this.queryResult.pageSize = val;
+                this.queryFullListingPlanMasterData();
+            },
+            clickSearchBtn() {
+                this.queryResult.currPage = 1;
+                this.queryFullListingPlanMasterData();
+            },
+            queryFullListingPlanMasterData() {
+                _this = this;
+
+                var url = '/FullListingPlanMasterData/search';
+                var page = this.queryResult.currPage;
+
+                if (page == null) {
+                    page = 1;
+                }
+
+                var restRequest = new URRestRequest();
+                restRequest.setCurrPage(page);
+                restRequest.setPageSize(this.queryResult.pageSize);
+
+                //可以指定排序字段
+                //restRequest.addOrderBy("columnName??? desc");
+
+                if (this.expandCondition == true) {
+                    //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+                    restRequest.addCondition("a.year", this.queryCondition.year, "eq");
+                    restRequest.addCondition("a.big_season", this.queryCondition.bigSeason, "eq");
+                    restRequest.addCondition("a.month", this.queryCondition.month, "eq");
+                    restRequest.addCondition("a.order_no", this.queryCondition.orderNo, "eq");
+                    restRequest.addCondition("a.list_date", this.queryCondition.listDate, "eq");
+                    restRequest.addCondition("a.begin_date", this.queryCondition.beginDate, "eq");
+                    restRequest.addCondition("a.end_date", this.queryCondition.endDate, "eq");
+                    restRequest.addCondition("b.serial", this.queryCondition.serial, "eq");
+                    restRequest.addCondition("b.category", this.queryCondition.category, "eq");
+                }
+
+                this.$data.queryingFullListingPlanMasterData = true;
+
+                axios.post(url, restRequest.getRequestData())
+                    .then(function (response) {
+                        console.log("response");
+                        console.log(response);
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.error({title: '查询数据失败', message: response.data.message, offset: 100});
+                            _this.$data.queryingFullListingPlanMasterData = false;
+                        } else {
+                            _this.$data.queryResult = response.data;
+                            if (response.data.data && response.data.data.length > 0) {
+                                response.data.data.forEach(element => {
+                                    Object.assign(_this.$data.ordersTypeTitleMap, element.ordersTypeTitleMap);
+                                });
+                            } else {
+                                _this.$data.queryResult.data = [];
+                            }
+                            _this.$data.queryingFullListingPlanMasterData = false;
+                            _this.$data.expandCondition = false;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        _this.$notify.error({title: '错误', message: '查询数据失败，请联系系统管理员', offset: 100});
+                    });
+            },
+            clickExportBtn() {
+                _this = this;
+                var url = '/FullListingPlanMasterData/export';
+
+                var restRequest = new URRestRequest();
+
+                //可以指定排序字段
+                //restRequest.addOrderBy("columnName??? desc");
+
+                if (this.expandCondition == false) {
+                    //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+                    restRequest.addCondition("a.year", this.queryCondition.year, "eq");
+                    restRequest.addCondition("a.big_season", this.queryCondition.bigSeason, "eq");
+                    restRequest.addCondition("a.month", this.queryCondition.month, "eq");
+                    restRequest.addCondition("a.order_no", this.queryCondition.orderNo, "eq");
+                    restRequest.addCondition("a.list_date", this.queryCondition.listDate, "eq");
+                    restRequest.addCondition("a.begin_date", this.queryCondition.beginDate, "eq");
+                    restRequest.addCondition("a.end_date", this.queryCondition.endDate, "eq");
+                    restRequest.addCondition("b.serial", this.queryCondition.serial, "eq");
+                    restRequest.addCondition("b.category", this.queryCondition.category, "eq");
+                }
+
+                this.$data.exportingFile = true;
+
+                axios.post(url, restRequest.getRequestData())
+                    .then(function (response) {
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.error({title: '导出失败', message: response.data.message, offset: 100});
+                            _this.$data.exportingFile = false;
+                        } else {
+                            //var downloadLink = "/DownloadFile/" + response.data.data.fileName + "/" + response.data.data.extName;
+                            _this.$data.exportingFile = false;
+                            //downloadFile(downloadLink);
+                            downloadFileReName(response.data.data.fileName,response.data.data.extName,'上市满场计划');
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        _this.$notify.error({title: '错误', message: '导出数据失败，请联系系统管理员', offset: 100});
+                    });
+            },
+            clickResetBtn() {
+                for (var key in this.queryCondition) {
+                    this.queryCondition[key] = "";
+                }
+            },
+            clickImportBtn() {
+                this.showUploadDialog = true;
+            },
+            beforeUpload(file) {
+                let Xls = file.name.split('.');
+                if (Xls[1] === 'xls' || Xls[1] === 'xlsx') {
+                    this.importing = true;
+                    return file
+                } else {
+                    this.$message.error('只能上传xls、xlsx 文件');
+                    return false;
+                }
+            },
+            handleUploadSuccess(res, file, fileList) {
+                this.fileList = [];
+                this.uploadDialogVisible = false;
+                this.importing = false;
+                if (JSON.stringify(res.success) === "false") {
+                    this.$message({
+                        message: '导入失败: ' + JSON.stringify(res.message),
+                        type: 'error',
+                        duration: 0,
+                        showClose: true
+                    });
+                } else {
+                    this.$message({message: JSON.stringify(res.message), type: 'success'});
+                    this.queryResult.currPage = 1;
+                    this.clickResetBtn();
+                    this.queryFullListingPlanMasterData();
+                }
+            },
+            handleUploadError(err, file, fileList) {
+                this.importing = false;
+                this.fileList = [];
+                this.uploadDialogVisible = false;
+                this.$message({message: '导入失败' + err, type: 'error'});
+            }
+        }
+    })
+    /*]]>*/
+</script>
+</html>

@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('供应商主数据')"></head>
+<style scoped>
+		[v-cloak] {
+			display: none;
+		}
+
+		html,
+		body {
+			height: 100%;
+		}
+
+		#app {
+			height: 100%;
+		}
+
+		#MY-app-container {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			position: relative;
+		}
+
+		/*#appbox {*/
+			/*height: 100%;*/
+			/*display: flex;*/
+			/*flex-direction: column;*/
+			/*position: relative;*/
+		/*}*/
+
+		/*配置弹窗——————————————————————————————————————————————————————*/
+
+		.tanpeizhi {
+			width: 100%;
+			height: 100%;
+			background: rgba(127, 127, 127, 0.5);
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 10;
+			display: flex;
+			justify-content: flex-end;
+			/*opacity: 0.2;*/
+		}
+
+		.el-checkbox.is-bordered {
+			width: 120px;
+		}
+
+		.el-checkbox.is-bordered+.el-checkbox.is-bordered {
+			margin: 10px !important;
+		}
+
+		.tanpeizhi .peizhibox {
+			height: 100%;
+			width: 440px;
+			background: white;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+			align-items: flex-start;
+			padding: 10px;
+			box-sizing: border-box;
+			align-content: flex-start;
+		}
+
+		.control-bar {
+			height: 40px;
+			width: 100%;
+			background: #ffffff;
+		}
+
+		.control-bar .MYcontainer {
+			display: flex;
+			align-items: center;
+			height: 40px;
+			background: #ffffff;
+		}
+
+		.search-bar {
+			/*height: 206px;*/
+			width: 100%;
+			background: white;
+		}
+
+		.search-bar .MYcontainer {
+			/*height: 206px;*/
+			background: #ffffff;
+			/*border: 1px solid #eef1f6;*/
+			box-sizing: border-box;
+			border-radius: 5px;
+		}
+
+		.action-bar {
+			min-height: 50px;
+			width: 100%;
+			background: white;
+		}
+
+		.action-bar .MYcontainer {
+			min-height: 50px;
+			background: #ffffff;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+            flex-wrap: wrap;
+		}
+
+		.action-bar .MYcontainer .action-left {
+            margin: 2px;
+        }
+
+		.action-left .el-button {
+			box-shadow: 2px 2px 2px #CCCCCC;
+		}
+
+		.action-bar .MYcontainer .action-right {
+			flex: 0.2;
+			height: 40px;
+			background: white;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+		}
+
+		.main-bar {
+			flex: 1;
+			width: 100%;
+			background: white;
+			overflow: auto;
+		}
+
+		.main-bar .MYcontainer {
+			height: 100%;
+			/*background: pink;*/
+			/*border: 1px solid #eef1f6;*/
+			box-sizing: border-box;
+		}
+
+		/*.el-table {
+				height: 100% !important;
+			}*/
+
+		.el-table td,
+		.el-table th.is-leaf {
+			text-align: center;
+		}
+
+		.fade-enter-active,
+		.fade-leave-active {
+			transition: opacity 0.5s;
+		}
+
+		.fade-enter,
+		.fade-leave-to
+		/* .fade-leave-active below version 2.1.8 */
+
+			{
+			opacity: 0;
+		}
+
+		.el-table th {
+			background: linear-gradient(to bottom, #fdfdfd, #f1f7ff);
+		}
+
+		.el-table thead {
+			background: linear-gradient(to bottom, #fdfdfd, #f1f7ff);
+		}
+
+		.el-form-item {
+			margin-bottom: 10px;
+		}
+
+		.el-form-item__label {
+			color: #666666 !important;
+		}
+
+
+
+		/*.el-table--scrollable-y .el-table__body-wrapper {*/
+			/*flex: 1 !important;*/
+		/*}*/
+
+		.el-table .el-table--fit .el-table--scrollable-x .el-table--scrollable-y .el-table--enable-row-hover .el-table--enable-row-transition {
+			display: flex;
+		}
+
+		.el-table__body tr.cuurent-row>td {
+			background: skyblue;
+		}
+
+		.el-table td {
+			padding: 0;
+		}
+
+		.gutter {
+			display: none;
+		}
+
+		/*.el-dialog__body{
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
+			}
+
+			.el-dialog__header{
+				min-width: 500px !important;
+			}
+			.el-dialog__body{
+				min-width: 500px !important;
+			}
+			.el-dialog .el-dialog--center{
+				min-width: 500px !important;
+			}*/
+
+		.customWidth {
+			min-width: 500px;
+		}
+
+		.mubantip {
+			width: 100%;
+			/*min-height: 38px;*/
+			line-height: 38px;
+			text-align: center;
+			background: #ECECEC;
+			margin-top: 10px;
+			margin-bottom: 10px;
+			color: red;
+		}
+
+		.el-pagination__jump {
+			margin-left: 0 !important;
+		}
+
+		.el-pagination__sizes {
+			margin: 0 !important;
+		}
+
+		.el-pagination__total {
+			margin-right: 0 !important;
+		}
+
+		.el-pagination.is-background .btn-next,
+		.el-pagination.is-background .btn-prev,
+		.el-pagination.is-background .el-pager li {
+			margin: 0px 2px !important;
+		}
+
+		.el-button+.el-button {
+			margin-left: 0 !important;
+		}
+
+		.peizhibox .el-form-item {
+			margin: 10px 0;
+		}
+
+		.el-carousel__item.is-animating {
+			transition: noset !important;
+		}
+
+		.el-dialog--center {
+			height: 80%;
+			display: flex !important;
+			flex-direction: column !important;
+		}
+
+		.el-dialog__body {
+			flex: 1 !important;
+			display: flex !important;
+			flex-direction: column !important;
+		}
+
+		.el-carousel--horizontal {
+			flex: 1 !important;
+			display: flex !important;
+			flex-direction: column !important;
+		}
+
+		.el-carousel__MYcontainer {
+			flex: 1;
+		}
+    .search-form{
+        display: flex;
+        flex-wrap: wrap;
+        padding: 4px 0px;
+        border: 1px solid rgb(204, 204, 204);
+        background: linear-gradient(to top, rgb(255, 255, 255), rgb(218, 232, 251));
+        border-radius: 10px;
+        margin-bottom: 10px;
+        box-shadow: rgb(204, 204, 204) 2px 2px 2px;
+    }
+	</style>
+
+</head>
+
+<body>
+
+	<div id='app' v-cloak>
+		<div id='MY-app-container' >
+
+				<transition name="fade">
+					<div class="tanpeizhi" @click='onctrshow' v-show="ctrshowtankuang" >
+
+                        <!--配置弹框——————————————————————————————————-->
+						<div class="peizhibox" v-show='ctrshow_peizhi'>
+							<!--<el-checkbox v-model="ctrpeizhi.ct_xvhao" label="序号" border style='margin:10px;'></el-checkbox>-->
+							<el-checkbox v-model="ctrpeizhi.ct_fullName" label="供应商全称" disabled border fill='#409EFF'
+								style='margin:10px;'></el-checkbox>
+							<el-checkbox v-model="ctrpeizhi.ct_code" label="供应商编码" disabled border fill='#409EFF'></el-checkbox>
+							<el-checkbox v-model="ctrpeizhi.ct_shortName" label="供应商简称" border></el-checkbox>
+							<el-checkbox v-model="ctrpeizhi.ct_coordination" label="是否协同" border fill='#409EFF'>
+							</el-checkbox>
+							<el-checkbox v-model="ctrpeizhi.ct_supCalStatus" label="供应商状态" border fill='#409EFF'></el-checkbox>
+							<el-checkbox v-model="ctrpeizhi.ct_priceStartDate" label="合同期起" border fill='#409EFF'>
+
+							</el-checkbox>
+							<el-checkbox v-model="ctrpeizhi.ct_priceEndDate" label="合同期止" border fill='#409EFF'></el-checkbox>
+							<el-checkbox v-model="ctrpeizhi.ct_spec" label="规格" border fill='#409EFF'></el-checkbox>
+
+							<el-button @click='onpeizhiwancheng' style='width:100%' type="primary" plain>保存配置项
+							</el-button>
+						</div>
+
+                        <!--查询弹框——————————————————————————————————-->
+						<div class="peizhibox" v-show='ctrshow_search' style='width: 810px;'>
+							<div class="btnbox" style='margin-bottom: 10px;'>
+								<el-button
+										@click='tosearch'
+										style='box-shadow: 2px 2px 2px #ccc;margin-right: 10px;'
+										type="primary"
+										plain>查询
+								</el-button>
+								<el-button
+										style='box-shadow: 2px 2px 2px #ccc;'
+										type="info"
+										plain
+										@click="resetForm('queryCondition')">重置
+								</el-button>
+							</div>
+							<el-form
+									:model="queryCondition"
+									label-width="100px"
+									class="search-form"
+									ref="queryCondition">
+								<el-form-item label="供应商编码" style='width:48%' prop="code">
+									<el-input type="text" v-model="queryCondition.code"></el-input>
+								</el-form-item>
+								<el-form-item label="供应商全称" style='width:48%' prop="fullName">
+									<el-input type="text" v-model="queryCondition.fullName" ></el-input>
+								</el-form-item>
+								<el-form-item label="供应商简称" style='width:48%' prop="shortName">
+									<el-input type="text" v-model="queryCondition.shortName"></el-input>
+								</el-form-item>
+								<el-form-item clearable  label="供应商状态" style='width:48%' prop="supCalStatus">
+									<el-select :clearable='true' v-model="queryCondition.supCalStatus" placeholder="请选择" style='width:100%'>
+										<el-option :label="item" :value="key"  v-for="(item,key) in gCsupStatus"></el-option>
+									</el-select>
+								</el-form-item>
+								<el-form-item label="是否协同" style='width:48%' prop="coordination">
+									<el-select :clearable='true'   v-model="queryCondition.coordination" placeholder="请选择" style='width:100%'>
+										<el-option :label="item" :value="key"  v-for="(item,key) in coordination"></el-option>
+									</el-select>
+								</el-form-item>
+							</el-form>
+						</div>
+
+					</div>
+				</transition>
+
+				<el-dialog :visible.sync="dialogVisible" @close='closeDialog' :fullscreen='fullscreen' width='50%'
+					height='800px' center>
+					<template>
+						<!--<el-button @click='fangdaimgbox'>全屏</el-button>-->
+						<el-carousel :initial-index='0' arrow="always" height='100%' indicator-position="outside"
+							:autoplay='false'>
+							<el-carousel-item v-for="(item,index) in dialogImageUrl" :key="index"
+								style='display: flex;justify-content: center;'>
+								<img :src="item" alt="" style='max-width: 100%;height: 100%;'>
+							</el-carousel-item>
+						</el-carousel>
+					</template>
+
+				</el-dialog>
+
+				<el-dialog :visible.sync="dialogdaochu">
+					<el-button>
+						<a href="http://dev-ims.ur.com.cn:9090/template/TransferTemplate.xlsx">模板下载</a>
+					</el-button>
+					<div class="mubantip">
+						当前导入的excel文件的数据日期必须一致！且导入数据只做新增，不做修改保存，若数据行已存在系统中，将忽略该行数据！
+					</div>
+					<el-upload :limit='1' accept='.xlsx,.xls' class="upload-demo"
+						action="https://jsonplaceholder.typicode.com/posts/" :on-change="handleChange"
+						:file-list="fileList">
+						<el-button size="small" type="primary">点击上传</el-button>
+						<div slot="tip" class="el-upload__tip">只能上传.xlsx,.xls文件，且不超过500kb</div>
+					</el-upload>
+				</el-dialog>
+
+				<div class="control-bar">
+					<div class="MYcontainer">
+						<!--<el-tooltip :content="'Switch value: ' + value" placement="top">-->
+						<el-switch active-text="" inactive-text="搜索" v-model="ctrshow_search" active-color="skyblue"
+							inactive-color="#ccc" active-value='1' inactive-value='0' @change='inchange'
+							style='margin-right: 20px;'>
+						</el-switch>
+
+						<el-switch active-text="" inactive-text="显示列配置" v-model="ctrshow_peizhi" active-color="skyblue"
+							inactive-color="#ccc" active-value='1' inactive-value='0' @change='changepeizhi'>
+						</el-switch>
+						<!--</el-tooltip>-->
+					</div>
+				</div>
+				
+				<div class="action-bar">
+
+					<div class="MYcontainer">
+						<div class="action-left">
+							<el-button icon='el-icon-folder-add' size='small' @click='toadd'>
+								新增
+							</el-button>
+							<el-button icon='el-icon-edit' @click='toedit' size='small'>编辑</el-button>
+							<!--<el-button icon='el-icon-delete' @click='todel' size='small'>删除</el-button>-->
+                            <!--<el-button icon='el-icon-delete' @click='tostop' size='small'>禁止</el-button>-->
+							<el-button icon='el-icon-view' @click='tolook' size='small'>查看</el-button>
+							<!--<el-button icon='el-icon-document-copy' @click='tocopy' size='small'>复制</el-button>-->
+							<!--<el-button icon='el-icon-download' @click='todownload' size='small'>下载</el-button>-->
+							<el-button icon='el-icon-position' size='small' @click='todaoru'>导入</el-button>
+							<el-button icon='el-icon-download' size='small' @click='todownload'>导出</el-button>
+							<!--<el-button icon='el-icon-upload2' @click='tosendOA' size='small'>提交OA</el-button>-->
+						</div>
+
+						<!--分页组件————————————————————————————————-->
+
+						<div class="action-right" >
+							<el-pagination background
+								@current-change="handleCurrentChange"
+                                @size-change="handleSizeChange"
+								:current-page="queryResult.currPage"
+								:page-sizes="[20, 40, 80, 100,1000]" :page-size="queryResult.pageSize"
+								layout="total, sizes, prev, pager, next, jumper" :total="queryResult.totalRecordNum">
+							</el-pagination>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="main-bar" v-loading="loading">
+					<div class="MYcontainer">
+
+						<el-table
+								height='100%'
+								max-height="100%"
+								empty-text="当前没有供应商数据"
+								:row-style="rowClass"
+								ref="multipleTable"
+								:data="tableData"
+								tooltip-effect="dark"
+								@row-click="handleRowClick"
+								@row-dblclick="dbhandleRowClick"
+								@selection-change="handleSelectionChange"
+							>
+							<el-table-column  fixed type="selection" width="50">
+							</el-table-column>
+
+
+							<el-table-column  fixed label="供应商编码"  v-if='ctrpeizhi.ct_code' min-width='100'>
+								<template slot-scope="scope">{{ scope.row.supplier.code }}</template>
+							</el-table-column>
+
+							<el-table-column  label="供应商全称" v-if='ctrpeizhi.ct_fullName' min-width='150'>
+								<template slot-scope="scope">
+									{{ scope.row.supplier.fullName?scope.row.supplier.fullName:'-' }}
+								</template>
+							</el-table-column>
+
+							<el-table-column label="供应商简称" min-width="100" v-if='ctrpeizhi.ct_shortName'>
+								<template slot-scope="scope">{{ scope.row.supplier.shortName?scope.row.supplier.shortName:'-' }}</template>
+								<!--{{ scope.row.supplier.matdepict }}-->
+							</el-table-column>
+							<el-table-column label="是否协同" min-width="100" v-if='ctrpeizhi.ct_coordination'>
+								<template slot-scope="scope">{{ scope.row.supplier.coordination?scope.row.supplier.coordination:'-'  }}</template>
+							</el-table-column>
+							<el-table-column label="供应商状态" min-width="150" v-if='ctrpeizhi.ct_supCalStatus'>
+								<template slot-scope="scope">{{ scope.row.supplier.supCalStatus?scope.row.supplier.supCalStatus:'-'  }}</template>
+							</el-table-column>
+
+							<el-table-column
+                                    prop="priceStartDate"
+                                    sortable
+                                    label="合同期起"
+                                    min-width="200"
+                                    v-if='ctrpeizhi.ct_priceStartDate'>
+								<template slot-scope="scope">{{ scope.row.priceStartDate?scope.row.priceStartDate:'-'}}</template>
+									<!--<template slot-scope="scope">{{ scope.row.supContractInfoList[0]}}</template>-->
+							</el-table-column>
+
+							<el-table-column
+                                    prop="priceEndDate"
+                                    sortable
+                                    label="合同期止"
+                                    min-width="100"
+                                    v-if='ctrpeizhi.ct_priceEndDate'
+                            >
+								<template slot-scope="scope">{{ scope.row.priceEndDate?scope.row.priceEndDate:'-'}}</template>
+								<!--<template slot-scope="scope">{{ scope.row.supContractInfoList[0]}}</template>-->
+							</el-table-column>
+
+							<el-table-column label="年审状态" min-width="100" v-if='ctrpeizhi.ct_spec'>
+								<template slot-scope="scope">{{ scope.row.supplier.priceEndDate?scope.row.supplier.priceEndDate:'暂无' }}</template>
+							</el-table-column>
+
+						</el-table>
+
+					</div>
+				</div>
+
+		</div>
+	</div>
+	<div th:include="common/onload_js :: onloadJS"></div>
+	<script  th:inline="javascript">
+        /*<![CDATA[*/
+		var vm = new Vue({
+			el: '#app',
+			data: {
+                PKID:'',
+//			供应商主数据请求地址————————————————————————————
+				WLurl: 'search',
+                deletWLurl:'/mat/deleteMaterial',
+                updateBatchStatusWLurl:'/mat/updateBatchStatus',
+				pickerOptions2: {
+					shortcuts: [{
+						text: '最近一周',
+						onClick(picker) {
+							const end = new Date();
+							const start = new Date();
+							start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '最近一个月',
+						onClick(picker) {
+							const end = new Date();
+							const start = new Date();
+							start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '最近三个月',
+						onClick(picker) {
+							const end = new Date();
+							const start = new Date();
+							start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+							picker.$emit('pick', [start, end]);
+						}
+					}]
+				},
+				value3: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+				value4: '',
+				fullscreen: false,
+				ctrshow_peizhi: '0',
+				ctrshow_search: '0',
+				selectRow: [],
+				selectData: [],
+				ctrpeizhi: {},
+				checked1: '',
+				checked2: '',
+				ctrshowtankuang: false,
+				valuepeizhi: '0',
+
+
+
+				valuesearch: '0',
+				ctrshow: false,
+				tableHeight: 50,
+				theight: '100%',
+
+				tableData: [],  //主数据数据
+
+				multipleSelection: [],
+				currentPage4: 1,
+				currentPage: 1,
+				loading: false,
+				dialogImageUrl: [],
+				dialogVisible: false,
+				dialogdaochu: false,
+				fileList: [],
+
+				queryResult: {           //查询分页
+					totalRecordNum:20,   //总数量
+					currPage: 1,         //起始页数
+					pageSize: 20         //每页显示数量
+				},
+				queryCondition: {
+                    shortName:'',  //简称
+                    fullName: '',  //全称
+					code: '',  	   //编码
+                    supCalStatus:'',  //供应商状态
+                    coordination:''   //是否协同
+
+				},
+                brandTypes:[[${brandType}]],
+                categoryAs:[[${categoryA}]],
+                allCategoryB:[[${allCategoryB}]],
+                allCategoryC:[[${allCategoryC}]],
+                matTypes:[[${matType}]],
+                matStatus:[[${matStatus}]],
+
+                coordination:[[${coordination}]],
+                gCsupStatus:[[${gCsupStatus}]]
+
+
+			},
+            created(){
+//					获取供应商主数据方法——————————————————————————————————————————————
+                this.queryMaterial();
+            },
+			mounted() {
+
+				console.log([[${gCsupStatus}]])
+
+
+
+				// 读取用户浏览器的供应商主数据配置信息
+				if (localStorage.getItem('GYSzhushuju_peizhi') == null) {
+					// console.log('没数据')
+					let peizhidata = {
+						ct_fullName: true, 	//供应商全称
+						ct_code: true, 		//供应商编码
+						ct_shortName: true, //供应商简称
+						ct_coordination: true, 		//是否协同
+						ct_supCalStatus: true, 		//供应商状态
+						ct_priceStartDate: true, 	//合同期起
+                        ct_priceEndDate: true, 		//合同期止
+						ct_spec: true, 		//规格
+					}
+					this.ctrpeizhi = peizhidata;
+				} else {
+					this.ctrpeizhi = JSON.parse(localStorage.getItem('GYSzhushuju_peizhi'));
+				}
+
+			},
+			watch: {
+				// selectData(data) {
+				// 	this.selectRow = [];
+				// 	if (data.length > 0) {
+				// 		data.forEach((item, index) => {
+				// 			this.selectRow.push(this.tableData.indexOf(item));
+				// 		});
+				// 	}
+				// }
+			},
+			methods: {
+
+			    // 双击列表行
+                dbhandleRowClick(){
+
+				},
+                // 查询
+                queryMaterial() {
+
+                    this.loading=true;
+					var restRequest = new URRestRequest();
+                    restRequest.addCondition("shortName", this.queryCondition.shortName, "like");
+                    restRequest.addCondition("fullName", this.queryCondition.fullName, "like");
+                    restRequest.addCondition("code", this.queryCondition.code, "like");
+                    restRequest.addCondition("supCalStatus", this.queryCondition.supCalStatus, "eq");
+                    restRequest.addCondition("coordination", this.queryCondition.coordination, "eq");
+
+					restRequest.setCurrPage(this.queryResult.currPage);
+					restRequest.setPageSize(this.queryResult.pageSize);
+					axios.post(this.WLurl, restRequest.getRequestData())
+						.then((response) => {
+						response.data.data.forEach(item=>{
+
+                                if(item.supContractInfoList[0].priceStartDate==null){
+                                    item.supContractInfoList[0].priceStartDate='';
+                                }
+                                if(item.supContractInfoList[0].priceEndDate==null){
+                                    item.supContractInfoList[0].priceEndDate='';
+                                }
+                            item.priceStartDate=item.supContractInfoList[0].priceStartDate;
+                            item.priceEndDate=item.supContractInfoList[0].priceEndDate
+
+                            })
+                            setTimeout(()=>{
+                                this.queryResult=response.data;
+                                this.tableData = response.data.data;
+                                this.loading=false;
+                            },500)
+						})
+						.catch((error) => {
+                            this.loading=false;
+                            this.$message({
+                                message: '查询数据失败，请联系系统管理员',
+                                type: 'error'
+                            });
+						});
+				},
+                tostop(){
+                    if (this.selectData.length == 0) {
+                        this.$message({
+                            message: '请选择需要禁用的供应商主数据',
+                            type: 'warning',
+                            center: true
+                        });
+                    } else {
+                        axios.put(this.updateBatchStatusWLurl, this.selectData).then(response=> {
+                            if(response.data.code==null||response.data.code!=0){
+                                this.$message('禁用失败');
+                                this.$data.loading = false;
+                            }else{
+                                this.$message({
+                                    message: '禁用成功',
+                                    type: 'success',
+                                    center: true
+                                });
+                                this.$data.loading = false;
+                                this.queryMaterial(this.queryResult.currPage);
+                            }
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+
+
+                    }
+                },
+
+				todownload() {
+					console.log(this.selectData)
+					if (this.selectData.length == 0) {
+						this.$message({
+							message: '请选择需要下载的供应商主数据',
+							type: 'warning',
+							center: true
+						});
+					} else {
+						this.$message({
+							message: '下载成功',
+							type: 'success',
+							center: true
+						});
+					}
+				},
+				handleChange() {
+
+				},
+				todaoru() {
+					this.dialogdaochu = true;
+				},
+				tosendOA() {
+
+					console.log(this.selectData)
+					if (this.selectData.length == 0) {
+						this.$message({
+							message: '请选择需要提交到OA的供应商主数据',
+							type: 'warning',
+							center: true
+						});
+					} else {
+						this.$confirm('当前数据是否提交到OA？', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							this.$message({
+								type: 'success',
+								message: '提交OA成功!'
+							});
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '已取消删除'
+							});
+						});
+					}
+				},
+				todel() {
+                    console.log(this.selectData)
+					if (this.selectData.length == 0) {
+						this.$message({
+							message: '请选择需要删除的供应商主数据',
+							type: 'warning',
+							center: true
+						});
+					} else {
+                        axios.put(this.deletWLurl, this.selectData).then(response=> {
+                            if(response.data.code==null||response.data.code!=0){
+                                this.$message.error('删除失败');
+                                this.$data.loading = false;
+                            }else{
+                                this.$message({
+                                    message: '删除成功',
+                                    type: 'success',
+                                    center: true
+                                });
+                                this.$data.loading = false;
+                                this.queryMaterial(this.queryResult.currPage);
+                            }
+                        }).catch(function (error) {
+                            this.$message.error('删除数据失败，请联系系统管理员');
+                        });
+
+
+                    }
+				},
+				tolook() {
+					console.log(this.selectData)
+					if (this.selectData.length == 1) {
+                        this.$message({
+                            message: '还未开放此功能',
+                            type: 'warning',
+                            center: true
+                        });
+						// window.open("./查看主数据页面.html?id=123", "_blank")
+					} else if (this.selectData.length == 0) {
+						this.$message({
+							message: '请选择需要查看的供应商主数据',
+							type: 'warning',
+							center: true
+						});
+					} else {
+						this.$message({
+							message: '请选择一行数据进行查看',
+							type: 'warning',
+							center: true
+						});
+					}
+				},
+				toedit(){
+					if (this.selectData.length == 1) {
+						window.open("editSupplier?id="+this.selectData[0].supplier.id,'_self')
+						// window.location.search='?id';
+					}else if (this.selectData.length == 0) {
+						this.$message({
+							message: '请选择需要编辑的供应商主数据',
+							type: 'warning',
+							center: true
+						});
+					} else {
+						this.$message({
+							message: '请选择一行数据进行编辑',
+							type: 'warning',
+							center: true
+						});
+					}
+				},
+				toadd(){
+                    window.open("editSupplier",'_self')
+
+				},
+				tocopy() {
+					console.log(this.selectData)
+					if (this.selectData.length == 1) {
+						window.location.href = "../mat/WLbianji.html"
+					} else if (this.selectData.length == 0) {
+						this.$message({
+							message: '请选择需要复制的供应商主数据',
+							type: 'warning',
+							center: true
+						});
+					} else {
+						this.$message({
+							message: '请选择一行数据进行复制',
+							type: 'warning',
+							center: true
+						});
+					}
+				},
+				tosearch() {
+
+
+					this.ctrshowtankuang = false;
+					// this.ctrshow_peizhi = '0';
+					this.ctrshow_search = false;
+                    this.ctrshow = false;
+                    this.valuesearch = '0';
+                    this.queryResult.currPage=1;
+                    this.queryResult.pageSize=20;
+                    this.queryMaterial();
+				},
+
+				handleEdit(index, row) {
+					this.dialogVisible = true;
+					this.dialogImageUrl = row.checkPictureList;
+
+				},
+				handleSelectionChange(data) {
+                    console.log(data)
+					this.selectData = data;
+				},
+
+                // 多选高亮选中行
+				rowClass({row,rowIndex}) {
+					if (this.selectData.includes(row)) {
+						return {
+							"background-color": "rgba(253, 247, 229, 1)"
+						}
+					}
+				},
+
+				// onpeizhi(item) {
+				// 	console.log(this.ctrpeizhi.ct_shortName)
+                //
+				// },
+
+				//点击配置按钮
+				changepeizhi() {
+					this.ctrshowtankuang = true;
+					this.ctrshow_peizhi = '1';
+					this.ctrshow_search = false;
+					// console.log(this.ctrshow_peizhi)
+
+				},
+
+				//点击弹框的灰色区域
+				onctrshow() {
+					if (window.event.target.className == 'tanpeizhi') {
+						this.ctrshowtankuang = false;
+						this.ctrshow_peizhi = false;
+						this.ctrshow_search = false;
+					}
+
+				},
+				onpeizhiwancheng() {
+					this.ctrshowtankuang = false;
+					this.ctrshow_peizhi = false;
+					this.ctrshow_search = false;
+					localStorage.setItem('GYSzhushuju_peizhi', JSON.stringify(this.ctrpeizhi));
+				},
+				//					点击搜索按钮
+				inchange(scope) {
+					this.ctrshowtankuang = true;
+					this.ctrshow_search = '1';
+					this.ctrshow_peizhi = false;
+
+				},
+                // 更改当前页数
+				handleCurrentChange(val) {
+				    this.queryResult.currPage=val;
+				    this.queryMaterial();
+				},
+                // 更改每页显示数量
+                handleSizeChange(val){
+
+                    this.queryResult.pageSize = val;
+                    this.queryMaterial();
+                },
+
+                // 勾选当前行
+				handleRowClick(row, column, event) {
+					if (window.event.target.className != 'imgboxitem') {
+						this.$refs.multipleTable.toggleRowSelection(row);
+					}
+				},
+				closeDialog() {
+					this.dialogImageUrl = [];
+				},
+				fangdaimgbox() {
+					this.fullscreen = true;
+				},
+                todownload(){
+                    if(this.queryResult.totalRecordNum>500){
+                        this.$confirm('由于您导出的数据大于500条,可能需要较长的时间,是否继续导出?','提示',{
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            console.log('正在导出')
+
+                            this.todaochu();
+                        }).catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: '已取消导出操作'
+                            });
+                        });
+                    }else{
+                        console.log('正在导出')
+                        this.todaochu();
+                    }
+
+				},
+                todaochu(){
+                    this.daochuloading=true;
+                    this.$message('正在努力导出中，请耐心等待');
+
+                    var url = 'SupContractInfo/export';
+                    var restRequest = new URRestRequest();
+                    restRequest.addCondition("shortName", this.queryCondition.shortName, "like");
+                    restRequest.addCondition("fullName", this.queryCondition.fullName, "like");
+                    restRequest.addCondition("code", this.queryCondition.code, "like");
+                    restRequest.addCondition("supCalStatus", this.queryCondition.supCalStatus, "eq");
+                    restRequest.addCondition("coordination", this.queryCondition.coordination, "eq");
+                    axios.post(url,restRequest.getRequestData())
+                        .then(response=> {
+                            if(response.data.code==null||response.data.code!=0){
+                                this.$message.error('导出失败,请联系系统管理员');
+                                this.$data.exportingFile = false;
+                                this.daochuloading=false;
+
+
+                            }else{
+                                var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+                                this.$data.exportingFile = false;
+                                downloadFile(downloadLink);
+                                this.daochuloading=false;
+                                this.$message.success('导出成功');
+                            }
+                        })
+                        .catch(error=>{
+                            console.log(error);
+                            this.daochuloading=false;
+                            this.$message.error('导出失败,请联系系统管理员');
+
+                        });
+                },
+
+                resetForm(formName){
+                    console.log(formName)
+                    this.$refs[formName].resetFields();
+				}
+
+
+			}
+		})
+        /*]]>*/
+	</script>
+
+</body>
+
+</html>

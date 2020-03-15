@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('店铺金额占比VS宽度占比')"></head>
+
+<body>
+<style>
+    body {
+        background-color: #f4f4f5;
+    }
+
+    .app-container {
+        max-width: 1440px;
+        padding: 30px 15px;
+        font-family: "微软雅黑";
+        margin: auto;
+    }
+
+    .title {
+        height: 16px;
+        line-height: 16px;
+        margin-bottom: 40px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333333;
+        text-align: left;
+    }
+
+    .title span {
+        display: inline-block;
+        margin-right: 12px;
+    }
+
+    .title span:nth-of-type(2) {
+        width: 14px;
+        height: 14px;
+        background-image: url("/resources/images/icon-arrow.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 100%;
+    }
+
+    .body-search {
+
+        height: 40px;
+        line-height: 40px;
+        background: #fff;
+        border-radius: 5px;
+        padding: 40px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: 14px;
+        color: #666666;
+    }
+
+    .search-label {
+        display: inline-block;
+        margin-right: 30px;
+    }
+
+    .search-filter {
+        width: 200px;
+        padding: 0 20px;
+        border: 1px solid #666666;
+        border-radius: 30px;
+        margin-right: 90px;
+    }
+
+    .search-filter span {
+        left: auto;
+        right: 0;
+    }
+
+    .search-filter i {
+        line-height: inherit;
+    }
+
+    .search-filter input[type="text"] {
+        border: none;
+    }
+
+    .search-btn {
+        margin-left: auto;
+    }
+
+    .body-store {
+        margin-bottom: 30px;
+        text-align: left;
+        visibility: hidden;
+    }
+
+    .store-title {
+        display: flex;
+        height: 16px;
+        line-height: 16px;
+        margin-bottom: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333333;
+    }
+
+    .store-title span:nth-of-type(1) {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+        margin-right: 10px;
+        background-image: url("/resources/images/icon-store.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 100%;
+    }
+
+    .store-title span:nth-of-type(2) {
+        display: inline-block;
+        line-height: 16px;
+    }
+
+    .store-detail {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .store-detail-img {
+        background-color: #fff;
+        padding: 40px;
+        color: #333333;
+        margin-right: 30px;
+        border-radius: 5px;
+    }
+
+    .detail-title {
+        display: block;
+        text-align: left;
+        line-height: 16px;
+        margin-bottom: 40px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .detail-img {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 360px;
+        height: 292px;
+        border: 1px solid #666666;
+        margin-bottom: 10px;
+    }
+
+    .detail-img img {
+        display: block;
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        max-height: 100%;
+        padding: 5px;
+    }
+
+    .detail-dots {
+        height: 20px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .detail-dots-item {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+        background-color: #666666;
+        border-radius: 100%;
+        opacity: 0.5;
+    }
+
+    .detail-address {
+        height: 14px;
+        font-size: 14px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .detail-address span:nth-of-type(1) {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        margin-right: 10px;
+        background-image: url("/resources/images/icon-location.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 100%;
+    }
+
+    .detail-address span:nth-of-type(2) {
+        line-height: 14px;
+    }
+
+    .store-detail-chart {
+        flex: 1;
+        height: 482px;
+        padding: 40px;
+        background-color: #fff;
+        border-radius: 5px;
+    }
+
+    #store-chart {
+        width: 100%;
+        height: 100%;
+    }
+
+    .body-serial {
+        margin-bottom: 30px;
+        text-align: left;
+        visibility: hidden;
+    }
+
+    .serial-title {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .serial-title span {
+        display: inline-block;
+        font-size: 16px;
+        color: #666666;
+    }
+
+    .serial-title span:nth-of-type(1) {
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+        background-image: url("/resources/images/icon-serial.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 100%;
+    }
+
+
+    .serial-title span:nth-of-type(2) {
+        font-weight: bold;
+    }
+
+    .serial-title span:nth-of-type(3) {
+        padding: 0 40px;
+    }
+
+    .serial-title-list {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .serial-title-list li {
+        display: inline-block;
+        margin-right: 40px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .serial-detail {
+        width: 100%;
+        padding: 40px;
+        background-color: #fff;
+        border-radius: 5px;
+    }
+
+    .serial-detail-title {
+        display: block;
+        line-height: 16px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #666666;
+    }
+
+    .serial-detail-list {
+        display: flex;
+        flex-wrap: inherit;
+    }
+
+    .serial-detail-item {
+        width: 50%;
+        height: 350px;
+    }
+
+    .selected-style {
+        color: #c9ab3c;
+        border-bottom: 1px solid #c9ab3c;
+    }
+
+    .showSerial, .showStore {
+        visibility: visible;
+    }
+
+    .ele-hidden {
+        visibility: hidden;
+    }
+
+    .selectedImg {
+        opacity: 1;
+    }
+
+
+</style>
+<div id="app" class="container-fluid" style="display: none;" v-loading="loading" :element-loading-text="loadText"
+     v-show="isLoad">
+
+    <div class="app-container">
+
+        <div class="title">
+            <span>商品企划</span>
+            <span></span>
+            <span>报表</span>
+        </div>
+
+        <div class="body">
+            <div class="body-search">
+                <span class="search-label">店铺</span>
+                <div class="search-filter">
+                    <el-select v-model="queryCondition.planShopNo" placeholder="请选择店铺" filterable="true"
+                               align="left" size="small" :clearable="true" style="width: 100%">
+                        <el-option v-for="(item, key) in shopMap" :key="key" align="left"
+                                   :label="item" :value="key"></el-option>
+                    </el-select>
+                </div>
+
+                <span class="search-label">时间</span>
+                <div class="search-filter">
+                    <el-date-picker v-model="queryCondition.date" type="month" value-format="yyyy-M" placeholder="选择年月"
+                                    style="width: 100%"></el-date-picker>
+                </div>
+                <div class="search-btn">
+                    <el-button v-on:click="clickSearchBtn" type="warning" round="true" size="small">
+                        查询<i class="el-icon-search el-icon--right"></i>
+                    </el-button>
+                </div>
+
+            </div>
+            <div :class="['body-store', {'showStore': showStore}]">
+                <div class="store-title">
+                    <span></span>
+                    <span>{{shopMap[queryCondition.planShopNo]}}</span>
+                </div>
+                <div class="store-detail">
+                    <div class="store-detail-img">
+                        <span class="detail-title">店铺平面图</span>
+                        <div class="detail-img">
+                            <img :src="storeImg[selectedStoreImg]"/>
+                        </div>
+                        <div :class="['detail-dots', {'ele-hidden' : selectedStoreImg.length == 0}]">
+                            <span :class="['detail-dots-item', {'selectedImg': index==selectedStoreImg}]"
+                                  v-for="(item, index) in storeImg"
+                                  :key="index" v-on:click="changeStoreImg(index)"></span>
+                        </div>
+                        <div class="detail-address">
+                            <span></span>
+                            <span>{{storeAddress}}</span>
+                        </div>
+                    </div>
+                    <div class="store-detail-chart">
+                        <div id="store-chart"></div>
+                    </div>
+                </div>
+            </div>
+            <div :class="['body-serial', {'showSerial': showSerial}]">
+                <div class="serial-title">
+                    <span></span>
+                    <span>{{queryCondition.serialName}}</span>
+                    <span>|</span>
+                    <ul class="serial-title-list" v-if="queryResult.data">
+                        <li :class="[{'selected-style': key==selectedStyle}]"
+                            v-for="(value, key) in queryResult.data.serialCategoryComparisonData" :key="key"
+                            v-on:click="changeStyle(key)">
+                            {{value.styleName}}
+                        </li>
+                    </ul>
+                </div>
+                <div class="serial-detail">
+                    <span class="serial-detail-title">品类宽度占比</span>
+                    <div class="serial-detail-list">
+                        <div class="serial-detail-item" v-for="(value, index) in GoodsLevelList"
+                             :id="value.id"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.1.0/echarts.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                queryCondition: {
+                    date: "",
+                    year: "",
+                    month: "",
+                    planShopNo: "S0061",
+                    serial: "",
+                    brand: "",
+                },
+                shopMap: [[${shopMap}]],
+                queryResult: {
+                    totalRecordNum: 0,
+                    currPage: 1,
+                    pageSize: 20
+                },
+                expandText: "展开查询面板",
+                expandCondition: false,
+                loading: false,
+                loadText: "查询数据中...",
+                showSerial: false,
+                showStore: false,
+                serialName: '',
+                selectedStyle: '',
+                GoodsLevelList: [],
+                storeImg: ['/resources/images/img-store.png', '/resources/images/icon-store.png'],
+                storeAddress: '没有设置店铺地址',
+                selectedStoreImg: 0
+            }
+        },
+        created: function () {
+            this.isLoad = true;
+            this_let = this;
+            this.queryCondition.date = new Date('2019-10');
+        },
+        methods: {
+            clickSearchBtn() {
+                this.queryResult.currPage = 1;
+                this.queryData();
+            },
+            changeStoreImg(idx) {
+                this.selectedStoreImg = idx;
+            },
+            changeStyle(style) {
+                this.selectedStyle = style;
+                this.createStyleChart(this.queryResult.data.serialCategoryComparisonData);
+            },
+            createSerialsChart(object) {
+                var myChart;
+                var ele;
+                var labelOption;
+                var option;
+                var xAxisList = [];
+                var seriesList;
+
+                ele = document.getElementById('store-chart');
+                echarts.dispose(ele);
+                myChart = echarts.init(ele);
+
+                labelOption = {
+                    normal: {
+                        show: true,
+                        position: 'top',
+                        distance: 15,
+                        align: 'left',
+                        verticalAlign: 'middle',
+                        rotate: 90,
+                        formatter: '{c}%',
+                        fontSize: 16,
+                        rich: {
+                            name: {
+                                textBorderColor: '#666666'
+                            }
+                        }
+                    }
+                };
+
+                seriesList = [{
+                    name: '销售目标占比',
+                    type: 'bar',
+                    label: labelOption,
+                    data: []
+                }, {
+                    name: '采买金额占比',
+                    type: 'bar',
+                    label: labelOption,
+                    data: []
+                }, {
+                    name: '宽度占比',
+                    type: 'bar',
+                    label: labelOption,
+                    data: []
+                }];
+
+                Object.keys(object).forEach(ele => {
+                    xAxisList.push(object[ele].serialName);
+
+                    seriesList[0].data.push(object[ele].planSalesTarget);
+                    seriesList[1].data.push(object[ele].otbamount);
+                    seriesList[2].data.push(object[ele].wesskus);
+                });
+
+                // 指定图表的配置项和数据
+                option = {
+                    title: {
+                        text: '店铺数据对比',
+                        textStyle: {
+                            fontSize: 16
+                        }
+                    },
+                    tooltip: {
+                        trigger: "axis",
+                        axisPointer: {
+                            type: "shadow"
+                        }
+                    },
+                    color: ['#43aad7', '#f2d16c', '#54d6ac'],
+                    legend: {
+                        data: ['销售目标占比', '采买金额占比', '宽度占比'],
+                        right: 0,
+                        itemWidth: 10,
+                        itemHeight: 10,
+                        icon: 'circle',
+                    },
+                    calculable: true,
+                    xAxis: [
+                        {
+                            type: 'category',
+                            axisTick: {show: false},
+                            data: xAxisList,
+                            nameTextStyle: {
+                                fontSize: 14
+                            }
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            axisLine: {
+                                show: false
+                            }
+                        }
+                    ],
+                    barWidth: 20,
+                    barGap: 0.5,
+                    series: seriesList
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+
+                myChart.on("click", function (params) {
+                    this_let.queryCondition.serialName = params.name;
+                    this_let.queryCondition.serial = Object.keys(object)[xAxisList.indexOf(params.name)];
+                    this_let.querySerialData();
+                });
+            },
+            createStyleChart(object) {
+                var objectList = [];
+                var displayObj = null;
+                var tempData = object[this_let.selectedStyle].styleProportion;
+
+                Object.keys(tempData).forEach(ele => {
+
+                    displayObj = {title: '', id: '', styles: [], data: []};
+
+                    displayObj.title = tempData[ele].goodsLevelName;
+                    displayObj.id = 'chart-' + ele;
+
+                    Object.keys(tempData[ele].goodsLevelProportion).forEach(item => {
+                        displayObj.styles.push(tempData[ele].goodsLevelProportion[item].name);
+                        displayObj.data.push(tempData[ele].goodsLevelProportion[item]);
+                    });
+
+                    objectList.push(displayObj);
+                });
+
+                this.GoodsLevelList = objectList;
+
+                Vue.nextTick(function () {
+                    this_let.GoodsLevelList.forEach(chart => {
+                        this_let.createGoodsLevelChart(chart);
+                    })
+                });
+            },
+            createGoodsLevelChart(object) {
+                var myChart;
+                var option;
+                option = {
+                    title: {
+                        text: object.title,
+                        top: "center",
+                        left: 'center',
+                        textStyle: {
+                            fontSize: 16
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b}: {c} ({d}%)"
+                    },
+                    color: ['#f2d16c', '#cdae3d', '#54d6ac', '#29a59d', '#a8f4f0', '#43aad7', '#f7b0c8', '#d98de7'],
+                    legend: {
+                        orient: 'horizontal',
+                        x: 'center',
+                        y: 'bottom',
+                        itemGap: 20,
+                        itemWidth: 10,
+                        itemHeight: 10,
+                        icon: 'circle',
+                        data: object.styles
+                    },
+                    series: [
+                        {
+                            name: '品类宽度占比',
+                            type: 'pie',
+                            radius: ['50%', '70%'],
+                            avoidLabelOverlap: true,
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'outside',
+                                    formatter: '{b}  {d}%'
+                                },
+                                emphasis: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize: '16',
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: true
+                                }
+                            },
+                            data: object.data
+                        }
+                    ]
+                };
+
+                myChart = echarts.init(document.getElementById(object.id));
+                myChart.setOption(option);
+            },
+            queryData() {
+                _this = this;
+
+                var url = '/DataVisualChartController/ShopProportionComparisonChart/search';
+                var page = this.queryResult.currPage;
+
+                if (page == null) {
+                    page = 1;
+                }
+
+                var restRequest = new URRestRequest();
+                restRequest.setCurrPage(page);
+                restRequest.setPageSize(this.queryResult.pageSize);
+
+                if (typeof this.queryCondition.date == 'object') {
+                    this.queryCondition.year = this.queryCondition.date.getFullYear();
+                    this.queryCondition.month = this.queryCondition.date.getMonth() + 1;
+                } else {
+                    this.queryCondition.year = this.queryCondition.date.split('-')[0];
+                    this.queryCondition.month = this.queryCondition.date.split('-')[1];
+                }
+
+                if (!this.queryCondition.year) {
+                    this.$notify({title: '警告', message: "请选择年份！", offset: 100, type: 'warning'});
+                    return;
+                }
+                if (!this.queryCondition.month) {
+                    this.$notify({title: '警告', message: "请选择月份！", offset: 100, type: 'warning'});
+                    return;
+                }
+                if (!this.queryCondition.planShopNo) {
+                    this.$notify({title: '警告', message: "请选择店铺！", offset: 100, type: 'warning'});
+                    return;
+                }
+
+                //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+                restRequest.addCondition("year", this.queryCondition.year, "eq");
+                restRequest.addCondition("month", this.queryCondition.month, "eq");
+                restRequest.addCondition("plan_shop_no", this.queryCondition.planShopNo, "eq");
+
+                this.loading = true;
+                this.loadText = "查询数据中...";
+
+                axios.post(url, restRequest.getRequestData())
+                    .then(function (response) {
+                        _this.$data.queryResult.data = [];
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.error({title: '查询数据失败', message: response.data.message, offset: 100});
+                            _this.$data.loading = false;
+                        } else {
+                            if (!response.data.data) {
+                                _this.$notify({title: '警告', message: "没有满足查询条件的数据！", offset: 100, type: 'warning'});
+                            }
+                            _this.$data.queryResult = response.data;
+                            _this.storeImg = response.data.data.storeImg ? response.data.data.storeImg : _this.storeImg;
+                            _this.storeAddress = response.data.data.storeAddress ? response.data.data.storeAddress : _this.storeAddress;
+                            _this.$data.loading = false;
+                            _this.expandCondition = false;
+                            _this.showSerial = false;
+                            _this.showStore = true;
+                            _this.createSerialsChart(response.data.data.serialComparisonData);
+                        }
+                    })
+                    .catch(function (error) {
+                        _this.$notify.error({title: '错误', message: '查询数据失败，请联系系统管理员', offset: 100});
+                    });
+            },
+            querySerialData() {
+                _this = this;
+
+                var url = '/DataVisualChartController/ShopProportionComparisonChart/searchBySerial';
+                var page = this.queryResult.currPage;
+
+                if (page == null) {
+                    page = 1;
+                }
+
+                var restRequest = new URRestRequest();
+                restRequest.setCurrPage(page);
+                restRequest.setPageSize(this.queryResult.pageSize);
+
+                let year = '';
+                if (typeof this.queryCondition.year == 'object') year = this.queryCondition.year.getFullYear();
+                else year = this.queryCondition.year;
+
+                //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+
+                restRequest.addCondition("a.data_type", "category_proportion", "eq");
+                restRequest.addCondition("a.year", year, "eq");
+                restRequest.addCondition("a.month", this.queryCondition.month, "eq");
+                restRequest.addCondition("a.range_type", "planShopNo", "eq");
+                restRequest.addCondition("a.range_value", this.queryCondition.planShopNo, "eq");
+                restRequest.addCondition("b.serial", this.queryCondition.serial, "eq");
+
+                this.loading = true;
+                this.loadText = "查询数据中...";
+
+                axios.post(url, restRequest.getRequestData())
+                    .then(function (response) {
+                        _this.$data.queryResult.data = [];
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.error({title: '查询数据失败', message: response.data.message, offset: 100});
+                            _this.$data.loading = false;
+                        } else {
+                            if (!response.data.data) {
+                                _this.$notify({title: '警告', message: "没有满足查询条件的数据！", offset: 100, type: 'warning'});
+                            }
+                            _this.$data.queryResult.data.serialCategoryComparisonData = response.data.data.serialCategoryComparisonData;
+                            _this.$data.loading = false;
+                            _this.expandCondition = false;
+                            _this.showSerial = true;
+                            _this.selectedStyle = Object.keys(_this.$data.queryResult.data.serialCategoryComparisonData)[0];
+                            _this.createStyleChart(_this.$data.queryResult.data.serialCategoryComparisonData);
+                        }
+                    })
+                    .catch(function (error) {
+                        _this.$notify.error({title: '错误', message: '查询数据失败，请联系系统管理员', offset: 100});
+                    });
+            },
+            clickResetBtn() {
+                this.queryCondition.year = "";
+                this.queryCondition.month = "";
+                this.queryCondition.planShopNo = "";
+            },
+        }
+    });
+    $(document).ready(function () {
+        $(document).keydown(function (e) {
+            if (e.which == 13) {
+                if (this_let.expandCondition === true) {
+                    this_let.clickSearchBtn();
+                } else {
+                    this_let.expandCondition = true;
+                }
+            } else if (e.which == 46) {
+                if (this_let.expandCondition === true) {
+                    this_let.clickResetBtn();
+                }
+            }
+        });
+
+    });
+    /*]]>*/
+</script>
+</html>

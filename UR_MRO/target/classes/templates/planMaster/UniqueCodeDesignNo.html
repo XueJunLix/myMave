@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('唯一码设计号对应表')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="display: none;"
+ v-show="isLoad" v-loading="designNoLoading" :element-loading-text="loadText" >
+
+  <div class="card-title">
+    <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+    <el-button v-on:click="clickCancelDesignNoSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>取消对应</el-button>
+    <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+  </div>
+
+  <div class="card">
+  	<div class="card-body">
+
+  <div class="row">
+  	<div class="col-md-12">
+<el-form  label-width="150px" label-suffix=":">
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="唯一码" prop="uniqueCode">
+						    <el-input v-model="uniqueCodeDesignNoBO.uniqueCode" :disabled="true" placeholder="唯一码"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="设计号" prop="designNo">
+						    <el-select  v-model="uniqueCodeDesignNoBO.designNo" :filterable="true" placeholder="请选择"   
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,index) in uniqueCodeDesignNoBO.designNoList" :key="index" align="left" 
+							          :label="item" :value="item"></el-option>
+			                </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="色号" prop="colorNo">
+						    <el-select  v-model="uniqueCodeDesignNoBO.colorNo" :filterable="true" placeholder="请选择"   
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in colorNoItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			                </el-select>
+						  </el-form-item>
+	</el-col>
+</el-row>
+</el-form>		
+		
+  	</div>
+  </div>
+  
+    <div class="row" >
+	  <div class="col-md-12">
+	  
+	  <!-- <el-table class="tb-edit" highlight-current-row :data="uniqueCodeDesignNoBO.areaNameList" style="width: 100%">
+
+            <template v-for="(col ,index) in uniqueCodeDesignNoBO.areaNameList">
+                <el-table-column :label="col"></el-table-column>
+                <el-table-column v-if="col.type==='sort'" :prop="col.prop" sortable :label="col.label">
+                    <template scope="scope">
+                        <el-tag type="primary">{{ scope.row.type }}</el-tag>
+                    </template>
+                </el-table-column>
+            </template>
+        </el-table> -->
+	  
+	  <!-- <template v-for="(col ,index) in uniqueCodeDesignNoBO.areaNameList">
+                <el-table-column v-if="col.type==='normal'" :prop="col.prop" :label="col.label"></el-table-column>
+                <el-table-column v-if="col.type==='sort'" :prop="col.prop" sortable :label="col.label">
+                    <template scope="scope">
+                        <el-tag type="primary">{{ scope.row.type }}</el-tag>
+                    </template>
+                </el-table-column>
+            </template> -->
+	  
+	    <el-table :data="this.uniqueCodeDesignNoBO.uniqueCodeDesignNoList" :highlight-current-row="true" >
+          
+          <el-table-column property="uniqueCode" label="唯一码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="designNo" label="设计号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="colorNoName" label="色号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="areaName" label="区域" min-width="60" :show-overflow-tooltip="true"></el-table-column>          
+          <el-table-column property="areaDepth" label="SKU取整深度" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyByName" label="操作人" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+      </div>
+	</div>
+
+  </div>
+</div>
+
+
+
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+        	isLoad: false,
+        	uniqueCodeDesignNoBO:{
+        		uniqueCode:"",
+        		designNo:"",
+        		colorNo:"",
+        		intDepth:"",
+        		areaNameList:[],
+        		areaRateList:[],
+        		uniqueCodeDesignNoList:[],
+        		designNoList:[],
+        	},
+        	uniqueCode:[[${uniqueCode}]],
+        	colorNoItems:[[${colorNoItems}]],
+        	designNoLoading:false,
+            loadText:"查询数据中...",
+        }
+      },
+      created: function() {
+    	  //this.tableHeight = $(document).height() - 115;
+    	  this.searchUniqueCodeDesignNoBO();
+      },
+      methods: {
+		clickCancelBtn() {
+            this.uniqueCodeDesignNoBO={
+        		uniqueCode:"",
+        		designNo:"",
+        		colorNo:"",
+        		intDepth:"",
+        		areaNameList:[],
+        		areaRateList:[],
+        		uniqueCodeDesignNoList:[],
+        		designNoList:[],
+        	}
+			window.parent.dialogCallback();
+		},
+		clickCancelDesignNoSaveBtn(){
+			this.uniqueCodeDesignNoBO.designNo="";
+			this.uniqueCodeDesignNoBO.colorNo="";
+		},
+		searchUniqueCodeDesignNoBO(){
+  		  
+  		  _this = this;
+  		  this.designNoLoading=true;
+  		  var url="/UniqueCodeDesignNo/searchUniqueCodeDesignNoBO/"+this.uniqueCode;
+  		  axios.get(url)
+			  .then(function (response) {
+			    console.log(response);
+			    _this.designNoLoading=false;
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '失败',message: response.data.message,offset: 100});
+			    }else{
+			    	_this.isLoad=true;
+			    	_this.uniqueCodeDesignNoBO=response.data.data;
+			    	/* if(!_this.uniqueCodeDepAudit.auditLogList || _this.uniqueCodeDepAudit.auditLogList.length==0){
+			    		_this.canAudit=true;
+			    	}else{
+			    		var lastLog=_this.uniqueCodeDepAudit.auditLogList[0];
+			    		if(lastLog.auditItemEnded===1 && lastLog.handleResult===1){
+			    			_this.canAudit=false;
+			    		}else{
+			    			_this.canAudit=true;
+			    		}
+			    		console.log($("#card").height());
+			    	} */
+			    }
+			  })
+			  .catch(function (error) {
+			    console.log(error);
+			    _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+			  });
+  	    },
+		clickSaveBtn() {
+			if(!(this.uniqueCodeDesignNoBO.designNo && this.uniqueCodeDesignNoBO.colorNo)
+				&& (this.uniqueCodeDesignNoBO.designNo || this.uniqueCodeDesignNoBO.colorNo)	){
+				if(this.uniqueCodeDesignNoBO.designNo){
+		      		  this.$notify({title: '警告',message: "请选择设计号！",offset: 100,type:'warning'});
+		      		  return;
+				}
+				if(this.uniqueCodeDesignNoBO.colorNo){
+		      		  this.$notify({title: '警告',message: "请选择色号！",offset: 100,type:'warning'});
+		      		  return;
+				}
+			}
+  	    	this.$confirm('确定保存吗?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		        	_this = this;
+					var url = '/UniqueCodeDesignNo/saveUniqueCodeDesignNo';
+					var saveData = {
+							uniqueCode:this.uniqueCodeDesignNoBO.uniqueCode,
+							designNo:this.uniqueCodeDesignNoBO.designNo,
+							colorNo:this.uniqueCodeDesignNoBO.colorNo
+					}
+		        	this.designNoLoading=true;
+					axios.post(url,saveData)
+					  .then(function (response) {
+					    console.log(response);
+			        	_this.designNoLoading=false;
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '保存失败',message: response.data.message,offset: 100});
+					    	
+					    }else{
+						    _this.$notify.info({title: '保存成功',message: '保存成功',offset: 100});
+						    //_this.$data.showDialog = false;
+				          _this.uniqueCodeDesignNoBO={
+				        		uniqueCode:"",
+				        		designNo:"",
+				        		colorNo:"",
+				        		intDepth:"",
+				        		areaNameList:[],
+				        		areaRateList:[],
+				        		uniqueCodeDesignNoList:[],
+				        		designNoList:[],
+				        	}
+						    window.parent.dialogCallback();
+					    }
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '新增数据失败，请联系系统管理员',offset: 100});
+					  });
+		        }).catch(() => {}); 
+  		  
+  		  
+  	    	
+			
+
+          },
+          
+        }
+    })
+    /*]]>*/
+  </script>
+</html>

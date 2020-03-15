@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('新增/编辑唯一码明细')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="display: none;"
+ v-show="isLoad" v-loading="updateUniqueCodeShopDate" :element-loading-text="loadText" >
+
+
+	 <div class="card-title">
+	      <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+	      <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+	    </div>
+	
+	 <div class="card">
+	 	<div class="card-body">
+	
+	 <div class="row">
+	 	<div class="col-md-12">
+		<el-form  label-width="150px" :rules="rules" ref="updateForm" :model="updateInstance" label-suffix=":">
+		<el-row>
+			<el-col :span="8">
+			  <el-form-item label="唯一码" prop="uniqueCode">
+			    <el-input v-model="updateInstance.uniqueCode" :disabled="isUpdate" placeholder="唯一码"></el-input>
+			  </el-form-item>
+			</el-col>
+			<el-col :span="8">
+			  <el-form-item label="店铺" prop="planShopNo">
+			    <el-select :filterable="true" v-model="updateInstance.planShopNo" :disabled="isUpdate" placeholder="请选择店铺"   
+				   align="left"  size="small" :clearable="true" style="width: 100%;">
+					   	<el-option v-for="(item,key) in shopItems" :key="key" align="left"
+					          :label="item" :value="key"></el-option>
+	                </el-select>
+				  </el-form-item>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="8">
+				  <el-form-item label="深度" prop="depth">
+				    <el-input v-model="updateInstance.depth" placeholder="深度"></el-input>
+				  </el-form-item>
+				</el-col>
+				<el-col :span="8">
+				  <el-form-item label="最低深度" prop="minDepth">
+				    <el-input v-model="updateInstance.minDepth" placeholder="最低深度"></el-input>
+				  </el-form-item>
+				</el-col>
+			</el-row>
+			</el-form>
+	  	</div>
+	  </div>
+	
+	  </div>
+	</div>
+
+
+
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          isLoad: false,
+          loadText:"查询数据中...",
+          updateUniqueCodeShopDate: false,
+          updateInstance:[[${uniqueCodeShopData}]],
+          isUpdate:[[${isUpdate}]],
+          shopItems:[[${shopItems}]],
+          rules: {
+        	  uniqueCode: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  planShopNo: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  intDepth: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+          },
+          tableHeight:500,
+        }
+      },
+      created: function() {
+    	  this.tableHeight = $(document).height() - 115;
+    	  this.isLoad=true;
+      },
+      methods: {
+		clickCancelBtn() {
+			window.parent.dialogCallback();
+		},
+		
+		clickSaveBtn() {
+	        this.$refs["updateForm"].validate((valid) => {
+	          if (valid) {
+				_this = this;
+				
+				let reg = /^[1-9]\d*$/;
+				if (new RegExp(reg).test(this.updateInstance.depth) == false) {
+    	        	this.$notify({title: '警告',message: "深度请输入整数！",offset: 100,type:'warning'});
+    	        	return;
+				}
+				if (new RegExp(reg).test(this.updateInstance.minDepth) == false) {
+    	        	this.$notify({title: '警告',message: "最低深度请输入整数！",offset: 100,type:'warning'});
+    	        	return;
+				}
+				this.updateUniqueCodeShopDate = true;
+				if(this.isUpdate==false){
+					var url = '/UniqueCodeShopData/insert';
+					axios.post(url,this.updateInstance)
+					  .then(function (response) {
+					    console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '新增失败',message: response.data.message,offset: 100});
+					    	_this.$data.updateUniqueCodeShopDate = false;
+					    }else{
+						    _this.$notify.info({title: '新增成功',message: '新增成功',offset: 100});
+						    _this.$data.updateUniqueCodeShopDate = false;
+						    _this.$data.showDialog = false;
+							window.parent.dialogCallback();
+					    }
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '新增数据失败，请联系系统管理员',offset: 100});
+					  });
+				}else{
+					var url = '/UniqueCodeShopData/update';
+					axios.post(url,this.updateInstance)
+					  .then(function (response) {
+					    console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '更新失败',message: response.data.message,offset: 100});
+					    	_this.$data.updateUniqueCodeShopDate = false;
+					    }else{
+						    _this.$notify.info({title: '更新成功',message: '更新成功',offset: 100});
+						    _this.$data.updateUniqueCodeShopDate = false;
+						    _this.$data.showDialog = false;
+							window.parent.dialogCallback();
+					    }
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '更新数据失败，请联系系统管理员',offset: 100});
+					  });
+				}
+	          } else {
+	            console.log('error submit!!');
+	            return false;
+	          }
+	        });
+          },
+          
+        }
+    })
+    /*]]>*/
+  </script>
+</html>

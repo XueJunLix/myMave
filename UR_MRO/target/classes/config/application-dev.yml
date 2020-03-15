@@ -1,0 +1,163 @@
+server:
+  port: 9093
+  servlet:
+    context-path: /
+    session:
+      #session超时时间配置需要与redis配置的超时时间一致：springsecurity验证成功后会将当前用户信息放在redis中，以账号为key存储
+      timeout: 5000
+      cookie:
+        name: sessionid_p
+
+spring:
+  servlet:
+    multipart:
+      ##单个数据大小 
+      maxFileSize: 5MB
+      ##总数据大小
+      maxRequestSize: 5MB
+  zipkin:
+    base-url: http://dev.ims.ur.com.cn:9292
+  sleuth:
+    sampler:
+      ##zipkin采样率，默认为0.1，改为1后全采样，但是会降低接口调用效率
+      percentage: 0.1
+      #probability: 1.0
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 下面为连接池的补充设置，应用到上面所有数据源中
+    # 初始化大小，最小，最大
+    initialSize: 1
+    minIdle: 3
+    maxActive: 20
+    maxAge: 30000
+    #最大空闲时间，30s未使用，则被丢弃
+    maxIdleTime: 30
+    # 配置获取连接等待超时的时间
+    maxWait: 60000
+    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    # 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 30000
+    validationQuery: select '1'
+    testWhileIdle: true
+    #对数据库连接的有效性进行了验证
+    testOnBorrow: false
+    testOnReturn: false
+    # 打开PSCache，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall,slf4j
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    
+    mro-connection:
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      url: jdbc:sqlserver://192.168.13.37:1433;DatabaseName=me_test
+      username: sa
+      password: "abc,123"
+    
+  redis:
+    #redisKey前缀，用于区分信息来自那个系统
+    redisKeyPrefix: MRO-PLAN
+    #Redis数据库索引（默认为0）
+    database: 0
+    #Redis服务器地址
+    host: 192.168.15.129
+    #Redis服务器连接端口
+    port: 6379
+    # Redis服务器连接密码（默认为空）
+    password: abc,123
+    # 连接池最大连接数（使用负值表示没有限制）
+    jedis:
+      pool:
+        max-active: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池中的最小空闲连接
+        min-idle: 0
+    # 连接超时时间（毫秒）
+    timeout: 5000
+  
+  #spring-boot热部署工具--资源修改
+  thymeleaf: 
+     cache: false
+  #spring-boot热部署工具--java代码修改
+  devtools:
+     restart:
+        enabled: true
+        additional-paths: src/main/java
+  
+  #rabbitmq连接参数
+#  rabbitmq:
+#    imsMq:
+#      enabled: true
+#      enabled-listener: false
+#      host: 192.168.15.144
+#      port: 5672
+#      username: ims_user
+#      password: 123456
+#      virtual-host: plan-host
+#      #rabbitmq消息确认
+#      publisher-confirms: true
+#      publisher-returns: true
+
+logging:
+  level:
+    com.ur: DEBUG
+  config: classpath:logback.xml
+
+#cas:
+#  server:
+#    host:
+#      url: http://dev.ims.ur.com.cn:8787/cas            #CAS服务地址  
+#      login_url: ${cas.server.host.url}/login   #CAS服务登录地址  
+#      logout_url: ${cas.server.host.url}/logout?service=${app.server.host.url}        #CAS服务登出地址 
+
+app:
+  server:
+    host:
+      url: http://192.168.15.129:${server.port}         #应用访问地址
+  login:
+    url: /login                          #应用登录地址
+  logout:
+    url: /logout                         #应用登出地址      
+
+  #tempFilePath: D:\export\
+  tempFilePath: /tmp
+  seperator:
+  exportPageSize: 50000
+pic:
+  server:
+    host:
+      #scm服务地址
+      url: http://192.168.13.38:8282/admin
+      #scm文件上传地址
+      upload_url: ${pic.server.host.url}/sys/files/upload/
+      #scm文件下载地址
+      download_url: ${pic.server.host.url}/sys/file/download/
+      #图片浏览地址，根据abbfilename
+      image_url: ${pic.server.host.url}/sys/file/image/
+      #http://pic.ur.com.cn/admin/sys/file/cyImageZ/19SY200129_L
+      cyImageZ_url: ${pic.server.host.url}/sys/file/cyImageZ/
+      #删除
+      delete_url: ${pic.server.host.url}/sys/file/delete/
+
+  #店铺主数据同步oa
+shop:
+  accessKey: 4D8DB5B5DF89CF158D8CDEFBE49079FFAB
+  accessSecret: DD5D13A28E2A17BBBE8393EA52E36ABAFF
+  tokenUrl: http://10.0.17.223:8080/api/accesstoken/get_token
+  employUrl: http://10.0.17.223:8080/api/hrm/staffGet
+  storeInfoUrl: http://10.0.17.223:8080/api/slm/storeInfoGet
+
+sap:
+  interfaces: open
+  username: SLMTOPI
+  password: 123456Aa
+  url: http://sappod01.ur.com.cn:50100/XISOAPAdapter/MessageServlet
+  url1: ${sap.url}?senderParty=&senderService=SLM_Q&receiverParty=&receiverService=&interface=SLM_MasterData_Out&interfaceNamespace=urn%3Aur.cn%3ASLM%3AERP%3AMasterData
+  url2: ${sap.url}?senderParty=&senderService=SLM_Q&receiverParty=&receiverService=&interface=SLM_BusinessData_Out&interfaceNamespace=urn%3Aur.cn%3ASLM%3AERP%3ABusinessData
+  url3: ${sap.url}?senderParty=&senderService=SLM_Q&receiverParty=&receiverService=&interface=SLM_MSGResp_Out&interfaceNamespace=urn%3Aur.cn%3ASLM%3AERP%3ABusinessData

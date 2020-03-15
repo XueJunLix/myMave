@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('首页')"></head>
+<style>
+	[v-cloak] {
+		display: none;
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+	}
+
+	html,
+	body {
+		margin: 0;
+		padding: 0;
+	}
+	#app{
+		width: 100%;
+		height: 100%;
+	}
+	#MYcontainerbox11 {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.navbox {
+		width: 100%;
+
+		/*background: black;*/
+	}
+
+	.navbox .top {
+		width: 100%;
+		height: 50px;
+		display: flex;
+        background: #2e343a;
+		border-bottom: 1px solid white;
+		box-sizing: border-box;
+        align-items: center;
+	}
+	.navbox .top:hover .shownavbtn{
+		display: block;
+	}
+
+	.navbox .top .top-r-list {
+		display: flex;
+	}
+
+	.navbox .top .top-r-list>li {
+
+		min-width: 80px;
+		line-height: 28px;
+		font-size: 14px;		
+	}
+
+	.navbox .top-l {
+
+		height: 49px;
+		background: #2e343a;
+		color: white;
+		display: flex;
+		box-sizing: border-box;
+		align-items: center;
+	}
+
+	.navbox .top-l h1 {
+		font-size: 22px;
+		font-weight: bolder !important;
+	}
+
+	.navbox .top-l .imgbox {
+		height: 49px;
+		width: 49px;
+		border-radius: 50%;
+		overflow: hidden;
+		margin-right: 10px;
+	}
+
+	.navbox .top-l .imgbox img {
+		height: 49px;
+		margin-right: 10px;
+	}
+
+	.navbox .top-l ul {
+		display: flex;
+
+	}
+
+	.navbox .top-l>ul>li {
+		flex: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 50px;
+		font-size: 14px;
+	}
+
+	.childnavitem {
+		margin: 10px;
+		display: flex;
+		background: #454545;
+		padding:4px 0;
+	}
+
+	.childnavitem a:hover {
+		background: white;
+		color: black;
+	}
+
+	.navbox .top-r {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		height: 50px;
+		font-size: 16px;
+		background: #2e343a;
+		color: white;
+		border-bottom: 1px solid;
+	}
+
+	.navbox .bottom {
+		width: 100%;
+		height: 40px;
+		background: #2e343a;
+		display: flex;
+		justify-content:flex-start;
+		align-items: center;
+
+		color: white;
+		position: relative;
+
+	}
+
+	.navbox .bottom .parentnav {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 40px;
+		padding:0 8px;
+		max-width: 200px;
+		flex: 1;
+		cursor:context-menu;
+		font-size: 14px;
+		font-weight: bolder;
+	}
+
+	.navbox .bottom .parentnav:hover .childnav {
+		display: block;
+	}
+
+	.navbox .bottom .parentnav:hover {
+		background: #454545;
+		color: #ffc107;
+		cursor: pointer;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+	}
+
+	.navbox .bottom .childnav {
+		position: absolute;
+		top: 40px;
+		left: 0;
+		width: 100%;
+		min-height: 300px;
+		max-height: 500px;
+		overflow: auto;
+		background: #454545;
+		z-index: 12;
+		display: none;
+		color: white;
+	}
+
+	* {
+		padding: 0;
+		margin: 0;
+	}
+
+	body,
+	html {
+		width: 100%;
+		height: 100%;
+	}
+
+	[v-cloak] {
+		display: none;
+	}
+	.nav1 {
+		cursor: pointer;
+	}
+	.nav2 {
+		width: 100px;
+		text-align: center;
+		margin-right: 10px;
+		background: #ffffff;
+		color: #303133;
+		height: 25px;
+		line-height: 25px;
+		font-size: 14px;
+		cursor: pointer;
+		border-radius: 5px;
+	}
+
+	.nav3 {
+		font-size: 14px;
+    height: 25px;
+    line-height: 25px;
+    padding: 0 5px;
+    text-align: center;
+	cursor: pointer;
+	}
+
+	.nav3:hover {
+		background: white;
+		color: #303133;
+		border-radius: 5px;
+	}
+
+	#MYcontainerbox11 .el-tabs--border-card {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	#MYcontainerbox11 .el-tab-pane {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+	}
+
+	#MYcontainerbox11 .el-tabs__content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+	}
+
+	#MYcontainerbox11 .el-tabs--border-card>.el-tabs__content {
+		padding: 0;
+	}
+
+	#MYcontainerbox11 .el-tabs__item {
+		height: 40px !important;
+		line-height: 40px !important;
+	}
+	.el-tabs__nav-scroll{
+		height: 40px;
+	}
+	.el-button--mini, .el-button--mini.is-round{
+		padding: 3px 4px;
+	}
+	.el-button--danger{
+		color: #FFF;
+		background-color: #909399;
+		border-color: #909399;
+	}
+	.shownavbtn{
+		display: none;
+		width: 100px;
+		background: white;
+		position: absolute;
+		left: 50%;
+		top: 36px;
+		height: 13px;
+		line-height: 13px;
+		margin-left:-50px ;
+		text-align: center;
+	}
+.tongzhi-box{
+	flex: 1 1 0%;
+	height: 26px;
+	border-radius: 5px;
+	margin: 0px 10px;
+	display: flex;
+	box-shadow: 1px 0px 5px #ffffff;
+	background: white;
+	justify-content: center;
+}
+	.tongzhi-box1{
+		flex: 1 1 0%;
+		height: 26px;
+		border-radius: 5px;
+		margin: 0px 10px;
+		display: flex;
+		box-shadow: 1px 0px 5px #2e343a;
+		background: #2e343a;
+		justify-content: center;
+	}
+	.fade-enter-active, .fade-leave-active {
+		transition: opacity .5s;
+	}
+	.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+		opacity: 0;
+	}
+</style>
+
+<body>
+<div id='app' v-cloak>
+	<div id="MYcontainerbox11" >
+		<!--头部导航-->
+		<div class="navbox" @mouseenter="toshownavmouseenter">
+			<div class="MYcontainer" >
+				<div class="top" @mouseover="toshownavmouseenter" @mouseout="toshownavmouseout">
+					<div class="top-l">
+						<div class="imgbox">
+							<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1561523603180&di=6608925d8f90a63c11f1cf7ae8e822de&imgtype=0&src=http%3A%2F%2Fqny.smzdm.com%2F201709%2F28%2F59cc87897e9fd2601.gif_d200.jpg"
+								alt="" />
+						</div>
+						<h1>MRO2.0</h1>
+						<!--<div class="shownavbtn" @click="toshownav">-->
+							<!--<i class="el-icon-caret-bottom" style="color:black;margin: 0 auto;" v-show="!shownav"></i>-->
+							<!--<i class="el-icon-caret-top" style="color:black;margin: 0 auto;" v-show="shownav"></i>-->
+							<!--&lt;!&ndash; <li>SYSTEM</li>-->
+							<!--<li>仓储管理</li>-->
+							<!--<li>IT服务台</li> &ndash;&gt;-->
+						<!--</div>-->
+
+					</div>
+
+                    <div class="tongzhi-box1" >
+						<!--<transition name="fade">-->
+						<!--<div class="tongzhi-box" v-show="!shownav">-->
+						<!--<span style="color: rgb(46, 52, 58);font-size: 14px;line-height: 26px;">温馨提示：鼠标移入可展开导航栏</span>-->
+						<!--</div>-->
+						<!--</transition>-->
+                    </div>
+
+
+					<div class="top-r">
+						<ul class="top-r-list">
+							<li style="min-width:265px;text-align:left;padding: 0 10px;">当前时间 ：{{nowDate==''?'正在获取当前时间....':nowDate}}</li>|
+							<li style="min-width:170px;text-align: left;padding:0 10px;">当前用户 ： {{currUser.name}}</li>
+							<li @click="logout()" style="cursor: pointer;">
+								<el-button type="danger" size='mini' icon="el-icon-switch-button" round>退出</el-button>
+							</li>
+						</ul>
+
+					</div>
+
+				</div>
+				<div class="bottom" v-show="shownav" @mouseover="toshownavmouseenter" @mouseout="toshownavmouseout">
+					<div class="parentnav" v-for="(menu1, index) in menus" :key="index" >
+						<div class='nav1' @click="change(menu1)" >
+							{{menu1.menuname}}
+						</div>
+						<ul class="childnav" style='overflow: auto;'  >
+							<li class='childnavitem' v-for="(menu2, index) in menu1.children" :key="index">
+								<div class='nav2'  @click="change(menu2)">
+									{{menu2.menuname}} 
+								</div>
+								<div style='display: flex;' v-for="(menu3, index) in menu2.children" :key="index">
+									<div class='nav3' @click="change(menu3)">
+										{{menu3.menuname}}
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<el-tabs v-show="tabs.length==0?false:true" v-model="activeName" @tab-click="handleClick" closable @tab-remove="removeTab" type="border-card" v-loading="loading">
+			<el-tab-pane v-for="(tab, index) in tabs" :key="index" :label="tab.menutab" :name="tab.menuname">
+				<iframe v-bind:src='tab.menuurl' width="100%" style='flex:1;width:100%;background:white;border: 0;'></iframe>
+			</el-tab-pane>
+		</el-tabs>
+		<!--切换页面-->
+	</div>
+</div>
+</body>
+
+</html>
+
+<div th:include="common/onload_js :: onloadJS"></div>
+<script th:inline="javascript">
+	new Vue({
+		el: "#app",
+		data: {
+            nowDate:'',
+            shownav:true,
+            loading:false,
+			activeName: "",
+			tabs: [],
+			urlsrc: '',
+			menus: [[${menus}]],
+			currUser: [[${currUser}]]
+		},
+		created: function(){
+
+            setInterval(()=>{
+                this.formatDateTime(new Date())
+			},1000)
+
+		},
+		watch:{
+            shownav(val){
+                if(val==false){
+                    if(this.tabs.length==0){
+                        this.shownav=true;
+                    }
+				}
+			},
+            tabs(val){
+                    if(this.tabs.length==0){
+                        this.shownav=true;
+                    }
+            }
+		},
+		methods: {
+
+			goto(urlsrc) {
+
+				this.urlsrc = urlsrc;
+			},
+			change(item) {
+                this.loading=true;
+                setTimeout(()=>{
+                    this.loading=false;
+            },500);
+				// console.log(this.tabs)
+				var currData = item;
+				for (let x = 0; x < this.tabs.length; x++) {
+					const tab = this.tabs[x];
+					if (tab.menuname == currData.menuname) {
+						this.activeName = tab.menuname;
+						return;
+					} else {
+						console.log("新页面");
+					}
+				}
+				this.tabs.push(currData);
+				this.activeName = this.tabs[this.tabs.length - 1].menuname;
+
+			},
+			handleClick(tab, event) {
+				console.log(tab, event);
+			},
+			removeTab(targetName) {
+				console.log(targetName)
+				let tabs = this.tabs;
+				let activeName = this.activeName;
+				if (activeName === targetName) {
+					tabs.forEach((tab, index) => {
+						if (tab.menuname === targetName) {
+							let nextTab = tabs[index + 1] || tabs[index - 1];
+							if (nextTab) {
+								activeName = nextTab.menuname;
+							}
+						}
+					});
+				}
+
+				this.activeName = activeName;
+				this.tabs = tabs.filter(tab => tab.menuname !== targetName);
+			},
+            toshownavmouseenter(){
+                this.shownav=true;
+			},
+            toshownavmouseout(){
+                this.shownav=false;
+			},
+            toshownav(){
+			    this.shownav=!this.shownav;
+			},
+            formatDateTime(date) {
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                m = m < 10 ? ('0' + m) : m;
+                var d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                var h = date.getHours();
+                h=h < 10 ? ('0' + h) : h;
+                var minute = date.getMinutes();
+                minute = minute < 10 ? ('0' + minute) : minute;
+                var second=date.getSeconds();
+                second=second < 10 ? ('0' + second) : second;
+                this.nowDate= y + '年' + m + '月' + d+ '月' +  ' ' +h+':'+minute+':'+second;
+            },
+    logout(){
+				//window.location.href = "/logout";
+				axios.post("/logout", null)
+                .then(response=>{
+                    if(response.data.errcode == 'ok'){
+						//alert("logout=="+ response.data.errmsg);
+                    	this.$message.success(response.data.errmsg);
+                    	window.open('/login','_self');
+                    	/* if (window != top){
+                    		top.location.href = "/login";   
+                    	} else {
+                    		window.location.href = "/login";
+                    	} */
+                    } else {
+                    	this.$message.error(response.data.errmsg);
+                    	return false;
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    return false;
+                });
+			}
+		}
+	})
+</script>

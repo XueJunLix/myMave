@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('demo')"></head>
+
+<style scoped>
+    /* reset */
+
+    .clearfix:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+    }
+
+    *html .clearfix {
+        zoom: 1;
+    }
+
+    .preview {
+        width: 400px;
+        height: 465px;
+        /*margin: 50px 0px 0px 150px;*/
+    }
+    /* smallImg */
+
+    .smallImg {
+        position: relative;
+        height: 60px;
+        margin-top: 1px;
+        background-color: #F1F0F0;
+        padding: 6px 5px;
+        width: 400px;
+        overflow: hidden;
+        float: left;
+    }
+
+    .scrollbutton {
+        width: 14px;
+        height: 50px;
+        overflow: hidden;
+        position: relative;
+        float: left;
+        cursor: pointer;
+    }
+
+    .scrollbutton.smallImgUp,
+    .scrollbutton.smallImgUp.disabled {
+        background: url(/resources/images/d_08.png) no-repeat;
+    }
+
+    .scrollbutton.smallImgDown,
+    .scrollbutton.smallImgDown.disabled {
+        background: url(/resources/images/d_09.png) no-repeat;
+        margin-left: 375px;
+        margin-top: -50px;
+    }
+
+    #imageMenu {
+        height: 50px;
+        width: 360px;
+        overflow: hidden;
+        margin-left: 0;
+        float: left;
+    }
+
+    #imageMenu li {
+        height: 50px;
+        width: 60px;
+        overflow: hidden;
+        float: left;
+        text-align: center;
+    }
+
+    #imageMenu li img {
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+    }
+
+    #imageMenu li#onlickImg img,
+    #imageMenu li:hover img {
+        width: 50px;
+        height: 50px;
+        border: 3px solid #959595;
+    }
+    /* bigImg */
+
+    .bigImg {
+        position: relative;
+        float: left;
+        width: 402px;
+        height: 402px;
+        overflow: hidden;
+    }
+
+    .bigImg #midimg {
+        width: 400px;
+        height: 400px;
+    }
+
+    .bigImg #winSelector {
+        width: 235px;
+        height: 210px;
+    }
+
+    #winSelector {
+        position: absolute;
+        cursor: crosshair;
+        filter: alpha(opacity=15);
+        -moz-opacity: 0.15;
+        opacity: 0.15;
+        background-color: #000;
+        border: 1px solid #fff;
+    }
+    /* bigView */
+
+    #bigView {
+        position: absolute;
+        border: 1px solid #959595;
+        overflow: hidden;
+        z-index: 999;
+
+    }
+
+    #bigView img {
+        position: absolute;
+    }
+
+    [v-cloak] {
+        display: none;
+    }
+
+    .el-button {
+        box-shadow: 2px 2px 2px #CCCCCC
+    }
+
+
+    html,
+    body {
+        height: 100%;
+    }
+
+    #app {
+        width: 100%;
+        height: 100%;
+        /*display: flex;*/
+    }
+
+    #app1 {
+        width: 100%;
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+    }
+
+    .titlebox {
+        height: 40px;
+        line-height: 40px;
+        padding: 5px;
+    }
+
+    .titlebox .container {
+        font-size: 18px;
+        font-weight: bold;
+        border-bottom: 1px dashed #CCCCCC;
+    }
+
+    .ctrbox {
+        height: 40px;
+        padding: 5px;
+    }
+
+    .ctrbox .container {
+        background: white;
+        /*border-bottom: 1px dashed #CCCCCC;*/
+    }
+
+    .mainbox {
+        flex: 1;
+        overflow: auto;
+        /*display: flex;
+        flex-direction: column;*/
+    }
+
+    .mainbox .container {
+        margin: 0 26px;
+        background: linear-gradient(to top, rgb(255, 255, 255), rgb(218, 232, 251));
+        border-radius: 10px;
+        margin-bottom: 10px;
+        box-shadow: 2px 2px 2px #ccc;
+    }
+
+    .formtitle {
+        width: 100%;
+        height: 30px;
+        text-align: center;
+        line-height: 30px;
+        background: rgba(64, 158, 255, 0.3);
+        /* border-radius: 10px; */
+        /* margin-bottom: 10px; */
+        /* border-bottom: 1px solid#ccc; */
+        font-size: 18px;
+    }
+
+    .formtitle .el-form-item {
+        margin-left: 10px;
+        margin-bottom: 22px;
+        margin-right: 20px;
+    }
+
+    .el-form-item__label {
+        color: #666666 !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+
+    .ckg .el-form-item__content {
+        /*width: 61px !important;*/
+        /*margin-left: 0 !important;*/
+        display: flex;
+        justify-content: space-between;
+    }
+    .HYqingdanbox .el-form-item{
+        margin-left: 0;
+        margin-bottom: 0;
+    }
+    .HYqingdanbox .el-form-item__content{
+        margin-left: 0 !important;
+
+    }
+    /*.el-form-item__content {
+        display: flex;
+        justify-content: space-between;
+    }
+    */
+
+    .el-dialog__body .el-form-item__content {
+        margin-left: 0 !important;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .el-dialog__body .el-form-item {
+        margin-bottom: 0!important;
+    }
+
+    .itembox .ckg {
+        flex: 1;
+        display: flex;
+    }
+
+    .el-form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .el-form-item {
+        height: 100%;
+        flex: 1;
+        width: 100%;
+    }
+
+    .itembigbox {
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .itembox {
+        height:45px;
+        width: 350px;
+        display: flex;
+    }
+
+    .bottombox {
+        /*flex: 1;*/
+        /*overflow: auto;*/
+        /*display: flex;*/
+        /*flex-direction: column;*/
+    }
+
+
+
+    .el-form-item.is-error .el-input__inner, .el-form-item.is-error .el-input__inner:focus, .el-form-item.is-error .el-textarea__inner, .el-form-item.is-error .el-textarea__inner:focus, .el-message-box__input input.invalid, .el-message-box__input input.invalid:focus{
+        border-color:red !important;
+    }
+        .el-input {
+            width: 100%;
+        }
+
+        .imgbox {
+            margin: 0 10px 10px 10px;
+            width: 402px;
+            height: 465px;
+            border: 1px solid #ccc;
+            /*border-bottom: 0px solid black;*/
+    }
+
+    .imgbox .bigimgbox {
+        width: 400px;
+        height: 400px;
+        border-bottom: 1px solid black;
+    }
+
+    .imgbox .bigimgbox>img {
+        width: 400px;
+        height: 400px;
+    }
+
+    .imgbox .smallimgbox {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .imgbox .smallimgbox .btnleft {
+        background: linear-gradient(to top, rgb(255, 255, 255), rgb(218, 232, 251));
+        width: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid black;
+    }
+
+    .imgbox .smallimgbox .btnright {
+        background: linear-gradient(to top, rgb(255, 255, 255), rgb(218, 232, 251));
+        display: flex;
+        align-items: center;
+        width: 20px;
+        justify-content: center;
+        border-left: 1px solid black;
+    }
+
+    .imgbox .smallimgbox .btnright:hover {
+        cursor: pointer;
+        background: yellow;
+    }
+
+    .imgbox .smallimgbox .btnleft:hover {
+        cursor: pointer;
+        background: yellow;
+    }
+
+    .imgbox .smallimgbox .imglists {
+        width: 100%;
+        height: 90px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow: hidden;
+    }
+
+    .imgbox .smallimgbox .imglists .imgitem {
+        width: 90px;
+        height: 90px;
+        /*margin: 5px;*/
+    }
+
+    .imgbox .smallimgbox .imglists .imgitem>img {
+        box-sizing: border-box;
+        width: 90px;
+        height: 90px;
+        border-right: 1px solid black;
+        background: #CCCCCC;
+    }
+
+    .detailbox {
+        margin: 0 10px 10px 0px;
+        width: auto;
+        height: 465px;
+        border: 1px solid #ccc;
+        overflow: auto;
+        color: #797979;
+    }
+
+    .topbox {
+        width: 100%;
+        /*height: 465px;*/
+        display: flex;
+    }
+
+    .HYqingdanbox {
+        width: auto;
+        /*height: 800px;*/
+        /* background: yellow; */
+        margin: 0 10px 0 10px;
+        border: 1px solid #ccc;
+    }
+
+    .wenjianbigbox {
+        width: 350px;
+        /*min-height:200px ;*/
+    }
+
+    .wenjianbox {
+        width: 100%;
+        min-width: 200px;
+        min-height: 80px;
+        /*background: yellow;*/
+        border: 1px solid #ccc;
+    }
+
+    .el-textarea__inner {
+        max-height: 32px;
+    }
+
+    .btnbox {
+        width:auto;
+        padding: 5px 10px ;
+    }
+
+    .detailbox .textbox {
+        border-bottom: 1px solid #eaeaea;
+        /*letter-spacing:1px;*/
+    }
+
+    .detailbox .textbox span {
+        height:40px;
+        /*line-height: 22px;*/
+        display: block;
+        word-break:normal;
+        width:auto;
+        display:block;
+        white-space:pre-wrap;
+        word-wrap : break-word ;
+        overflow: hidden ;
+        font-size: 12px;
+    }
+
+    .itembigbox .el-table td, .el-table th{
+        padding: 3px !important;
+    }
+    .WLdetail-tupian{
+        width:250px;
+        display: flex;
+    }
+    .el-input--suffix .el-input__inner{
+        margin: 5px 0;
+    }
+    /*.el-radio-group .el-radio-button{*/
+    /*margin-bottom: 0;*/
+    /*}*/
+    label{
+        margin-bottom: 0 !important;
+    }
+    .red{
+        color: red;
+    }
+    .el-table td div{
+        width: 100%;
+    }
+    .el-table .cell, .el-table th div, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell{
+        padding-left: 5px;
+    }
+    .el-table .cell, .el-table th div{
+        padding-right: 5px;
+    }
+    .HY-table-lists{
+        display: flex;
+        flex-wrap: wrap;
+        padding: 6px 3px;
+        border-radius: 10px;
+        background: white;
+    }
+    .el-dialog__body{
+        padding: 4px 8px;
+        color: #606266;
+        font-size: 14px;
+        word-break: break-all;
+    }
+    /*.el-input__inner{*/
+        /*border:0;*/
+        /*border-bottom: 1px solid #CCCCCC;*/
+        /*border-radius:0;*/
+    /*}*/
+    .el-input.is-disabled .el-input__inner{
+        background-color: unset;
+        color: #606266;
+    }
+    #bigView{
+        top: 52px !important;
+        left: 422px !important;
+
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<div id='app' v-cloak>
+    <div id='app1'>
+
+        <div class="btnbox">
+            <el-button size='small' type="primary" plain @click="onSubmit('HYform')">保存</el-button>
+            <el-button size='small' type="info" plain>返回</el-button>
+        </div>
+        <div class="mainbox">
+            <div class="topbox">
+
+                <div class="imgbox">
+                    <div class="preview">
+                        <div id="vertical" class="bigImg">
+                            <img src="http://img12.360buyimg.com/n7/jfs/t1/4620/27/15893/67037/5be00d8fE31c94d4c/9366244017ea9da2.jpg" width="400" height="400" alt="" id="midimg" />
+                            <div style="display:none;" id="winSelector"></div>
+                        </div>
+                        <!--bigImg end-->
+
+                        <div class="smallImg">
+                            <div class="scrollbutton smallImgUp disabled"></div>
+                            <div id="imageMenu">
+                                <ul>
+                                    <li id="onlickImg"><img src="http://img12.360buyimg.com/n7/jfs/t1/4620/27/15893/67037/5be00d8fE31c94d4c/9366244017ea9da2.jpg" width="68" height="68" /></li>
+                                    <li><img src="http://img14.360buyimg.com/n7/jfs/t1/4321/11/12001/141902/5bd179f2E5a468cac/51ba76086970b42d.jpg" width="68" height="68" /></li>
+                                    <li><img src="http://img12.360buyimg.com/n2/jfs/t1/30905/40/13238/81762/5cb9c834E4fc062c6/054c38c9ae0a5f93.jpg!q80.webp" width="68" height="68" /></li>
+                                    <li><img src="http://img11.360buyimg.com/n2/jfs/t1/35476/20/5941/102134/5cc17ec0E20c57316/eda414b167308e82.jpg!q80.webp" width="68" height="68" /></li>
+                                    <li><img src="http://img13.360buyimg.com/n2/jfs/t1/43294/22/2803/138251/5ccc07ffE04e13ff9/9664ec0e65f8beb2.jpg!q80.webp" width="68" height="68" /></li>
+                                    <li><img src="http://img10.360buyimg.com/n8/jfs/t1/57264/9/4572/150890/5d236d46E47824b1d/fcbcaed3143758d4.jpg" width="68" height="68" /></li>
+                                    <li><img src="http://img10.360buyimg.com/n2/jfs/t20911/35/82545071/265523/f5adefb/5afa77d3Nea396237.jpg" width="68" height="68" /></li>
+                                    <li><img src="http://img11.360buyimg.com/n2/jfs/t1/48845/18/4145/115377/5d1d73e8E760ed4f7/91557d630bb8bb6e.jpg" width="68" height="68" /></li>
+                                    <li><img src="http://img14.360buyimg.com/n2/jfs/t1/80909/25/2364/398218/5d0a0474Ea4ad4065/3a094c8bed4e5415.jpg" width="68" height="68" /></li>
+                                    <li><img src="http://img11.360buyimg.com/n2/jfs/t1/35476/20/5941/102134/5cc17ec0E20c57316/eda414b167308e82.jpg!q80.webp" width="68" height="68" /></li>
+                                </ul>
+                            </div>
+
+                            <div class="scrollbutton smallImgDown"></div>
+
+                        </div>
+                        <!--smallImg end-->
+
+                        <div id="bigView" style="display:none;"><img width="800" height="800" alt="" src="" /></div>
+
+                    </div>
+                </div>
+
+                <div class='detailbox'>
+                    <el-form
+                            ref="matdata"
+                            :model="matdata"
+                            label-width="100px"
+                            style='display: flex;flex-wrap: wrap;padding: 10px;border-radius:10px;margin-bottom: 10px;background: white;'>
+                        <div class="itembigbox">
+
+                            <div class="itembox">
+                                <el-form-item label="物料编码：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.code}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="物料名称：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.name}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="物料类型：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.matType}}</span>
+                                    </div>
+                                </el-form-item>
+
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="品牌：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.brandType}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="物料状态：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.status}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="基本单位：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.unit}}</span>
+                                    </div>
+
+                                </el-form-item>
+                            </div>
+                            <div class="itembox">
+                                <el-form-item label="规格：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.spec}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="长宽高：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.chang}}*{{matdata.kuan}}*{{matdata.gao}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="大类：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.categoryA}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="中类：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.categoryB}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="小类：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.categoryC}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="材质：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.materialCz}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="制作工艺：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.makeIe}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="颜色：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.color}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="英文描述：">
+                                    <div class='textbox'>
+                                        <span>{{matdata.ywmiaoshu}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="备注">
+                                    <div class='textbox'>
+                                        <span>{{matdata.comments}}</span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+
+                            <div class="itembox">
+                                <el-form-item label="安全库存：">
+                                    <el-input-number size='small' v-model="matdata.safeInv" controls-position="right" @change="handleChange" :min="1"></el-input-number>
+                                </el-form-item>
+                            </div>
+
+                            <div class="wenjianbigbox">
+                                <el-form-item label="文件列表：">
+                                    <div class="WLdetail-tupian">
+                                        <span style="width: 500px;">xxxxxxx</span>
+                                        <span><el-button size="mini">下载</el-button></span>
+                                    </div>
+
+                                    <div class="WLdetail-tupian">
+                                        <span style="width: 500px;">xxxxxxx</span>
+                                        <span><el-button size="mini">下载</el-button></span>
+                                    </div>
+
+                                    <div class="WLdetail-tupian">
+                                        <span style="width: 500px;">xxxxxxx</span>
+                                        <span><el-button size="mini">下载</el-button></span>
+                                    </div>
+
+                                    <div class="WLdetail-tupian">
+                                        <span style="width: 500px;">xxxxxxx</span>
+                                        <span><el-button size="mini">下载</el-button></span>
+                                    </div>
+                                </el-form-item>
+                            </div>
+                        </div>
+                    </el-form>
+                </div>
+
+            </div>
+            <div class="HYqingdanbox">
+                <!--外层弹框————————————————————————————————————————————————————————————————————————-->
+                <el-dialog v-dialogDrag width="90%" title="维护采购价格" :visible.sync="outerVisible" :fullscreen='fullscreen' @close='tocloseWLsearchbox'>
+                    <div class="WLTKtop" style='display:flex;justify-content: space-between;margin-bottom:5px;'>
+                        <div>
+                            <el-button type="primary" size='small'>确认</el-button>
+                            <el-button type="primary" @click='tofullscreen' size='small'>全屏</el-button>
+                        </div>
+                        <div style='display: flex; flex-direction:row;justify-content: center;'>
+                            <el-pagination style='margin:0 auto' @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+                            </el-pagination>
+                        </div>
+                    </div>
+
+                    <el-form class="demo-dynamic HY-table-lists" action="" ref="form" :model="form" label-width="100px">
+                        <el-table align='center' :data="JGweihuList" class="WLTKcen">
+
+                            <el-table-column property="cgdanjia" label="采购单价" width="200" align='center' :render-header="renderHeader">
+                                <template slot-scope="scope">
+                                    <el-form-item min-width='150' align='center' >
+                                        <el-input v-model="scope.row.cgdanjia" placeholder="请输入内容"></el-input>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column property="is0jiage" label="是否0价格" width="200" align='center' :render-header="renderHeader">
+                                <template slot-scope="scope">
+                                    <el-form-item min-width='150' align='center' >
+                                        <el-select v-model="scope.row.is0jiage" placeholder="请选择" style='width:100%;'>
+                                            <el-option label="是" value="是"></el-option>
+                                            <el-option label="否" value="否"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column property="name" label="价格开始日期" width="200" align='center' :render-header="renderHeader">
+                                <template slot-scope="scope">
+                                    <el-form-item>
+                                        <el-date-picker v-model="scope.row.jiagekaishi" type="date" placeholder="选择日期" style='width: 100%;'>
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column property="name" label="价格结束日期" width="200" align='center' :render-header="renderHeader">
+                                <template slot-scope="scope">
+                                    <el-form-item>
+                                        <el-date-picker v-model="scope.row.jiagejieshu" type="date" placeholder="选择日期" style='width: 100%;'>
+                                        </el-date-picker>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column fixed="right" property="name" label="状态" width="150" align='center' :render-header="renderHeader">
+                                <template slot-scope="scope">
+                                    <el-form-item style='display: flex;flex-direction: row;' >
+                                        <el-radio-group v-model="scope.row.freeze" size="small" @click.native="tochangestatus(scope.$index, scope.row)">
+                                            <el-radio-button :label="0">正常</el-radio-button>
+                                            <el-radio-button :label="1">冻结</el-radio-button>
+                                        </el-radio-group>
+                                        <!--<el-input placeholder="" v-model="scope.row.spbianhao" class="input-with-select" disabled></el-input>-->
+                                        <!--<el-button icon="el-icon-search" style='box-shadow: 0px 0px 0px ;'></el-button>-->
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+                            <el-table-column property="name" label="店铺名称" width="300" align='center'>
+                                <template slot-scope="scope">
+                                    <el-form-item style='width: 100%;'>
+                                        <el-autocomplete style='width: 100%' v-model="scope.row.spname" :fetch-suggestions="querySearchAsync" placeholder="请输入关键词匹配" @select="handleSelect"></el-autocomplete>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+                            <el-table-column property="name" label="店铺编号" width="250" align='center'>
+                                <template slot-scope="scope">
+                                    <el-form-item style='display: flex;flex-direction: row;'>
+                                        <el-input placeholder="" v-model="scope.row.spbianhao" class="input-with-select" disabled></el-input>
+                                        <!--<el-button icon="el-icon-search" style='box-shadow: 0px 0px 0px ;'></el-button>-->
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column property="name" label="基本单位" width="100" align='center'>
+                                <template slot-scope="scope">
+                                    <el-form-item>
+                                        <el-input v-model="scope.row.jbdanwei" placeholder="" disabled></el-input>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+                            <el-table-column property="name" label="采购单位" width="200" align='center' :render-header="renderHeader">
+                                <template slot-scope="scope">
+                                    <el-form-item min-width='150' align='center' >
+                                        <el-select v-model="scope.row.cgdanwei" placeholder="请选择" style='width:100%;'>
+                                            <el-option label="是" value="是"></el-option>
+                                            <el-option label="否" value="否"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+
+                                </template>
+                            </el-table-column>
+                            <el-table-column property="name" label="转换系数" width="200" align='center' :render-header="renderHeader">
+                                <template slot-scope="scope">
+                                    <el-form-item>
+                                        <el-input v-model="scope.row.zhxishu" placeholder="请输入内容"></el-input>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+                            <el-table-column property="name" label="币种" width="200" align='center' :render-header="renderHeader">
+                                <template slot-scope="scope">
+                                    <el-form-item>
+                                        <el-select v-model="scope.row.bizhong" placeholder="请选择" style='width:100%;'>
+                                            <el-option label="人民币" value="人民币"></el-option>
+                                            <el-option label="美元" value="美元"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+                            <el-table-column property="name" label="价格系数" width="200" align='center'>
+                                <template slot-scope="scope">
+                                    <el-form-item>
+                                        <el-input v-model="scope.row.jgxishu" placeholder="请输入内容"></el-input>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+                            <el-table-column property="name" label="税率" width="200" align='center' :render-header="renderHeader">
+                                <template slot-scope="scope">
+                                    <el-form-item>
+                                        <el-select v-model="scope.row.shuilv" placeholder="请选择" style='width:100%;'>
+                                            <el-option label="1" value="1"></el-option>
+                                            <el-option label="2" value="2"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+                            <el-table-column property="name" label="备注" width="200" align='center'>
+                                <template slot-scope="scope">
+                                    <el-form-item>
+                                        <el-input type='textarea' v-model="scope.row.beizhu" placeholder="请输入内容"></el-input>
+                                    </el-form-item>
+                                </template>
+                            </el-table-column>
+                            <el-table-column property="name" label="操作" min-width="80" fixed='right' align='center'>
+                                <template slot-scope="scope">
+
+                                    <el-button size='small' @click.native.prevent="deleteRowjg(scope.$index, JGweihuList)" type="danger">删除</el-button>
+
+                                </template>
+                            </el-table-column>
+
+                        </el-table>
+                    </el-form>
+                    <div>
+                        <el-button @click='addjiage' size='small' style='margin: 10px 0;' type="primary">新增</el-button>
+                    </div>
+
+                    <!--内层弹框————————————————————————————————————————————————————————————————————————-->
+                    <!--<el-dialog width="80%" title="内层 Dialog" :visible.sync="innerVisible" append-to-body>
+                        <div class="WLTKtop" style='display:flex;justify-content: space-between;margin-bottom:5px;'>
+                            <div>
+                                <el-button type="primary" size='small'>确认</el-button>
+                                <el-button type="primary" @click='tofullscreen' size='small'>全屏</el-button>
+                            </div>
+                            <div style='display: flex; flex-direction:row;justify-content: center;'>
+                                <el-pagination style='margin:0 auto' @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+                                </el-pagination>
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <el-button @click='addjiage' size='small' style='margin: 10px 0;' type="primary">新增</el-button>
+                        </div>
+                    </el-dialog>-->
+                    <!--<div slot="footer" class="dialog-footer">
+                        <el-button @click="outerVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="innerVisible = true">打开内层 Dialog</el-button>
+                    </div>-->
+                </el-dialog>
+                <div class="formtitle">
+                    货源清单
+                </div>
+                <el-form
+                        class="demo-dynamic HY-table-lists"
+                        action=""
+                        ref="HYform"
+                        :model="formtable"
+                        label-width="100px"
+                       >
+                    <el-table
+                            border
+                            ref="multipleTable"
+                            :data="formtable.tableData"
+                            tooltip-effect="dark"
+                            style="width: 100%;border-radius:10px;overflow:hidden;">
+                        <el-table-column
+                                label="供应商名称"
+                                min-width='150'
+                                align='center'
+                                :render-header="renderHeader">
+                            <template slot-scope="scope">
+                                <el-form-item
+                                        :prop="'tableData.' + scope.$index + '.supplierName'"
+                                        :rules="[{ required: true, message: '    ', trigger:['change','blur'] }]"
+                                >
+                                    <el-select
+                                            size="small"
+                                            v-model="scope.row.supplierName"
+                                            filterable
+                                            remote
+                                            reserve-keyword
+                                            placeholder="请输入关键词"
+                                            :remote-method="remoteMethod"
+                                            :loading="loading">
+                                        <el-option-group
+                                                v-for="group in options3"
+                                                :key="group.label"
+                                                :label="group.label">
+                                            <el-option
+                                                    v-for="item in options3[0].options4"
+                                                    :key="item.value"
+                                                    :label="item.label"
+                                                    :value="item.value">
+                                            </el-option>
+                                        </el-option-group>
+                                    </el-select>
+                                </el-form-item>
+
+                                <!--<el-input v-model="scope.row.supplierName" placeholder="请输入内容" disabled></el-input>-->
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                label="起订量"
+                                v-if='ctrpeizhi.ct_bianhao'
+                                min-width='130'
+                                align='center'
+                                :render-header="renderHeader"
+                        >
+                            <template slot-scope="scope">
+                                <el-form-item
+                                        :prop="'tableData.' + scope.$index + '.minOrderCount'"
+                                        :rules="[{ required: true, message: '    ', trigger:['change','blur'] }]"
+                                       >
+                                    <el-input-number
+                                            size="small"
+                                            v-model="scope.row.minOrderCount"
+                                            controls-position="right"
+                                            :min="1" >
+                                    </el-input-number>
+                                </el-form-item>
+
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                label="当前有效价格"
+                                min-width="150"
+                                v-if='ctrpeizhi.ct_miaoshu'
+                                align='center'
+                                :render-header="renderHeader"
+                        >
+                            <template slot-scope="scope">
+                                <el-form-item
+                                        :prop="'tableData.' + scope.$index + '.youxiaojiage'"
+                                        :rules="[{required: true, message: '    ', trigger:['change','blur'] }]"
+                                >
+                                <el-input
+                                        size="small"
+                                        v-model="scope.row.youxiaojiage"
+                                        placeholder=""
+                                        disabled>
+                                </el-input>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                label="质保期"
+                                min-width="150"
+                                v-if='ctrpeizhi.ct_miaoshu'
+                                align='center'
+                                :render-header="renderHeader">
+                            <template slot-scope="scope">
+                                <el-form-item  :prop="'tableData.' + scope.$index + '.deliveryTime'"
+                                               :rules="[{required: true, message: '    ', trigger:['change','blur'] }]">
+                                <el-select
+                                        size="small"
+                                        v-model="scope.row.deliveryTime"
+                                        placeholder="请选择">
+                                    <el-option
+                                            label="11"
+                                            value="11">
+                                    </el-option>
+                                </el-select>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                fixed="right"
+                                label="当前状态" min-width="140" v-if='ctrpeizhi.ct_miaoshu' align='center'>
+                            <template slot-scope="scope">
+                                <el-radio-group v-model="scope.row.freeze" size="small" @click.native="tochangestatus(scope.$index, scope.row)">
+                                    <el-radio-button :label="0">正常</el-radio-button>
+                                    <el-radio-button :label="1">冻结</el-radio-button>
+                                </el-radio-group>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="备注" min-width="150" v-if='ctrpeizhi.ct_miaoshu' align='center'>
+                            <template slot-scope="scope">
+                                <el-input
+                                        size="small"
+                                        v-model="scope.row.remarks"
+                                        placeholder="请输入内容"
+                                        type='textarea'>
+                                </el-input>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                label="是否首选"
+                                min-width="100"
+                                align='center'>
+                            <template slot-scope="scope">
+                                <el-checkbox
+                                        v-model="scope.row.detaulted"
+                                        @change="tochangedetaulted(scope.$index, scope.row)">
+                                </el-checkbox>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="操作" min-width="195" v-if='ctrpeizhi.ct_pinpai' align='center' fixed='right'>
+                            <template slot-scope="scope">
+                                <el-button size='small' type="primary" @click="outerVisible = true">维护采购价格</el-button>
+                                <el-button size='small' @click.native.prevent="deleteRow(scope.$index, tableData)" type="danger">删除</el-button>
+                            </template>
+                        </el-table-column>
+
+                    </el-table>
+                    <div>
+                        <el-button @click='addhuoyuan' icon='el-icon-folder-add' size='small' style='margin: 10px 0;' type="primary">新增</el-button>
+                    </div>
+                </el-form>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+<div th:include="common/onload_js :: onloadJS"></div>
+<script th:inline="javascript">
+
+    $(document).ready(function() {
+        // 图片上下滚动
+        var count = $("#imageMenu li").length - 5; /* 显示 6 个 li标签内容 */
+
+        var interval = $("#imageMenu li:first").width();
+
+        var curIndex = 0;
+
+        $('.scrollbutton').click(function() {
+
+            if($(this).hasClass('disabled')) return false;
+
+            if($(this).hasClass('smallImgUp')) --curIndex;
+
+            else ++curIndex;
+
+            $('.scrollbutton').removeClass('disabled');
+
+            if(curIndex == 0) $('.smallImgUp').addClass('disabled');
+
+            if(curIndex == count - 1) $('.smallImgDown').addClass('disabled');
+
+            $("#imageMenu ul").stop(false, true).animate({
+                "marginLeft": -curIndex * interval + "px"
+            }, 600);
+
+        });
+
+        // 解决 ie6 select框 问题
+
+        $.fn.decorateIframe = function(options) {
+            if($.browser.msie && $.browser.version < 7) {
+                var opts = $.extend({}, $.fn.decorateIframe.defaults, options);
+                $(this).each(function() {
+                    var $myThis = $(this);
+                    //创建一个IFRAME
+                    var divIframe = $("<iframe />");
+                    divIframe.attr("id", opts.iframeId);
+                    divIframe.css("position", "absolute");
+                    divIframe.css("display", "none");
+                    divIframe.css("display", "block");
+                    divIframe.css("z-index", opts.iframeZIndex);
+                    divIframe.css("border");
+                    divIframe.css("top", "0");
+                    divIframe.css("left", "0");
+                    if(opts.width == 0) {
+                        divIframe.css("width", $myThis.width() + parseInt($myThis.css("padding")) * 2 + "px");
+                    }
+                    if(opts.height == 0) {
+                        divIframe.css("height", $myThis.height() + parseInt($myThis.css("padding")) * 2 + "px");
+                    }
+                    divIframe.css("filter", "mask(color=#fff)");
+                    $myThis.append(divIframe);
+                });
+            }
+        }
+
+        $.fn.decorateIframe.defaults = {
+            iframeId: "decorateIframe1",
+            iframeZIndex: -1,
+            width: 0,
+            height: 0
+        }
+
+        //放大镜视窗
+
+        $("#bigView").decorateIframe();
+        //点击到中图
+        var midChangeHandler = null;
+        $("#imageMenu li img").bind("click", function() {
+            if($(this).attr("id") != "onlickImg") {
+                midChange($(this).attr("src").replace("small", "small"));
+                $("#imageMenu li").removeAttr("id");
+                $(this).parent().attr("id", "onlickImg");
+            }
+        }).bind("mouseover", function() {
+            if($(this).attr("id") != "onlickImg") {
+                window.clearTimeout(midChangeHandler);
+                midChange($(this).attr("src").replace("small", "small"));
+                $(this).css({
+                    "border": "3px solid #959595"
+                });
+            }
+        }).bind("mouseout", function() {
+            if($(this).attr("id") != "onlickImg") {
+                $(this).removeAttr("style");
+                midChangeHandler = window.setTimeout(function() {
+                    midChange($("#onlickImg img").attr("src").replace("small", "small"));
+                }, 100);
+            }
+        });
+
+        function midChange(src) {
+            $("#midimg").attr("src", src).load(function() {
+                changeViewImg();
+            });
+        }
+
+        //大视窗看图
+        function mouseover(e) {
+            if($("#winSelector").css("display") == "none") {
+                $("#winSelector,#bigView").show();
+            }
+            $("#winSelector").css(fixedPosition(e));
+            e.stopPropagation();
+        }
+
+        function mouseOut(e) {
+            if($("#winSelector").css("display") != "none") {
+                $("#winSelector,#bigView").hide();
+            }
+
+            e.stopPropagation();
+
+        }
+
+        $("#midimg").mouseover(mouseover); //中图事件
+        $("#midimg,#winSelector").mousemove(mouseover).mouseout(mouseOut); //选择器事件
+        var $divWidth = $("#winSelector").width(); //选择器宽度
+        var $divHeight = $("#winSelector").height(); //选择器高度
+        var $imgWidth = $("#midimg").width(); //中图宽度
+        var $imgHeight = $("#midimg").height(); //中图高度
+        var $viewImgWidth = $viewImgHeight = $height = null; //IE加载后才能得到 大图宽度 大图高度 大图视窗高度
+        function changeViewImg() {
+            $("#bigView img").attr("src", $("#midimg").attr("src").replace("mid", "big"));
+        }
+        changeViewImg();
+        //					$("#bigView").scrollLeft(0).scrollTop(0);
+
+        function fixedPosition(e) {
+            if(e == null) {
+                return;
+            }
+            var $imgLeft = $("#midimg").offset().left; //中图左边距
+            var $imgTop = $("#midimg").offset().top; //中图上边距
+            X = e.pageX - $imgLeft - $divWidth / 2; //selector顶点坐标 X
+            Y = e.pageY - $imgTop - $divHeight / 2; //selector顶点坐标 Y
+            X = X < 0 ? 0 : X;
+            Y = Y < 0 ? 0 : Y;
+            X = X + $divWidth > $imgWidth ? $imgWidth - $divWidth : X;
+            Y = Y + $divHeight > $imgHeight ? $imgHeight - $divHeight : Y;
+            if($viewImgWidth == null) {
+                $viewImgWidth = $("#bigView img").outerWidth();
+                $viewImgHeight = $("#bigView img").height();
+                if($viewImgWidth < 200 || $viewImgHeight < 200) {
+                    $viewImgWidth = $viewImgHeight = 800;
+                }
+                $height = $divHeight * $viewImgHeight / $imgHeight;
+                $("#bigView").width($divWidth * $viewImgWidth / $imgWidth);
+                $("#bigView").height($height);
+            }
+            var scrollX = X * $viewImgWidth / $imgWidth;
+            var scrollY = Y * $viewImgHeight / $imgHeight;
+            $("#bigView img").css({
+                "left": scrollX * -1,
+                "top": scrollY * -1
+            });
+            $("#bigView").css({
+                "top": 110,
+                "left": $(".preview").offset().left + $(".preview").width() + 15
+            });
+            return {
+                left: X,
+                top: Y
+            };
+        }
+    });
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    Vue.directive('dialogDrag', {
+
+        bind(el, binding, vnode, oldVnode) {
+
+            //弹框可拉伸最小宽高
+
+            let minWidth = 400;
+            let minHeight = 300;
+
+            //初始非全屏
+
+            let isFullScreen = false;
+
+            //当前宽高
+
+            let nowWidth = 0;
+            let nowHight = 0;
+
+            //当前顶部高度
+
+            let nowMarginTop = 0;
+
+            //获取弹框头部（这部分可双击全屏）
+
+            const dialogHeaderEl = el.querySelector('.el-dialog__header');
+
+            //弹窗
+
+            const dragDom = el.querySelector('.el-dialog');
+
+            //给弹窗加上overflow auto；不然缩小时框内的标签可能超出dialog；
+
+            dragDom.style.overflow = "auto";
+
+            //清除选择头部文字效果
+
+            //dialogHeaderEl.onselectstart = new Function("return false");
+
+            //头部加上可拖动cursor
+
+            dialogHeaderEl.style.cursor = 'move';
+
+            // 获取原有属性 ie dom元素.currentStyle 火狐谷歌 window.getComputedStyle(dom元素, null);
+
+            const sty = dragDom.currentStyle || window.getComputedStyle(dragDom, null);
+
+            let moveDown = (e) => {
+
+                // 鼠标按下，计算当前元素距离可视区的距离
+
+                const disX = e.clientX - dialogHeaderEl.offsetLeft;
+
+                const disY = e.clientY - dialogHeaderEl.offsetTop;
+
+                // 获取到的值带px 正则匹配替换
+
+                let styL, styT;
+
+                // 注意在ie中 第一次获取到的值为组件自带50% 移动之后赋值为px
+
+                if (sty.left.includes('%')) {
+
+                    styL = +document.body.clientWidth * (+sty.left.replace(/\%/g, '') / 100);
+
+                    styT = +document.body.clientHeight * (+sty.top.replace(/\%/g, '') / 100);
+
+                } else {
+
+                    styL = +sty.left.replace(/\px/g, '');
+
+                    styT = +sty.top.replace(/\px/g, '');
+
+                };
+
+                document.onmousemove = function (e) {
+
+                    // 通过事件委托，计算移动的距离
+
+                    const l = e.clientX - disX;
+
+                    const t = e.clientY - disY;
+
+                    // 移动当前元素
+
+                    dragDom.style.left = `${l + styL}px`;
+
+                    dragDom.style.top = `${t + styT}px`;
+
+                    //将此时的位置传出去
+
+                    //binding.value({x:e.pageX,y:e.pageY})
+
+                };
+
+                document.onmouseup = function (e) {
+
+                    document.onmousemove = null;
+
+                    document.onmouseup = null;
+
+                };
+
+            }
+
+            dialogHeaderEl.onmousedown = moveDown;
+
+            //双击头部全屏效果
+
+            dialogHeaderEl.ondblclick = (e) => {
+
+                if (isFullScreen == false) {
+
+                    nowHight = dragDom.clientHeight;
+
+                    nowWidth = dragDom.clientWidth;
+
+                    nowMarginTop = dragDom.style.marginTop;
+
+                    dragDom.style.left = 0;
+
+                    dragDom.style.top = 0;
+
+                    dragDom.style.height = "100VH";
+
+                    dragDom.style.width = "100VW";
+
+                    dragDom.style.marginTop = 0;
+
+                    isFullScreen = true;
+
+                    dialogHeaderEl.style.cursor = 'initial';
+
+                    dialogHeaderEl.onmousedown = null;
+
+                } else {
+
+                    dragDom.style.height = "auto";
+
+                    dragDom.style.width = nowWidth + 'px';
+
+                    dragDom.style.marginTop = nowMarginTop;
+
+                    isFullScreen = false;
+
+                    dialogHeaderEl.style.cursor = 'move';
+
+                    dialogHeaderEl.onmousedown = moveDown;
+
+                }
+
+            }
+
+            dragDom.onmousemove = function (e) {
+
+                let moveE = e;
+
+                if (e.clientX > dragDom.offsetLeft + dragDom.clientWidth - 10 || dragDom.offsetLeft + 10 > e.clientX) {
+
+                    dragDom.style.cursor = 'w-resize';
+
+                } else if (el.scrollTop + e.clientY > dragDom.offsetTop + dragDom.clientHeight - 10) {
+
+                    dragDom.style.cursor = 's-resize';
+
+                } else {
+
+                    dragDom.style.cursor = 'default';
+
+                    dragDom.onmousedown = null;
+
+                }
+
+                dragDom.onmousedown = (e) => {
+
+                    const clientX = e.clientX;
+
+                    const clientY = e.clientY;
+
+                    let elW = dragDom.clientWidth;
+
+                    let elH = dragDom.clientHeight;
+
+                    let EloffsetLeft = dragDom.offsetLeft;
+
+                    let EloffsetTop = dragDom.offsetTop;
+
+                    dragDom.style.userSelect = 'none';
+
+                    let ELscrollTop = el.scrollTop;
+
+                    //判断点击的位置是不是为头部
+
+                    if (clientX > EloffsetLeft && clientX < EloffsetLeft + elW && clientY > EloffsetTop && clientY < EloffsetTop + 100) {
+
+                        //如果是头部在此就不做任何动作，以上有绑定dialogHeaderEl.onmousedown = moveDown;
+
+                    }else{
+
+                        document.onmousemove = function (e) {
+
+                            e.preventDefault(); // 移动时禁用默认事件
+
+                            //左侧鼠标拖拽位置
+
+                            if (clientX > EloffsetLeft && clientX < EloffsetLeft + 10) {
+
+                                //往左拖拽
+
+                                if (clientX > e.clientX) {
+
+                                    dragDom.style.width = elW + (clientX - e.clientX) * 2 + 'px';
+
+                                }
+
+                                //往右拖拽
+
+                                if (clientX < e.clientX) {
+
+                                    if(dragDom.clientWidth < minWidth){
+
+                                    }else{
+
+                                        dragDom.style.width = elW - (e.clientX - clientX) * 2 + 'px';
+
+                                    }
+
+                                }
+
+                            }
+
+                            //右侧鼠标拖拽位置
+
+                            if (clientX > EloffsetLeft + elW - 10 && clientX < EloffsetLeft + elW) {
+
+                                //往左拖拽
+
+                                if (clientX > e.clientX) {
+
+                                    if (dragDom.clientWidth < minWidth) {
+
+                                    } else {
+
+                                        dragDom.style.width = elW - (clientX - e.clientX) * 2 + 'px';
+
+                                    }
+
+                                }
+
+                                //往右拖拽
+
+                                if (clientX < e.clientX) {
+
+                                    dragDom.style.width = elW + (e.clientX - clientX) * 2 + 'px';
+
+                                }
+
+                            }
+
+                            //底部鼠标拖拽位置
+
+                            if (ELscrollTop + clientY > EloffsetTop + elH - 20 && ELscrollTop + clientY < EloffsetTop + elH) {
+
+                                //往上拖拽
+
+                                if (clientY > e.clientY) {
+
+                                    if (dragDom.clientHeight < minHeight) {
+
+                                    } else {
+
+                                        dragDom.style.height = elH - (clientY - e.clientY) * 2 + 'px';
+
+                                    }
+
+                                }
+
+                                //往下拖拽
+
+                                if (clientY < e.clientY) {
+
+                                    dragDom.style.height = elH + (e.clientY - clientY) * 2 + 'px';
+
+                                }
+
+                            }
+
+                        };
+
+                        //拉伸结束
+
+                        document.onmouseup = function (e) {
+
+                            document.onmousemove = null;
+
+                            document.onmouseup = null;
+
+                        };
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    })
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            options3:[{
+                label: '',
+                options4: [{label:'Alabama',value:'Alabama'},{label:'Alaska',value:'Alaska'},{label:'Arizona',value:'Arizona'},{label:'California',value:'California'}],
+            }],
+
+            value9: [],
+            list: [],
+            states: ["Alabama", "Alaska", "Arizona",
+                "Arkansas", "California", "Colorado",
+                "Connecticut", "Delaware", "Florida",
+                "Georgia", "Hawaii", "Idaho", "Illinois",
+                "Indiana", "Iowa", "Kansas", "Kentucky",
+                "Louisiana", "Maine", "Maryland",
+                "Massachusetts", "Michigan", "Minnesota",
+                "Mississippi", "Missouri", "Montana",
+                "Nebraska", "Nevada", "New Hampshire",
+                "New Jersey", "New Mexico", "New York",
+                "North Carolina", "North Dakota", "Ohio",
+                "Oklahoma", "Oregon", "Pennsylvania",
+                "Rhode Island", "South Carolina",
+                "South Dakota", "Tennessee", "Texas",
+                "Utah", "Vermont", "Virginia",
+                "Washington", "West Virginia", "Wisconsin",
+                "Wyoming"],
+            loading:false,
+            num8: 1,
+            outerVisible: false,
+            innerVisible: false,
+            input5: '',
+            ctrpeizhi: {
+                ct_xvhao: true,
+                ct_bianhao: true,
+                ct_name: true,
+                ct_tupian: true,
+                ct_miaoshu: true,
+                ct_leixing: true,
+                ct_pinpai: true,
+                ct_xingxiang: true,
+                ct_danwei: true,
+                ct_guige: true,
+                ct_caizhi: true,
+                ct_dalei: true,
+                ct_zhonglei: true,
+                ct_xiaolei: true,
+                ct_yanse: true,
+                ct_zhuangtai: true,
+                ct_chuangjianren: true,
+                ct_chuangjianshijian: true,
+                ct_gengxinren: true,
+                ct_gengxinshijian: true,
+                ct_gongyi: true
+            },
+            wenjiandata: [{
+                name: 'wenjian111.ext',
+
+            }, {
+                name: 'wenjian111.ext',
+
+            }, {
+                name: 'wenjian111.ext',
+
+            }],
+            formtable:{
+                tableData:[{
+                    supplierName:'1',
+                    minOrderCount:'2',
+                    deliveryTime:'3',
+                    remarks:'',
+                    detaulted:'',
+                    freeze:''
+
+                },{
+                    supplierName:'2',
+                    minOrderCount:'3',
+                    deliveryTime:'4',
+                    remarks:'',
+                    detaulted:'',
+                    freeze:''
+                }]}
+            ,
+            tupianData: [{
+                tupianname: '我是图片1',
+                tupianurl: 'http://img.alicdn.com/bao/uploaded/i6/TB1THwHvXzqK1RjSZSgRpZpAVXa_051548.jpg',
+                tupiancaozuo: ''
+            }],
+            titletex: '',
+            dialogImageUrl: '',
+            dialogVisible: false,
+            form:{},
+            // 物料信息————————————————
+            matdata: {
+                color:'颜色',
+                materialCz:'材质',
+                makeIe:'制作工艺',
+                safeInv:'安全库存',
+                matType:'物料类型',
+                code:'物料编码',
+                name:'物料名称',
+                unit:'基本单位',
+                categoryA:'大类',
+                categoryB:'中类',
+                categoryC:'小类',
+                comments:'备注',
+                status:'状态',
+                spec:'规格',
+                brandType:'品牌',
+                wenjianlist: [],
+                tupianlist: []
+            },
+
+            dialogVisible: false,
+            dialogdaochu: false,
+            fullscreen: false,
+            fullscreensmall: false,
+            searchform: {
+                searchziduan: '物料编码',
+                searchvalue: ''
+            },
+            issearchselectbox: false,
+            issearchinputbox: true,
+            JGweihuList: [],
+            searchList: [],
+            currentPage4: 4,
+            restaurants: [],
+            state4: '',
+            timeout: null
+        },
+        mounted() {
+            this.list = this.states.map(item => {
+                return { value: item, label: item };
+            });
+            this.restaurants = this.loadAll();
+            if(window.location.search.split("&")[0].split("=")[1] == '1') {
+                this.titletex = '新增';
+            } else {
+                this.titletex = '编辑';
+            }
+
+        },
+        methods: {
+            loadAll() {
+                return [{
+                    "value": "三全鲜食（北新泾店）",
+                    "address": "长宁区新渔路144号"
+                },
+                    {
+                        "value": "Hot honey 首尔炸鸡（仙霞路）",
+                        "address": "上海市长宁区淞虹路661号"
+                    }
+                ];
+            },
+            querySearchAsync(queryString, cb) {
+                var restaurants = this.restaurants;
+                var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => {
+                    cb(results);
+                }, 3000 * Math.random());
+            },
+            createStateFilter(queryString) {
+                return(state) => {
+                    return(state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                };
+            },
+            handleSelect(item) {
+                console.log(item);
+            },
+            tocloseWLsearchbox() {
+                this.fullscreen = false;
+            },
+//				tocloseWLsearchsmallbox() {
+//					this.fullscreensmall = false;
+//				},
+            handleSizeChange() {},
+            handleCurrentChange() {},
+            tofullscreen() {
+                this.fullscreen = true;
+            },
+
+            tofullscreensmall() {
+                this.fullscreensmall = true;
+            },
+
+            deleteRow(index, rows) {
+                rows.splice(index, 1);
+            },
+
+            deleteRowjg(index, rows) {
+                rows.splice(index, 1);
+            },
+
+            changeSearch(value) {
+                console.log(value)
+                if(
+                    value == 'WLleixing' ||
+                    value == 'WLDL' ||
+                    value == 'WLZL' ||
+                    value == 'WLXL') {
+                    this.issearchinputbox = false;
+                    this.issearchselectbox = true;
+                } else {
+                    this.issearchinputbox = true;
+                    this.issearchselectbox = false;
+                }
+            },
+
+            addhuoyuan() {
+                let gooditem = {
+                    gysbianma: '',
+                    supplierName:'', //供应商名称
+                    minOrderCount: '', //起订量
+                    deliveryTime: '', //质保期
+                    remarks:'', //备注
+                    freeze:'0',
+                    detaulted:false, //是否首选
+                    youxiaojiage:"",
+                    checked:false
+                }
+                this.formtable.tableData.push(gooditem)
+            },
+
+            addjiage() {
+                let gooditem = {
+                    cgdanjia: '',
+                    is0jiage: '',
+                    jiagekaishi: '',
+                    jiagejieshu: '',
+                    spbianhao: '',
+                    dpname: '',
+                    jbdanwei: '',
+                    cgdanwei: '',
+                    zhxishu: '',
+                    bizhong: '',
+                    jgxishu: '',
+                    shuilv: '',
+                    beizhu: '',
+                    freeze:'0'
+                }
+                this.JGweihuList.push(gooditem)
+            },
+            onSubmit(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        alert('submit!');
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+                console.log('submit!');
+            },
+            //					文件上传
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePreview(file) {
+                console.log(file);
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            },
+            beforeRemove(file, fileList) {
+                return this.$confirm(`确定移除 ${ file.name }？`);
+            },
+
+            //					图片上传
+            handleRemove2(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePictureCardPreview2(file) {
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if(valid) {
+                        alert('submit!');
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            handleSelectionChange(row) {
+
+                console.log(row.checked)
+                // if(row.checked==true){
+                //     console.log(1111)
+                //     this.tableData.forEach(item => {
+                //         // 排他,每次选择时把其他选项都清除
+                //             item.checked = false
+                //     })
+                // }
+                //
+                // row.checked=true
+
+
+                //
+                // console.log(data)
+                // this.selectData = data;
+
+                //
+            }, // 多选高亮选中行
+            handleEdit(index, row) {
+                this.dialogVisible = true;
+                this.dialogImageUrl = row.tupianurl;
+
+            },
+            renderHeader(h, {
+                column,
+                $index
+            }) {
+                return h('div', {
+                    attrs: {
+                        class: 'cell' //ele原来样式
+                    },
+                    domProps: {
+                        innerHTML: '<span class="red">* </span>' + column.label
+                    }
+                })
+            },
+            handleChange(value) {
+                console.log(value);
+            },
+            remoteMethod(query) {
+                if (query !== '') {
+                    this.loading = true;
+                    setTimeout(() => {
+                        this.loading = false;
+                        this.options3[0].options4 = this.list.filter(item => {
+                            return item.label.toLowerCase()
+                                .indexOf(query.toLowerCase()) > -1;
+                        });
+                    }, 200);
+                } else {
+                    this.options3[0].options4 = [];
+                }
+            },
+            tochangedetaulted(index, row){
+
+                if(row.detaulted==true){
+                    this.formtable.tableData.forEach(item=>{
+                        item.detaulted=false;
+                    })
+                    row.detaulted=true;
+                }else{
+                    row.detaulted= false;
+                }
+            },
+            tochangestatus(index,row){
+                console.log(row)
+
+            }
+
+
+        }
+
+    })
+    /*]]>*/
+</script>
+
+</html>

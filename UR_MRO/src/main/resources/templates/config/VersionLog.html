@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('版本号记录表')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="display: none;"
+ v-show="isLoad"  v-loading="loading" :element-loading-text="loadText">
+ <nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition"></el-switch>
+	</el-tooltip>
+</nav>
+
+<Drawer  title="查询面板" v-model="expandCondition" width="50%">
+  <el-row>
+    <el-col :span="8">
+    <div class="ur-stack-label">数据类型</div>
+    <el-select :filterable="true" v-model="queryCondition.dataType" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+			<el-option v-for="(item,key) in dataTypeItems" align="left" :label="item" :value="key"></el-option>
+	      </el-select>
+    </el-col>
+	<el-col :span="8">
+	  <div class="ur-stack-label">年份</div>
+	  <el-date-picker v-model="queryCondition.year" type="year" value-format="yyyy" placeholder="选择年份" style="width: 100%;"></el-date-picker>
+	</el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">月份</div>
+	  <el-select  v-model="queryCondition.month"  placeholder="请选择月份"   
+								   align="left"  size="small" :clearable="true"  style="width: 100%;">
+								   	<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+								          :label="item" :value="item"></el-option>
+				</el-select>
+	</el-col>
+  </el-row>
+  <el-row>
+	 <el-col :span="8">
+	  <div class="ur-stack-label">系列</div>
+	   <el-select  v-model="queryCondition.serial"  placeholder="请选择系列"   
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">版本号</div>
+	  <el-input v-model="queryCondition.versionNo" placeholder="版本号" style="width: 100%;"></el-input>
+	  </el-col>
+  </el-row>
+  <div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+</Drawer>
+
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+	<el-pagination :page-size="20" :pager-count="4" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next">
+	</el-pagination>
+</nav>
+
+        <el-table id="data_table"  stripe="" :data="this.queryResult.data" :highlight-current-row="true" 
+        :height="this.tableHeight" ref="multipleTable" v-on:row-click="handleRowClick"
+        v-on:current-change="handleTableCurrentChange" v-on:selection-change="handleSelectionChange">
+        
+          <el-table-column type="selection"  width="45"></el-table-column>
+          
+		  <el-table-column property="dataTypeName" label="数据类型" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="year" label="年" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="month" label="月" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="serialName" label="系列" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="versionNo" label="版本号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTime" label="创建时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createByName" label="创建者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyTime" label="修改时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyByName" label="修改者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          
+        </el-table>
+
+	</div>
+</div>
+
+	
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+	  
+  let this_let; 
+  var vm = new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  dataType:"",
+        	  year:"",
+        	  month:"",
+        	  serial:"",
+        	  versionNo:""
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          //addInstance:{},
+          //updateInstance:{},
+          //isUpdate: false,
+          dialogTitle:"",
+          showDialog:false,
+          
+          expandCondition:false,
+          expandText:"展开查询面板",
+          monthItems:[1,2,3,4,5,6,7,8,9,10,11,12],
+          dataTypeItems:[[${dataTypeItems}]],
+          serialItems:[[${serialItems}]],
+          multipleSelection: [],
+          uploadDialogVisible:false,
+          fileList: [],
+          isLoad: false,
+          tableHeight:500,
+          loading:false,
+          loadText:"查询数据中。。。",
+          updateTypeBOInstance: {},
+          isShowAddValueBnt:false,
+        }
+      },
+      created: function() {
+    	  this.isLoad = true;
+    	  this_let = this;
+    	  this.queryVersion();
+      },
+      methods: {
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryVersion();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryVersion();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryVersion();
+    	},
+        queryVersion() {
+          _this = this;
+
+          var url = '/VersionLog/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+	      //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	      restRequest.addCondition("dataType",this.queryCondition.dataType,"eq");
+          restRequest.addCondition("year",this.queryCondition.year,"eq");
+          restRequest.addCondition("month",this.queryCondition.month,"eq");
+          restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+          restRequest.addCondition("versionNo",this.queryCondition.versionNo,"eq");
+
+          this.loading = true;
+          this.loadText = "查询数据中...";
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.loading = false;
+			    	_this.queryResult={
+				          	  totalRecordNum:0,
+				          	  currPage:1,
+				          	  pageSize:20
+				            };
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.loading = false;
+	              _this.expandCondition=false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  	  clickExportBtn(){
+	          _this = this;
+	          var url = '/VersionLog/export';
+	
+	          var restRequest = new URRestRequest();
+	
+	          //可以指定排序字段
+		      //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	          restRequest.addCondition("dataType",this.queryCondition.dataType,"eq");
+              restRequest.addCondition("year",this.queryCondition.year,"eq");
+              restRequest.addCondition("month",this.queryCondition.month,"eq");
+              restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+              restRequest.addCondition("versionNo",this.queryCondition.versionNo,"eq");
+	
+	          this.loading = true;
+	          this.loadText = "导出数据中...";
+	
+	          axios.post(url,restRequest.getRequestData())
+	            .then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+				    	_this.$data.loading = false;
+				    }else{
+		              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+		              _this.$data.loading = false;
+		              downloadFile(downloadLink);
+				    }
+	
+	            })
+	            .catch(function (error) {
+	              console.log(error);
+	              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+	            });
+		  },
+          clickResetBtn() {
+            for(var key in this.queryCondition){
+            	this.queryCondition[key] = "";
+            }
+          },
+          clickImportBtn(){
+        	  this.uploadDialogVisible=true;
+          },
+          handleRowClick(val){
+        	  this.$refs.multipleTable.toggleRowSelection(val);
+          },
+          handleSelectionChange(val) {
+              this.multipleSelection = val;
+          },
+	      handleUploadSuccess(res,file,fileList){
+			  this.fileList=[];
+			  this.uploadDialogVisible=false;
+			  if(JSON.stringify(res.success)==="false"){
+			  	this.$message({message: '导入失败: ' + JSON.stringify(res.message), type: 'error' });
+			  }else{
+				  this.$message({ message: '导入成功: ' + JSON.stringify(res.message), type: 'success' });
+				   _this.queryVersion(_this.queryResult.currPage);
+			  }
+		  },handleUploadError(err, file, fileList){
+   		      this.fileList=[];
+		      this.uploadDialogVisible=false;
+			  this.$message({message: '导入失败' + err, type: 'error' });
+		  },
+		  beforeUpload(file) {
+              let Xls = file.name.split('.');
+              if(Xls[1] === 'xls'||Xls[1] === 'xlsx'){
+                  return file
+              }else {
+                  this.$message.error('只能上传   xls、xlsx 文件');
+                  return false;
+              }
+          },
+          clickAddBtn() {
+    			this.dialogTitle = '新增';
+    			this.showDialog = true;
+    			this.updateTypeBOInstance={};
+    			this.isShowAddValueBnt=false;
+    	  }, 
+          
+        }
+    })
+    
+    
+  $(document).ready(function(){    
+	  $(document).keydown(function (e) {
+  	    if ( e.which == 13) {	   
+  	    	if(this_let.expandCondition===true){
+  	    		this_let.clickSearchBtn();	
+  	    	}else{
+  	    		this_let.expandCondition=true;
+  	    	}
+  	    }else if(e.which == 46){
+  	    	if(this_let.expandCondition===false){
+  	    		this_let.clickDeleteBtn();	
+  	    	}else{
+  	    		this_let.clickResetBtn();
+  	    	}
+  	    }
+  	});
+  	
+  	$(window).load(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top-1;
+      });
+  	
+  	$(window).resize(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top-1;
+  	});   	
+  });
+  
+    /*]]>*/
+  </script>
+</html>

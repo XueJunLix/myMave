@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head th:include="common/common_head :: commonHeader('操作按钮管理')"></head>
+<style>
+    #app{
+        /*min-width: 1200px;*/
+        /*width: 1200px;*/
+    }
+.article_tit{
+
+    display: block;
+    /* height: 40px; */
+    line-height: 40px;
+    background: #fbfbfb;
+    padding-left: 10px;
+    font-weight: bolder;
+    /* margin: 5px 0; */
+    border-bottom: 1px dashed #ececec;
+    margin-bottom: 10px;
+}
+    .card-title{
+        padding: 10px ;
+        padding-bottom:0px;
+    }
+    [v-cloak]{
+        display: none;
+    }
+    .itembox{
+        border: 1px solid #e4e4e4;
+        padding-top: 10px;
+
+    }
+    .usercheck{
+        margin: 10px;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    .el-checkbox{
+        margin: 5px;
+        background: white;
+    }
+    .el-checkbox.is-bordered.el-checkbox--medium{
+        margin-left: 10px;
+    }
+    .el-checkbox.is-bordered+.el-checkbox.is-bordered{
+        margin-left: 5px;
+    }
+
+/***用户列表标签***/
+  .el-tag + .el-tag {
+    margin: 10px;
+  }
+  .button-new-tag {
+    margin: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+    cursor: pointer;
+  }
+  
+	.padding_div {
+    	padding-left: 15px;
+    }
+    .itbox{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+.itbox2{
+    min-width: 20%;
+    width: 25%;
+    height: 40px;
+    background: white;
+    
+}
+.notestyle{
+	font-family: "Microsoft YaHei";
+	font-size: 10px;
+	color: red;
+}
+</style>
+<body class="article_bg">
+
+<div id="app" v-cloak  style="padding: 10px">
+    <p class="article_tit">操作按钮管理</p>
+	<div class="clearfix"></div>
+    <div class="card-title">
+        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存
+        </el-button>
+        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消
+        </el-button>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <el-form label-width="150px" label-suffix=":" :rules="rules" ref="updateForm" :model="adminButtonInfo">
+                        <el-row>
+                            <el-form-item label="操作按钮编码" prop="buttonCode" :clearable="true">
+                                <el-input v-model="adminButtonInfo.buttonCode" placeholder="操作按钮编码" clearable="true"
+                                          style="width:400px"></el-input>
+                            	<span class="notestyle">格式：MRO_L_xxx 或 MRO_D_xxx，说明：L-列表按钮，D-详细页面按钮</span>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="操作按钮名称" prop="buttonName" :clearable="true">
+                                <el-input v-model="adminButtonInfo.buttonName" placeholder="操作按钮名称" clearable="true"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="按钮点击事件" prop="buttonClick" :clearable="true">
+                                <el-input v-model="adminButtonInfo.buttonClick" placeholder="按钮点击事件" clearable="true"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="按钮图标" prop="buttonIcon" :clearable="true">
+                                <el-input v-model="adminButtonInfo.buttonIcon" placeholder="按钮图标" clearable="true"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="按钮样式类" prop="buttonClass" :clearable="true">
+                                <el-input v-model="adminButtonInfo.buttonClass" placeholder="按钮样式类" clearable="true"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="按钮自定义样式" prop="buttonStyle" :clearable="true">
+                                <el-input v-model="adminButtonInfo.buttonStyle" placeholder="按钮自定义样式" clearable="true"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="按钮顺序" prop="orderby" :clearable="true">
+                                <el-input v-model="adminButtonInfo.orderby" placeholder="按钮顺序" clearable="true"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="描述" prop="memo">
+                                <el-input v-model="adminButtonInfo.memo" placeholder="用户组描述"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                    </el-form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="card">
+        <div class="card-body">
+            <p class="article_tit">分配菜单 </p>
+			
+           	<el-input
+			  placeholder="输入关键字进行过滤"
+			  v-model="filterText">
+			</el-input>
+			
+			<el-tree
+				show-checkbox="true"
+			  	class="filter-tree"
+			  	:data="data2"
+			  	:props="defaultProps"
+			  	default-expand-all
+			  	node-key="id"
+			  	:filter-node-method="filterNode"
+			  	@check-change="getCheckedKeys"
+			  	ref="tree2">
+			</el-tree>
+       </div>
+     </div>
+</div>
+
+</body>
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+            	queryResult: {
+                    totalRecordNum: 0,
+                    currPage: 1,
+                    pageSize: 20
+                },
+                adminButtonInfo:[[${adminButtonInfo}]],
+                rules:{
+                    buttonName:[
+                        {required:true,message:'字段不能为空',trigger:'blur'}
+                    ]
+                },
+                isUpdate: [[${isUpdate}]],
+                
+                MenusChecked: [[${adminButtonInfo.checkedMenus}]],  //选中的菜单
+                filterText: '',
+                data2: [[${currAllmenusArray}]],
+               	defaultProps: {
+               		children: 'children',
+                    label: 'label'
+               	},
+               	
+               	btnCodeCheck: ''
+            }
+        },
+        created: function () {
+        	
+        },
+        mounted: function(){
+        	this.$refs.tree2.setCheckedKeys(this.MenusChecked);	//设置已选菜单
+        },
+        watch: {
+        	filterText(val) {
+            	this.$refs.tree2.filter(val);
+            }
+        },
+        methods: {
+        	getCheckedKeys(data, checked, indeterminate) {	//获取已选内容
+            	//console.log("=====:" + this.$refs.tree2.getCheckedKeys());
+        		this.MenusChecked = this.$refs.tree2.getCheckedKeys();
+            },
+        	/* setCheckedKeys() {	//设置已选内容
+                this.$refs.tree2.setCheckedKeys(this.MenusChecked);
+            },
+            resetChecked() {
+                this.$refs.tree2.setCheckedKeys([]);
+            }, */
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.label.indexOf(value) !== -1;
+            },
+        	
+            clickCancelBtn() {
+                window.history.back(-1);
+            },
+            clickSaveBtn(){
+                this.$refs["updateForm"].validate((valid)=>{
+                    if(valid) {
+                        _this = this;
+                        
+                        var reg = /^MRO_L|D_[A-Za-z0-9]\S+$/;
+                       	if(!reg.test(_this.adminButtonInfo.buttonCode)){
+                       		alert("按钮编码不符合规定，请确认！");return
+                       	}
+                        
+                        var url = "/button/AdminButtonInfo/insert";
+                        if(_this.isUpdate){
+                        	url = "/button/AdminButtonInfo/update";
+                        }
+						_this.adminButtonInfo.checkedMenus = _this.MenusChecked;
+                        axios.post(url, this.adminButtonInfo)
+                            .then(function (response) {
+                                console.log(response);
+                                if (response.data.code == null || response.data.code != 0) {
+                                    _this.$notify.error({title: '操作数据失败', message: response.data.message, offset: 100});
+                                } else {
+                                    alert("操作成功!");
+                                    window.history.back(-1);
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                                _this.$notify.error({title: '错误', message: '操作数据失败，请联系系统管理员', offset: 100});
+                            });
+
+                    } else {
+                        console.log("按钮名称不能为空!");
+                    }
+                });
+            }
+        }
+
+    })
+    /*]]>*/
+</script>
+</html>

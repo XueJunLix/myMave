@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('demo')"></head>
+<style>
+	[v-cloak] {
+		display: none;
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+	}
+
+	html,
+	body {
+		margin: 0;
+		padding: 0;
+	}
+	#app{
+		width: 100%;
+		height: 100%;
+	}
+	#MYcontainerbox11 {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.navbox {
+		width: 100%;
+		height: 100px;
+		background: black;
+	}
+
+	.navbox .top {
+		width: 100%;
+		height: 50px;
+		display: flex;
+		border-bottom: 1px solid white;
+		box-sizing: border-box;
+	}
+
+	.navbox .top .top-r-list {
+		display: flex;
+	}
+
+	.navbox .top .top-r-list>li {
+		width: 60px;
+		font-size: 14px;
+	}
+
+	.navbox .top-l {
+		width: 600px;
+		height: 49px;
+		background: black;
+		color: white;
+		display: flex;
+		box-sizing: border-box;
+		align-items: center;
+	}
+
+	.navbox .top-l h1 {
+		font-size: 22px;
+		font-weight: bolder !important;
+	}
+
+	.navbox .top-l .imgbox {
+		height: 49px;
+		width: 49px;
+		border-radius: 50%;
+		overflow: hidden;
+		margin-right: 10px;
+	}
+
+	.navbox .top-l .imgbox img {
+		height: 49px;
+		margin-right: 10px;
+	}
+
+	.navbox .top-l ul {
+		display: flex;
+		width: 400px;
+	}
+
+	.navbox .top-l>ul>li {
+		flex: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 50px;
+		font-size: 14px;
+	}
+
+	.childnavitem {
+		margin: 10px;
+		display: flex;
+		border-bottom:1px dashed #2f2f2f;
+		padding:4px 0;
+	}
+
+	.childnavitem a:hover {
+		background: white;
+		color: black;
+	}
+
+	.navbox .top-r {
+		flex: 1;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		height: 50px;
+		font-size: 16px;
+		/*background: black;*/
+		color: white;
+	}
+
+	.navbox .bottom {
+		width: 100%;
+		height: 40px;
+		background: skyblue;
+		display: flex;
+		justify-content:flex-start;
+		align-items: center;
+		background: black;
+		color: white;
+		position: relative;
+
+	}
+
+	.navbox .bottom .parentnav {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 40px;
+		padding:0 8px;
+		max-width: 200px;
+		flex: 1;
+		cursor:context-menu;
+		font-size: 16px;
+	}
+
+	.navbox .bottom .parentnav:hover .childnav {
+		display: block;
+	}
+
+	.navbox .bottom .parentnav:hover {
+		background: white;
+		color: black;
+	}
+
+	.navbox .bottom .childnav {
+		position: absolute;
+		top: 40px;
+		left: 0;
+		width: 100%;
+		min-height: 300px;
+		max-height: 500px;
+		overflow: auto;
+		background: black;
+		z-index: 12;
+		display: none;
+		color: white;
+	}
+
+	* {
+		padding: 0;
+		margin: 0;
+	}
+
+	body,
+	html {
+		width: 100%;
+		height: 100%;
+	}
+
+	[v-cloak] {
+		display: none;
+	}
+
+	.nav2 {
+		width: 100px;
+		text-align: center;
+		margin-right: 10px;
+		background: #CCCCCC;
+		color: black;
+		height: 25px;
+		line-height: 25px;
+		font-size: 14px;
+		border-radius: 5px;
+	}
+
+	.nav3 {
+		font-size: 14px;
+    height: 25px;
+    line-height: 25px;
+    padding: 0 5px;
+    text-align: center;
+	cursor: pointer;
+	}
+
+	.nav3:hover {
+		background: white;
+		color: black;
+
+	}
+
+	#MYcontainerbox11 .el-tabs--border-card {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	#MYcontainerbox11 .el-tab-pane {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+	}
+
+	#MYcontainerbox11 .el-tabs__content {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+	}
+
+	#MYcontainerbox11 .el-tabs--border-card>.el-tabs__content {
+		padding: 0;
+	}
+
+	#MYcontainerbox11 .el-tabs__item {
+		height: 30px !important;
+		line-height: 30px !important;
+	}
+
+
+</style>
+
+<body>
+	<div id='app' v-cloak>
+
+	
+	<div id="MYcontainerbox11" >
+
+		<!--头部导航-->
+		<div class="navbox">
+			<div class="MYcontainer">
+				<div class="top">
+					<div class="top-l">
+						<div class="imgbox">
+							<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1561523603180&di=6608925d8f90a63c11f1cf7ae8e822de&imgtype=0&src=http%3A%2F%2Fqny.smzdm.com%2F201709%2F28%2F59cc87897e9fd2601.gif_d200.jpg"
+								alt="" />
+
+						</div>
+						<h1>MRO2.0</h1>
+						<ul>
+							<!-- <li>SYSTEM</li>
+							<li>仓储管理</li>
+							<li>IT服务台</li> -->
+						</ul>
+
+					</div>
+					<div class="top-r">
+						<ul class="top-r-list">
+							<li>林宇健</li>
+							<li>退出</li>
+						</ul>
+					</div>
+				</div>
+				<div class="bottom">
+					<div class="parentnav" v-for="(nav, index) in navs" :key="index">
+						<div>{{nav.label}}</div>
+						<ul class="childnav" style='overflow: auto;'>
+							<li class='childnavitem' v-for="(kid1, index) in nav.kids" :key="index">
+								<div class='nav2'>
+									{{kid1.label}} 
+								</div>
+								<div style='display: flex;' v-for="(kid2, index) in kid1.kids" :key="index">
+									<div class='nav3' @click="change(kid2)">
+										{{kid2.label}}
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+		<el-tabs v-model="activeName" @tab-click="handleClick" closable @tab-remove="removeTab" type="border-card">
+			<el-tab-pane v-for="(tab, index) in tabs" :key="index" :label="tab.label" :name="tab.name">
+				<iframe v-bind:src='tab.urlsrc' width="100%" style='flex:1;width:100%;background:white;border: 0;'></iframe>
+			</el-tab-pane>
+		</el-tabs>
+		<!--切换页面-->
+	</div>
+</div>
+</body>
+
+</html>
+
+<div th:include="common/onload_js :: onloadJS"></div>
+<script  type="text/javascript">
+	new Vue({
+		el: "#app",
+		data: {
+			activeName: "",
+			tabs: [
+			],
+			urlsrc: '',
+			navs: [
+				{
+					label: "系统配置",
+					name: "系统配置",
+					kids: [{
+						label: "系统配置",
+						name: "系统配置",
+						kids: [{
+							label: "审批配置",
+							name: "审批配置"
+						}, {
+							label: "数据字典",
+							name: "数据字典"
+						}]
+					}]
+				},
+				{
+					label: "主数据管理",
+					name: "主数据管理",
+					kids: [{
+						label: "店铺管理",
+						name: "店铺管理",
+						kids: [{
+							label: "店铺主数据",
+							name: "店铺主数据",
+							urlsrc: "https://www.layui.com/doc/element/tab.html"
+						}, {
+							label: "店铺编辑",
+							name: "店铺编辑",
+							urlsrc: "https://www.baidu.com/"
+						}]
+					}, {
+						label: "物料管理",
+						name: "物料管理",
+						kids: [{
+							label: "物料主数据",
+							name: "物料主数据",
+							urlsrc: "./WLguanli.html"
+						}, {
+							label: "物料编辑",
+							name: "物料编辑",
+						}]
+					}, {
+						label: "货源管理",
+						name: "货源管理",
+						kids: [{
+							label: "货源主数据",
+							name: "货源主数据",
+						}, {
+							label: "货源编辑",
+							name: "货源编辑",
+						}]
+					}, {
+						label: "价格管理",
+						name: "价格管理",
+						kids: [{
+							label: "价格主数据",
+							name: "价格主数据",
+						}, {
+							label: "价格编辑",
+							name: "价格编辑",
+						}]
+					},{
+						label: "供应商管理",
+						name: "供应商管理",
+						kids: [{
+							label: "供应商注册",
+							name: "供应商注册",
+						}, {
+							label: "年审",
+							name: "年审",
+						}]
+					}]
+
+				},
+				{
+					label: "主数据管理",
+					name: "主数据管理"
+				},
+				{
+					label: "供应商管理",
+					name: "供应商管理"
+				},
+				{
+					label: "打版管理",
+					name: "打版管理"
+				},
+				{
+					label: "采购管理",
+					name: "采购管理"
+				},
+				{
+					label: "送货管理",
+					name: "送货管理"
+				},
+				{
+					label: "收货管理",
+					name: "收货管理"
+				},
+				{
+					label: "库存管理",
+					name: "库存管理"
+				},
+				{
+					label: "调拨管理",
+					name: "调拨管理"
+				},
+				{
+					label: "报表管理",
+					name: "报表管理"
+				}
+			]
+		},
+		methods: {
+			goto(urlsrc) {
+				this.urlsrc = urlsrc;
+			},
+			change(item) {
+				console.log(this.tabs)
+				var currData = item;
+				for (let x = 0; x < this.tabs.length; x++) {
+					const tab = this.tabs[x];
+					if (tab.name == currData.name) {
+						this.activeName = tab.name;
+						return;
+					} else {
+						console.log("新页面");
+					}
+				}
+				this.tabs.push(currData);
+				this.activeName = this.tabs[this.tabs.length - 1].name;
+			},
+			handleClick(tab, event) {
+				console.log(tab, event);
+			},
+			removeTab(targetName) {
+				console.log(targetName)
+				let tabs = this.tabs;
+				let activeName = this.activeName;
+				if (activeName === targetName) {
+					tabs.forEach((tab, index) => {
+						if (tab.name === targetName) {
+							let nextTab = tabs[index + 1] || tabs[index - 1];
+							if (nextTab) {
+								activeName = nextTab.name;
+							}
+						}
+					});
+				}
+
+				this.activeName = activeName;
+				this.tabs = tabs.filter(tab => tab.name !== targetName);
+			}
+		}
+	})
+</script>

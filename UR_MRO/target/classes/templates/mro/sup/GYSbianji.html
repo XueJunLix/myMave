@@ -1,0 +1,4425 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('demo')"></head>
+<style type="text/css">
+	[v-cloak] {
+		display: none;
+	}
+	* {
+		padding: 0;
+		margin: 0;
+		font-family: "微软雅黑";
+	}
+
+	ul,
+	li {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	html,
+	body,
+	#app {
+		padding: 0;
+		margin: 0;
+		width: 100%;
+		height: 100%;
+		background: #f7f6f6;
+		box-sizing: border-box;
+		font-family: 微软雅黑;
+	}
+
+	.app-container {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.MYcontainer {
+		padding: 0;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		margin: 0 auto;
+	}
+
+	.head-button-container {
+
+		min-height: 40px;
+		background: #ffffff;
+		margin-bottom: 10px;
+		padding: 5px 0;
+		box-sizing: border-box;
+		display: flex;
+		/*justify-content: center;*/
+	}
+
+	.main-info-container {
+		flex: 1;
+		display: flex;
+		overflow: auto;
+	}
+
+	.formbox {
+		flex: 1;
+		height: 100%;
+		background: #f7f6f6;
+		box-sizing: border-box;
+		/*position: relative;*/
+		display: flex;
+	}
+
+	.formbox>div {
+		flex: 1;
+		width: 0;
+		background: #ffffff;
+		/*display: flex;*/
+		/*flex-direction: column;*/
+		flex-wrap: wrap;
+		/*align-content: flex-start;*/
+		/*align-items: flex-start;*/
+		margin-left: 10px;
+		padding: 10px;
+		overflow: auto;
+	}
+
+	.tabbox {
+		width: 100px;
+		min-width: 120px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
+		align-items: flex-start;
+		/*min-height: 600px;*/
+	}
+
+	.tabbox>li {
+		position: relative;
+		width: 100%;
+		flex: 1;
+		margin-bottom: 3px;
+		background: white;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-bottom: 1px solid #dcdfe6;
+		font-size: 4px;
+		font-weight: bold;
+		box-shadow: 5px 5px 5px #e8e8e8;
+		font-size: 12px;
+		color: #606266;
+		font-size: 14px;
+	}
+
+	.tabbox>li:hover {
+		background: #f7f6f6;
+		cursor: pointer;
+	}
+
+	.main-info-container .active {
+		color: deepskyblue;
+		background: #f7f6f6;
+		color: #2196F3;
+	}
+
+	.itembox {
+		width: 500px;
+		margin: 10px;
+		display: flex;
+		min-height: 40px;
+		height: 40px;
+		max-height: 40px;
+	}
+
+	.itembox>label {
+		max-height: 40px;
+		width: 142px;
+		min-width: 142px;
+		display: flex;
+		display: flex;
+		max-width: 142px;
+		margin: 0;
+		text-align: right;
+		padding: 5px;
+		justify-content: flex-end;
+		align-items: center;
+		font-size: 14px;
+	}
+
+	.el-cascader {
+		width: 100%;
+	}
+
+	.add-container {
+		height: 100%;
+		width: 100%;
+
+		display: flex;
+		flex-wrap: wrap;
+		align-content: flex-start;
+		padding-top: 10px;
+		flex: 1;
+		padding: 0px 3px;
+		box-sizing: border-box;
+	}
+
+	.add-container>.add-item-container {
+		width: 497px;
+		flex-direction: row;
+		display: flex;
+		list-style: none;
+		font-size: 12px;
+		margin: 9px 0;
+		padding: 10px;
+		position: relative;
+		border: 1px solid #ccc;
+		margin: 4px;
+	}
+
+	.add-button-container {
+		width: 100%;
+		height: 32px;
+		background: #ffffff;
+		box-sizing: border-box;
+	}
+
+	.add-button-container:hover div {
+		background: #DCDCDC;
+		cursor: pointer;
+	}
+
+	.add-button-container:active div {
+		color: blue;
+	}
+
+	.add-button-container>div {
+		width: 80px;
+		height: 38px;
+		line-height: 38px;
+		background: white;
+		text-align: center;
+		font-size: 12px;
+		border: 1px solid #c3c1c1;
+		border-radius: 7px;
+		margin-left: 3px;
+	}
+
+	.yinhangbox {
+		flex: 1;
+		padding: 10px;
+		display: flex;
+		flex-wrap: wrap;
+		overflow: auto;
+		align-content: flex-start;
+	}
+
+	.yinhangbox>.yinhangitem {
+		align-content: flex-start;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		width: 343px;
+		height: 382px;
+		background: linear-gradient(-52deg, #f1eded, #e6e6e6);
+		list-style: none;
+		font-size: 12px;
+		margin: 4px;
+		padding: 6px;
+		border-radius: 5px;
+		position: relative;
+		border: 1px solid #ccc;
+		box-sizing: border-box;
+	}
+
+	.yinhangbox>.yinhangitem:hover .closebox {
+		display: block;
+	}
+
+	.add-container>.add-item-container:hover .closebox {
+		display: block;
+	}
+
+	.add-item-container .lx_itembox {
+		width: 100%;
+		height: 40px;
+		text-align: right;
+		display: flex;
+		align-items: center;
+	}
+
+	.add-item-container .lx_itembox .infoinput {
+		/*width: 100%;
+        border-radius: 5px;
+        border: 0;
+        height: 30px;
+        border: 1px solid #ccc;*/
+	}
+
+	.add-item-container .lx_itembox label {
+		width: 24px;
+		text-align: right;
+	}
+
+	.closebox {
+		width: 30px;
+		text-align: center;
+		height: 30px;
+		line-height: 30px;
+		border: 1px solid #ffffff;
+		border-radius: 50%;
+		background: #ec8b8b;
+		position: absolute;
+		right: 0px;
+		top: -9px;
+		display: none;
+	}
+
+	.closebox:hover {
+		background: #ec8b8b;
+		cursor: pointer;
+		color: white;
+		font-weight: bold;
+	}
+
+	.tab-container {
+		width: 100%;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.infobox {
+		background: #fff;
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+		box-sizing: border-box;
+		margin-top: 10px;
+	}
+
+	.yh_itembox {
+		width: 100%;
+		text-align: right;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		position: relative;
+	}
+
+	.yh_itembox label {
+		width: 112px;
+		text-align: right;
+	}
+
+	.lx_itembox_l {
+		height: 35px;
+		line-height: 35px;
+		width: 40%;
+	}
+
+	.lx_itembox_r {
+		width: 100%;
+		height: 35px;
+		display: flex;
+		align-items: center;
+		/*padding: 0 10px;*/
+		position: relative;
+	}
+
+	.yh_itembox_l {
+		height: 35px;
+		line-height: 35px;
+		width: 40%;
+	}
+
+	.yh_itembox_r {
+		width: 100%;
+		height: 35px;
+		display: flex;
+		align-items: center;
+		padding: 0 10px;
+		position: relative;
+	}
+
+	.el-select {
+		width: 100%;
+		height: 100%;
+	}
+
+	.el-select>.el-input {
+		height: 100%;
+	}
+
+	.el-date-editor.el-input {
+		width: 100% !important;
+	}
+
+	.required {
+		position: absolute;
+		top: 4px;
+		color: red;
+		left: -8px;
+	}
+
+	.el-form-item {
+		width: 350px;
+		margin-bottom: 2px !important;
+	}
+
+	.fushubox {
+		height: 400px;
+		background: white;
+		border-top: 1px solid #e9e8e8;
+		padding: 10px;
+		box-sizing: border-box;
+		overflow: auto;
+		display: flex;
+		padding-top: 0;
+	}
+
+	.fushubox-left {
+		flex: 1;
+		background: #f9f9f9;
+		overflow: auto;
+	}
+
+	.fushubox-right {
+		flex: 1;
+		background: #ecf9e6;
+		overflow: auto;
+	}
+
+	.uptip {
+		height: 30px;
+		line-height: 30px;
+		background: white;
+		text-align: center;
+	}
+
+	.el-icon-plus {
+		position: relative !important;
+		top: -18px !important;
+	}
+
+	.el-upload-list--picture-card .el-upload-list__item {
+		width: 95px !important;
+		height: 95px !important;
+	}
+
+	.el-upload--picture-card {
+		width: 95px !important;
+		height: 95px !important;
+	}
+
+	.el-form-item.is-error .el-input__inner,
+	.el-form-item.is-error .el-input__inner:focus,
+	.el-form-item.is-error .el-textarea__inner,
+	.el-form-item.is-error .el-textarea__inner:focus,
+	.el-message-box__input input.invalid,
+	.el-message-box__input input.invalid:focus {
+		border-bottom: 1px solid red;
+	}
+
+	.el-textarea__inner {
+		max-height: 40px !important;
+		/*border: 0 !important;
+        border-bottom: 1px solid #DCDFE6 !important;*/
+	}
+
+	.el-upload-list__item:first-child {
+		margin-top: 5px !important;
+	}
+
+	input[type=number] {
+		-moz-appearance: textfield;
+	}
+
+	input[type=number]::-webkit-inner-spin-button,
+	input[type=number]::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	.tabbox span {
+		color: red;
+		position: absolute;
+		right: 2px;
+		top: 0;
+		font-size: 12px;
+	}
+
+	.tabbox>li {
+		box-sizing: border-box;
+		display: flex;
+		justify-content: center
+		/*padding-right: 10px;*/
+	}
+
+	.add-item-index {
+		min-width: 20px;
+		height: 50px;
+		line-height: 50px;
+		text-align: center;
+		color: skyblue;
+		border-radius: 17px;
+		/* background: skyblue; */
+		/* line-height: 100%; */
+		font-size: 34px;
+	}
+
+	.add-item-info {
+		display: flex;
+		flex-wrap: wrap;
+		/*flex: 1;*/
+		width: 300px;
+		margin-right: 10px;
+		align-content: flex-start;
+	}
+
+	.tab-tittle {
+		padding: 10px 0;
+		font-size: 18px;
+	}
+
+	.additem-option-button {
+		width: 78px;
+		/* height: 100%; */
+		background: #f7f6f6;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.additem-option-button>.el-button {
+		margin-left: 0 !important;
+	}
+
+	.el-radio {
+		margin-right: 0 !important;
+	}
+
+	.el-checkbox {
+		margin-right: 0 !important;
+	}
+	/*.el-input__inner{
+    border:0px !important;
+    border-bottom: 1px solid #DCDFE6 !important;*/
+
+	.el-form-item.is-success .el-input__inner,
+	.el-form-item.is-success .el-input__inner:focus,
+	.el-form-item.is-success .el-textarea__inner,
+	.el-form-item.is-success .el-textarea__inner:focus {
+		border-bottom: 1px solid #67c23a;
+	}
+	.el-form-item.is-success .el-input__inner,
+	.el-form-item.is-success,
+	.el-form-item.is-success .el-textarea__inner {
+		border-color: #67c23a !important;
+	}
+	.el-form-item.is-error .el-input__inner,
+	.el-form-item.is-error {
+		border-color: #F56C6C !important;
+	}
+	.el-form-item.is-success .el-input__validateIcon {
+		color: #67c23a !important;
+	}
+	.el-icon-warning:before {
+		content: "\e7a3";
+		/* width: 0px; */
+		/* height: 30px; */
+
+		font-size: 16px;
+	}
+
+	label{
+		margin-bottom: 0;
+	}
+	.tabbox .el-icon-success{
+		color: green;
+		font-size: 14px;
+	}
+	.el-icon-success:before{
+		font-size: 16px;
+	}
+	.dizhilianxiren .el-form-item__content{
+		display: flex;
+	}
+	.dizhilianxiren .el-form-item__content{
+		margin-left: 0;
+	}
+	.el-date-editor--daterange.el-input, .el-date-editor--daterange.el-input__inner, .el-date-editor--timerange.el-input, .el-date-editor--timerange.el-input__inner {
+
+		width:100% !important;
+	}
+	.el-form-item__error{
+		color: #F56C6C;
+		font-size: 12px;
+		line-height: 1;
+		padding-top: 0px;
+		position: absolute;
+		top: 91%;
+		left: 0;
+		z-index: 111;
+	}
+    .el-textarea .el-input__count{
+        color: #909399;
+        background: #FFF;
+        position: absolute;
+        font-size: 12px;
+        bottom: auto;
+        right: 10px;
+        height: 24px;
+        line-height: 24px;
+    }
+	.tupianitembox
+{
+		background: white;
+		height: 65px;
+		width: 65px;
+		border: 1px solid #dcdfe6;
+		margin: 2px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 2px;
+		border-radius: 8px;
+}
+	.tupianitembox-img
+	{
+		max-width: 100%;
+		max-height: 100%;
+	}
+.tupian-box{
+	width: 100%;
+	min-height: 0px;
+	margin: 5px;
+	border-radius: 10px;
+	padding: 5px;
+	background: #f7f6f682;
+}
+	.el-dialog{
+		height: 90%;
+		display: flex;
+		flex-direction: column;
+	}
+	.el-dialog__body{
+		flex: 1;
+		height: 0;
+		display:flex;
+		justify-content: center;
+		align-items: center;
+		padding: 2px 3px;
+		color: #606266;
+		font-size: 14px;
+		word-break: break-all;
+	}
+	.el-dialog__body img{
+		max-height: 100%;
+		max-width: 100%;
+	}
+	.el-popover{
+		width: unset!important;
+		min-width: 200px !important;
+		max-width: 400px !important;
+	}
+</style>
+<body>
+<div id='app' v-cloak  >
+	<div class="app-container" v-loading="loading">
+		<div class="MYcontainer">
+			<div class="head-button-container">
+				<el-button type="primary" @click="submitForm('info')">保存</el-button>
+				<el-button type="primary" @click="submitFormAll('info')">提交</el-button>
+                <el-button type="primary" @click="togoback">返回</el-button>
+                <!--<el-button type="primary" v-for="item in ab" :key='item' @click.native="this[item]" >{{item}}</el-button>-->
+				<!--
+                <el-button @click='changenowname(1)'>模拟采购部</el-button>
+                <el-button @click='changenowname(2)'>模拟供应商</el-button>-->
+			</div>
+			<div class="main-info-container">
+				<ul class="tabbox">
+					<li @click.self='toshow(1)' :class='{active:currentshow===1}'>基本信息
+						<span v-show='jibeninfoissuccess' class='el-icon-warning'>
+							待填写
+						</span>
+						<!--<span v-show='!jibeninfoissuccess' class='el-icon-success'>-->
+							<!--已完成-->
+						<!--</span>-->
+					</li>
+					<!--<li @click.self='toshow(2)' :class='{active:currentshow===2}'>基本信息 <span v-show='show2' class='el-icon-warning'></span></li>-->
+					<li @click.self='toshow(3)' :class='{active:currentshow===3}'>地址与联系人
+
+						<span v-show='gysdizhiissuccess' class='el-icon-warning'>
+							待填写
+						</span>
+						<!--<span v-show='!gysdizhiissuccess' class='el-icon-success'>-->
+							<!--已完成-->
+						<!--</span>-->
+					</li>
+					<!--<li @click.self='toshow(4)' :class='{active:currentshow===4}'> <span v-show='info.yinhanginfo.issuccess' class='el-icon-warning'></span></li>-->
+					<li @click.self='toshow(5)' :class='{active:currentshow===5}' v-if='window.location.search?true:false'>合同与支付
+
+						<span v-show='hetonginfoissuccess' class='el-icon-warning'>
+							待填写
+						</span>
+						<!--<span v-show='!hetonginfoissuccess' class='el-icon-success'>-->
+							<!--已完成-->
+						<!--</span>-->
+					</li>
+					<!--<li @click.self='toshow(6)' :class='{active:currentshow===6}' v-if='nowname==1?true:false'>年审与评级-->
+
+					<!--</li>-->
+					<!--<li @click.self='toshow(7)' :class='{active:currentshow===7}'>经营范围</li>
+                <li @click.self='toshow(8)' :class='{active:currentshow===8}'>附属资料</li>
+                <li @click.self='toshow(9)' :class='{active:currentshow===9}'>证件资料</li>-->
+					<li @click.self='toshow(10)' :class='{active:currentshow===10}'>人员与设备情况
+
+						<span v-show='renyuaninfoissuccess' class='el-icon-warning'>
+							待填写
+						</span>
+						<!--<span v-show='!renyuaninfoissuccess' class='el-icon-success'>-->
+							<!--已完成-->
+						<!--</span>-->
+					</li>
+					<!--<li @click.self='toshow(11)' :class='{active:currentshow===11}'>设备情况 <span v-show='info.shebeiinfo.issuccess' class='el-icon-warning'></span></li>-->
+					<li @click.self='toshow(12)' :class='{active:currentshow===12}'>合作客户与厂商
+						<span v-show='kehuinfoissuccess' class='el-icon-warning'>
+							待填写
+						</span>
+						<!--<span v-show='!kehuinfoissuccess' class='el-icon-success'>-->
+							<!--已完成-->
+						<!--</span>-->
+					</li>
+                    <li @click.self='toshow(13)' :class='{active:currentshow===13}'>电子签章
+                        <span v-show='zhuceqiyuesuo' class='el-icon-warning'>
+							待注册
+						</span>
+                        <!--<span v-show='!zhuceqiyuesuo' class='el-icon-success'>-->
+                            <!--已注册-->
+                        <!--</span>-->
+                    </li>
+					<!--<li @click.self='toshow(13)' :class='{active:currentshow===13}'>电子签章-->
+                        <!--<span v-show='info.hezuoinfo.issuccess' class='el-icon-warning'></span>-->
+                    <!--</li>-->
+					<!--<li @click.self='toshow(14)' :class='{active:currentshow===14}'>合伙伙伴</li>-->
+					<!--<li @click.self='toshow(15)' :class='{active:currentshow===15}'>EPM寄修信息 <span v-show='info.jixiuinfo.issuccess' class='el-icon-warning'></span></li>-->
+				</ul>
+
+				<el-form action=""  class='formbox' label-position="right" label-width="150px" :model="info" ref='info'>
+
+					<div v-show='currentshow===1' v-cloak>
+
+						<el-form
+								style='display: flex;flex-direction: column;flex: 1;width: 100%;'
+								action=""
+								
+								label-position="right"
+								label-width="150px"
+								:model="info.jibeninfo"
+								ref='jibeninfo'>
+							<!--<el-form style='display: flex;flex-direction: column;flex: 1;width: 100%;' action=""  class='formbox' label-position="right" label-width="150px" :model="info.jibeninfo" ref='jibeninfo'>-->
+							<div class="tab-container">
+								<!-- <div>
+                                    <el-button type="primary" @click="submitForm('jibeninfo')">保存</el-button>
+                                </div> -->
+								<div class="infobox">
+									<el-form-item
+											label="供应商状态"
+											v-if='nowname==1?true:false'
+											prop="supCalStatus"
+											:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-select  :clearable='true' @change="changesuppType" size='small' v-model='info.jibeninfo.supCalStatus'>
+											<el-option :label="item" :value='key' v-for="(item,key) in gCsupStatus"></el-option>
+										</el-select>
+									</el-form-item>
+                                    <el-form-item
+                                            label="供应商全称"
+                                            prop="fullName"
+                                            :rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+                                        <el-input size='small' type="text" v-model='info.jibeninfo.fullName' :disabled="nowname==1?false:true" />
+                                    </el-form-item>
+                                    <el-form-item
+                                            label="供应商简称"
+                                            prop="shortName"
+                                            :rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+                                        <el-input size='small' type="text" v-model='info.jibeninfo.shortName' :disabled="nowname==1?false:true" />
+                                    </el-form-item>
+									<el-form-item
+											label="供应商编码"
+											>
+										<el-input
+												size='small'
+												v-model='info.jibeninfo.code'
+												:disabled="true"
+                                        >
+										</el-input>
+									</el-form-item>
+
+
+									<el-form-item
+											label="供应商类型(账户组)"
+											v-if='nowname==1?true:false'
+											prop="supType"
+											:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-select :clearable='true' size='small' v-model='info.jibeninfo.supType'>
+											<el-option :label="item" :value='key' v-for="(item,key) in suppType"></el-option>
+
+										</el-select>
+									</el-form-item>
+
+
+
+									<el-form-item
+											label="是否启用协同"
+											prop="coordination"
+											:rules= "[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-select :clearable='true' size='small' v-model='info.jibeninfo.coordination'>
+											<el-option :label="item" :value='key' v-for="(item,key) in coordination"></el-option>
+										</el-select>
+									</el-form-item>
+
+									<el-form-item
+											label="对接UR开发员"
+											prop="urKfy"
+											:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-input size='small' v-model='info.jibeninfo.urKfy' :disabled="nowname==1?false:true"></el-input>
+									</el-form-item>
+
+
+									<div style="width: 100%;border-bottom: 1px dashed #CCCCCC;margin: 10px 0;"></div>
+
+
+                                    <el-form-item
+                                            label="供应商等级"
+                                            v-if='nowname==1?true:false'
+                                    >
+                                        <el-select :clearable='true' size='small' v-model='info.jibeninfo.supCooperationWay'>
+                                            <el-option :label="item" :value='key' v-for="(item,key) in supCooperationWay"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+
+									<el-form-item
+											label="旧供应商编码"
+											v-if='nowname==1?true:false'>
+										<el-input
+                                                size='small'
+                                                type="text"
+                                                v-model.trim='info.jibeninfo.oldCode'
+                                                @keyup.native="info.jibeninfo.oldCode=info.jibeninfo.oldCode.replace(/[^A-Za-z0-9]/ig,'')"
+
+                                        />
+									</el-form-item>
+
+
+
+									<el-form-item
+											label="法人"
+											prop="artificialPersor"
+											:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-input size='small' type="text" v-model='info.jibeninfo.artificialPersor' />
+									</el-form-item>
+
+									<el-form-item
+											label="成立时间"
+											prop="foundingTime"
+											:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-date-picker size='small' type="date" placeholder="选择日期" v-model='info.jibeninfo.foundingTime'>
+										</el-date-picker>
+									</el-form-item>
+
+									<el-form-item
+											label="建筑面积"
+											prop="coveredArea"
+                                            :rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-input
+                                                size='small'
+                                                type="text"
+                                                v-model="info.jibeninfo.coveredArea"
+                                                @keyup.native="info.jibeninfo.coveredArea=info.jibeninfo.coveredArea.replace(/[\D]/ig,'')"
+
+                                        />
+									</el-form-item>
+
+									<el-form-item
+											label="占地面积"
+											prop="floorArea"
+                                            :rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-input
+                                                placeholder="单位:平方米"
+                                                size='small'
+                                                type="text"
+                                                v-model='info.jibeninfo.floorArea'
+                                                @keyup.native="info.jibeninfo.floorArea=info.jibeninfo.floorArea.replace(/[\D]/ig,'')"
+                                        />
+									</el-form-item>
+
+									<el-form-item
+											label="行业类型"
+											prop="industryType"
+                                            :rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-select :clearable='true' size='small' v-model='info.jibeninfo.industryType'>
+											<el-option :label="item" :value='key' v-for="(item,key) in industryType"></el-option>
+
+										</el-select>
+									</el-form-item>
+
+									<el-form-item
+											label="注册资本"
+											prop="registeredCapital"
+                                            :rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-input
+                                                size='small'
+                                                type="text"
+                                                v-model='info.jibeninfo.registeredCapital'
+                                                @keyup.native="info.jibeninfo.registeredCapital=info.jibeninfo.registeredCapital.replace(/[\D]/ig,'')"
+                                                maxlength="20"
+                                        />
+									</el-form-item>
+
+									<el-form-item
+											label="所有权"
+											prop="owner"
+                                            :rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-input size='small' type="text" v-model='info.jibeninfo.owner' />
+									</el-form-item>
+
+									<el-form-item
+											label="企业性质"
+											prop="enterpriseProperty"
+                                            :rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-input size='small' type="text" v-model='info.jibeninfo.enterpriseProperty' />
+									</el-form-item>
+
+									<el-form-item
+											label="工商注册号"
+											prop="registerno"
+                                            :rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+										<el-input
+                                                size='small'
+                                                type="text"
+                                                v-model='info.jibeninfo.registerno'
+                                                :disabled="nowname==1?false:true"
+                                                @keyup.native="info.jibeninfo.registerno=info.jibeninfo.registerno.replace(/[^0-9A-Za-z]/ig,'')"
+
+                                        />
+									</el-form-item>
+
+									<el-form-item label="经营理念">
+										<el-input
+												size='small'
+												type="textarea"
+												v-model='info.jibeninfo.businessConcepts'
+												resize='none'
+												style='height: 40px;'
+                                                maxlength="100"
+                                                show-word-limit
+                                        />
+									</el-form-item>
+									<el-form-item label="备注">
+										<el-input
+												size='small'
+												type="textarea"
+												v-model='info.jibeninfo.comments'
+												resize='none'
+												style='height: 54px;'
+                                                maxlength="100"
+                                                show-word-limit
+                                        />
+									</el-form-item>
+
+									<div style="width: 100%;border-bottom: 1px dashed #CCCCCC;margin: 10px 0;"></div>
+
+
+                                    <div style="width: 100%;display: flex;">
+
+									<div class="tupian-box">
+										<el-form-item
+												label-width='200px'
+												style='width:100%;'
+												ref='file1'
+												label="厂房及办公用地产权或租赁证明"
+												label-position="top"
+												prop="dichanFiles"
+												:rules="[{ required: true, message: '至少上传一个文件', trigger: ['change','blur'] }]"
+												>
+											<el-upload
+													multiple
+													class="upload-demo"
+													:on-success="touploaddichanfiles"
+													:action="uploadUrl"
+													:show-file-list='false'
+													>
+												<el-button size="small" type="primary">点击上传</el-button>
+											</el-upload>
+
+										</el-form-item>
+                                        <div style="width: 100%;display: flex;flex-wrap: wrap;" >
+
+
+											<div v-for="(item,index) in info.jibeninfo.dichanFiles" :key="index" class="tupianitembox">
+
+
+                                            <el-popover
+                                                    placement="top"
+                                                    width="100"
+                                                    trigger="hover"
+                                            >
+												<div style="width: 100%;display: flex;flex-direction:column;justify-content: center">
+													<div>{{item.name}}</div>
+													<div>{{item.lastUpdatedTime}}</div>
+												</div>
+
+                                                <div  style="width:100%;display: flex;justify-content: center">
+                                                    <el-tooltip class="item" effect="dark" content="查看" placement="top">
+                                                        <el-button size='mini' type="primary" icon="el-icon-view" circle @click="tolook(item)"></el-button>
+                                                    </el-tooltip>
+
+                                                    <el-tooltip class="item" effect="dark" content="下载" placement="top">
+                                                        <el-button size='mini' type="success" icon="el-icon-download" circle @click="todownload(item)"></el-button>
+                                                    </el-tooltip>
+
+                                                    <el-tooltip class="item" effect="dark" content="删除" placement="top">
+                                                        <el-button size='mini' type="danger" icon="el-icon-delete" circle @click="todeldichan(item,index)"></el-button>
+                                                    </el-tooltip>
+                                                </div>
+
+                                                <div  slot="reference" class="tupianitembox">
+                                                    <img alt="" class="tupianitembox-img" :src="panduanimgurl(item.fileType,item)">
+												</div>
+                                            </el-popover>
+
+											</div>
+										</div>
+									</div>
+
+									<div class="tupian-box">
+										<el-form-item
+												prop="zhizhaoFiles"
+												:rules="[{ required: true, message: '至少上传一个文件', trigger: ['change','blur'] }]"
+												label-width='80px'
+												style='width:100%;'
+												ref='file2'
+												label="营业执照"
+												>
+											<el-upload
+													multiple
+													:on-success="touploadzhizhaofiles"
+													v-model='info.jibeninfo.fileList2'
+													class="upload-demo"
+													:action="uploadUrl"
+													:show-file-list='false'
+													:file-list="info.jibeninfo.fileList2"
+													>
+												<el-button size="small" type="primary">点击上传</el-button>
+											</el-upload>
+										</el-form-item>
+
+
+										<div style="width: 100%;display: flex;flex-wrap: wrap;" >
+											<div v-for="(item,index) in info.jibeninfo.zhizhaoFiles" :key="index" class="tupianitembox">
+												<el-popover
+														placement="top"
+														width="100"
+														trigger="hover"
+												>
+													<div style="width: 100%;display: flex;flex-direction:column;justify-content: center">
+														<div>{{item.name}}</div>
+														<div>{{item.lastUpdatedTime}}</div>
+													</div>
+
+													<div  style="width:100%;display: flex;justify-content: center">
+														<el-tooltip class="item" effect="dark" content="查看" placement="top">
+															<el-button size='mini' type="primary" icon="el-icon-view" circle @click="tolook(item)"> </el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="下载" placement="top">
+															<el-button size='mini' type="success" icon="el-icon-download" circle @click="todownload(item)"></el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="删除" placement="top">
+															<el-button size='mini' type="danger" icon="el-icon-delete" circle @click="todelzhizhao(item,index)"></el-button>
+														</el-tooltip>
+													</div>
+
+													<div  slot="reference" class="tupianitembox">
+														<img alt="" class="tupianitembox-img" :src="panduanimgurl(item.fileType,item)">
+													</div>
+												</el-popover>
+
+											</div>
+										</div>
+									</div>
+
+									<div class="tupian-box">
+										<el-form-item
+												label-width='100px'
+												style='width:100%;
+												border: 1px dashed #cccccc00;border-radius:5px;'
+												ref='file3'
+												label="其他资格证件"
+												label-position="top"
+												prop="fileList3">
+											<el-upload
+													multiple
+													:on-success="touploadqitafiles"
+													class="upload-demo"
+													:action="uploadUrl"
+													:show-file-list='false'
+													>
+												<el-button size="small" type="primary">点击上传</el-button>
+											</el-upload>
+
+										</el-form-item>
+										<div style="width: 100%;display: flex;flex-wrap: wrap;" >
+											<div v-for="(item,index) in info.jibeninfo.qitaFiles" :key="index" class="tupianitembox">
+												<el-popover
+														placement="top"
+														width="100"
+														trigger="hover"
+												>
+													<div style="width: 100%;display: flex;flex-direction:column;justify-content: center">
+														<div>{{item.name}}</div>
+														<div>{{item.lastUpdatedTime}}</div>
+													</div>
+													<div  style="width:100%;display: flex;justify-content: center">
+														<el-tooltip class="item" effect="dark" content="查看" placement="top">
+															<el-button size='mini' type="primary" icon="el-icon-view" circle @click="tolook(item)"></el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="下载" placement="top">
+															<el-button size='mini' type="success" icon="el-icon-download" circle @click="todownload(item)"></el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="删除" placement="top">
+															<el-button size='mini' type="danger" icon="el-icon-delete" circle @click="todelqita(item,index)"></el-button>
+														</el-tooltip>
+													</div>
+													<div  slot="reference" class="tupianitembox">
+														<img alt="" class="tupianitembox-img" :src="panduanimgurl(item.fileType,item)">
+													</div>
+												</el-popover>
+											</div>
+										</div>
+									</div>
+                                    </div>
+									<div style="width: 100%;border-bottom: 1px dashed #CCCCCC;margin: 10px 0;"></div>
+								</div>
+							</div>
+
+							<div class="tab-container">
+								<div class="tab-tittle">
+									银行卡信息
+								</div>
+								<div class="add-button-container">
+									<el-button type="primary"  size='small' @click='addyhk' style='width: 100%;'>新增</el-button>
+								</div>
+
+								<ul class='add-container' >
+									<li  class="add-item-container" v-for="(item,index) in info.jibeninfo.yinhanginfo.list" :key='item' style='width:410px;'>
+										<div class="add-item-index">
+											{{index+1}}
+										</div>
+										<div class="add-item-info">
+											<el-form-item
+													label="联行号"
+													style='width: 334px;'
+													label-width='100px'
+													:prop="'yinhanginfo.list[' + index + '].bankcode'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        v-model.number='item.bankcode'
+                                                        :disabled='item.isable'
+                                                        @keyup.native="item.bankcode=item.bankcode.replace(/[\D]/ig,'')"
+                                                        maxlength="100"
+                                                />
+											</el-form-item>
+
+											<el-form-item
+													label="银行名称"
+													style='width: 334px;'
+													label-width='100px'
+													:prop="'yinhanginfo.list[' + index + '].bankname'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input size='small' type="text" v-model='item.bankname' :disabled='item.isable' />
+											</el-form-item>
+
+											<el-form-item
+													label="开户行名称"
+													style='width: 334px;'
+													label-width='100px'
+													:prop="'yinhanginfo.list[' + index + '].depositbankname'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        type="text"
+                                                        v-model='item.depositbankname'
+                                                        />
+											</el-form-item>
+
+											<el-form-item
+													label="户名"
+													style='width: 334px;'
+													label-width='100px'
+													:prop="'yinhanginfo.list[' + index + '].accountname'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        type="text"
+                                                        v-model.trim='item.accountname'
+                                                        :disabled="item.isable" />
+											</el-form-item>
+
+											<el-form-item
+													label="银行账号"
+													style='width: 334px;'
+													label-width='100px'
+													:prop="'yinhanginfo.list[' + index + '].bankaccount'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        maxlength="30"
+                                                        size='small'
+                                                        v-model='item.bankaccount'
+                                                        :disabled='item.isable'
+                                                        @keyup.native="item.bankaccount=item.bankaccount.replace(/[^a-zA-Z0-9]/ig,'')"
+                                                />
+											</el-form-item>
+
+											<el-form-item
+													class='file4'
+													ref='file4'
+													label="开户许可证"
+													style='width: 334px;'
+													label-width='100px'
+													:prop="'yinhanginfo.list[' + index + '].kaihuFiles'"
+													:rules="[{ required: true, message: '至少上传一个文件', trigger: ['change','blur'] }]">
+												<el-upload
+														multiple
+														:on-change="changekaihufiles"
+														:before-upload="(file)=>{return tobeforekaihufiles(file,item.kaihuFiles,index)}"
+														:on-success="(response, file, fileList)=>{touploadkaihufiles(response, file, fileList,item,index)}"
+														class="upload-demo"
+														:action="uploadUrl"
+														:show-file-list='false'
+														>
+													<el-button size="small" type="primary" :disabled="item.isable">点击上传</el-button>
+												</el-upload>
+											</el-form-item>
+
+
+												<div v-for="(item1,index1) in item.kaihuFiles" :key="index" class="tupianitembox">
+													<el-popover
+															placement="top"
+															width="100"
+															trigger="hover"
+													>
+														<div style="width: 100%;display: flex;flex-direction:column;justify-content: center">
+															<div>{{item1.name}}</div>
+															<div>{{item1.lastUpdatedTime}}</div>
+														</div>
+
+														<div  style="width:100%;display: flex;justify-content: center">
+															<el-tooltip class="item" effect="dark" content="查看" placement="top">
+																<el-button size='mini' type="primary" icon="el-icon-view" circle @click="tolook(item1)"></el-button>
+															</el-tooltip>
+
+															<el-tooltip class="item" effect="dark" content="下载" placement="top">
+																<el-button size='mini' type="success" icon="el-icon-download" circle @click="todownload(item1)"></el-button>
+															</el-tooltip>
+
+															<el-tooltip class="item" effect="dark" content="删除" placement="top">
+																<el-button size='mini' type="danger" icon="el-icon-delete" circle @click="todelkaihu(index,item1,index1)"></el-button>
+															</el-tooltip>
+														</div>
+
+														<div  slot="reference" class="tupianitembox">
+															<img alt="" class="tupianitembox-img" :src="panduanimgurl(item1.fileType,item1)">
+														</div>
+													</el-popover>
+
+
+											</div>
+
+										</div>
+										<div class='additem-option-button'>
+											<!--<el-button size='small' type="primary" :disabled='item.isedit' @click='edit("yinhanginfo",index)'>编辑</el-button>-->
+											<el-button size='small' type="danger" :disabled='item.isdele' @click='removeYHK(item,index)'>删除</el-button>
+										</div>
+									</li>
+
+								</ul>
+							</div>
+						</el-form>
+					</div>
+
+					<div v-show='currentshow==3' v-cloak>
+						<el-form
+
+								style='display: flex;flex-direction: column;flex: 1;width: 100%;'
+								action=""
+								
+								label-position="right"
+								label-width="150px"
+								:model="info.gysdizhi"
+								ref='gysdizhi'>
+							<div class="tab-container">
+								<!-- <div>
+                                    <el-button type="primary" @click="submitForm('gysdizhi')">保存</el-button>
+                                </div> -->
+								<div class="infobox dizhilianxiren">
+
+
+									<el-form-item label="公司地址"
+												  style="width: 100%;"
+												 :rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]"
+									>
+										<el-form-item
+												prop="nation"
+												style='width:150px'
+												:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+											<el-select
+                                                    :clearable='true'
+													placeholder="国"
+													size="small"
+													v-model="info.gysdizhi.nation">
+												<el-option :label="item" :value='key' v-for="(item,key) in nation"></el-option>
+											</el-select>
+										</el-form-item>
+										-
+										<el-form-item
+												prop="province"
+												style='width:150px'
+												:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+											<el-select
+                                                    :clearable='true'
+													placeholder="省"
+													size="small"
+													v-model="info.gysdizhi.province"
+													@change="tochangeGYSshi"
+												>
+												<el-option :label="item" :value='key' v-for="(item,key) in privince"></el-option>
+											</el-select>
+										</el-form-item>
+										-
+										<el-form-item
+												prop="city"
+												style='width:150px'
+												:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+											<el-select
+                                                    :clearable='true'
+													placeholder="市"
+													size="small"
+													v-model="info.gysdizhi.city">
+												<el-option :label="item" :value='key' v-for="(item,key) in allCity[info.gysdizhi.province]"></el-option>
+											</el-select>
+										</el-form-item>
+										<!-- - -->
+										<!--<el-form-item prop="date2" style='width:150px'>-->
+											<!--<el-select  placeholder="区" size="small" v-model="info.gysdizhi.GYSqu">-->
+												<!--<el-option>222</el-option>-->
+											<!--</el-select>-->
+										<!--</el-form-item>-->
+										-
+										<el-form-item
+												prop="address"
+												style='width:300px'
+												:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+											<el-input
+													size="small"
+													v-model="info.gysdizhi.address"
+													placeholder="详细地址" > </el-input>
+										</el-form-item>
+
+
+										<el-form-item
+												prop="zipCode"
+												label="邮政编码"
+                                                label-width="85px"
+												:rules="[
+												 { required: true, message: '  ', trigger: ['change','blur'] }]"
+                                             >
+											<el-input
+                                                    size="small"
+                                                    v-model.trim="info.gysdizhi.zipCode"
+                                        maxlength='12'
+                                                    @keyup.native="info.gysdizhi.zipCode=info.gysdizhi.zipCode.replace(/[^0-9]/ig,'')"
+                                                   ></el-input>
+										</el-form-item>
+
+									</el-form-item>
+
+									<el-form-item
+											label="全国(售后)地址"
+
+											style="width: 100%;">
+
+										<el-form-item
+												style='width:150px'
+												>
+											<el-select
+                                                    :clearable='true'
+													placeholder="国"
+													size="small"
+													v-model="info.gysdizhi.afterNation">
+												<el-option :label="item" :value='key' v-for="(item,key) in nation"></el-option>
+											</el-select>
+										</el-form-item>
+										-
+										<el-form-item
+
+												style='width:150px'
+												>
+											<el-select
+                                                    :clearable='true'
+													placeholder="省"
+													size="small"
+													v-model="info.gysdizhi.afterProvince"
+													@change="tochangejxshi"
+											>
+												<el-option :label="item" :value='key' v-for="(item,key) in privince"></el-option>
+											</el-select>
+										</el-form-item>
+										-
+										<el-form-item
+
+												style='width:150px'
+											>
+											<el-select
+                                                    :clearable='true'
+													placeholder="市"
+													size="small"
+													v-model="info.gysdizhi.afterCity">
+												<el-option :label="item" :value='key' v-for="(item,key) in allCity[info.gysdizhi.afterProvince]"></el-option>
+											</el-select>
+										</el-form-item>
+										<!-- - -->
+										<!--<el-form-item prop="date2" style='width:150px'>-->
+										<!--<el-select  placeholder="区" size="small" v-model="info.gysdizhi.GYSqu">-->
+										<!--<el-option>222</el-option>-->
+										<!--</el-select>-->
+										<!--</el-form-item>-->
+										-
+										<el-form-item
+
+												prop="afterAddress"
+                                                style='width:300px'
+													 >
+											<el-input size="small" v-model="info.gysdizhi.afterAddress" placeholder="详细地址"></el-input>
+										</el-form-item>
+
+
+										<el-form-item
+												prop="afterZipCode"
+												label="邮政编码"
+												label-width="85px"
+                                                :rules="[
+                                                { required: false, message: '  ', trigger: ['change','blur'] }
+                                                ]"
+												>
+											<el-input
+                                                    size="small"
+                                                    maxlength='12'
+                                                    v-model.trim="info.gysdizhi.afterZipCode"
+                                                    @keyup.native="info.gysdizhi.afterZipCode=info.gysdizhi.afterZipCode.replace(/[^0-9]/ig,'')"
+                                                    ></el-input>
+										</el-form-item>
+
+									</el-form-item>
+
+
+									<!--<el-form-item-->
+											<!--label="全国售后电话"-->
+											<!--style='width: 400px;'-->
+											<!--prop="afterPhoneNumber"-->
+											<!--:rules="info.gysdizhi.afterPhoneNumber?-->
+											<!--[{validator:-->
+											<!--(rule, value, callback)=>{-->
+											    <!--validatePhoneNumber(rule, value, callback)-->
+											<!--},trigger: ['blur','change']}]-->
+									<!--:null"-->
+									<!--&gt;-->
+
+                                    <el-form-item
+                                    label="全国(保修)电话"
+                                    style='width: 400px;'
+                                    prop="afterPhoneNumber"
+                                    >
+										<el-input
+                                                size='small'
+
+                                                v-model.trim='info.gysdizhi.afterPhoneNumber'
+                                                @keyup.native="info.gysdizhi.afterPhoneNumber=info.gysdizhi.afterPhoneNumber.replace(/[^0-9\-]/ig,'')"
+                                                maxlength="20"
+                                               ></el-input>
+									</el-form-item>
+
+                                    <el-form-item
+                                            label="备注"
+                                            style='width: 400px;'
+                                            prop="afterPhoneNumber"
+                                            label-width="100px"
+                                    >
+                                        <el-input
+                                                type="textarea"
+                                                size='small'
+                                                v-model.trim='info.gysdizhi.jxComments'
+                                                maxlength="100"
+
+                                                show-word-limit
+                                        ></el-input>
+                                    </el-form-item>
+
+
+
+								</div>
+								<div class="tab-tittle">
+									供应商联系人
+								</div>
+								<div class="add-button-container">
+									<el-button type="primary" size='small' @click='addlxr' style='width: 100%;'>新增</el-button>
+
+								</div>
+								<ul class='add-container'>
+									<li class="add-item-container" v-for="(item,index) in info.gysdizhi.lianxireninfo.list" style='width: 410px;'>
+										<div class="add-item-index">
+											{{index+1}}
+										</div>
+										<div class="add-item-info">
+											<el-form-item
+													label="职位"
+													style='width: 335px;'
+													label-width='130px'
+													:prop="'lianxireninfo.list[' + index + '].position'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        type="text"
+                                                        v-model.trim='item.position'
+                                                        class="infoinput"
+                                                        :disabled='item.isable' />
+											</el-form-item>
+
+											<el-form-item
+													label="业务联系人"
+													style='width: 335px;'
+													label-width='130px'
+													:prop="'lianxireninfo.list[' + index + '].name'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        type="text"
+                                                        v-model='item.name'
+                                                        class="infoinput"
+                                                        :disabled='item.isable' />
+											</el-form-item>
+
+											<el-form-item
+													label="固定电话"
+													style='width: 335px;'
+													label-width='130px'
+													:prop="'lianxireninfo.list[' + index + '].phonenumber'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        v-model.trim='item.phonenumber'
+                                                        class="infoinput"
+                                                        :disabled='item.isable'
+														@keyup.native="item.phonenumber=item.phonenumber.replace(/[^0-9/-]/ig,'')"
+
+                                                />
+											</el-form-item>
+
+											<el-form-item
+													label="业务联系人手机"
+													style='width: 335px;'
+													label-width='130px'
+													:prop="'lianxireninfo.list[' + index + '].telnumber'"
+													:rules="[
+													{ required: true, message: '  ', trigger: ['change','blur'] },
+													 { max: 50,min:11, message: '手机号码长度为11位数', trigger: 'blur' },
+													  { pattern: /^1[34578]\d{9}$/, message: '手机号码格式有误', trigger: 'blur'  }
+													]">
+												<el-input
+                                                        size='small'
+                                                        v-model='item.telnumber'
+                                                        class="infoinput"
+                                                        :disabled='item.isable'
+                                                        @keyup.native="item.telnumber=item.telnumber.replace(/[^0-9]/ig,'')"
+                                                        maxlength="11"
+                                                />
+											</el-form-item>
+
+											<el-form-item
+													label="传真"
+													style='width: 335px;'
+													label-width='130px'
+
+													>
+												<el-input
+                                                        size='small'
+                                                        type="text"
+                                                        v-model='item.faxnumber'
+                                                        class="infoinput" :disabled='item.isable'
+                                                        @keyup.native="item.faxnumber=item.faxnumber.replace(/[^0-9]/ig,'')"
+
+                                                />
+											</el-form-item>
+
+											<el-form-item
+													label="业务联系人邮箱"
+													style='width: 335px;'
+													label-width='130px'
+													:prop="'lianxireninfo.list[' + index + '].email'"
+													:rules="[
+													{ required: false, message: '  ', trigger: ['change','blur'] },
+													{ max: 50, message: '邮箱在50字以内', trigger: 'blur' },
+                                                    { pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/, message: '请检查邮箱格式是否正确', trigger: ['blur'] },
+													]">
+												<el-input size='small' type="text" v-model='item.email' class="infoinput" :disabled='item.isable' />
+											</el-form-item>
+
+											<el-form-item  label="" style='width: 335px;display: flex;' label-width='0px'>
+												<el-checkbox size='small' v-model="item.mrLxr" label="mrLxr" @change='qsfnmoren(index)' ref='trueone' :disabled='item.isable'>默认联系人</el-checkbox>
+												<el-checkbox size='small' v-model="item.mrShLxr" label="mrShLxr" @change='qsfnshouhou(index)' ref='truefalse' :disabled='item.isable'>售后联系人</el-checkbox>
+												<el-checkbox size='small' v-model="item.mrCwLxr" label="mrCwLxr" @change='qsfncaiwu(index)' ref='truefalse' :disabled='item.isable'>财务联系人</el-checkbox>
+												<!--<el-radio ></el-radio>
+                                                <el-radio></el-radio>
+                                                <el-radio ></el-radio>-->
+											</el-form-item>
+											<el-form-item style='width: 335px;' label-width='130px'>
+
+											</el-form-item>
+
+										</div>
+										<div class='additem-option-button'>
+											<!--<el-button size='small' type="primary" :disabled='item.isedit' @click='edit("gysdizhi","lianxireninfo",index)'>编辑</el-button>-->
+											<el-button size='small' type="danger" :disabled='item.isdele' @click='removeGYSLXR(item,index)'>删除</el-button>
+											<!--<div   v-show= !+"item.isedit">X</div>-->
+										</div>
+
+									</li>
+								</ul>
+							</div>
+						</el-form>
+					</div>
+
+					<div v-show='currentshow===5' v-cloak v-if='nowname==1?true:false'>
+						<div class="tab-container">
+							<el-form
+									style='display: flex;flex-direction: column;flex: 1;width: 100%;'
+                                    label-position="right"
+									label-width="100px"
+									:model="info.hetonginfo"
+									ref='hetonginfo'>
+								<!--<div>-->
+								<!--<el-button type="primary" @click="submitForm('hetonginfo')">保存</el-button>-->
+								<!--</div>-->
+								<div class="tab-tittle">
+									当前有效支付数据
+								</div>
+								<!--<div class="add-button-container">-->
+									<!--<el-button type="primary" @click='addhetong' style='width: 100%;'>新增</el-button>-->
+								<!--</div>-->
+								<div class="infobox dizhilianxiren">
+
+									<el-form-item
+											label="支付方式"
+											style='width: 500px;'>
+										<el-select
+                                                placeholder=''
+                                                :clearable='true'
+												disabled
+												size='small'
+												v-model='info.hetonginfo.hetong.paylist.payWay'>
+											<el-option :label="item" :value='key' v-for="(item,key) in payWay"></el-option>
+										</el-select>
+									</el-form-item>
+
+									<el-form-item label="订单币别" style='width: 500px;'>
+										<el-select  placeholder='' :clearable='true' disabled size='small' v-model='info.hetonginfo.hetong.paylist.payCurrency'>
+											<el-option :label="item" :value='key' v-for="(item,key) in payCurrency"></el-option>
+										</el-select>
+									</el-form-item>
+
+									<el-form-item label="税码" style='width: 500px;'>
+										<el-select  placeholder='' :clearable='true' disabled size='small' v-model='info.hetonginfo.hetong.paylist.payCess'>
+											<el-option :label="item" :value='key' v-for="(item,key) in payCess"></el-option>
+										</el-select>
+									</el-form-item>
+
+									<el-form-item label="付款条件" style='width: 500px;'>
+										<el-select  placeholder='' :clearable='true' disabled size='small' v-model='info.hetonginfo.hetong.paylist.payMode'>
+											<el-option :label="item" :value='key' v-for="(item,key) in payMode"></el-option>
+										</el-select>
+									</el-form-item>
+
+
+
+								</div>
+
+
+
+								<div class="tab-tittle">
+									合同信息
+								</div>
+								<div class="add-button-container">
+									<el-button type="primary"  size='small'  @click='addhetong' style='width: 100%;' :disabled="isdisabledadd">新增</el-button>
+								</div>
+								<ul class='add-container'>
+									<li class="add-item-container" v-for="(item,index) in info.hetonginfo.hetong.list" style='width: 500px;'>
+										<div class="add-item-index">
+											{{index+1}}
+										</div>
+										<div class="add-item-info" style="width: 450px;">
+											<el-form-item
+													label="合同编号"
+													style='width: 100%;'
+													label-width='80px'
+													:prop="'hetong.list[' + index + '].contractNo'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        v-model='item.contractNo'
+                                                        :disabled='item.isable'
+                                                        @keyup.native="item.contractNo=item.contractNo.replace(/[^0-9a-zA-Z\-\(\)\[\]\（\/\*\）]/ig,'')"
+                                                />
+											</el-form-item>
+
+
+											<el-form-item
+                                                    ref="htshijian"
+													label="起止日期"
+													style='width: 100%;padding-bottom: 20px ; border-bottom:1px dashed #CCCCCC ;'
+													label-width='80px'
+													:prop="'hetong.list[' + index + '].datalist'"
+													:required="true"
+													:rules="[{ validator: (rule, value, callback)=>{validateSku(rule, value, callback,index)},trigger: ['blur', 'change']}]"
+
+											>
+												<el-date-picker
+
+														:clearable='false'
+														:editable='false'
+														value-format="yyyy-MM-dd"
+														size="small"
+														v-model="item.datalist"
+														type="daterange"
+														start-placeholder="开始日期"
+														end-placeholder="结束日期"
+
+													>
+												</el-date-picker>
+
+
+											</el-form-item>
+
+											<el-form-item
+
+													label="支付方式"
+													style='width: 100%;'
+													label-width='80px'
+													:prop="'hetong.list[' + index + '].payWay'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-select :clearable='true' disabled size='small' v-model='item.payWay' :disabled='item.isable'>
+													<el-option :label="item" :value='key' v-for="(item,key) in payWay"></el-option>
+
+												</el-select>
+											</el-form-item>
+
+											<el-form-item
+
+													label="订单币别"
+													style='width: 100%;'
+													label-width='80px'
+													:prop="'hetong.list[' + index + '].payCurrency'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-select :clearable='true' disabled size='small' v-model='item.payCurrency' :disabled='item.isable'>
+													<el-option :label="item" :value='key' v-for="(item,key) in payCurrency"></el-option>
+
+												</el-select>
+											</el-form-item>
+
+											<el-form-item
+
+													label="税码"
+													style='width: 100%;'
+													label-width='80px'
+													:prop="'hetong.list[' + index + '].payCess'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-select :clearable='true' size='small' v-model='item.payCess' :disabled='item.isable'>
+													<el-option :label="item" :value='key' v-for="(item,key) in payCess"></el-option>
+
+												</el-select>
+											</el-form-item>
+
+											<el-form-item
+
+													label="付款条件"
+													style='width: 100%;'
+													label-width='80px'
+													:prop="'hetong.list[' + index + '].payMode'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-select :clearable='true' disabled size='small' v-model='item.payMode' :disabled='item.isable'>
+													<el-option :label="item" :value='key' v-for="(item,key) in payMode"></el-option>
+												</el-select>
+											</el-form-item>
+											<el-form-item label="备注" style='width: 100%;height:54px;' label-width='80px'>
+												<el-input disabled size='small' type="textarea" v-model='item.jxComments' resize='none' style='height:54px;' :disabled='item.isable' />
+											</el-form-item>
+										</div>
+										<div class='additem-option-button'>
+											<!--<el-button size='small' type="primary" :disabled='item.isedit' @click='edit("hetonginfo","hetong",index)'>编辑</el-button>-->
+											<el-button size='small' type="danger" :disabled='item.isdele' @click='removeHT(item,index)'>删除</el-button>
+										</div>
+									</li>
+								</ul>
+							</el-form>
+						</div>
+					</div>
+						<!--年审-->
+					<!--<div v-show='currentshow===6' v-cloak v-if='nowname==1?true:false'>-->
+						<!--<div class="tab-container" style='width: 100%;height: 100%;'>-->
+							<!--<iframe style='width:100%;height: 100%;'src="/test/GYSns" frameborder="0"></iframe>-->
+						<!--</div>-->
+					<!--</div>-->
+					<!--人员    设备-->
+					<div v-show='currentshow===10' v-cloak>
+						<el-form
+								style='display: flex;flex-direction: column;flex: 1;width: 100%;'
+								label-position="right"
+								label-width="150px"
+								:model="info.renyuaninfo"
+								ref='renyuaninfo'>
+
+							<div class="tab-container">
+								<!--<div>-->
+								<!--<el-button type="primary" @click="submitForm('renyuaninfo')">保存</el-button>-->
+								<!--</div>-->
+								<div class="tab-tittle">
+									人员信息
+								</div>
+
+								<div class="add-button-container">
+									<el-button type="primary" size='small'  @click='addryzl' style='width: 100%;'>新增</el-button>
+								</div>
+
+								<ul class='add-container'>
+									<li class="add-item-container" v-for="(item,index) in info.renyuaninfo.renyuan.list" style='width:410px;'>
+										<div class="add-item-index">
+											{{index+1}}
+										</div>
+										<div class="add-item-info">
+											<el-form-item
+													label="年份"
+													style='width: 330px;'
+													label-width='110px'
+													:prop="'renyuan.list[' + index + '].year'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-select :clearable='true' size='small' v-model='item.year' :disabled='item.isable'>
+													<el-option :value="item" :label="item" v-for="(item,index) in year"></el-option>
+
+												</el-select>
+											</el-form-item>
+
+											<el-form-item
+													label="生产人员数量"
+													style='width: 330px;'
+													label-width='110px'
+													:prop="'renyuan.list[' + index + '].operaters'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+														size='small'
+														v-model.trim='item.operaters'
+														resize='none'
+														:disabled='item.isable'
+														@input="jisuanheji(item,index)"
+                                                        @keyup.native="item.operaters=item.operaters.replace(/[^0-9]/ig,'')"
+                                                />
+											</el-form-item>
+
+											<el-form-item
+													type='Number'
+													label="技术人员数量"
+													style='width: 330px;'
+													label-width='110px'
+													:prop="'renyuan.list[' + index + '].technicians'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+														size='small'
+														v-model="item.technicians"
+														resize='none'
+														:disabled='item.isable'
+														@input="jisuanheji(item,index)"
+                                                        @keyup.native="item.technicians=item.technicians.replace(/[^0-9]/ig,'')"
+												/>
+											</el-form-item>
+
+											<el-form-item
+													label="管理人员数量"
+													style='width: 330px;'
+													label-width='110px'
+													:prop="'renyuan.list[' + index + '].managers'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+														size='small'
+														v-model.trim='item.managers'
+														resize='none'
+														:disabled='item.isable'
+														@input="jisuanheji(item,index)"
+                                                        @keyup.native="item.managers=item.managers.replace(/[^0-9]/ig,'')"
+												/>
+											</el-form-item>
+
+											<el-form-item
+													label="合计"
+													style='width: 330px;'
+													label-width='110px'>
+												<el-input
+														size='small'
+														type='Number'
+														resize='none'
+														disabled
+														:value.trim="item.total" />
+											</el-form-item>
+										</div>
+										<div class='additem-option-button'>
+											<!--<el-button-->
+													<!--size='small'-->
+													<!--type="primary"-->
+													<!--:disabled='item.isedit'-->
+													<!--@click='edit("renyuaninfo","renyuan",index)'>编辑</el-button>-->
+											<el-button
+													size='small'
+													type="danger"
+													:disabled='item.isdele'
+													@click='removeRY(item,index)'>删除</el-button>
+										</div>
+									</li>
+								</ul>
+								<!--</el-form>-->
+							</div>
+
+								<!--<el-form style='display: flex;flex-direction: column;flex: 1;width: 100%;' action=""  label-position="right" label-width="150px" :model="info.renyuaninfo.shebei.list" ref='shebeiinfo'>-->
+								<div class="tab-tittle">
+									设备信息
+								</div>
+							<div class="tab-container">
+								<div style="width: 100%;display: flex;flex-direction: column">
+
+									<div class="tupian-box" style="display:flex;justify-content:flex-start;">
+										<el-form-item
+												label-width='100px'
+												style='width:240px !important;'
+												ref='file1'
+												label="工厂车间图"
+												label-position="top"
+												prop="chejianFiles"
+												:rules="[{ required: true, message: '至少上传一个文件', trigger: ['change','blur'] }]"
+										>
+											<el-upload
+													multiple
+													class="upload-demo"
+													:on-success="touploadchejianfiles"
+													:action="uploadUrl"
+													:show-file-list='false'
+													>
+												<el-button size="small" type="primary">点击上传</el-button>
+											</el-upload>
+
+										</el-form-item>
+										<div style="width: 100%;display: flex;flex-wrap: wrap;" >
+
+
+											<div v-for="(item,index) in info.renyuaninfo.chejianFiles" :key="index" class="tupianitembox">
+
+
+												<el-popover
+														placement="top"
+														width="100"
+														trigger="hover"
+												>
+													<div style="width: 100%;display: flex;flex-direction:column;justify-content: center">
+														<div>{{item.name}}</div>
+														<div>{{item.lastUpdatedTime}}</div>
+													</div>
+
+													<div  style="width:100%;display: flex;justify-content: center">
+														<el-tooltip class="item" effect="dark" content="查看" placement="top">
+															<el-button size='mini' type="primary" icon="el-icon-view" circle @click="tolook(item)"></el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="下载" placement="top">
+															<el-button size='mini' type="success" icon="el-icon-download" circle @click="todownload(item)"></el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="删除" placement="top">
+															<el-button size='mini' type="danger" icon="el-icon-delete" circle @click="todelchejian(item,index)"></el-button>
+														</el-tooltip>
+													</div>
+
+													<div  slot="reference" class="tupianitembox">
+														<img alt="" class="tupianitembox-img" :src="panduanimgurl(item.fileType,item)">
+													</div>
+												</el-popover>
+
+											</div>
+										</div>
+									</div>
+									</div>
+								<div class="add-button-container">
+									<el-button type="primary"  size='small'  @click='addsbzl' style='width: 100%;'>新增</el-button>
+								</div>
+
+								<ul class='add-container'>
+									<li class="add-item-container" v-for="(item,index) in info.renyuaninfo.shebei.list" style='width: 410px;'>
+										<div class="add-item-index">
+											{{index+1}}
+										</div>
+										<div class="add-item-info">
+
+											<el-form-item
+													label="设备名称"
+													style='width: 330px;'
+													label-width='80px'
+													:prop="'shebei.list[' + index + '].name'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+														size='small'
+														type="text"
+														v-model='item.name'
+														resize='none'
+														:disabled='item.isable' />
+											</el-form-item>
+
+											<el-form-item
+													label="设备数量"
+													style='width: 330px;'
+													label-width='80px'
+													:prop="'shebei.list[' + index + '].count'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        v-model.trim='item.count'
+                                                        :disabled='item.isable'
+                                                        @keyup.native="item.count=item.count.replace(/[^0-9]/ig,'')"
+                                                />
+											</el-form-item>
+
+											<el-form-item
+													label="产能情况"
+													style='width: 330px;'
+													label-width='80px'
+													:prop="'shebei.list[' + index + '].capacity'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+														size='small'
+														type="textarea"
+														v-model='item.capacity'
+														:disabled='item.isable' />
+											</el-form-item>
+
+											<el-form-item
+													label="设备图片"
+													style='width: 330px;'
+													label-width='80px'
+													:prop="'shebei.list[' + index + '].shebeiFiles'"
+													:rules="[{ required: true, message: '至少上传一个文件',trigger:['change','blur']  }]">
+												<el-upload
+														:before-upload="(file)=>{return tobeforeshebeifiles(file,item.shebeiFiles,index)}"
+														multiple
+														:on-success="(response, file, fileList)=>{touploadshebeifiles(response, file, fileList,item,index)}"
+														class="upload-demo"
+														:action="uploadUrl"
+														:show-file-list='false'>
+
+													 <el-button size="small" type="primary">点击上传</el-button>
+												</el-upload>
+											</el-form-item>
+											<div v-for="(item1,index1) in item.shebeiFiles" :key="index" class="tupianitembox">
+												<el-popover
+														placement="top"
+														width="100"
+														trigger="hover"
+												>
+													<div style="width: 100%;display: flex;flex-direction:column;justify-content: center">
+														<div>{{item1.filaName+'.'+item1.fileType}}</div>
+														<div>{{item1.lastUpdatedTime}}</div>
+													</div>
+
+													<div  style="width:100%;display: flex;justify-content: center">
+														<el-tooltip class="item" effect="dark" content="查看" placement="top">
+															<el-button size='mini' type="primary" icon="el-icon-view" circle @click="tolook(item1)"></el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="下载" placement="top">
+															<el-button size='mini' type="success" icon="el-icon-download" circle @click="todownload(item1)"></el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="删除" placement="top">
+															<el-button size='mini' type="danger" icon="el-icon-delete" circle @click="todelshebei(index,item1,index1)"></el-button>
+														</el-tooltip>
+													</div>
+
+													<div  slot="reference" class="tupianitembox">
+														<img alt="" class="tupianitembox-img" :src="panduanimgurl(item1.fileType,item1)">
+													</div>
+												</el-popover>
+
+
+											</div>
+										</div>
+										<div class='additem-option-button'>
+											<!--<el-button size='small' type="primary" :disabled='item.isedit' @click='edit("renyuaninfo","shebei",index)'>编辑</el-button>-->
+											<el-button size='small' type="danger" :disabled='item.isdele' @click='removeSB(item,index)'>删除</el-button>
+										</div>
+									</li>
+								</ul>
+
+							</div>
+						</el-form>
+					</div>
+
+					<div v-show='currentshow===12' v-cloak>
+						<el-form
+								style='display: flex;flex-direction: column;flex: 1;width: 100%;'
+								label-position="right"
+								label-width="150px"
+								:model="info.kehuinfo"
+								ref='kehuinfo'>
+							<div class="tab-container">
+								<!-- <div>
+                                    <el-button type="primary" @click="submitForm('kehuinfo')">保存</el-button>
+                                </div> -->
+								<div class="tab-tittle">
+									主要客户
+								</div>
+								<div class="add-button-container">
+									<el-button type="primary"  size='small'  @click='addkhzl' style='width: 100%;'>新增</el-button>
+								</div>
+								<ul class='add-container'>
+									<li class="add-item-container" v-for="(item,index) in info.kehuinfo.kehu.list" style='width: 410px;'>
+										<div class="add-item-index">
+											{{index+1}}
+										</div>
+										<div class="add-item-info">
+											<el-form-item
+													label="客户名称"
+													style='width: 330px;'
+													label-width='110px'
+													:prop="'kehu.list[' + index + '].name'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        type="text"
+                                                        v-model.tirm='item.name'
+                                                        resize='none'
+                                                        :disabled='item.isable' />
+											</el-form-item>
+
+											<el-form-item
+													label="销量"
+													style='width: 330px;'
+													label-width='110px'
+													:prop="'kehu.list[' + index + '].salesVolume'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        type="text"
+                                                        v-model='item.salesVolume'
+                                                        :disabled='item.isable'
+                                                        @keyup.native="item.salesVolume=item.salesVolume.replace(/[^0-9]/ig,'')"
+                                                />
+											</el-form-item>
+
+											<el-form-item
+													label="占总销量比例"
+													style='width: 330px;'
+													label-width='110px'
+													:prop="'kehu.list[' + index + '].salesRatio'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        placeholder="单位 %"
+                                                        size='small'
+                                                        type="text"
+                                                        v-model='item.salesRatio'
+                                                        resize='none'
+                                                        :disabled='item.isable'
+                                                        @keyup.native="item.salesRatio=item.salesRatio.replace(/[^0-9\.\%]/ig,'')"
+                                                />
+											</el-form-item>
+
+
+											<el-form-item
+													:prop="'kehu.list[' + index + '].kehuFiles'"
+													:rules="[{ required: true, message: '至少上传一个文件',trigger:['change','blur']  }]"
+													label="合作合同"
+													style='width: 330px;'
+													label-width='110px' >
+												<el-upload
+														:before-upload="(file)=>{return tobeforekehufiles(file,item.kehuFiles,index)}"
+														multiple
+														:on-success="(response, file, fileList)=>{touploadkehufiles(response, file, fileList,item,index)}"
+														class="upload-demo"
+														:action="uploadUrl"
+														:show-file-list='false'>
+													<el-button size="small" type="primary">点击上传</el-button>
+												</el-upload>
+											</el-form-item>
+											<div v-for="(item1,index1) in item.kehuFiles" :key="index" class="tupianitembox">
+												<el-popover
+														placement="top"
+														width="100"
+														trigger="hover"
+												>
+													<div style="width: 100%;display: flex;flex-direction:column;justify-content: center">
+														<div>{{item1.name}}</div>
+														<div>{{item1.lastUpdatedTime}}</div>
+													</div>
+
+													<div  style="width:100%;display: flex;justify-content: center">
+														<el-tooltip class="item" effect="dark" content="查看" placement="top">
+															<el-button size='mini' type="primary" icon="el-icon-view" circle @click="tolook(item1)"></el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="下载" placement="top">
+															<el-button size='mini' type="success" icon="el-icon-download" circle @click="todownload(item1)"></el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="删除" placement="top">
+															<el-button size='mini' type="danger" icon="el-icon-delete" circle @click="todelkehu(index,item1,index1)"></el-button>
+														</el-tooltip>
+													</div>
+
+													<div  slot="reference" class="tupianitembox">
+														<img alt="" class="tupianitembox-img" :src="panduanimgurl(item1.fileType,item1)">
+													</div>
+												</el-popover>
+
+
+											</div>
+
+										</div>
+										<div class='additem-option-button'>
+											<!--<el-button size='small' type="primary" :disabled='item.isedit' @click='edit("kehuinfo","kehu",index)'>编辑</el-button>-->
+											<el-button size='small' type="danger" :disabled='item.isdele' @click='removeKH(item,index)'>删除</el-button>
+										</div>
+									</li>
+								</ul>
+
+							</div>
+							<div class="tab-container">
+								<!--<el-form style='display: flex;flex-direction: column;flex: 1;width: 100%;' action=""  label-position="right" label-width="150px" :model="info.hezuoinfo" ref='hezuoinfo'>-->
+
+								<div class="tab-tittle">
+									合作厂商
+								</div>
+								<div class="add-button-container">
+									<el-button type="primary"  size='small' @click='addhzcs' style='width: 100%;'>新增</el-button>
+								</div>
+
+								<ul class='add-container'>
+									<li class="add-item-container" v-for="(item,index) in info.kehuinfo.hezuo.list" style='width: 410px;'>
+										<div class="add-item-index">
+											{{index+1}}
+										</div>
+										<div class="add-item-info">
+											<el-form-item
+													label="合作名称"
+													style='width: 330px;'
+													label-width='80px'
+													:prop="'hezuo.list[' + index + '].name'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        type="text"
+                                                        v-model.trim='item.name'
+                                                        resize='none'
+                                                        :disabled='item.isable' />
+											</el-form-item>
+
+											<el-form-item
+													label="合作时长"
+													style='width: 330px;'
+													label-width='80px'
+													:prop="'hezuo.list[' + index + '].cooDuration'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        type="text"
+                                                        v-model.trim='item.cooDuration'
+                                                        :disabled='item.isable'
+                                                />
+											</el-form-item>
+
+											<el-form-item
+													label="合作品类"
+													style='width: 330px;'
+													label-width='80px'
+													:prop="'hezuo.list[' + index + '].cooCategory'"
+													:rules="[{ required: true, message: '  ', trigger: ['change','blur'] }]">
+												<el-input
+                                                        size='small'
+                                                        type="text"
+                                                        v-model='item.cooCategory'
+                                                        resize='none'
+                                                        :disabled='item.isable'
+                                                        maxlength="100"
+
+                                                />
+											</el-form-item>
+
+											<el-form-item
+													:prop="'hezuo.list[' + index + '].changshangFiles'"
+													:rules="[{ required: true, message: '至少上传一个文件',trigger:['change','blur']  }]"
+													label="合作合同"
+													style='width: 330px;'
+													label-width='80px'>
+												<!--<el-input size='small' type="text" v-model='item.salesRatio' resize='none' :disabled='item.isable' />-->
+												<el-upload
+
+														multiple
+														:before-upload="(file)=>{return tobeforechangshangfiles(file,item.changshangFiles,index)}"
+														:on-success="(response, file, fileList)=>{touploadchangshangfiles(response, file, fileList,item,index)}"
+														class="upload-demo"
+														:action="uploadUrl"
+														:show-file-list='false'
+>
+													<el-button size="small" type="primary">点击上传</el-button>
+												</el-upload>
+											</el-form-item>
+											<div v-for="(item1,index1) in item.changshangFiles" :key="index" class="tupianitembox">
+												<el-popover
+														placement="top"
+														width="100"
+														trigger="hover"
+												>
+													<div style="width: 100%;display: flex;flex-direction:column;justify-content: center">
+														<div>{{item1.name}}</div>
+														<div>{{item1.lastUpdatedTime}}</div>
+													</div>
+
+													<div  style="width:100%;display: flex;justify-content: center">
+														<el-tooltip class="item" effect="dark" content="查看" placement="top">
+															<el-button size='mini' type="primary" icon="el-icon-view" circle @click="tolook(item1)"></el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="下载" placement="top">
+															<el-button size='mini' type="success" icon="el-icon-download" circle @click="todownload(item1)"></el-button>
+														</el-tooltip>
+
+														<el-tooltip class="item" effect="dark" content="删除" placement="top">
+															<el-button size='mini' type="danger" icon="el-icon-delete" circle @click="todelchangshang(index,item1,index1)"></el-button>
+														</el-tooltip>
+													</div>
+
+													<div  slot="reference" class="tupianitembox">
+														<img alt="" class="tupianitembox-img" :src="panduanimgurl(item1.fileType,item1)">
+													</div>
+												</el-popover>
+
+
+											</div>
+										</div>
+										<div class='additem-option-button'>
+											<!--<el-button size='small' type="primary" :disabled='item.isedit' @click='edit("kehuinfo","hezuo",index)'>编辑</el-button>-->
+											<el-button size='small' type="danger" :disabled='item.isdele' @click='removeCS(item,index)'>删除</el-button>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</el-form>
+					</div>
+
+                    <div v-show='currentshow===13' v-cloak>
+                        <el-form
+
+                                style="width: 100%;display: flex；"
+                                label-position="right"
+                                label-width="150px"
+                                :model="info.qiyuesuo"
+								ref="qiyuesuo">
+                            <el-form-item
+
+                                    label="契约锁注册状态"
+                                    style='width: 500px;'
+                                    label-width='150px'
+                                    prop="status"
+                                    :rules="[{ required: true, message: '还未注册', trigger: ['change','blur'] }]">
+                                <div style="width: 250px;display: flex;flex-direction: row">
+                                    <div style="width: 150px;border-bottom: 1px solid #CCCCCC;text-align: center;">
+                                        {{info.qiyuesuo.status}}
+                                    </div>
+                                    <el-button size="small" type="primary" @click="gotoqiyuesuo">点击注册</el-button>
+                                </div>
+
+                            </el-form-item>
+
+                        </el-form>
+                    </div>
+				</el-form>
+			</div>
+
+			<el-dialog title="收货地址" :visible.sync="dialogTableVisible" top="5vh" width="90%">
+				<img :src="dialogimgurl" alt="">
+			</el-dialog>
+
+		</div>
+	</div>
+</div>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let vm =new Vue({
+
+        el: '#app',
+        data(){return{
+            // ab:['goto','goto'],
+            //			验证电话
+            checkPhone: (rule, value, callback) => {
+                const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
+                if(!value) {
+                    return callback(new Error('电话号码不能为空'))
+                }
+                setTimeout(() => {
+                    // Number.isInteger是es6验证数字是否为整数的方法,但是我实际用的时候输入的数字总是识别成字符串
+                    // 所以我就在前面加了一个+实现隐式转换
+
+                    if(!Number.isInteger(+value)) {
+                        callback(new Error('请输入数字值'))
+                    } else {
+                        if(phoneReg.test(value)) {
+                            callback()
+                        } else {
+                            callback(new Error('电话号码格式不正确'))
+                        }
+                    }
+                }, 100)
+            },
+
+            //			验证邮箱
+            checkEmail: (rule, value, callback) => {
+                const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+                if(!value) {
+                    return callback(new Error('邮箱不能为空'))
+                }
+                setTimeout(() => {
+                    if(mailReg.test(value)) {
+                        callback()
+                    } else {
+                        callback(new Error('请输入正确的邮箱格式'))
+                    }
+                }, 100)
+            },
+
+            dialogTableVisible:false,
+                dialogimgurl:'',
+            isbaocun:false,
+            nowname: '1',
+                downURL: [[${downloadUrl}]],
+				uploadUrl:[[${uploadUrl}]],
+                imageUrl:[[${imageUrl}]],
+                deleteUrl:[[${deleteUrl}]],
+            jibeninfoissuccess:true,
+            gysdizhiissuccess:true,
+            hetonginfoissuccess:true,
+            renyuaninfoissuccess:true,
+            kehuinfoissuccess:true,
+            zhuceqiyuesuo:true,
+
+
+            //			图片预览
+            dialogImageUrl: '',
+            dialogImageUrl2: '',
+            dialogVisible: false,
+            dialogVisible2: false,
+
+            //显示页面——————————————————————————
+            currentshow: 1,
+
+            //表单所有信息——————————————————————————
+            info: {
+                //	基本信息
+                jibeninfo: {
+
+					id:[[${supplierHb}]].supplier.id,
+                    code:[[${supplierHb}]].supplier.code,
+                    supType:[[${supplierHb}]].supplier.supType,
+                    supCooperationWay:[[${supplierHb}]].supplier.supCooperationWay,
+                    supCalStatus: [[${supplierHb}]].supplier.supCalStatus,
+                    comments: [[${supplierHb}]].supplier.comments,
+                    coordination:[[${supplierHb}]].supplier.coordination,
+                    urKfy:[[${supplierHb}]].supplier.urKfy,
+                    fullName:[[${supplierHb}]].supplier.fullName,
+                    oldCode:[[${supplierHb}]].supplier.oldCode,
+                    shortName: [[${supplierHb}]].supplier.shortName,
+                    artificialPersor:[[${supplierHb}]].supplier.artificialPersor,
+                    foundingTime:[[${supplierHb}]].supplier.foundingTime,
+                    coveredArea:[[${supplierHb}]].supplier.coveredArea,
+                    floorArea:[[${supplierHb}]].supplier.floorArea,
+                    industryType:[[${supplierHb}]].supplier.industryType,
+                    registeredCapital:[[${supplierHb}]].supplier.registeredCapital,
+                    owner: [[${supplierHb}]].supplier.owner,
+                    enterpriseProperty:[[${supplierHb}]].supplier.enterpriseProperty,
+                    registerno:[[${supplierHb}]].supplier.registerno,
+                    businessConcepts: [[${supplierHb}]].supplier.businessConcepts,
+                        dichanFiles:[[${supplierHb}]].dichanFiles,
+                        zhizhaoFiles:[[${supplierHb}]].zhizhaoFiles,
+                        qitaFiles:[[${supplierHb}]].qitaFiles,
+
+
+                    yinhanginfo: {
+                        list: [[${supplierHb}]].supBankInfoList
+                    },
+                },
+
+                //	地址与联系人
+                gysdizhi: {
+                    nation:[[${supplierHb}]].supplier.nation,   //国家
+                    province:[[${supplierHb}]].supplier.province,   //省份
+                    city:[[${supplierHb}]].supplier.city,    //市区
+                    address:[[${supplierHb}]].supplier.address,  //详细地址
+                    zipCode:[[${supplierHb}]].supplier.zipCode,  //邮政编码
+                    afterNation:[[${supplierHb}]].supplier.afterNation,
+                    afterProvince:[[${supplierHb}]].supplier.afterProvince,
+                    afterCity:[[${supplierHb}]].supplier.afterCity,
+                    afterAddress:[[${supplierHb}]].supplier.afterAddress,
+                    afterZipCode:[[${supplierHb}]].supplier.afterZipCode,
+                    afterPhoneNumber:[[${supplierHb}]].supplier.afterPhoneNumber,
+                    jxComments:[[${supplierHb}]].supplier.jxComments,
+                    lianxireninfo: {
+                        list: [[${supplierHb}]].supContactsList
+                    }
+                },
+
+                //	合同与支付
+                hetonginfo: {
+                    hetong: {
+						paylist:[[${supplierHb}]].supPayInfoList[0],
+                        list:[[${supplierHb}]].supContractInfoList
+                    },
+                },
+
+
+                //				人员
+                renyuaninfo: {
+                    issuccess: true,
+                    renyuan: {
+                        issuccess: false,
+                        list: [[${supplierHb.supWorkersList}]]
+                    },
+					chejianFiles:[[${supplierHb}]].chejianFiles,
+                    shebei: {
+                        issuccess: false,
+                        list: [[${supplierHb.supEquipmertsList}]]
+                    },
+                },
+
+                kehuinfo: {
+                    issuccess: true,
+                    //				客户
+                    kehu: {
+                        issuccess: false,
+                        list: [[${supplierHb.supCustomersList}]]
+                    },
+                    //				合作
+                    hezuo: {
+                        issuccess: false,
+                        list:[[${supplierHb.supPartnersList}]]
+                    },
+                },
+
+                //				寄修信息
+                jixiuinfo: {
+                    issuccess: true,
+                    shlxr: '', //售后联系人
+                    shlxrdh: '', //售后联系人电话
+                    shlxryx: '', //售后联系人邮箱
+                    qgNumber: '', //全国保修电话
+                    jxAddress: '', //寄修地址
+                    jxComments: '' //备注
+                },
+
+				qiyuesuo:{
+                    status:''
+                },
+
+                    kaihuFiles:[[${supplierHb}]].kaihuFiles,
+                    kehuFiles:[[${supplierHb}]].kehuFiles,
+                    changshangFiles:[[${supplierHb}]].changshangFiles,
+
+
+
+            },
+
+            radio: '',
+            // city: [{
+            //     "value": "zhinan",
+            //     "label": "中国",
+            //     "children": [{
+            //         "value": "gd",
+            //         "label": "广东",
+            //         "children": [{
+            //             "value": "gz",
+            //             "label": "广州",
+            //             "children": [{
+            //                 "value": "by",
+            //                 "label": "白云区"
+            //             }, {
+            //                 "value": "email",
+            //                 "label": "越秀区"
+            //             }]
+            //         }, {
+            //             "value": "fs",
+            //             "label": "佛山",
+            //         }, {
+            //             "value": "sz",
+            //             "label": "深圳",
+            //         }]
+            //     }, {
+            //         "value": "gx",
+            //         "label": "广西",
+            //     }]
+            // }],
+
+            isshowarray: [],
+            show1: false,
+            show2: false,
+            show3: false,
+            show4: false,
+
+            show5: false,
+            show6: false,
+            show7: false,
+            show8: false,
+            show10: false,
+            show11: false,
+            show12: false,
+            show13: false,
+            show14: false,
+            show15: false,
+            fileList: [],
+            coordination:[[${coordination}]],  //是否协同
+            gCsupStatus:[[${gCsupStatus}]], //供应商类型
+            supCooperationWay:[[${supCooperationWay}]],  //供应商等级
+            suppType:[[${suppType}]], //供应商类型
+            industryType:[[${industryType}]],  //行业类型
+            payCess:[[${payCess}]], //税码
+            payCurrency:[[${payCurrency}]], //订单币别
+            payMode:[[${payMode}]], //付款条件
+            nation:[[${nation}]],
+            privince:[[${privince}]],
+            allCity:[[${allCity}]],
+            payWay:[[${payWay}]], //付款方式
+            year:[[${year}]],
+			loading:false,
+
+            formdata:[[${supplierHb}]]  , //提交的数据
+
+            supPayInfoList:   [[${supplierHb}]].supPayInfoList,
+            isdisabledadd:false,
+
+            isshowsuppType:[[${supplierHb}]].supplier.supCalStatus,
+            // rulesdata:"[{ required: true, message: '  ', trigger: ['change','blur'] }]",
+            arrayerr:[]
+
+
+        }
+
+        },
+        computed: {
+
+
+        },
+        methods: {
+            small(){
+        var height1=test.img1.height;
+        var width1=test.img1.width;
+        test.img1.height=height1/1.5;
+        test.img1.width=width1/1.5;
+    },
+    big(){
+        var height1=test.img1.height;
+        var width1=test.img1.width;
+        test.img1.height=height1*1.5;
+        test.img1.width=width1*1.5;
+    },
+
+            tochangeGYSshi(){
+               this.info.gysdizhi.city='';
+			},
+            tochangejxshi(){
+                this.info.gysdizhi.afterCity='';
+			},
+            ctrlshow(oldValue, dataname) {
+                for(item in oldValue[dataname]) {
+                    // console.log(oldValue[dataname][item])
+                }
+            },
+            submitForm(formName) {
+
+                this.formdata.supplier=[[${supplierHb}]].supplier;
+
+                	// this.formdata.supplier=JSON.parse(JSON.stringify([[${supplierHb}]].supplier))
+
+                // 售后地址
+                this.formdata.supplier.afterZipCode =this.info.gysdizhi.afterZipCode;
+                this.formdata.supplier.afterNation =this.info.gysdizhi.afterNation;
+                this.formdata.supplier.afterProvince =this.info.gysdizhi.afterProvince;
+                this.formdata.supplier.afterCity =this.info.gysdizhi.afterCity;
+                this.formdata.supplier.afterAddress = this.info.gysdizhi.afterAddress;
+                this.formdata.supplier.afterPhoneNumber= this.info.gysdizhi.afterPhoneNumber;
+                this.formdata.supplier.jxComments= this.info.gysdizhi.jxComments;
+
+                    this.formdata.supplier.id =this.info.jibeninfo.id;
+                    this.formdata.supplier.code =this.info.jibeninfo.code;
+                    this.formdata.supplier.supType =this.info.jibeninfo.supType;
+                    this.formdata.supplier.supCooperationWay=this.info.jibeninfo.supCooperationWay;
+                    this.formdata.supplier.supCalStatus=this.info.jibeninfo.supCalStatus;
+                    this.formdata.supplier.comments =this.info.jibeninfo.comments;
+                    this.formdata.supplier.coordination=this.info.jibeninfo.coordination;
+                    this.formdata.supplier.urKfy =this.info.jibeninfo.urKfy;
+                    this.formdata.supplier.fullName =this.info.jibeninfo.fullName;
+                    this.formdata.supplier.oldCode =this.info.jibeninfo.oldCode;
+                    this.formdata.supplier.shortName =this.info.jibeninfo.shortName;
+                    this.formdata.supplier.artificialPersor=this.info.jibeninfo.artificialPersor;
+                    this.formdata.supplier.foundingTime =this.info.jibeninfo.foundingTime;
+                    this.formdata.supplier.coveredArea=this.info.jibeninfo.coveredArea;
+                    this.formdata.supplier.floorArea=this.info.jibeninfo.floorArea;
+                    this.formdata.supplier.industryType =this.info.jibeninfo.industryType;
+                    this.formdata.supplier.registeredCapital=this.info.jibeninfo.registeredCapital;
+                    this.formdata.supplier.owner=this.info.jibeninfo.owner;
+                    this.formdata.supplier.enterpriseProperty=this.info.jibeninfo.enterpriseProperty;
+                    this.formdata.supplier.registerno=this.info.jibeninfo.registerno;
+                    this.formdata.supplier.businessConcepts=this.info.jibeninfo.businessConcepts;
+
+                    // 公司地址
+                    this.formdata.supplier.zipCode=this.info.gysdizhi.zipCode;
+                    this.formdata.supplier.address = this.info.gysdizhi.address;
+                    this.formdata.supplier.nation=this.info.gysdizhi.nation;
+                    this.formdata.supplier.province =this.info.gysdizhi.province;
+                    this.formdata.supplier.city =this.info.gysdizhi.city;
+
+
+                    this.formdata.supEquipmertsList =  this.info.renyuaninfo.shebei.list;  //设备的数据
+                    this.formdata.supWorkersList =  this.info.renyuaninfo.renyuan.list;  //人员的数据
+                    this.formdata.supCustomersList = this.info.kehuinfo.kehu.list;  //客户的数据
+                	this.formdata.supPartnersList = this.info.kehuinfo.hezuo.list; //厂商的数据
+                    this.formdata.supBankInfoList = this.info.jibeninfo.yinhanginfo.list; //的数据
+                	this.formdata.supContactsList = this.info.gysdizhi.lianxireninfo.list; //联系人的数据
+
+                // 由于后端接收image的值是1和0，所以修改1银行卡，2合作合同（厂商），3合作合同（客户），4设备的image的值
+                this.info.jibeninfo.yinhanginfo.list.forEach((item)=>{
+                   item.kaihuFiles.forEach((ite)=>{
+                    if(ite.image==true){
+                    ite.image=1
+                }else{
+                    ite.image=0;
+                }
+				})
+            })
+
+				// 由于后端接收image的值是1和0，所以修改1银行卡，2合作合同（厂商），3合作合同（客户），4设备的image的值
+                this.info.kehuinfo.hezuo.list.forEach((item)=>{
+                    item.changshangFiles.forEach((ite)=>{
+                    if(ite.image==true){
+                    ite.image=1
+                }else{
+                    ite.image=0;
+                }
+				})
+            })
+
+				// 由于后端接收image的值是1和0，所以修改1银行卡，2合作合同（厂商），3合作合同（客户），4设备的image的值
+                this.info.kehuinfo.kehu.list.forEach((item)=>{
+                    item.kehuFiles.forEach((ite)=>{
+                    if(ite.image==true){
+                    ite.image=1
+                }else{
+                    ite.image=0;
+                }
+            })
+            })
+
+                // 由于后端接收image的值是1和0，所以修改1银行卡，2合作合同（厂商），3合作合同（客户），4设备的image的值
+                this.info.renyuaninfo.shebei.list.forEach((item)=>{
+                    item.shebeiFiles.forEach((ite)=>{
+                    if(ite.image==true){
+                    ite.image=1
+                }else{
+                    ite.image=0;
+                }
+            })
+            })
+
+				// 由于后端接收image的值是1和0，所以修改1地产，2执照，3其他的image的值
+                this.info.jibeninfo.qitaFiles.forEach((item)=>{
+                    if(item.image==true){
+                    item.image=1
+                        }else{
+                    item.image=0;
+                        }
+				})
+
+                // 由于后端接收image的值是1和0，所以修改1地产，2执照，3其他的image的值
+                this.info.jibeninfo.dichanFiles.forEach((item)=>{
+                    if(item.image==true){
+                    item.image=1
+                }else{
+                    item.image=0;
+                }
+            })
+                // 由于后端接收image的值是1和0，所以修改1地产，2执照，3其他的image的值
+                this.info.jibeninfo.zhizhaoFiles.forEach((item)=>{
+                    if(item.image==true){
+                    item.image=1
+                }else{
+                    item.image=0;
+                }
+            })
+                // 由于后端接收image的值是1和0，所以修改车间的image的值
+                this.info.renyuaninfo.chejianFiles.forEach((item)=>{
+                    if(item.image==true){
+                    item.image=1
+                }else{
+                    item.image=0;
+                }
+            })
+
+
+
+                // 1地产，2执照，3其他的附件的数据结构整理
+                this.formdata.qitaFiles=this.info.jibeninfo.qitaFiles;
+                this.formdata.dichanFiles=this.info.jibeninfo.dichanFiles;
+                this.formdata.zhizhaoFiles=this.info.jibeninfo.zhizhaoFiles;
+                this.formdata.chejianFiles=this.info.renyuaninfo.chejianFiles;
+
+					//处理合同开始日期和技术日期后端返回数据，合并改为datalist字段用于前端渲染
+                	this.info.hetonginfo.hetong.list.forEach(item=>{
+                    item.priceStartDate=item.datalist[0]
+                    item.priceEndDate=item.datalist[1]
+				})
+
+                this.formdata.supContractInfoList = this.info.hetonginfo.hetong.list; //合同的数据
+
+                this.loading=true;
+
+
+
+                // 保存校验6个必填字段
+                let arrayerror = [];
+
+                if(!this.formdata.supplier.supCalStatus){
+                    arrayerror.push('供应商状态')
+                }
+
+                if(!this.formdata.supplier.fullName){
+                    arrayerror.push('供应商全称')
+                }
+
+                if(!this.formdata.supplier.shortName){
+                    arrayerror.push('供应商简称')
+                }
+
+                if(!this.formdata.supplier.coordination){
+                    arrayerror.push('是否协同')
+                }
+
+                if(!this.formdata.supplier.urKfy){
+                    arrayerror.push('对接UR开发员')
+                }
+
+                if(!this.formdata.supplier.supType){
+                    arrayerror.push('供应商类型(账户组)')
+                }
+
+                if(arrayerror.length>0){
+                    this.loading=false;
+                    this.$message.error('保存前,'+arrayerror.join(',')+',不能为空')
+                }else{
+                    axios.post('saveSupplier',this.formdata)
+                        .then(response=>{
+                            if(response.data.code==-1){
+                                setTimeout(()=>{
+                                    this.loading=false;
+                        this.$message({
+                            message: '保存失败',
+                            type: 'error',
+							center:true
+                        });
+
+                                },1000)
+                            }else{
+                        this.$message({
+                            message: '保存成功',
+                            type: 'success',
+                            center:true
+                        });
+
+                                setTimeout(()=>{
+                                    this.loading=false;
+                                    // window.open('supplierList','_self')
+                                },2000)
+                            }
+                        })
+                        .catch(error=>{
+                            // console.log(error);
+                            setTimeout(()=>{
+                                this.loading=false;
+                        this.$message({
+                            message: '保存失败',
+                            type: 'error',
+                            center:true
+                        });
+                            },1000)
+
+                        });
+                }
+            },
+
+            changenowname(nowname) {
+                this.nowname = nowname;
+            },
+            //			设备情况————————————————————————————————————
+            addsbzl() {
+                let sbzl = {
+                    capacity: '',
+                    count: '',
+                    createdBy: '',
+                    createdTime: '',
+                    deleted: 0,
+                    id: '',
+                    lastUpdatedBy: '',
+                    lastUpdatedTime: '',
+                    name: '',
+                    supplierId: '',
+					shebeiFiles:[]
+
+                }
+                this.info.renyuaninfo.shebei.list.push(sbzl);
+            },
+
+            removesbzl(index) {
+                this.info.shebeiinfo.list.splice(index, 1);
+            },
+            //			合作情况————————————————————————————————————
+            addhzcs() {
+                let hzzl = {
+                    cooCategory: "",
+                    cooDuration: "",
+                    createdBy: "",
+                    createdTime: "",
+                    deleted: 0,
+                    id: "",
+                    lastUpdatedBy: "",
+                    lastUpdatedTime: "",
+                    name: "",
+                    supplierId: "",
+					changshangFiles:[]
+                }
+                this.info.kehuinfo.hezuo.list.push(hzzl);
+            },
+
+            removehzcs(index) {
+                this.info.hezuoinfo.list.splice(index, 1);
+            },
+            //			客户情况————————————————————————————————————
+            addkhzl() {
+                let khzl = {
+                    createdBy: '',
+                    createdTime: '',
+                    deleted: 0,
+                    id: '',
+                    lastUpdatedBy: '',
+                    lastUpdatedTime:'',
+                    name: '',
+                    salesRatio:'',
+                    salesVolume: '',
+                    supplierId: '',
+					kehuFiles:[]
+
+                }
+                this.info.kehuinfo.kehu.list.push(khzl);
+            },
+
+            removekhzl(index) {
+                this.info.kehuinfo.list.splice(index, 1);
+            },
+            //人员情况——————————————————————————————————————
+            addryzl() {
+                let ryzl = {
+                    createdBy:'',
+                    createdTime: '',
+                    deleted: 0,
+                    id: '',
+                    lastUpdatedBy: '',
+                    lastUpdatedTime:'',
+                    managers:'',
+                    operaters: '',
+                    supplierId: '',
+                    technicians: '',
+                    total:'',
+                    year: '',
+
+                }
+                this.info.renyuaninfo.renyuan.list.push(ryzl);
+            },
+            edit(name, name1, index) {
+                this.info[name][name1].list[index].isable = false;
+                this.info[name][name1].list[index].isedit = true;
+                this.info[name][name1].list[index].isdele = false;
+            },
+
+            remove(name, name1, index) {
+
+                this.info[name][name1].list.splice(index, 1);
+            },
+            // goto(){
+            //     alert(3333)
+            // },
+            removeGYSLXR(item,index){
+                // console.log(item)
+				if(this.info.gysdizhi.lianxireninfo.list.length>1){
+
+
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    console.log(item)
+                    if(!item.mrCwLxr && !item.mrLxr  && !item.mrShLxr ){
+                        item.deleted=1;
+                        if(item.id){
+                            axios.put('deleteSupContacts', item)
+                                .then(response=>{
+                                    if(response.data.code==null||response.data.code!=0){
+                                this.$message({
+                                    message: '删除失败',
+                                    type: 'error',
+                                    center: true
+                                });
+
+
+                                    }else{
+                                        this.$message({
+                                            message: '删除成功',
+                                            type: 'success',
+                                            center: true
+                                        });
+
+                                        this.info.gysdizhi.lianxireninfo.list.splice(index, 1);
+                                    }
+                                })
+                                .catch(error=>{
+                                this.$message({
+                                message: '删除失败',
+                                type: 'error',
+                                center: true
+                            });
+
+                                });
+                        }else{
+                            this.info.gysdizhi.lianxireninfo.list.splice(index, 1);
+                        }
+                    }else{
+                        this.$message({
+                            type: 'info',
+                            message: '请将该名片的联系人身份转移后再删除',
+                            center: true
+                        });
+                    }
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除',
+            			center: true
+                    });
+                });
+                }else{
+                    this.$message({
+                        type: 'warning',
+                        message: '禁止删除最后一条数据',
+                        center: true
+                    });
+				}
+            },
+			removeHT(item,index){
+             //    if(this.info.hetonginfo.hetong.list.length>1){
+                    // console.log(item)
+                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+
+                        if(item.id){
+                            item.deleted=1;
+                            axios.put('deleteSupContractInfo', item)
+                                .then(response=>{
+                                    if(response.data.code==null||response.data.code!=0){
+                                        this.$message.error(response.data.message);
+
+                                    }else{
+                                        this.$message({
+                                            message: response.data.message,
+                                            type: 'success',
+                                            center: true
+                                        });
+
+                                        this.info.hetonginfo.hetong.list.splice(index, 1);
+                                    }
+                                })
+                                .catch(error=>{
+
+                                    this.$message({
+                                        message: response.data.message,
+                                        type: 'error',
+                                        center: true
+                                    });
+                                });
+                        }else{
+                            this.info.hetonginfo.hetong.list.splice(index, 1);
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success',
+
+                            });
+                        }
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除',
+                            center: true
+                        });
+                    });
+				// }else{
+                 //    this.$message({
+                 //        type: 'info',
+                 //        message: '禁止删除最后一条数据',
+                 //        center: true
+                 //    });
+				// }
+
+
+
+			},
+			removeKH(item,index){
+                // console.log(item)
+				if( this.info.kehuinfo.kehu.list.length>1){
+                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+
+                        if(item.id){
+                            item.deleted=1;
+                            axios.put('deleteSupCustomers', item)
+                                .then(response=>{
+                                    if(response.data.code==null||response.data.code!=0){
+                                        // this.$message.error(response.data.message);
+                                        this.$message({
+                                            message: '删除失败',
+                                            type: 'error',
+                                            center: true
+                                        });
+
+                                    }else{
+                                        this.$message({
+                                            message:'删除成功',
+                                            type: 'success',
+                                            center: true
+                                        });
+
+                                        this.info.kehuinfo.kehu.list.splice(index, 1);
+                                    }
+                                })
+                                .catch(error=>{
+
+                                    this.$message({
+                                        message: '删除失败',
+                                        type: 'error',
+                                        center: true
+                                    });
+                                });
+                        }else{
+                            this.info.kehuinfo.kehu.list.splice(index, 1);
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success',
+                                center: true
+                            });
+                        }
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除',
+                            center: true
+                        });
+                    });
+				}else{
+                    this.$message({
+                        type: 'warning',
+                        message: '禁止删除最后一条数据',
+                        center: true
+                    });
+				}
+			},
+			removeCS(item,index){
+	if(this.info.kehuinfo.hezuo.list.length>1){
+        // console.log(item)
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+
+            if(item.id){
+                item.deleted=1;
+                axios.put('deleteSupPartners', item)
+                    .then(response=>{
+                        if(response.data.code==null||response.data.code!=0){
+
+                            this.$message({
+								message: '删除失败',
+                                type: 'error',
+                                center: true
+                            });
+
+
+                        }else{
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success',
+                                center: true
+                            });
+
+                            this.info.kehuinfo.hezuo.list.splice(index, 1);
+                        }
+                    })
+                    .catch(error=>{
+
+                        this.$message({
+                            message: '删除失败',
+                            type: 'error',
+                            center: true
+                        });
+                    });
+            }else{
+                this.info.kehuinfo.hezuo.list.splice(index, 1);
+                this.$message({
+                    message: '删除成功',
+                    type: 'success',
+                    center: true
+                });
+            }
+        }).catch(() => {
+            this.$message({
+                type: 'info',
+                message: '已取消删除',
+                center: true
+            });
+        });
+	}else{
+        this.$message({
+            type: 'warning',
+            message: '禁止删除最后一条数据',
+            center: true
+        });
+	}
+
+			},
+			removeSB(item,index){
+                if(this.info.renyuaninfo.shebei.list.length>1) {
+                    // console.log(item)
+                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+
+
+                        if (item.id) {
+                            item.deleted = 1;
+                            axios.put('deleteSupEquipmerts', item)
+                                .then(response => {
+                                    if (response.data.code == null || response.data.code != 0) {
+                                        // this.$message.error(response.data.message);
+                                        this.$message({
+                                            message: '删除失败',
+                                            type: 'error',
+                                            center: true
+                                        });
+
+                                    } else {
+                                        this.$message({
+                                            message: '删除成功',
+                                            type: 'success',
+                                            center: true
+                                        });
+
+                                        this.info.renyuaninfo.shebei.list.splice(index, 1);
+                                    }
+                                })
+                                .catch(error => {
+
+                                    this.$message({
+                                        message: '删除失败',
+                                        type: 'error',
+                                        center: true
+                                    });
+                                });
+                        } else {
+                            this.info.renyuaninfo.shebei.list.splice(index, 1);
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success',
+                                center: true
+                            });
+                        }
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除',
+                            center: true
+                        });
+                    });
+                }else{
+                    this.$message({
+                        type: 'warning',
+                        message: '禁止删除最后一条数据',
+                        center: true
+                    });
+				}
+			},
+
+removeRY(item,index){
+    // console.log(item)
+	if(this.info.renyuaninfo.renyuan.list.length>1){
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+
+            if(item.id){
+                item.deleted=1;
+                axios.put('deleteSupWorkers', item)
+                    .then(response=>{
+                        if(response.data.code==null||response.data.code!=0){
+                            this.$message({
+                                message: '删除失败',
+                                type: 'error',
+                                center: true
+                            });
+
+                        }else{
+                            this.$message({
+                                message: '删除成功',
+                                type: 'success',
+                                center: true
+                            });
+
+                            this.info.renyuaninfo.renyuan.list.splice(index, 1);
+                        }
+                    })
+                    .catch(error=>{
+
+                        this.$message({
+                            message: '删除失败',
+                            type: 'error',
+                            center: true
+                        });
+                    });
+            }else{
+                this.info.renyuaninfo.renyuan.list.splice(index, 1);
+                this.$message({
+                    message: '删除成功',
+                    type: 'success',
+                    center: true
+                });
+            }
+        }).catch(() => {
+            this.$message({
+                type: 'info',
+                message: '已取消删除',
+                center: true
+            });
+        });
+	}else{
+        this.$message({
+            type: 'warning',
+            message: '禁止删除最后一条数据',
+            center: true
+        });
+	}
+},
+            removeYHK(item, index) {
+                if(this.info.jibeninfo.yinhanginfo.list.length>1){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    if(item.id){
+                        item.deleted='1';
+                        axios.put('deleteSupBankInfo', item)
+                            .then(response=>{
+                                if(response.data.code==null||response.data.code!=0){
+
+                                    this.$message({
+                                        message: '删除失败',
+                                        type: 'error',
+                                        center: true
+                                    });
+                                }else{
+                                    this.$message({
+                                        message: '删除成功',
+                                        type: 'success',
+                                        center: true
+                                    });
+                                    this.info.jibeninfo.yinhanginfo.list.splice(index, 1);
+                                }
+                                // console.log(response);
+                            })
+                            .catch(error=>{
+                                this.$message({
+                                    message: '删除失败',
+                                    type: 'error',
+                                    center: true
+                                });
+                            });
+                    }else{
+                        this.info.jibeninfo.yinhanginfo.list.splice(index, 1);
+                    }
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除',
+            center: true
+                    });
+                });}else{
+                    this.$message({
+                        type: 'warning',
+                        message: '禁止删除最后一条数据',
+                        center: true
+                    });
+				}
+
+            },
+            //			证件——————————————————————————————————
+            addzjzl() {
+                let zjzl = {
+                    leibie: '',
+                    name: '',
+                    miaoshu: '',
+                    isable: false,
+                    isedit: true,
+                    isdele: false
+                }
+                this.info.zhengjianinfo.list.push(zjzl);
+            },
+
+            removezjzl(index) {
+                this.info.zhengjianinfo.list.splice(index, 1);
+            },
+            //			附属资料——————————————————————————————————
+            addfszl() {
+                let fszl = {
+                    leibie: '',
+                    name: '',
+                    miaoshu: '',
+                    isable: false,
+                    isedit: true,
+                    isdele: false
+                }
+                this.info.fushuinfo.list.push(fszl);
+            },
+
+            removefszl(index) {
+                this.info.fushuinfo.list.splice(index, 1);
+            },
+            addjyfw() {
+                let jyfanwei = {
+                    dlei: '',
+                    zlei: '',
+                    xlei: '',
+                    jxComments: '',
+                    hezuo: '',
+                    nengli: '',
+                    isable: false,
+                    isedit: true,
+                    isdele: false
+                }
+                this.info.jingyfanwei.list.push(jyfanwei);
+            },
+
+            removejyfw(index) {
+
+                this.info.jingyfanwei.list.splice(index, 1);
+            },
+            //			联系人——————————————————————————————————
+            addlxr() {
+                let lianxiitemdata = {
+                    createdBy: '',
+                    createdTime: '',
+                    deleted: 0,
+                    email:'',
+                    faxnumber: '',
+                    id: '',
+                    isdefault: '',
+                    lastUpdatedBy: '',
+                    lastUpdatedTime: '',
+                    name: '',
+                    phonenumber: '',
+                    position:'',
+                    supplierId: '',
+                    telnumber: '',
+                    mrCwLxr: false,
+                    mrLxr: false,
+                    mrShLxr: false
+                };
+                this.info.gysdizhi.lianxireninfo.list.push(lianxiitemdata);
+            },
+            removelxr(index) {
+                this.info.gysdizhi.list.splice(index, 1);
+            },
+
+            //			————————————————————————————————
+            addyhk() {
+                let yinhangitem = {
+                    accountname: "",
+                    bankaccount: "",
+                    bankcode: "",
+                    bankname: "",
+                    city: null,
+                    createdBy: "",
+                    createdTime: "",
+                    deleted: 0,
+                    kaihuFiles:[],
+                    depositbankname: "",
+                    id: '',
+                    lastUpdatedBy: "",
+                    lastUpdatedTime: "",
+                    nation: null,
+                    province: null,
+                    supplierId: ''
+                };
+                this.info.jibeninfo.yinhanginfo.list.push(yinhangitem);
+            },
+            removeyhk(index) {
+                this.info.jibeninfo.yinhanginfo.list.splice(index, 1);
+            },
+            //			合同情况————————————————————————————————
+            addhetong() {
+
+                    var y = new Date().getFullYear();
+                    var m = new Date().getMonth() + 1;
+                    m = m < 10 ? '0' + m : m;
+                    var d = new Date().getDate();
+                    d = d < 10 ? ('0' + d) : d;
+                    let time = (y + '-' + m + '-' + d);
+
+
+                let hetongitem = {
+                    comments: '',
+                    contractNo: '',
+                    createdBy: '',
+                    createdTime:'',
+                    datalist:[time,time],
+                    deleted: 0,
+                    id: '',
+                    lastUpdatedBy:'',
+                    lastUpdatedTime: '',
+                    payCess: '',
+                    payCurrency: '',
+                    payMode: '',
+                    payWay: '',
+                    priceEndDate:new Date(),
+                    priceStartDate: new Date(),
+                    supId: '',
+                };
+                this.info.hetonginfo.hetong.list.push(hetongitem);
+            },
+            removeht(index) {
+                this.info.hetonginfo.list.splice(index, 1);
+            },
+
+            //			控制tab选项———————————————————————————
+            toshow(shownumb) {
+                this.currentshow = shownumb;
+            },
+            qsfnmoren(index) {
+                // console.log(this.info.gysdizhi.lianxireninfo.list[index].moren == true)
+                if(this.info.gysdizhi.lianxireninfo.list[index].mrLxr == true) {
+                    this.info.gysdizhi.lianxireninfo.list.forEach(item => {
+                        item.mrLxr = false;
+                    })
+                    this.info.gysdizhi.lianxireninfo.list[index].mrLxr = true;
+                } else if(this.info.gysdizhi.lianxireninfo.list[index].mrLxr == false) {
+                    this.info.gysdizhi.lianxireninfo.list[index].mrLxr = true;
+                }
+            },
+            qsfnshouhou(index) {
+
+                if(this.info.gysdizhi.lianxireninfo.list[index].mrShLxr == true) {
+                    this.info.gysdizhi.lianxireninfo.list.forEach(item => {
+                        item.mrShLxr = false;
+                    })
+                    this.info.gysdizhi.lianxireninfo.list[index].mrShLxr = true;
+                } else if(this.info.gysdizhi.lianxireninfo.list[index].mrShLxr == false) {
+                    this.info.gysdizhi.lianxireninfo.list[index].mrShLxr = true;
+                }
+            },
+
+
+            qsfncaiwu(index) {
+
+                if(this.info.gysdizhi.lianxireninfo.list[index].mrCwLxr == true) {
+                    this.info.gysdizhi.lianxireninfo.list.forEach(item => {
+                        item.mrCwLxr = false;
+                    })
+                    this.info.gysdizhi.lianxireninfo.list[index].mrCwLxr = true;
+                } else if(this.info.gysdizhi.lianxireninfo.list[index].mrCwLxr == false) {
+                    this.info.gysdizhi.lianxireninfo.list[index].mrCwLxr = true;
+                }
+            },
+
+            //			图片预览——————————————————————————————————————————
+            handleRemove(file, fileList) {
+                // console.log(file, fileList);
+            },
+
+            handlePictureCardPreview(file) {
+                // console.log(file)
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+
+            handlePictureCardPreview2(file) {
+                //				查看预览图片————————————————————————————————————
+                // console.log(file)
+                this.dialogImageUrl2 = file.url;
+                this.dialogVisible2 = true;
+            },
+            //			文件上传
+            handleChange1(file, fileList) {
+                // console.log(fileList)
+                this.info.jibeninfo.fileList1 = fileList;
+                this.$refs.file1.clearValidate();
+                //				this.submitForm('info')
+            },
+            handleChange2(file, fileList) {
+                this.info.jibeninfo.fileList2 = fileList;
+                this.$refs.file2.clearValidate();
+            },
+            handleChange3(file, fileList) {
+                this.info.jibeninfo.fileList3 = fileList;
+                this.$refs.file3.clearValidate();
+            },
+            handleChange4(file, fileList, index) {
+
+                this.info.jibeninfo.yinhanginfo.list[index].fileList4 = fileList
+                this.$refs.file4[index].clearValidate();
+            },
+
+            handleRemove1(file, fileList) {
+
+                this.info.jibeninfo.fileList1 = fileList;
+                this.$refs.info.validateField('baseinfo.fileList1');
+
+            },
+            handleRemove2(file, fileList) {
+                //					this.$refs.file2.validateField();
+                this.info.jibeninfo.fileList2 = fileList;
+                this.$refs.info.validateField('baseinfo.fileList2');
+
+            },
+            handleRemove3(file, fileList) {
+                //					this.$refs.file3.validateField();
+                this.info.jibeninfo.fileList3 = fileList;
+                //					this.$refs.info.validateField('baseinfo.fileList3');
+
+            },
+            handleRemove4(file, fileList, index) {
+                //				console.log(index)
+                this.info.jibeninfo.yinhanginfo.list[index].fileList4 = fileList
+                this.$refs.info.validateField('yinhanginfo.list[' + index + '].fileList4');
+            },
+            handlePreview() {
+
+            },
+            beforeRemove() {
+
+            },
+            handleExceed() {
+
+            },
+           tab1submit(){
+
+                this.$refs.jibeninfo.validate((valid) => {
+
+                    if (valid) {
+                        this.jibeninfoissuccess=false;
+                        return true;
+
+                    } else {
+                        this.jibeninfoissuccess=true;
+                        this.arrayerr.push('基本信息')
+                        return false;
+
+                    }
+                });
+
+			},
+            tab2submit(){
+                this.$refs.gysdizhi.validate((valid) => {
+                    console.log(valid)
+                    if (valid) {
+                        this.gysdizhiissuccess=false;
+
+                    } else {
+                        this.gysdizhiissuccess=true;
+                        this.arrayerr.push('地址与联系人')
+                        return false;
+                    }
+                });
+            },
+    tab3submit(){
+                this.$refs.hetonginfo.validate((valid) => {
+                    if (valid) {
+                        this.hetonginfoissuccess=false;
+                    } else {
+                        this.hetonginfoissuccess=true;
+
+                        this.arrayerr.push('合同与支付情况')
+                        return false;
+                    }
+                });
+            },
+    tab4submit(){
+                this.$refs.renyuaninfo.validate((valid) => {
+                    if (valid) {
+                        this.renyuaninfoissuccess=false;
+
+                    } else {
+                        this.renyuaninfoissuccess=true;
+
+                        this.arrayerr.push('人员与设备情况')
+                        return false;
+                    }
+                });
+            },
+    tab5submit(){
+                this.$refs.kehuinfo.validate((valid) => {
+                    if (valid) {
+                        this.kehuinfoissuccess=false;
+                    } else {
+                        this.kehuinfoissuccess=true;
+                       this.arrayerr.push('合作客户与厂商')
+                        // this.$message.error('')
+                        return false;
+                    }
+                });
+            },
+    tab6submit(){
+                this.$refs.qiyuesuo.validate((valid) => {
+
+                    console.log('valid')
+                    console.log(valid)
+                    if (valid) {
+                        this.zhuceqiyuesuo=false;
+                    } else {
+                        this.zhuceqiyuesuo=true;
+                        this.arrayerr.push('注册契约锁')
+                        // this.$message.error('')
+                        return false;
+                    }
+                });
+            },
+            submitFormAll(){
+                this.arrayerr=[];
+
+                // 提交的时候清空之前的校验
+                this.$refs.jibeninfo.clearValidate();
+                this.$refs.gysdizhi.clearValidate();
+                this.$refs.hetonginfo.clearValidate();
+                this.$refs.renyuaninfo.clearValidate();
+                this.$refs.kehuinfo.clearValidate();
+                this.$refs.qiyuesuo.clearValidate();
+                // this.loading=true;
+                this.tab1submit();
+                this.tab2submit();
+                this.tab3submit();
+                this.tab4submit();
+                this.tab5submit();
+                this.tab6submit();
+                if(this.arrayerr.length!=0){
+                    this.$message.error('待填写项不能为空')
+                    // this.arrayerr=this.arrayerr.join(',')
+                    // this.$message.error(this.arrayerr+'的必填项不能为空')
+				}
+                // this.loading=false;
+			},
+
+
+            requestaxios(){
+                alert('开始发送请求')
+                alert('发送请求成功')
+
+			},
+            changesuppType(val){
+                this.isshowsuppType=val*1;
+
+
+
+                this.$refs.jibeninfo.clearValidate();
+                this.$refs.gysdizhi.clearValidate();
+                this.$refs.hetonginfo.clearValidate();
+                this.$refs.renyuaninfo.clearValidate();
+                this.$refs. kehuinfo.clearValidate();
+                this.$nextTick(()=>{
+                    this.tab1submit();
+                    this.tab2submit();
+                    this.tab3submit();
+                    this.tab4submit();
+                    this.tab5submit();
+                    this.tab6submit()
+                })
+
+
+			},
+            changepriceStartDate(value,row,index){
+				// var list = this.info.hetonginfo.hetong.list.filter(item=>{
+				//     return item.id==row.id;
+				// })
+
+                this.info.hetonginfo.hetong.list.forEach(item=>{
+					// console.log(item)
+				})
+                // console.log(value)
+                //
+                // console.log(row)
+                // console.log(index)
+            },
+            changepriceENDDate(value) {
+
+                // console.log(value)
+            },
+			rules(){
+                if(this.isshowsuppType==1){
+				return [{ required:true, message: '  ', trigger: ['change','blur'] }]
+				}
+                return false;
+			},
+            jisuanheji(item,index){
+
+				item.total=item.managers*1+item.operaters*1+item.technicians*1;
+			},
+            togoback(){
+                window.open('supplierList','_self')
+            },
+
+			// 校验合同日期区间
+            validateSku(rule, value, callback,index) {
+					console.log('============' + this.info.hetonginfo.hetong.list.length)
+                    let startTime2 = value[0]
+                    let endTime2 = value[1]
+
+                    let length = this.info.hetonginfo.hetong.list.length
+                    // 校验第一个合同
+                    if(length == 1){
+                        callback()
+                    }
+
+                    if (index == 0 && length != 1) {
+                        let sattime3 = this.info.hetonginfo.hetong.list[index + 1].datalist[0];
+                        let endtime3 = this.info.hetonginfo.hetong.list[index + 1].datalist[1];
+                        if (endTime2 >= sattime3) {
+                            callback(new Error('当前合同的结束日期必须小于下一个合同的开始日期'))
+                        } else {
+                            callback()
+                        }
+
+
+                        // 校验最后一个合同
+                    } else if (index == length - 1 && length != 1) {
+                        // console.log(33333)
+                        let sattime1 = this.info.hetonginfo.hetong.list[index - 1].datalist[0];
+                        let endtime1 = this.info.hetonginfo.hetong.list[index - 1].datalist[1];
+                        if (startTime2 <= endtime1) {
+                            callback(new Error('当前合同的开始日期必须大于前一个合同的结束日期'))
+                        } else {
+
+                            callback()
+                        }
+
+
+                        // 校验中间的一堆合同
+                    }else if(index !=0 && index!= length-1){
+                        let sattime1 = this.info.hetonginfo.hetong.list[index - 1].datalist[0];
+                        let endtime1 = this.info.hetonginfo.hetong.list[index - 1].datalist[1];
+                        let sattime3 = this.info.hetonginfo.hetong.list[index + 1].datalist[0];
+                        let endtime3 = this.info.hetonginfo.hetong.list[index + 1].datalist[1];
+                        if (endTime2 >= sattime3) {
+                            callback(new Error('当前合同的结束日期必须小于下一个合同的开始日期'))
+
+                        } else {
+                            callback()
+                        }
+                        if (startTime2 <= endtime1) {
+                            callback(new Error('当前合同的开始日期必须大于前一个合同的结束日期'))
+
+                        } else {
+
+                            callback()
+                        }
+				}
+
+            },
+
+			// 校验邮政编码
+            validatezipCode(rule, value, callback){
+
+                if(value){
+                    console.log(value)
+                    var re= /^[1-9][0-9]{12}$/
+                    if(re.test(value))
+                        callback()
+                    else{
+                        callback(new Error('邮政编码的长度在12位数以内'))
+                    }
+                }else{
+                    callback();
+                }
+
+            },
+            onlyNum(){
+                if (!(event.keyCode == 46) && !(event.keyCode == 8) && !(event.keyCode == 37) && !(event.keyCode == 39)) {
+                    if (!((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105))) {
+                        event.returnValue = false;
+                    }
+                }
+            },
+
+
+            // 合作厂商上传前的操作——————————————————
+            tobeforechangshangfiles(file,item,index){
+
+			// if(item.length>=4){
+			// 	this.$message.error('上传文件最多4个')
+             //    return false;
+			// }
+
+			console.log(file.size)
+			if(file.size > 20971520){
+                this.$message.error('上传的文件不能大于20m')
+                return false;
+			}
+			},
+
+            // 主要客户上传前的操作——————————————————
+            tobeforekehufiles(file,item,index){
+
+                // if(item.length>=4){
+                //     this.$message.error('上传文件最多4个')
+                //     return false;
+                // }
+
+                console.log(file.size)
+                if(file.size > 20971520){
+                    this.$message.error('上传的文件不能大于20m')
+                    return false;
+                }
+            },
+
+			// 开户行上传前的操作——————————————————
+            tobeforekaihufiles(file,item,index){
+              // console.log(file)
+              //   if(item.length>=4){
+              //       this.$message.error('上传文件最多4个')
+              //       return false;
+              //   }
+
+                console.log(file.size)
+                if(file.size > 20971520){
+                    this.$message.error('上传的文件不能大于20m')
+                    return false;
+                }
+            },
+
+            // 设备上传前的操作——————————————————
+            tobeforeshebeifiles(file,item,index){
+                // return false;
+                // if(item.length>=4){
+                //     this.$message.error('上传文件最多4个')
+                //     return false;
+                // }
+
+                console.log(file.size)
+                if(file.size > 20971520){
+                    this.$message.error('上传的文件不能大于20m')
+                    return false;
+                }
+            },
+            gotoqiyuesuo(){
+                window.open('https://www.qiyuesuo.com/?source=21&keyword=13233-pc-pc','_blank')
+            },
+            tolimit(item){
+				if(item.length==4){
+					return `0`;
+				}else{
+                    return `${4-item.length}`;
+				}
+			},
+            wohao(val){
+                // console.log(val==true;)
+                if(val){
+                    console.log('有数值')
+                    return "{required:true}"
+
+                }else{
+                    console.log('没有数据')
+                    return "";
+
+                }
+            },
+            todelkehu(index,item1,index1){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`${this.deleteUrl}${item1.id}`)
+                    .then(response => {
+                    if (response.data.success == true) {
+                    // console.log(this.info.jibeninfo.yinhanginfo.list[index].kaihuFiles)
+                    this.info.kehuinfo.kehu.list[index].kehuFiles.splice(index1, 1)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败!'
+                    });
+                }
+            }).catch(response => {
+                    this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+                return
+            });
+			},
+            todelchangshang(index,item1,index1){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`${this.deleteUrl}${item1.id}`)
+                    .then(response => {
+                    if (response.data.success == true) {
+                    // console.log(this.info.jibeninfo.yinhanginfo.list[index].kaihuFiles)
+                    this.info.kehuinfo.hezuo.list[index].changshangFiles.splice(index1, 1)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败!'
+                    });
+                }
+            }).catch(response => {
+                    this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+                return
+            });
+            },
+            todelshebei(index,item1,index1){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`${this.deleteUrl}${item1.id}`)
+                    .then(response => {
+                    if (response.data.success == true) {
+                    console.log(this.info.jibeninfo.yinhanginfo.list[index].kaihuFiles)
+                    this.info.renyuaninfo.shebei.list[index].shebeiFiles.splice(index1, 1)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败!'
+                    });
+                }
+            }).catch(response => {
+                    this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+                return
+            });
+			},
+            todelkaihu(index,item1,index1){
+
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`${this.deleteUrl}${item1.id}`)
+                    .then(response => {
+                    if (response.data.success == true) {
+                        console.log(this.info.jibeninfo.yinhanginfo.list[index].kaihuFiles)
+                    this.info.jibeninfo.yinhanginfo.list[index].kaihuFiles.splice(index1, 1)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败!'
+                    });
+                }
+            }).catch(response => {
+                    this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+                return
+            });
+			},
+            todelchejian(item,index){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`${this.deleteUrl}${item.id}`)
+                    .then(response => {
+                    if (response.data.success == true) {
+                    this.info.renyuaninfo.chejianFiles.splice(index, 1)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败!'
+                    });
+                }
+            }).catch(response => {
+                    this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+                return
+            });
+			},
+            todeldichan(item,index){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`${this.deleteUrl}${item.id}`)
+                    .then(response => {
+                    if (response.data.success == true) {
+                    this.info.jibeninfo.dichanFiles.splice(index, 1)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败!'
+                    });
+                }
+            }).catch(response => {
+                    this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+                return
+            });
+            },
+            todelzhizhao(item,index){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`${this.deleteUrl}${item.id}`)
+                    .then(response => {
+                    if (response.data.success == true) {
+                    this.info.jibeninfo.zhizhaoFiles.splice(index, 1)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败!'
+                    });
+                }
+            }).catch(response => {
+                    this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+                return
+            });
+            },
+            formatDateTime(date) {
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                m = m < 10 ? ('0' + m) : m;
+                var d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                var h = date.getHours();
+                h=h < 10 ? ('0' + h) : h;
+                var minute = date.getMinutes();
+                minute = minute < 10 ? ('0' + minute) : minute;
+                var second=date.getSeconds();
+                second=second < 10 ? ('0' + second) : second;
+                this.nowDate= y + '年' + m + '月' + d+ '月' +  ' ' +h+':'+minute+':'+second;
+            },
+            todelqita(item,index){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`${this.deleteUrl}${item.id}`)
+                    .then(response => {
+                    if (response.data.success == true) {
+                    this.info.jibeninfo.qitaFiles.splice(index, 1)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败!'
+                    });
+                }
+            }).catch(response => {
+                    this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+                return
+            });
+            },
+            tolook(item){
+                console.log(item)
+				if(item.fileType=='pdf'){
+
+                    window.open(this.imageUrl+item.filaName+'.pdf','_blank')
+
+				}else if(item.fileType=='jpeg'||item.fileType=='jpg'||item.fileType=='png'){
+
+                    window.open(this.imageUrl+item.filaName,'_blank')
+                    // this.dialogTableVisible=true;
+                    // this.dialogimgurl=this.imageUrl+item.abbFileName;
+				}
+
+            },
+
+
+                touploadchejianfiles(response, file, fileList){
+
+        this.info.renyuaninfo.chejianFiles.push(response.returnObject[0]);
+
+    },
+	touploaddichanfiles(response, file, fileList){
+
+		this.info.jibeninfo.dichanFiles.push(response.returnObject[0]);
+        console.log(this.info.dichanFiles)
+	},
+            touploadzhizhaofiles(response, file, fileList){
+                this.info.jibeninfo.zhizhaoFiles.push(response.returnObject[0]);
+                console.log(this.info.zhizhaoFiles)
+			},
+            touploadqitafiles(response, file, fileList){
+
+                this.info.jibeninfo.qitaFiles.push(response.returnObject[0]);
+                console.log(this.info.qitaFiles)
+
+			},
+            touploadkaihufiles(response, file, fileList,item,index){
+                console.log(item.kaihuFiles.length)
+                if(item.kaihuFiles.length>=4){
+                    item.kaihuFiles.splice(3);
+                    this.$message.error('文件上传最多4张')
+				}
+                item.kaihuFiles.push(response.returnObject[0]);
+			},
+            changekaihufiles(file, fileList){
+				console.log(file);
+                console.log(fileList);
+
+			},
+            touploadshebeifiles(response, file, fileList,item,index){
+                let newitem=item.shebeiFiles.push(response.returnObject[0]);
+			},
+            touploadchangshangfiles(response, file, fileList,item,index){
+                item.changshangFiles.push(response.returnObject[0]);
+			},
+            touploadkehufiles(response, file, fileList,item,index){
+                item.kehuFiles.push(response.returnObject[0]);
+			},
+            todownload(item){
+                window.open(this.downURL+item.filaName,'_self')
+				console.log(item)
+			},
+			panduanimgurl(val,item){
+
+                // console.log(val)
+                if(val=='xlsx'||val=='xls'){
+                    return '/resources/images/xml.jpg'
+                }else if(val=='word'||val=='docx'){
+                    return '/resources/images/word.jpg'
+                }else if(val=='pdf'){
+                    return '/resources/images/pdf.jpg'
+                }else if(val=='txt'){
+                    return '/resources/images/txt.jpg'
+                }else if(val=='dwg'||val=='dxf'){
+                    return '/resources/images/cad.jpg'
+                }else if(val=='jpg'||val=='png'||val=='jpeg'){
+                    // this.isshowtupianbtn=true;
+                    return this.imageUrl+item.filaName
+
+                }
+
+                imageUrl+item.abbFileName
+			}
+
+
+        },
+		mounted() {
+
+            this.tab1submit();
+            this.tab2submit();
+            this.tab3submit();
+            this.tab4submit();
+            this.tab5submit();
+            this.tab6submit();
+
+            this.$refs.jibeninfo.clearValidate();
+            this.$refs.gysdizhi.clearValidate();
+            this.$refs.hetonginfo.clearValidate();
+            this.$refs.renyuaninfo.clearValidate();
+            this.$refs. kehuinfo.clearValidate();
+
+setTimeout(()=>{
+    this.loading=false;
+},1000)
+
+		},
+
+		created(){
+            console.log([[${supplierHb}]])
+            let supContractInfoList=[[${supplierHb}]].supContractInfoList;
+
+            supContractInfoList.forEach(item=>{
+
+                item.datalist=[];
+
+                item.datalist.push(item.priceStartDate==null?'':item.priceStartDate);
+                item.datalist.push(item.priceEndDate==null?'':item.priceEndDate);
+			})
+			console.log(supContractInfoList)
+            this.info.hetonginfo.hetong.list=supContractInfoList;
+
+		},
+
+    })
+    /*]]>*/
+</script>
+</body>
+
+</html>
+

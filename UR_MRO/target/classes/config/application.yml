@@ -1,0 +1,36 @@
+spring:
+  profiles:
+    active:
+      - dev
+  ###因为eureka是freemarker模板，不加这个访问会报错
+  #freemarker:
+    #prefer-file-system-access: false
+  thymeleaf:
+    cache: true
+    prefix: classpath:/templates/
+  ###需要指明spring.application.name,这个很重要，这在以后的服务与服务之间相互调用一般都是根据这个name
+  application:
+    name: ur-mro-plan
+#  freemarker:
+#    allow-request-override: false
+#    cache: true
+#    check-template-location: true
+#    charset: UTF-8
+#    content-type: text/html
+#    expose-request-attributes: false
+#    expose-session-attributes: false
+#    expose-spring-macro-helpers: false
+      
+#security:
+#  user:
+#    name: admin2
+#    password: abcd.1234
+      
+#app:
+#  server:
+#    host:
+#      url: http://local.ur.com.cn:9090         #应用访问地址  
+#  login:
+#    url: /login                          #应用登录地址
+#  logout:
+#    url: /logout                         #应用登出地址      

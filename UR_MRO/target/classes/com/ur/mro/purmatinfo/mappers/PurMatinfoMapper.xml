@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.purmatinfo.mappers.PurMatinfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.purmatinfo.model.PurMatinfo" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" javaType="String" />
+    <result column="BASE_UNIT_COUNT" property="baseUnitCount" jdbcType="FLOAT" javaType="String" />
+    <result column="CLO_DESIGN_NO" property="cloDesignNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="COMMENTS" property="comments" jdbcType="VARCHAR" javaType="String" />
+    <result column="DELIVERY_DATE" property="deliveryDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DEMAND_ORDER_NO" property="demandOrderNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_CODE" property="matCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_COLOR" property="matColor" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_COLOR_NO" property="matColorNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_NAME" property="matName" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_SPEC" property="matSpec" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_TYPE" property="matType" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_USE" property="matUse" jdbcType="VARCHAR" javaType="String" />
+    <result column="MODULE_NO" property="moduleNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="PANTONE_COLOR" property="pantoneColor" jdbcType="VARCHAR" javaType="String" />
+    <result column="PPS_ORDER_NO" property="ppsOrderNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="PURCHASE_AMOUNT" property="purchaseAmount" jdbcType="FLOAT" javaType="String" />
+    <result column="PURCHASE_COUNT" property="purchaseCount" jdbcType="FLOAT" javaType="String" />
+    <result column="PURCHASE_UNIT" property="purchaseUnit" jdbcType="VARCHAR" javaType="String" />
+    <result column="PURCHASE_UNIT_PRICE" property="purchaseUnitPrice" jdbcType="FLOAT" javaType="String" />
+    <result column="ROW_ID" property="rowId" jdbcType="VARCHAR" javaType="String" />
+    <result column="STORE_ID" property="storeId" jdbcType="VARCHAR" javaType="String" />
+    <result column="TAX_RATE" property="taxRate" jdbcType="FLOAT" javaType="String" />
+    <result column="TECH_CODE" property="techCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="TECH_NAME" property="techName" jdbcType="VARCHAR" javaType="String" />
+    <result column="UNIT_COEFFICIENT" property="unitCoefficient" jdbcType="FLOAT" javaType="String" />
+    <result column="APPLY_ID" property="applyId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="M_ROW_ID" property="mRowId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="IS_AREADY_APPLY" property="isAreadyApply" jdbcType="INTEGER" javaType="Integer" />
+    <result column="FLAT" property="flat" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CLO_DEMAND_NO" property="cloDemandNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUPPLIER_COLOR" property="supplierColor" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUPPLIER_P_CODE" property="supplierPCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="STANDARD_COLOR" property="standardColor" jdbcType="VARCHAR" javaType="String" />
+    <result column="STANDARD_COLOR_YN" property="standardColorYn" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SHOP_NO" property="shopNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_NAME" property="shopName" jdbcType="VARCHAR" javaType="String" />
+    <result column="ENTER_INFO" property="enterInfo" jdbcType="VARCHAR" javaType="String" />
+    <result column="MATERIAL_QUALITY" property="materialQuality" jdbcType="VARCHAR" javaType="String" />
+    <result column="PROCESS_TECHNOLOGY" property="processTechnology" jdbcType="VARCHAR" javaType="String" />
+    <result column="EXPECTED_ARRIVAL_DATE" property="expectedArrivalDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="RECEIVER_BY" property="receiverBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="RECEIVER_ADDRESS" property="receiverAddress" jdbcType="VARCHAR" javaType="String" />
+    <result column="RECEIVER_BY_TELEPHONE" property="receiverByTelephone" jdbcType="VARCHAR" javaType="String" />
+    <result column="CATEGORY_B" property="categoryB" jdbcType="VARCHAR" javaType="String" />
+    <result column="CATEGORY_A" property="categoryA" jdbcType="VARCHAR" javaType="String" />
+    <result column="CHANGE_COUNT" property="changeCount" jdbcType="FLOAT" javaType="String" />
+    <result column="HANDLE_SUGGESTION" property="handleSuggestion" jdbcType="VARCHAR" javaType="String" />
+    <result column="PLAN_USE_DATA" property="planUseData" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="CHANGE_REASON" property="changeReason" jdbcType="VARCHAR" javaType="String" />
+    <result column="TOTAL_COUNT" property="totalCount" jdbcType="FLOAT" javaType="String" />
+    <result column="CURRENT_COUNT" property="currentCount" jdbcType="FLOAT" javaType="String" />
+    <result column="CATEGORY_C" property="categoryC" jdbcType="VARCHAR" javaType="String" />
+    <result column="GROUP_NO" property="groupNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="REFER_PO" property="referPo" jdbcType="VARCHAR" javaType="String" />
+    <result column="CAN_CREATED" property="canCreated" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_HANDLED" property="isHandled" jdbcType="INTEGER" javaType="Integer" />
+    <result column="ORDER_HANDLED_BY" property="orderHandledBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="ORDER_HANDLED_TIME" property="orderHandledTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="PO_DAYS" property="poDays" jdbcType="INTEGER" javaType="Integer" />
+    <result column="DD_DATE" property="ddDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="MIN_DATE" property="minDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="WINDOW_CODE" property="windowCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="THE_LAST_ORDER_DATE" property="theLastOrderDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="PR_ROW_ID" property="prRowId" jdbcType="VARCHAR" javaType="String" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,BASE_UNIT,BASE_UNIT_COUNT,CLO_DESIGN_NO,COMMENTS,DELIVERY_DATE,DEMAND_ORDER_NO,MAT_CODE,MAT_COLOR,MAT_COLOR_NO,MAT_NAME,MAT_SPEC,MAT_TYPE,MAT_USE,MODULE_NO,PANTONE_COLOR,PPS_ORDER_NO,PURCHASE_AMOUNT,PURCHASE_COUNT,PURCHASE_UNIT,PURCHASE_UNIT_PRICE,ROW_ID,STORE_ID,TAX_RATE,TECH_CODE,TECH_NAME,UNIT_COEFFICIENT,APPLY_ID,M_ROW_ID,IS_AREADY_APPLY,FLAT,CLO_DEMAND_NO,SUPPLIER_COLOR,SUPPLIER_P_CODE,STANDARD_COLOR,STANDARD_COLOR_YN,SHOP_NO,SHOP_NAME,ENTER_INFO,MATERIAL_QUALITY,PROCESS_TECHNOLOGY,EXPECTED_ARRIVAL_DATE,RECEIVER_BY,RECEIVER_ADDRESS,RECEIVER_BY_TELEPHONE,CATEGORY_B,CATEGORY_A,CHANGE_COUNT,HANDLE_SUGGESTION,PLAN_USE_DATA,CHANGE_REASON,TOTAL_COUNT,CURRENT_COUNT,CATEGORY_C,GROUP_NO,REFER_PO,CAN_CREATED,IS_HANDLED,ORDER_HANDLED_BY,ORDER_HANDLED_TIME,PO_DAYS,DD_DATE,MIN_DATE,WINDOW_CODE,THE_LAST_ORDER_DATE,PR_ROW_ID
+  </sql>
+  
+  <select id="getPurMatinfoByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from SRM_PUR_APPLY_INFO
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertPurMatinfo" parameterType="com.ur.mro.purmatinfo.model.PurMatinfo" >
+    insert into SRM_PUR_APPLY_INFO (
+        CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,BASE_UNIT,BASE_UNIT_COUNT,CLO_DESIGN_NO,COMMENTS,DELIVERY_DATE,DEMAND_ORDER_NO,MAT_CODE,MAT_COLOR,MAT_COLOR_NO,MAT_NAME,MAT_SPEC,MAT_TYPE,MAT_USE,MODULE_NO,PANTONE_COLOR,PPS_ORDER_NO,PURCHASE_AMOUNT,PURCHASE_COUNT,PURCHASE_UNIT,PURCHASE_UNIT_PRICE,ROW_ID,STORE_ID,TAX_RATE,TECH_CODE,TECH_NAME,UNIT_COEFFICIENT,APPLY_ID,M_ROW_ID,IS_AREADY_APPLY,FLAT,CLO_DEMAND_NO,SUPPLIER_COLOR,SUPPLIER_P_CODE,STANDARD_COLOR,STANDARD_COLOR_YN,SHOP_NO,SHOP_NAME,ENTER_INFO,MATERIAL_QUALITY,PROCESS_TECHNOLOGY,EXPECTED_ARRIVAL_DATE,RECEIVER_BY,RECEIVER_ADDRESS,RECEIVER_BY_TELEPHONE,CATEGORY_B,CATEGORY_A,CHANGE_COUNT,HANDLE_SUGGESTION,PLAN_USE_DATA,CHANGE_REASON,TOTAL_COUNT,CURRENT_COUNT,CATEGORY_C,GROUP_NO,REFER_PO,CAN_CREATED,IS_HANDLED,ORDER_HANDLED_BY,ORDER_HANDLED_TIME,PO_DAYS,DD_DATE,MIN_DATE,WINDOW_CODE,THE_LAST_ORDER_DATE,PR_ROW_ID
+    )values(
+        #{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=INTEGER},#{baseUnit,jdbcType=VARCHAR},#{baseUnitCount,jdbcType=FLOAT},#{cloDesignNo,jdbcType=VARCHAR},#{comments,jdbcType=VARCHAR},#{deliveryDate,jdbcType=TIMESTAMP},#{demandOrderNo,jdbcType=VARCHAR},#{matCode,jdbcType=VARCHAR},#{matColor,jdbcType=VARCHAR},#{matColorNo,jdbcType=VARCHAR},#{matName,jdbcType=VARCHAR},#{matSpec,jdbcType=VARCHAR},#{matType,jdbcType=VARCHAR},#{matUse,jdbcType=VARCHAR},#{moduleNo,jdbcType=VARCHAR},#{pantoneColor,jdbcType=VARCHAR},#{ppsOrderNo,jdbcType=VARCHAR},#{purchaseAmount,jdbcType=FLOAT},#{purchaseCount,jdbcType=FLOAT},#{purchaseUnit,jdbcType=VARCHAR},#{purchaseUnitPrice,jdbcType=FLOAT},#{rowId,jdbcType=VARCHAR},#{storeId,jdbcType=VARCHAR},#{taxRate,jdbcType=FLOAT},#{techCode,jdbcType=VARCHAR},#{techName,jdbcType=VARCHAR},#{unitCoefficient,jdbcType=FLOAT},#{applyId,jdbcType=INTEGER},#{mRowId,jdbcType=INTEGER},#{isAreadyApply,jdbcType=INTEGER},#{flat,jdbcType=INTEGER},#{cloDemandNo,jdbcType=VARCHAR},#{supplierColor,jdbcType=VARCHAR},#{supplierPCode,jdbcType=VARCHAR},#{standardColor,jdbcType=VARCHAR},#{standardColorYn,jdbcType=INTEGER},#{shopNo,jdbcType=VARCHAR},#{shopName,jdbcType=VARCHAR},#{enterInfo,jdbcType=VARCHAR},#{materialQuality,jdbcType=VARCHAR},#{processTechnology,jdbcType=VARCHAR},#{expectedArrivalDate,jdbcType=TIMESTAMP},#{receiverBy,jdbcType=VARCHAR},#{receiverAddress,jdbcType=VARCHAR},#{receiverByTelephone,jdbcType=VARCHAR},#{categoryB,jdbcType=VARCHAR},#{categoryA,jdbcType=VARCHAR},#{changeCount,jdbcType=FLOAT},#{handleSuggestion,jdbcType=VARCHAR},#{planUseData,jdbcType=TIMESTAMP},#{changeReason,jdbcType=VARCHAR},#{totalCount,jdbcType=FLOAT},#{currentCount,jdbcType=FLOAT},#{categoryC,jdbcType=VARCHAR},#{groupNo,jdbcType=VARCHAR},#{referPo,jdbcType=VARCHAR},#{canCreated,jdbcType=VARCHAR},#{isHandled,jdbcType=INTEGER},#{orderHandledBy,jdbcType=VARCHAR},#{orderHandledTime,jdbcType=TIMESTAMP},#{poDays,jdbcType=INTEGER},#{ddDate,jdbcType=TIMESTAMP},#{minDate,jdbcType=TIMESTAMP},#{windowCode,jdbcType=VARCHAR},#{theLastOrderDate,jdbcType=TIMESTAMP},#{prRowId,jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <update id="updatePurMatinfoByPKSelective" parameterType="com.ur.mro.purmatinfo.model.PurMatinfo" >
+    update SRM_PUR_APPLY_INFO
+    <set>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="baseUnit != null" >
+        BASE_UNIT = #{baseUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUnitCount != null" >
+        BASE_UNIT_COUNT = #{baseUnitCount,jdbcType=FLOAT},
+      </if>
+      <if test="cloDesignNo != null" >
+        CLO_DESIGN_NO = #{cloDesignNo,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null" >
+        DELIVERY_DATE = #{deliveryDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="demandOrderNo != null" >
+        DEMAND_ORDER_NO = #{demandOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matCode != null" >
+        MAT_CODE = #{matCode,jdbcType=VARCHAR},
+      </if>
+      <if test="matColor != null" >
+        MAT_COLOR = #{matColor,jdbcType=VARCHAR},
+      </if>
+      <if test="matColorNo != null" >
+        MAT_COLOR_NO = #{matColorNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matName != null" >
+        MAT_NAME = #{matName,jdbcType=VARCHAR},
+      </if>
+      <if test="matSpec != null" >
+        MAT_SPEC = #{matSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="matType != null" >
+        MAT_TYPE = #{matType,jdbcType=VARCHAR},
+      </if>
+      <if test="matUse != null" >
+        MAT_USE = #{matUse,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleNo != null" >
+        MODULE_NO = #{moduleNo,jdbcType=VARCHAR},
+      </if>
+      <if test="pantoneColor != null" >
+        PANTONE_COLOR = #{pantoneColor,jdbcType=VARCHAR},
+      </if>
+      <if test="ppsOrderNo != null" >
+        PPS_ORDER_NO = #{ppsOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseAmount != null" >
+        PURCHASE_AMOUNT = #{purchaseAmount,jdbcType=FLOAT},
+      </if>
+      <if test="purchaseCount != null" >
+        PURCHASE_COUNT = #{purchaseCount,jdbcType=FLOAT},
+      </if>
+      <if test="purchaseUnit != null" >
+        PURCHASE_UNIT = #{purchaseUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseUnitPrice != null" >
+        PURCHASE_UNIT_PRICE = #{purchaseUnitPrice,jdbcType=FLOAT},
+      </if>
+      <if test="rowId != null" >
+        ROW_ID = #{rowId,jdbcType=VARCHAR},
+      </if>
+      <if test="storeId != null" >
+        STORE_ID = #{storeId,jdbcType=VARCHAR},
+      </if>
+      <if test="taxRate != null" >
+        TAX_RATE = #{taxRate,jdbcType=FLOAT},
+      </if>
+      <if test="techCode != null" >
+        TECH_CODE = #{techCode,jdbcType=VARCHAR},
+      </if>
+      <if test="techName != null" >
+        TECH_NAME = #{techName,jdbcType=VARCHAR},
+      </if>
+      <if test="unitCoefficient != null" >
+        UNIT_COEFFICIENT = #{unitCoefficient,jdbcType=FLOAT},
+      </if>
+      <if test="applyId != null" >
+        APPLY_ID = #{applyId,jdbcType=INTEGER},
+      </if>
+      <if test="mRowId != null" >
+        M_ROW_ID = #{mRowId,jdbcType=INTEGER},
+      </if>
+      <if test="isAreadyApply != null" >
+        IS_AREADY_APPLY = #{isAreadyApply,jdbcType=INTEGER},
+      </if>
+      <if test="flat != null" >
+        FLAT = #{flat,jdbcType=INTEGER},
+      </if>
+      <if test="cloDemandNo != null" >
+        CLO_DEMAND_NO = #{cloDemandNo,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierColor != null" >
+        SUPPLIER_COLOR = #{supplierColor,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierPCode != null" >
+        SUPPLIER_P_CODE = #{supplierPCode,jdbcType=VARCHAR},
+      </if>
+      <if test="standardColor != null" >
+        STANDARD_COLOR = #{standardColor,jdbcType=VARCHAR},
+      </if>
+      <if test="standardColorYn != null" >
+        STANDARD_COLOR_YN = #{standardColorYn,jdbcType=INTEGER},
+      </if>
+      <if test="shopNo != null" >
+        SHOP_NO = #{shopNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shopName != null" >
+        SHOP_NAME = #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="enterInfo != null" >
+        ENTER_INFO = #{enterInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="materialQuality != null" >
+        MATERIAL_QUALITY = #{materialQuality,jdbcType=VARCHAR},
+      </if>
+      <if test="processTechnology != null" >
+        PROCESS_TECHNOLOGY = #{processTechnology,jdbcType=VARCHAR},
+      </if>
+      <if test="expectedArrivalDate != null" >
+        EXPECTED_ARRIVAL_DATE = #{expectedArrivalDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiverBy != null" >
+        RECEIVER_BY = #{receiverBy,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverAddress != null" >
+        RECEIVER_ADDRESS = #{receiverAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverByTelephone != null" >
+        RECEIVER_BY_TELEPHONE = #{receiverByTelephone,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryB != null" >
+        CATEGORY_B = #{categoryB,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryA != null" >
+        CATEGORY_A = #{categoryA,jdbcType=VARCHAR},
+      </if>
+      <if test="changeCount != null" >
+        CHANGE_COUNT = #{changeCount,jdbcType=FLOAT},
+      </if>
+      <if test="handleSuggestion != null" >
+        HANDLE_SUGGESTION = #{handleSuggestion,jdbcType=VARCHAR},
+      </if>
+      <if test="planUseData != null" >
+        PLAN_USE_DATA = #{planUseData,jdbcType=TIMESTAMP},
+      </if>
+      <if test="changeReason != null" >
+        CHANGE_REASON = #{changeReason,jdbcType=VARCHAR},
+      </if>
+      <if test="totalCount != null" >
+        TOTAL_COUNT = #{totalCount,jdbcType=FLOAT},
+      </if>
+      <if test="currentCount != null" >
+        CURRENT_COUNT = #{currentCount,jdbcType=FLOAT},
+      </if>
+      <if test="categoryC != null" >
+        CATEGORY_C = #{categoryC,jdbcType=VARCHAR},
+      </if>
+      <if test="groupNo != null" >
+        GROUP_NO = #{groupNo,jdbcType=VARCHAR},
+      </if>
+      <if test="referPo != null" >
+        REFER_PO = #{referPo,jdbcType=VARCHAR},
+      </if>
+      <if test="canCreated != null" >
+        CAN_CREATED = #{canCreated,jdbcType=VARCHAR},
+      </if>
+      <if test="isHandled != null" >
+        IS_HANDLED = #{isHandled,jdbcType=INTEGER},
+      </if>
+      <if test="orderHandledBy != null" >
+        ORDER_HANDLED_BY = #{orderHandledBy,jdbcType=VARCHAR},
+      </if>
+      <if test="orderHandledTime != null" >
+        ORDER_HANDLED_TIME = #{orderHandledTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="poDays != null" >
+        PO_DAYS = #{poDays,jdbcType=INTEGER},
+      </if>
+      <if test="ddDate != null" >
+        DD_DATE = #{ddDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="minDate != null" >
+        MIN_DATE = #{minDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="windowCode != null" >
+        WINDOW_CODE = #{windowCode,jdbcType=VARCHAR},
+      </if>
+      <if test="theLastOrderDate != null" >
+        THE_LAST_ORDER_DATE = #{theLastOrderDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="prRowId != null" >
+        PR_ROW_ID = #{prRowId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchPurMatinfoCount" resultType="int" >
+    select count(*) from SRM_PUR_APPLY_INFO
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchPurMatinfo" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from SRM_PUR_APPLY_INFO
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by ID
+    	</if>
+    <if test="pageBean != null" >
+     	   Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+  
+  <!-- manual added -->
+  
+</mapper>

@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.contract.mappers.ContractMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.contract.model.Contract" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="code" property="code" jdbcType="VARCHAR" javaType="String" />
+    <result column="ROW_NO" property="rowNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="POSITION" property="position" jdbcType="VARCHAR" javaType="String" />
+    <result column="CONTACTS" property="contacts" jdbcType="VARCHAR" javaType="String" />
+    <result column="TELEPHONE" property="telephone" jdbcType="VARCHAR" javaType="String" />
+    <result column="MOBILEPHONE" property="mobilephone" jdbcType="VARCHAR" javaType="String" />
+    <result column="FAX" property="fax" jdbcType="VARCHAR" javaType="String" />
+    <result column="ZIP_CODE" property="zipCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_DEFAULT" property="isDefault" jdbcType="VARCHAR" javaType="String" />
+    <result column="SRM_SHOP2GC_INFO_ID" property="srmShop2gcInfoId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID,ROW_NO,POSITION,CONTACTS,TELEPHONE,MOBILEPHONE,FAX,ZIP_CODE,IS_DEFAULT,SRM_SHOP2GC_INFO_ID,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED
+  </sql>
+  
+  <select id="getContractByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from SRM_SHOP2GC_INFO_CONTACT_INFORMATION
+    where  ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getContractByShopId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_SHOP2GC_INFO_CONTACT_INFORMATION
+    where  DELETED =0 and SRM_SHOP2GC_INFO_ID = #{srmShop2gcInfoId,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insertContract" parameterType="com.ur.mro.contract.model.Contract" >
+    insert into SRM_SHOP2GC_INFO_CONTACT_INFORMATION (
+        ROW_NO,POSITION,CONTACTS,TELEPHONE,MOBILEPHONE,FAX,ZIP_CODE,IS_DEFAULT,SRM_SHOP2GC_INFO_ID,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,code
+    )values(
+       #{rowNo,jdbcType=VARCHAR},#{position,jdbcType=VARCHAR},#{contacts,jdbcType=VARCHAR},#{telephone,jdbcType=VARCHAR},#{mobilephone,jdbcType=VARCHAR},#{fax,jdbcType=VARCHAR},#{zipCode,jdbcType=VARCHAR},#{isDefault,jdbcType=VARCHAR},#{srmShop2gcInfoId,jdbcType=INTEGER},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=INTEGER},#{code,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <insert id="insertBatchContract" parameterType="java.util.List" >
+    insert into SRM_SHOP2GC_INFO_CONTACT_INFORMATION (
+        ROW_NO,POSITION,CONTACTS,TELEPHONE,MOBILEPHONE,FAX,ZIP_CODE,IS_DEFAULT,SRM_SHOP2GC_INFO_ID,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,code
+    ) values
+    <foreach collection ="list" item="item" separator =",">
+   (
+        #{item.rowNo,jdbcType=VARCHAR},#{item.position,jdbcType=VARCHAR},#{item.contacts,jdbcType=VARCHAR},#{item.telephone,jdbcType=VARCHAR},#{item.mobilephone,jdbcType=VARCHAR},#{item.fax,jdbcType=VARCHAR},#{item.zipCode,jdbcType=VARCHAR},#{item.isDefault,jdbcType=VARCHAR},#{item.srmShop2gcInfoId,jdbcType=INTEGER},#{item.createdBy,jdbcType=VARCHAR},#{item.createdTime,jdbcType=TIMESTAMP},#{item.lastUpdatedBy,jdbcType=VARCHAR},#{item.lastUpdatedTime,jdbcType=TIMESTAMP},#{item.deleted,jdbcType=INTEGER},#{item.code,jdbcType=VARCHAR}
+    )
+    </foreach>
+  </insert>
+
+  <update id="updateContractByPKSelective" parameterType="com.ur.mro.contract.model.Contract" >
+    update SRM_SHOP2GC_INFO_CONTACT_INFORMATION
+    <set>
+      <if test="rowNo != null" >
+        ROW_NO = #{rowNo,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        POSITION = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+        CONTACTS = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        TELEPHONE = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        MOBILEPHONE = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        FAX = #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="zipCode != null" >
+        ZIP_CODE = #{zipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null" >
+        IS_DEFAULT = #{isDefault,jdbcType=VARCHAR},
+      </if>
+      <if test="srmShop2gcInfoId != null" >
+        SRM_SHOP2GC_INFO_ID = #{srmShop2gcInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateContractByCodeAndShopId" parameterType="com.ur.mro.contract.model.Contract" >
+    update SRM_SHOP2GC_INFO_CONTACT_INFORMATION
+    <set>
+      <if test="rowNo != null" >
+        ROW_NO = #{rowNo,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        POSITION = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+        CONTACTS = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        TELEPHONE = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        MOBILEPHONE = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        FAX = #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="zipCode != null" >
+        ZIP_CODE = #{zipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null" >
+        IS_DEFAULT = #{isDefault,jdbcType=VARCHAR},
+      </if>
+      <if test="srmShop2gcInfoId != null" >
+        SRM_SHOP2GC_INFO_ID = #{srmShop2gcInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+    </set>
+    where code = #{code,jdbcType=VARCHAR} and  SRM_SHOP2GC_INFO_ID=#{srmShop2gcInfoId,jdbcType=INTEGER}
+  </update>
+
+  <update id="deleteContractByShopIdNotCode" parameterType="com.ur.mro.contract.model.Contract" >
+    update SRM_SHOP2GC_INFO_CONTACT_INFORMATION
+    <set>
+      <if test="rowNo != null" >
+        ROW_NO = #{rowNo,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        POSITION = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+        CONTACTS = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        TELEPHONE = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilephone != null" >
+        MOBILEPHONE = #{mobilephone,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null" >
+        FAX = #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="zipCode != null" >
+        ZIP_CODE = #{zipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null" >
+        IS_DEFAULT = #{isDefault,jdbcType=VARCHAR},
+      </if>
+      <if test="srmShop2gcInfoId != null" >
+        SRM_SHOP2GC_INFO_ID = #{srmShop2gcInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+    </set>
+    where code != #{code,jdbcType=VARCHAR} and  SRM_SHOP2GC_INFO_ID=#{srmShop2gcInfoId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateBatchContractInfo" parameterType="java.util.List" >
+    update SRM_SHOP2GC_INFO_CONTACT_INFORMATION
+
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="ROW_NO =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.rowNo!=null">
+            when id=#{i.id} then #{i.rowNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="POSITION =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.position!=null">
+            when id=#{i.id} then #{i.position,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="CONTACTS =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.contacts!=null">
+            when id=#{i.id} then #{i.contacts,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="TELEPHONE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.telephone!=null">
+            when id=#{i.id} then #{i.telephone,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="MOBILEPHONE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.mobilephone!=null">
+            when id=#{i.id} then #{i.mobilephone,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="FAX =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.fax!=null">
+            when id=#{i.id} then #{i.fax,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="ZIP_CODE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.zipCode!=null">
+            when id=#{i.id} then #{i.zipCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="IS_DEFAULT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.isDefault!=null">
+            when id=#{i.id} then #{i.isDefault,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="SRM_SHOP2GC_INFO_ID =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.srmShop2gcInfoId!=null">
+            when id=#{i.id} then #{i.srmShop2gcInfoId,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="CREATED_BY =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.createdBy!=null">
+            when id=#{i.id} then #{i.createdBy,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="CREATED_TIME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.createdTime!=null">
+            when id=#{i.id} then #{i.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="LAST_UPDATED_BY =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.lastUpdatedBy!=null">
+            when id=#{i.id} then #{i.lastUpdatedBy,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="LAST_UPDATED_TIME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.lastUpdatedTime!=null">
+            when id=#{i.id} then #{i.lastUpdatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="DELETED =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.deleted!=null">
+            when id=#{i.id} then #{i.deleted,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where DELETED = 0 AND id in
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      #{item.id}
+    </foreach>
+  </update>
+
+
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchContractCount" resultType="int" >
+    select count(*) from SRM_SHOP2GC_INFO_CONTACT_INFORMATION
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchContract" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from SRM_SHOP2GC_INFO_CONTACT_INFORMATION
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by
+    	</if>
+    <if test="pageBean != null" >
+     	   Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+  
+  <!-- manual added -->
+
+  <select id="checkData" resultType="int">
+    select count(1) from
+    SRM_SHOP2GC_INFO_CONTACT_INFORMATION
+    where   DELETED = 0 and
+    CODE = #{code,jdbcType=VARCHAR} and  SRM_SHOP2GC_INFO_ID= #{shopId,jdbcType=INTEGER}
+
+  </select>
+
+</mapper>

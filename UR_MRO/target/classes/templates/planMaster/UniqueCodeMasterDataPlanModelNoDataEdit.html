@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('编辑企划款号')"></head>
+
+<body>
+
+<div id="app" class="container-fluid"  style="display: none;"
+ v-show="isLoad" v-loading="updatingPlanModelNoData" :element-loading-text="loadText">
+
+
+				  <div class="card-title">
+			        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+			        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+			      </div>
+
+				  <div class="card">
+				  	<div class="card-body">
+
+				  <div class="row">
+				  	<div class="col-md-12">
+						<el-form  label-width="150px" :rules="rules" ref="updateForm" :model="updateInstance" label-suffix=":">
+<el-row>
+	
+	<el-col :span="8">
+						  <el-form-item label="企划款号" prop="planModelNo">
+						    <el-input v-model="updateInstance.planModelNo" :disabled="true" placeholder="企划款号"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="原设计号" prop="originalDesignNo">
+						    <el-input v-model="updateInstance.originalDesignNo" :disabled="isPushNoCanEdit" placeholder="原设计号"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="年" prop="year">
+						    <el-date-picker v-model="updateInstance.year" :disabled="isPushNoCanEdit" size="small" type="year" value-format="yyyy" placeholder="选择年份" style="width: 100%;"></el-date-picker>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="季节" prop="season">
+						    <el-select  v-model="updateInstance.season" :disabled="isPushNoCanEdit" placeholder="请选择季节"   
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in seasonItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			                </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="月" prop="month">
+						    <el-select  v-model="updateInstance.month" :disabled="isPushNoCanEdit"  placeholder="请选择月份"   
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+							          :label="item" :value="item"></el-option>
+			                </el-select>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="品牌" prop="brand">
+						    <el-select v-model="updateInstance.brand" :disabled="isPushNoCanEdit" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in brandItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="系列" prop="serial">
+						    <el-select v-model="updateInstance.serial" :disabled="isPushNoCanEdit" v-on:change="changeSerial" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in serialItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="原系列" prop="originalSerial">
+						    <el-select v-model="updateInstance.originalSerial" :disabled="isPushNoCanEdit" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in serialItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="风格" prop="style">
+						    <el-select v-model="updateInstance.style" :disabled="isPushNoCanEdit" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="item in styleItems" align="left" :label="item.svalue" :value="item.skey"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="商品层" prop="goodsLevel">
+						    <el-select v-model="updateInstance.goodsLevel" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in goodsLevelItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="品类" prop="category">
+						    <el-select v-model="updateInstance.category" :disabled="isPushNoCanEdit" v-on:change="changeCategory" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in categoryItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="中品类" prop="subCategory">
+						    <el-select v-model="updateInstance.subCategory" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="item in subCategoryItems" align="left" :label="item.svalue" :value="item.skey"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="类别" prop="cytype">
+						    <el-select v-model="updateInstance.cytype" :disabled="isPushNoCanEdit" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in cytypeItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="单号" prop="orderNo">
+						    <el-select v-model="updateInstance.orderNo" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in orderNoItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="订单属性" prop="orderType">
+						    <el-select v-model="updateInstance.orderType" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in orderTypeItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="是否企划内" prop="isInPlan">
+						    <el-select v-model="updateInstance.isInPlan" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in isOrNotItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="下单方式" prop="orderModel">
+						    <el-select v-model="updateInstance.orderModel" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in orderModelItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="陈列类型" prop="displayGenre">
+						    <el-select v-model="updateInstance.displayGenre" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in displayGenreItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="指定款" prop="specifyType">
+						    <el-select v-model="updateInstance.specifyType" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in specifyTypeItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="模块号" prop="moduleNum">
+						    <el-input v-model="updateInstance.moduleNum" placeholder="模块号"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="单价" prop="price">
+						    <el-input v-model="updateInstance.price" placeholder="单价"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="企划成本" prop="planCost">
+						    <el-input v-model="updateInstance.planCost" placeholder="企划成本"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="南北款" prop="southNorthGenre">
+						    <el-select v-model="updateInstance.southNorthGenre" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in southNorthGenreItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="AB款" prop="abGenre">
+						    <el-select v-model="updateInstance.abGenre" :disabled="isPushNoCanEdit" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in abGenreItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="加工方式" prop="processingMode">
+						    <el-select v-model="updateInstance.processingMode" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in processingModelItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="面料特性" prop="fabricProperty">
+						    <el-select v-model="updateInstance.fabricProperty" :disabled="isPushNoCanEdit" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+							  <el-option v-for="(item,key) in fabricProperiesItems" align="left" :label="item" :value="key"></el-option>
+						    </el-select>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="上市日期" prop="marketingDate">
+						    <el-date-picker v-model="updateInstance.marketingDate" type="date" value-format="yyyy-MM-dd" placeholder="上市日期"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="模块等级" prop="moduleLevel">
+						    <el-input v-model="updateInstance.moduleLevel" placeholder="模块等级"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="品类买手" prop="categoryBuyer">
+						    <el-input v-model="updateInstance.categoryBuyer" :disabled="isPushNoCanEdit" placeholder="品类买手"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="16">
+						  <el-form-item label="备注" prop="remark">
+						    <el-input v-model="updateInstance.remark" placeholder="备注"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+						</el-form>
+				  	</div>
+				  </div>
+
+				  </div>
+				</div>
+
+
+
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          isLoad: false,
+          loadText:"查询数据中...",
+          updatingPlanModelNoData:false,
+          monthItems:[1,2,3,4,5,6,7,8,9,10,11,12],
+          updateInstance:[[${uniqueCodeMasterData}]],
+          isUpdate:[[${isUpdate}]],
+          
+          brandItems:[[${brandItems}]],
+          seasonItems:[[${seasonItems}]],
+          serialItems:[[${serialItems}]],
+          goodsLevelItems:[[${goodsLevelItems}]],
+          categoryItems:[[${categoryItems}]],
+          allStyleItems:[[${styleItems}]],
+          styleItems:[],
+          allSubCategoryItems:[[${subCategoryItems}]],
+          subCategoryItems:[],
+          isOrNotItems:[[${isOrNotItems}]],
+          orderTypeItems:[[${orderTypeItems}]],
+          orderNoItems:[[${orderNoItems}]],
+          displayGenreItems:[[${displayGenreItems}]],
+          specifyTypeItems:[[${specifyTypeItems}]],
+          cytypeItems:[[${cytypeItems}]],
+          southNorthGenreItems:[[${southNorthGenreItems}]],
+          abGenreItems:[[${abGenreItems}]],
+          processingModelItems:[[${processingModelItems}]],
+          fabricProperiesItems:[[${fabricProperiesItems}]],
+          orderModelItems:[[${orderModelItems}]],
+          planModelNoStatusItems:[[${planModelNoStatusItems}]],
+          
+          rules: {
+        	  year: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  season: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  month: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  brand: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  serial: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  originalSerial: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  style: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  goodsLevel: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  category: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  cytype: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  planModelNo: [
+                { max: 30, message: '长度不能超过30', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  /* uniqueCode: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ], */
+        	  orderNo: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  orderType: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  isInPlan: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  /* intDepth: [{ required: true, message: '该字段不能为空', trigger: 'blur' }], */
+        	  price: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  planCost: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  orderModel: [{ required: true, message: '长度不能超过10', trigger: 'blur' }],
+        	  moduleNum: [
+                { max: 30, message: '长度不能超过30', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  /* southNorthGenre: [{ required: true, message: '该字段不能为空', trigger: 'blur' }], */
+        	  abGenre: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  processingMode: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+        	  moduleLevel: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  categoryBuyer: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' },
+                { required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  remark: [
+                { max: 500, message: '长度不能超过500', trigger: 'blur' }
+              ],
+              marketingDate: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+          },
+          tableHeight:500,
+          isPushNoCanEdit: false,
+        }
+      },
+      created: function() {
+    	  this.tableHeight = $(document).height() - 115;
+    	  this.changeSerial();
+    	  this.changeCategory();
+          this.updateInstance.year = this.updateInstance.year+'';
+          this.updateInstance.isInPlan = this.updateInstance.isInPlan+'';
+          if(this.updateInstance.status>1){
+        	  this.isPushNoCanEdit = true;
+          }
+          this.isLoad=true;
+      },
+      methods: {
+		clickCancelBtn() {
+			window.parent.dialogCallback();
+		},
+		clickSaveBtn() {
+	        this.$refs["updateForm"].validate((valid) => {
+	          if (valid) {
+				_this = this;
+				if((this.updateInstance.orderType==='F' || this.updateInstance.orderType==='F2')
+						&& !(this.updateInstance.originalDesignNo)){
+					this.$notify({title: '警告',message: "订单属性为返单/原款返单，则原设计号不能为空！",offset: 100,type:'warning'});
+			    	return;
+				}else if((this.updateInstance.orderType==='F'||this.updateInstance.orderType==='F2') 
+						&& this.updateInstance.originalDesignNo.length>0){
+					if(this.updateInstance.originalDesignNo.charAt(this.updateInstance.originalDesignNo.length-2)==='F'){
+						this.$notify({title: '警告',message: "多次返单的原设计号,应填最原始的设计号（即：倒数第二位不能是F）！",offset: 100,type:'warning'});
+	                    return;
+	                }
+				}
+				
+				let reg = /^[1-9]\d*$/;
+				if (new RegExp(reg).test(this.updateInstance.intDepth) == false) {
+    	        	this.$notify({title: '警告',message: "取整深度请输入整数！",offset: 100,type:'warning'});
+    	        	return;
+				}
+				//就表示了小数点后可以保留0位、1位、或2位小数。
+				let reg1 = /^(([1-9]{1}\d*)|(0{1}))(\.\d{0,2})?$/;
+				if (new RegExp(reg1).test(this.updateInstance.price) == false) {
+    	        	this.$notify({title: '警告',message: "单价最多两位小数！",offset: 100,type:'warning'});
+    	        	return;
+				}
+				if (new RegExp(reg1).test(this.updateInstance.planCost) == false) {
+    	        	this.$notify({title: '警告',message: "企划成本最多两位小数！",offset: 100,type:'warning'});
+    	        	return;
+				}
+				this.updatingPlanModelNoData = true;
+				//debugger
+				var url = '/UniqueCodeMasterData/savePlanModelNoData';
+				axios.post(url,this.updateInstance)
+				  .then(function (response) {
+				    console.log(response);
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '编辑失败',message: response.data.message,offset: 100});
+				    	_this.$data.updatingPlanModelNoData = false;
+				    }else{
+					    _this.$notify.info({title: '编辑成功',message: '新增成功',offset: 100});
+					    _this.$data.updatingPlanModelNoData = false;
+					    _this.$data.showDialog = false;
+						window.parent.dialogCallback();
+				    }
+				  })
+				  .catch(function (error) {
+				    console.log(error);
+				    _this.$notify.error({title: '错误',message: '编辑数据失败，请联系系统管理员',offset: 100});
+				  });
+	          } else {
+	            console.log('error submit!!');
+	            return false;
+	          }
+	        });
+          },
+          changeSerial(){	
+    		var isSetNull = true;
+          	this.styleItems=[];
+        	//this.updateInstance.style="";
+          	//this.updateInstance.originalSerial="";
+        	if(this.updateInstance.serial){
+        		var serial=this.updateInstance.serial;
+        		for(var i=0;i<this.allStyleItems.length;i++){
+        			if(this.allStyleItems[i].parentKey===serial){
+        				this.styleItems.push(this.allStyleItems[i]);
+        			}
+        			if(this.updateInstance.style && this.updateInstance.style===this.allStyleItems[i].skey){
+    					isSetNull = false;
+    				}
+        		}
+        		if(this.updateInstance.serial!="A"){
+        			this.updateInstance.originalSerial=this.updateInstance.serial;
+        		}
+        	}
+      	    if(isSetNull){
+      	    	this.updateInstance.style="";
+      	    }
+          },
+          changeCategory(){	
+  			this.subCategoryItems=[];
+  			//this.updateInstance.subCategory="";
+  			var isSetNull = true;
+  	      	if(this.updateInstance.category){
+  	      		var category = this.updateInstance.category;
+  	          	for(var i=0;i<this.allSubCategoryItems.length;i++){
+	  	          	if(this.allSubCategoryItems[i].parentKey===category){
+	    				this.subCategoryItems.push(this.allSubCategoryItems[i]);
+	    				if(this.updateInstance.subCategory && this.updateInstance.subCategory===this.allSubCategoryItems[i].skey){
+	    					isSetNull = false;
+	    				}
+	    			}
+  	          	}
+  	      	}
+      	    if(isSetNull){
+      	    	this.updateInstance.subCategory="";
+      	    }
+          },
+          
+          
+        }
+    })
+    /*]]>*/
+  </script>
+</html>

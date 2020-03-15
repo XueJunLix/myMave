@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('组合主数据')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="display: none;"
+ v-show="isLoad"  v-loading="loading" :element-loading-text="loadText">
+ <nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition"></el-switch>
+	</el-tooltip>
+</nav>
+
+<Drawer  title="查询面板" v-model="expandCondition" width="50%">
+ <el-row>
+  <el-col :span="8">
+  <div class="ur-stack-label">组合code</div>
+  <el-input v-model="queryCondition.combination" placeholder="组合code" style="width: 100%;"></el-input>
+  </el-col>
+  <el-col :span="8">
+  <div class="ur-stack-label">品牌</div>
+  <el-select v-model="queryCondition.brand" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+			<el-option v-for="(item,key) in brandItems" align="left" :label="item" :value="key"></el-option>
+	      </el-select>
+  </el-col>
+  <el-col :span="8">
+  <div class="ur-stack-label">系列</div>
+  <el-select v-model="queryCondition.serial" v-on:change="changeSerial" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+			<el-option v-for="(item,key) in serialItems" align="left"  :label="item" :value="key"></el-option>
+	      </el-select>
+  </el-col>
+  </el-row>
+  <el-row>
+  <el-col :span="8">
+  <div class="ur-stack-label">原系列</div>
+  <el-select v-model="queryCondition.originalSerial" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+			<el-option v-for="(item,key) in serialItems" align="left" :label="item" :value="key"></el-option>
+	      </el-select>
+  </el-col>
+  <el-col :span="8">
+  <div class="ur-stack-label">风格</div>
+  <el-select v-model="queryCondition.style" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+				<el-option v-for="item in styleItems" align="left" :label="item.svalue" :value="item.skey"></el-option>
+			</el-select>
+  </el-col>
+  <el-col :span="8">
+  <div class="ur-stack-label">商品层</div>
+  <el-select v-model="queryCondition.goodsLevel" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+				<el-option v-for="(item,key) in goodsLevelItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+  </el-col>
+  </el-row>
+  <el-row>
+  <el-col :span="8">
+  <div class="ur-stack-label">品类</div>
+  <el-select v-model="queryCondition.category" v-on:change="changeCategory" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+				<el-option v-for="(item,key) in categoryItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+  </el-col>
+  <el-col :span="8">
+  <div class="ur-stack-label">中品类</div>
+  <el-select v-model="queryCondition.subCategory" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+				<el-option v-for="item in subCategoryItems" align="left" :label="item.svalue" :value="item.skey"></el-option>
+			</el-select>
+  </el-col>
+  <el-col :span="8">
+  <div class="ur-stack-label">是否启用</div>
+  <el-select v-model="queryCondition.enabled" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+				<el-option v-for="(item,key) in isOrNotItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+  </el-col>
+  </el-row>
+  <div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+</Drawer>
+
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+      	<el-button v-on:click="clickAddBtn" icon="plus">新增</el-button>
+        <el-button v-on:click="clickUpdateBtn" icon="edit">修改</el-button>
+        <!-- <el-button v-on:click="clickDeleteBtn" icon="delete">删除</el-button> -->
+        <el-button v-on:click="clickImportBtn" ><i class="fa fa-upload" aria-hidden="true" style="padding-right:5px"></i>导入</el-button>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+    <!-- <el-dialog title="提示"  :visible.sync="deleteDialogVisible"  width="20%">
+	  <span>确定要删除这  {{multipleSelection.length}} 项吗?</span>
+	  <span slot="footer" class="dialog-footer">
+	    <el-button v-on:click="deleteDialogVisible = false">取 消</el-button>
+	    <el-button type="primary" v-on:click="delSummitBtn">确 定</el-button>
+	  </span>
+	</el-dialog> -->
+	
+	<el-dialog ref="uploadPanel" :visible.sync="uploadDialogVisible" >
+		 <a href="/template/CombinationMasterDataTemplate.xlsx" style="font-size: 15px; color: red;">模版下载</a>
+		  <!-- <div style="margin-top: 10px; margin-left: -5px; color: #000;">
+			 	“导入”功能是只新增或修改shuj导入的数据，不会覆盖已有数据；故导入前，请先删除原有数据。</div> -->
+			    <div style="height: 50px;"></div>
+         		<el-form style="width: 30rem;"
+         		  class="form uploadform">
+	         		 <el-form-item>
+		         		<el-upload  ref="upload"  action="/CombinationMasterData/importExcel" 
+		         		 	:before-upload="beforeUpload" :limit="1"
+			         		:file-list="fileList"  :auto-upload='true' :show-upload-list="false" 
+			         		:on-success="handleUploadSuccess"
+			         		:on-error="handleUploadError">
+			                <el-button slot="trigger"  type="primary">点击上传</el-button>
+			           		<div slot="tip" class="el-upload__tip">只能上传xls/xlsx 文件,每次只能上传一个</div>
+		            	</el-upload>
+	            	</el-form-item>
+            	</el-form>
+	</el-dialog>
+      
+	<el-pagination :page-size="20" :pager-count="4" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next">
+	</el-pagination>
+</nav>
+
+        <el-table id="data_table"  stripe="" :data="this.queryResult.data" :highlight-current-row="true" 
+        :height="this.tableHeight" ref="multipleTable" v-on:row-click="handleRowClick"
+        v-on:current-change="handleTableCurrentChange" v-on:selection-change="handleSelectionChange">
+        <el-table-column type="selection"  width="45"></el-table-column>
+          <el-table-column property="combinationId" label="自增id" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="combinationCode" label="组合Code" min-width="180" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="brandName" label="品牌" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="serialName" label="系列" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="originalSerialName" label="原系列" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="styleName" label="风格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="goodsLevelName" label="商品层" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="categoryName" label="品类" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="subCategoryName" label="中品类" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="enabledName" label="是否启用" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="description" label="描述" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTime" label="创建时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createByName" label="创建者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyTime" label="修改时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyByName" label="修改者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          
+        </el-table>
+
+	</div>
+</div>
+
+	<!-- <el-dialog ref="addPanel" :title="dialogTitle" :visible.sync="showAddDialog" 
+			 v-loading="addingCombinationMasterData" :lock-scroll="false" size="large"> -->
+	<Drawer  :title="dialogTitle" v-model="showAddDialog" width="50%" :mask-closable="false">
+		<div class="card-title">
+	       <el-button v-on:click="clickAddSaveBtn"><i class="fa fa-save" 
+	       aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+	       <el-button v-on:click="clickAddCancelBtn"><i class="fa fa-eraser" 
+	       aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+	    </div>
+	
+	  <div class="card">
+	  <div class="card-body">
+	  <div class="row">
+	  	<div class="col-md-12">
+			<el-form   :rules="rules" ref="addForm" :model="addInstance" label-suffix=":">
+				<el-row>
+					<el-col :span="24">
+						<el-form-item label="品牌" prop="brand" label-width="120px">
+						  	<el-select v-model="addInstance.brand" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in brandItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="系列" prop="serial" label-width="120px">
+						  	<el-select v-model="addInstance.serial" v-on:change="changeAddSerial" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in serialItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="原系列" prop="originalSerial" label-width="120px">
+						  	<el-select v-model="addInstance.originalSerial" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in serialItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="风格" prop="style" label-width="120px">
+						  	<el-select v-model="addInstance.style" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="item in addStyleItems" align="left" style="font-size:10px;"
+							          :label="item.svalue" :value="item.skey">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="商品层" prop="goodsLevel" label-width="120px">
+						  	<el-select v-model="addInstance.goodsLevel" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in goodsLevelItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="品类" prop="category" label-width="120px">
+						  	<el-select v-model="addInstance.category" v-on:change="changeAddCategory" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in categoryItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="中品类" prop="subCategory" label-width="120px">
+						  	<el-select v-model="addInstance.subCategory" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="item in addSubCategoryItems" align="left" style="font-size:10px;"
+							          :label="item.svalue" :value="item.skey">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="是否启用" prop="enabled" label-width="120px">
+						  	<el-select v-model="addInstance.enabled" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in isOrNotItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<!-- <el-col :span="24">
+						  <el-form-item label="描述" prop="description" label-width="120px">
+						  <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容"
+							  v-model="addInstance.description">
+						  </el-input>
+						    
+						  </el-form-item>
+					</el-col> -->
+				</el-row>
+			</el-form>
+	  	</div>
+	  </div>
+
+	  </div>
+	  </div>
+	</Drawer>
+	<Drawer  :title="dialogTitle" v-model="showDialog" width="50%" :mask-closable="false">
+	<!-- </el-dialog>
+	<el-dialog ref="updatePanel" :title="dialogTitle" :visible.sync="showDialog" 
+	 v-loading="updatingCombinationMasterData" :lock-scroll="false" size="large"> -->
+		  <div class="card-title">
+	        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+	        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+	      </div>
+
+		  <div class="card">
+		  	<div class="card-body">
+
+		  <div class="row">
+		  	<div class="col-md-12">
+			<el-form   :rules="rules" ref="updateForm" :model="updateInstance" label-suffix=":">
+				<el-row>
+					<el-col :span="24">
+						  <el-form-item label="组合code" prop="combinationCode" label-width="120px">
+						    <el-input v-model="updateInstance.combinationCode" disabled="true" :controls="false" style="width: 220px;"></el-input>
+						  </el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="品牌" prop="brand" label-width="120px">
+						  	<el-select v-model="updateInstance.brand" disabled="true" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in brandItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="系列" prop="serial" label-width="120px">
+						  	<el-select v-model="updateInstance.serial" v-on:change="changeAddSerial" disabled="true" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in serialItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="原系列" prop="originalSerial" label-width="120px">
+						  	<el-select v-model="updateInstance.originalSerial" disabled="true" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in serialItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="风格" prop="style" label-width="120px">
+						  	<el-select v-model="updateInstance.style" disabled="true" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="item in updateStyleItems" align="left" style="font-size:10px;"
+							          :label="item.svalue" :value="item.skey">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="商品层" prop="goodsLevel" label-width="120px">
+						  	<el-select v-model="updateInstance.goodsLevel" disabled="true" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in goodsLevelItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="品类" prop="category" label-width="120px">
+						  	<el-select v-model="updateInstance.category" v-on:change="changeAddCategory" disabled="true" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in categoryItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="中品类" prop="subCategory" label-width="120px">
+						  	<el-select v-model="updateInstance.subCategory" disabled="true" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="item in updateSubCategoryItems" align="left" style="font-size:10px;"
+							          :label="item.svalue" :value="item.skey">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="是否启用" prop="enabled" label-width="120px">
+						  	<el-select v-model="updateInstance.enabled" align="left" style="width: 220px;" :clearable="true">
+							 		<el-option v-for="(item,key) in isOrNotItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						  <el-form-item label="描述" prop="description" label-width="120px">
+						  <el-input type="textarea" disabled="true" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容"
+							  v-model="updateInstance.description">
+						  </el-input>
+						    <!-- <el-input v-model="updateInstance.description" :controls="false" style="width: 140px;"></el-input> -->
+						  </el-form-item>
+					</el-col> 
+				</el-row>
+			</el-form>
+	  	</div>
+	  </div>
+
+	  </div>
+	  </div>
+	</Drawer>
+	<!-- </el-dialog> -->
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+	  
+  let this_let; 
+  var vm = new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  combinationCode:"",
+        	  brand:"",
+        	  serial:"",
+        	  originalSerial:"",
+        	  style:"",
+        	  goodsLevel:"",
+        	  category:"",
+        	  subCategory:"",
+        	  enabled:"",
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          //queryingCombinationMasterData:false,
+          updatingCombinationMasterData:false,
+          addingCombinationMasterData:false,
+          addInstance:{},
+          updateInstance:{},
+          isUpdate:false,
+          dialogTitle:"",
+          showDialog:false,
+          showAddDialog:false,
+          rules: {
+        	  brand: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  serial: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  originalSerial: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' }
+                ],
+          	  style: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' }
+                ],
+          	  goodsLevel: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' }
+                ],
+          	  category: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' }
+                ],
+          	  subCategory: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' }
+                ], 
+           	  enabled: [
+                     { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  /* description: [
+                  { max: 200, message: '长度不能超过200', trigger: 'blur' }
+                ], */
+          },
+          //importingFile:false,
+          expandCondition:false,
+          expandText:"展开查询面板",
+          //exportingFile:false,
+          isOrNotItems:[[${isOrNotItems}]],
+          brandItems:[[${brandItems}]],
+          serialItems:[[${serialItems}]],
+          styleItems:[],
+          allStyleItems:[[${styleItems}]],
+          goodsLevelItems:[[${goodsLevelItems}]],
+          categoryItems:[[${categoryItems}]],
+          subCategoryItems:[],
+          allSubCategoryItems:[[${subCategoryItems}]],
+          addStyleItems:[],
+          updateStyleItems:[],
+          addSubCategoryItems:[],
+          updateSubCategoryItems:[],
+          multipleSelection: [],
+          /* deleteDialogVisible: false, */
+          uploadDialogVisible:false,
+          fileList: [],
+          isLoad: false,
+          tableHeight:500,
+          loading:false,
+          loadText:"查询数据中。。。",
+        }
+      },
+      created: function() {
+    	  this.isLoad = true;
+    	  this_let = this;
+    	  this.queryCombinationMasterData();
+      },
+      methods: {
+    	initAddInstance(){
+    		this.addInstance = {
+   	        	  brand:"",
+   	        	  serial:"",
+   	        	  originalSerial:"",
+   	        	  style:"",
+   	        	  goodsLevel:"",
+   	        	  category:"",
+   	        	  subCategory:"",
+   	        	  enabled:"",
+   	        	  description:"",
+            };
+    	},
+		clickAddBtn() {
+  			this.initAddInstance();
+  			this.isUpdate = false;
+  			this.dialogTitle = '新增';
+  			this.showAddDialog = true;
+  		},
+  		clickUpdateBtn() {
+			if (this.multipleSelection.length == 0) {
+        		this.$message({showClose: true,message: '请选择一条数据,  左侧复选框 选中',type: 'error'});
+                return;
+            }
+			if (this.multipleSelection.length > 1) {
+        		this.$message({showClose: true,message: '只能选择一条数据,  左侧复选框 选中',type: 'error'});
+                return;
+            }
+			_this = this;
+			var url = '/CombinationMasterData/'+this.multipleSelection[0].combinationId;
+			axios.get(url) .then(function (response) {
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '修改数据查询失败，请刷新页面重试',message: response.data.message,offset: 100});
+			    	_this.$data.addingCombinationMasterData = false;
+			    }else{
+			    	_this.updateInstance = response.data.data;
+			    	_this.updateInstance.enabled=_this.updateInstance.enabled+'';
+			    	_this.changeUpdateSerial();
+			    	_this.changeUpdateCategory();
+			    	_this.isUpdate = true;
+			    	_this.dialogTitle = '修改';
+			    	_this.showDialog = true;
+			    } 
+			  }).catch(function (error) {
+			    console.log(error);
+			    _this.$notify.error({title: '错误',message: '修改数据查询失败，请刷新页面重试!',offset: 100});
+			  });
+  		},
+  		clickAddCancelBtn() {
+			this.showAddDialog = false;
+			this.initAddInstance();
+		}, 
+        changeSerial(){
+          	this.styleItems=[];
+          	this.queryCondition.style="";
+          	if(this.queryCondition.serial){
+          		var serial=this.queryCondition.serial;
+          		for(var i=0;i<this.allStyleItems.length;i++){
+          			if(this.allStyleItems[i].parentKey===serial){
+          				this.styleItems.push(this.allStyleItems[i]);
+          			}
+          		}
+          	}
+        },
+        changeCategory(){
+          	this.subCategoryItems=[];
+          	this.queryCondition.subCategory="";
+          	if(this.queryCondition.category){
+          		var category=this.queryCondition.category;
+          		for(var i=0;i<this.allSubCategoryItems.length;i++){
+          			if(this.allSubCategoryItems[i].parentKey===category){
+          				this.subCategoryItems.push(this.allSubCategoryItems[i]);
+          			}
+          		}
+          	}
+        },
+        changeAddSerial(){
+          	this.addStyleItems=[];
+          	this.addInstance.style="";
+          	if(this.addInstance.serial){
+          		var serial=this.addInstance.serial;
+          		for(var i=0;i<this.allStyleItems.length;i++){
+          			if(this.allStyleItems[i].parentKey===serial){
+          				this.addStyleItems.push(this.allStyleItems[i]);
+          			}
+          		}
+          		if(this.addInstance.serial!="A"){
+          			this.addInstance.originalSerial=this.addInstance.serial;
+          		}
+          	}
+        },
+        changeAddCategory(){
+          	this.addSubCategoryItems=[];
+          	this.addInstance.subCategory="";
+          	if(this.addInstance.category){
+          		var category=this.addInstance.category;
+          		for(var i=0;i<this.allSubCategoryItems.length;i++){
+          			if(this.allSubCategoryItems[i].parentKey===category){
+          				this.addSubCategoryItems.push(this.allSubCategoryItems[i]);
+          			}
+          		}
+          	}
+        },
+        changeUpdateSerial(){
+          	this.updateStyleItems=[];
+          	//this.updateInstance.style="";
+          	if(this.updateInstance.serial){
+          		var serial=this.updateInstance.serial;
+          		for(var i=0;i<this.allStyleItems.length;i++){
+          			if(this.allStyleItems[i].parentKey===serial){
+          				this.updateStyleItems.push(this.allStyleItems[i]);
+          			}
+          		}
+          	}
+        },
+        changeUpdateCategory(){
+          	this.updateSubCategoryItems=[];
+          	//this.updateInstance.subCategory="";
+          	if(this.updateInstance.category){
+          		var category=this.updateInstance.category;
+          		for(var i=0;i<this.allSubCategoryItems.length;i++){
+          			if(this.allSubCategoryItems[i].parentKey===category){
+          				this.updateSubCategoryItems.push(this.allSubCategoryItems[i]);
+          			}
+          		}
+          	}
+        },
+		clickCancelBtn() {
+			this.showDialog = false;
+			this.updateInstance = {};
+		},
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryCombinationMasterData();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryCombinationMasterData();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryCombinationMasterData();
+    	},
+    	clickAddSaveBtn(){
+       	  this.$refs["addForm"].validate((valid) => {
+  	          if (valid) {
+  				_this = this;
+  				this.addingCombinationMasterData = true;
+	        	var url = '/CombinationMasterData/insert';
+	        	debugger;
+	        	//if(!this.addInstance.description){
+	        		var description = "";
+	        		if(this.addInstance.brand){
+	        			description+=this.brandItems[this.addInstance.brand];
+	        		}
+	        		description+="_";
+	        		if(this.addInstance.serial){
+	        			description+=this.serialItems[this.addInstance.serial];
+	        		}
+	        		description+="_";
+	        		if(this.addInstance.originalSerial){
+	        			description+=this.serialItems[this.addInstance.originalSerial];
+	        		}
+	        		description+="_";
+	        		if(this.addInstance.style){
+	        			for(var i=0; i<this.addStyleItems.length; i++){
+	        				if(this.addStyleItems[i].skey===this.addInstance.style){
+	        					description+=this.addStyleItems[i].svalue;
+	        				}
+	        			}
+	        		}
+	        		description+="_";
+	        		if(this.addInstance.goodsLevel){
+	        			description+=this.goodsLevelItems[this.addInstance.goodsLevel];
+	        		}
+	        		description+="_";
+	        		if(this.addInstance.category){
+	        			description+=this.categoryItems[this.addInstance.category];
+	        		}
+	        		description+="_";
+	        		if(this.addInstance.subCategory){
+	        			for(var i=0; i<this.addSubCategoryItems.length; i++){
+	        				if(this.addSubCategoryItems[i].skey===this.addInstance.subCategory){
+	        					description+=this.addSubCategoryItems[i].svalue;
+	        				}
+	        			}
+	        		}
+	        		this.addInstance.description=description;
+	        	//}
+				axios.post(url,this.addInstance) .then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '新增失败',message: response.data.message,offset: 100});
+				    	_this.$data.addingCombinationMasterData = false;
+				    }else{
+					    _this.$notify.info({title: '新增成功',message: '新增成功',offset: 100});
+					    _this.$data.addingCombinationMasterData = false;
+					    _this.$data.showAddDialog = false;
+					    _this.queryCombinationMasterData(_this.queryResult.currPage);
+					    _this.initAddInstance();
+				    } 
+				  }).catch(function (error) {
+				    console.log(error);
+				    _this.$notify.error({title: '错误',message: '新增数据失败，请联系系统管理员',offset: 100});
+				  });
+	   	       } else {
+		            console.log('error submit!!');
+		            return false;
+		          }
+		       });
+        },  clickSaveBtn() {
+	        this.$refs["updateForm"].validate((valid) => {
+	          if (valid) {
+				_this = this;
+				this.updatingCombinationMasterData = true;
+				
+				var description = "";
+        		if(this.updateInstance.brand){
+        			description+=this.brandItems[this.updateInstance.brand];
+        		}
+        		description+="_";
+        		if(this.updateInstance.serial){
+        			description+=this.serialItems[this.updateInstance.serial];
+        		}
+        		description+="_";
+        		if(this.updateInstance.originalSerial){
+        			description+=this.serialItems[this.updateInstance.originalSerial];
+        		}
+        		description+="_";
+        		if(this.updateInstance.style){
+        			for(var i=0; i<this.addStyleItems.length; i++){
+        				if(this.addStyleItems[i].skey===this.updateInstance.style){
+        					description+=this.addStyleItems[i].svalue;
+        				}
+        			}
+        		}
+        		description+="_";
+        		if(this.updateInstance.goodsLevel){
+        			description+=this.goodsLevelItems[this.updateInstance.goodsLevel];
+        		}
+        		description+="_";
+        		if(this.updateInstance.category){
+        			description+=this.categoryItems[this.updateInstance.category];
+        		}
+        		description+="_";
+        		if(this.updateInstance.subCategory){
+        			for(var i=0; i<this.addSubCategoryItems.length; i++){
+        				if(this.addSubCategoryItems[i].skey===this.updateInstance.subCategory){
+        					description+=this.addSubCategoryItems[i].svalue;
+        				}
+        			}
+        		}
+        		this.updateInstance.description=description;
+        		
+					var url = '/CombinationMasterData/update';
+					//console.log("修改时 ： "+JSON.stringify(this.updateInstance));
+					axios.put(url,this.updateInstance)
+					  .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '更新失败',message: response.data.message,offset: 100});
+					    	_this.$data.updatingCombinationMasterData = false;
+					    }else{
+						    _this.$notify.info({title: '更新成功',message: '更新成功',offset: 100});
+						    _this.$data.updatingCombinationMasterData = false;
+						    _this.$data.showDialog = false;
+						    _this.queryCombinationMasterData(_this.queryResult.currPage);
+					    }
+					  
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '更新数据失败，请联系系统管理员',offset: 100});
+					  });
+	          } else {
+	            console.log('error submit!!');
+	            return false;
+	          }
+	        });
+		},
+        queryCombinationMasterData() {
+          _this = this;
+
+          var url = '/CombinationMasterData/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+	      //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	      restRequest.addCondition("combinationCode",this.queryCondition.combinationCode,"like");
+	      restRequest.addCondition("brand",this.queryCondition.brand,"eq");
+          restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+          restRequest.addCondition("originalSerial",this.queryCondition.originalSerial,"eq");
+          restRequest.addCondition("style",this.queryCondition.style,"eq");
+          restRequest.addCondition("goodsLevel",this.queryCondition.goodsLevel,"eq");
+          restRequest.addCondition("category",this.queryCondition.category,"eq");
+          restRequest.addCondition("subCategory",this.queryCondition.subCategory,"eq");
+          restRequest.addCondition("enabled",this.queryCondition.enabled,"eq");
+
+          this.loading = true;
+          this.loadText = "查询数据中...";
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.loading = false;
+			    	_this.queryResult={
+				          	  totalRecordNum:0,
+				          	  currPage:1,
+				          	  pageSize:20
+				            };
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.loading = false;
+	              _this.expandCondition=false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  	  clickExportBtn(){
+	          _this = this;
+	          var url = '/CombinationMasterData/export';
+	
+	          var restRequest = new URRestRequest();
+	
+	          //可以指定排序字段
+		      //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+		      restRequest.addCondition("combinationCode",this.queryCondition.combinationCode,"like");
+		      restRequest.addCondition("brand",this.queryCondition.brand,"eq");
+	          restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+	          restRequest.addCondition("originalSerial",this.queryCondition.originalSerial,"eq");
+	          restRequest.addCondition("style",this.queryCondition.style,"eq");
+	          restRequest.addCondition("goodsLevel",this.queryCondition.goodsLevel,"eq");
+	          restRequest.addCondition("category",this.queryCondition.category,"eq");
+	          restRequest.addCondition("subCategory",this.queryCondition.subCategory,"eq");
+	          restRequest.addCondition("enabled",this.queryCondition.enabled,"eq");
+	
+	          this.loading = true;
+	          this.loadText = "导出数据中...";
+	
+	          axios.post(url,restRequest.getRequestData())
+	            .then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+				    	_this.$data.loading = false;
+				    }else{
+		              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+		              _this.$data.loading = false;
+		              downloadFile(downloadLink);
+				    }
+	
+	            })
+	            .catch(function (error) {
+	              console.log(error);
+	              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+	            });
+		  },
+          clickResetBtn() {
+            for(var key in this.queryCondition){
+            	this.queryCondition[key] = "";
+            }
+          },
+          clickImportBtn(){
+        	  this.uploadDialogVisible=true;
+          },
+          handleRowClick(val){
+        	  this.$refs.multipleTable.toggleRowSelection(val);
+          },
+          handleSelectionChange(val) {
+              this.multipleSelection = val;
+          },
+	      handleUploadSuccess(res,file,fileList){
+			  this.fileList=[];
+			  this.uploadDialogVisible=false;
+			  if(JSON.stringify(res.success)==="false"){
+			  	this.$message({message: '导入失败: ' + JSON.stringify(res.message), type: 'error' });
+			  }else{
+				  this.$message({ message: '导入成功: ' + JSON.stringify(res.message), type: 'success' });
+				   _this.queryCombinationMasterData(_this.queryResult.currPage);
+			  }
+		  },handleUploadError(err, file, fileList){
+   		      this.fileList=[];
+		      this.uploadDialogVisible=false;
+			  this.$message({message: '导入失败' + err, type: 'error' });
+		  },
+		  beforeUpload(file) {
+              let Xls = file.name.split('.');
+              if(Xls[1] === 'xls'||Xls[1] === 'xlsx'){
+                  return file
+              }else {
+                  this.$message.error('只能上传   xls、xlsx 文件');
+                  return false;
+              }
+          }
+		  
+        }
+    })
+    var dialogCallback = function() {
+    		closedialog();
+    		vm.clickSearchBtn();
+    }
+    
+  $(document).ready(function(){    
+	  $(document).keydown(function (e) {
+  	    if ( e.which == 13) {	   
+  	    	if(this_let.expandCondition===true){
+  	    		this_let.clickSearchBtn();	
+  	    	}else{
+  	    		this_let.expandCondition=true;
+  	    	}
+  	    }else if(e.which == 46){
+  	    	if(this_let.expandCondition===false){
+  	    		this_let.clickDeleteBtn();	
+  	    	}else{
+  	    		this_let.clickResetBtn();
+  	    	}
+  	    }
+  	});
+	  
+  	$(window).load(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+      });
+  	
+  	$(window).resize(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+  	});    	
+  });
+  
+    /*]]>*/
+  </script>
+</html>

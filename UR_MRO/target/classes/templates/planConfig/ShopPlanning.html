@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('参与企划店铺设置')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="display: none;"
+ v-show="isLoad" v-loading="loading" :element-loading-text="loadText">
+ <nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition"></el-switch>
+	</el-tooltip>
+</nav>
+
+ <Drawer  title="查询面板" v-model="expandCondition" width="50%">
+ <el-row>
+  <el-col :span="6">
+  <div class="ur-stack-label">年份</div>
+  <el-date-picker v-model="queryCondition.year" type="year" value-format="yyyy" size="small" placeholder="请选择"  style="width: 100%;"></el-date-picker>
+  </el-col>
+  <el-col :span="6">
+  <div class="ur-stack-label">季节</div>
+  <el-select v-model="queryCondition.season" placeholder="请选择" align="left" size="small" :clearable="true"  style="width: 100%;">
+			<el-option v-for="(item,key) in seasonItems" align="left" :label="item" :value="key"></el-option>
+	      </el-select>
+  </el-col>
+  <el-col :span="6">
+  <div class="ur-stack-label">系列</div>
+   <el-select v-model="queryCondition.serial" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+			<el-option v-for="(item,key) in serialItems" align="left" :label="item" :value="key"></el-option>
+	      </el-select>
+  </el-col>
+  <el-col :span="6">
+  <div class="ur-stack-label">是否参与企划</div>
+  <el-select v-model="queryCondition.status" placeholder="请选择" align="left" size="small" :clearable="true"  style="width: 100%;">
+				<el-option v-for="(item,key) in isOrNotItems" align="left" :label="item" :value="key"></el-option>
+			</el-select>
+  </el-col>
+ 
+  </el-row>
+   <el-row>
+   <el-col :span="6">
+  <div class="ur-stack-label">月份</div>
+  <el-select v-model="queryCondition.month" :multiple="true" align="left" size="small" style="width: 100%;" :clearable="true">
+			 		<el-option v-for="(item,index) in monthItems" :key="index" align="left"
+			          :label="item" :value="item"></el-option>
+			</el-select>
+  </el-col>
+  <el-col :span="18">
+  <div class="ur-stack-label">店铺名称</div>
+  <el-select :filterable="true" v-model="queryCondition.planShopNo" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true"  style="width: 100%;">
+					<el-option v-for="(item,key) in planShopNoItems" align="left" :label="item" :value="key"></el-option>
+				</el-select>
+  </el-col>
+  </el-row>
+  <el-row>
+  <el-col :span="18">
+  <div class="ur-stack-label">参考店铺名称</div>
+  <el-select :filterable="true" v-model="queryCondition.referToPlanShopNo" placeholder="请选择" :multiple="true" align="left" size="small" :clearable="true" style="width: 100%;">
+					<el-option v-for="(item,key) in planShopNoItems" align="left" :label="item" :value="key"></el-option>
+				</el-select>
+  </el-col>
+  </el-row>
+  <div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+  </Drawer>
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickAddBtn" icon="plus">新增</el-button>
+        <el-button v-on:click="clickUpdateBtn" icon="edit">修改</el-button>
+        <el-button v-on:click="clickDeleteBtn" icon="delete">删除</el-button>
+        <el-button v-on:click="clickImportBtn" ><i class="fa fa-upload" aria-hidden="true" style="padding-right:5px"></i>导入</el-button>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+    <el-dialog title="提示"  :visible.sync="deleteDialogVisible"  width="20%">
+	  <span>确定要删除这  {{multipleSelection.length}} 项吗?</span>
+	  <span slot="footer" class="dialog-footer">
+	    <el-button v-on:click="deleteDialogVisible = false">取 消</el-button>
+	    <el-button type="primary" v-on:click="delSummitBtn">确 定</el-button>
+	  </span>
+	</el-dialog>
+	
+	<el-dialog ref="uploadPanel" :visible.sync="uploadDialogVisible" >
+		 <a href="/template/ShopPlanningTemplate.xlsx" style="font-size: 15px; color: red;">模版下载</a>
+		  <!-- <div style="margin-top: 10px; margin-left: -5px; color: #000;">
+			 	“导入”功能是新增导入的数据，不会覆盖已有数据；故导入前，请先删除原有数据。</div> -->
+			    <div style="height: 50px;"></div>
+         		<el-form style="width: 30rem;"
+         		  class="form uploadform">
+	         		 <el-form-item>
+		         		<el-upload  ref="upload"  action="/ShopPlanning/importExcel" 
+		         		 	:before-upload="beforeUpload" :limit="1"
+			         		:file-list="fileList"  :auto-upload='true' :show-upload-list="false" 
+			         		:on-success="handleUploadSuccess"
+			         		:on-error="handleUploadError">
+			                <el-button slot="trigger"  type="primary">点击上传</el-button>
+			           		<div slot="tip" class="el-upload__tip">只能上传xls/xlsx 文件,每次只能上传一个</div>
+		            	</el-upload>
+	            	</el-form-item>
+            	</el-form>
+	</el-dialog>
+      
+	<el-pagination :page-size="20" :pager-count="4" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next">
+	</el-pagination>
+</nav>
+
+        <el-table id="data_table"  stripe="" :data="this.queryResult.data" :highlight-current-row="true" 
+        :height="this.tableHeight" ref="multipleTable" v-on:row-click="handleRowClick"
+        v-on:current-change="handleTableCurrentChange" v-on:selection-change="handleSelectionChange">
+        <el-table-column type="selection"  width="45"></el-table-column>
+          
+          <el-table-column property="year" label="年份" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="seasonName" label="季节" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="month" label="月份" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="serialName" label="系列" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="planShopNo" label="企划店铺编码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopNo" label="店铺编码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopName" label="店铺名称" min-width="180" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="statusName" label="是否参与企划" min-width="110" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="referToPlanShopNo" label="参考企划店铺编码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="referToShopNo" label="参考店铺编码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="referToShopName" label="参考店铺名称" min-width="180" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTime" label="创建时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createByName" label="创建者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyTime" label="修改时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyByName" label="修改者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          
+        </el-table>
+
+	</div>
+</div>
+
+	<!-- <el-dialog ref="addPanel" :title="dialogTitle" :visible.sync="showAddDialog" 
+			 v-loading="addingShopPlanning" :lock-scroll="false" size="large"> -->
+	<Drawer  :title="dialogTitle" v-model="showAddDialog" width="50%" :mask-closable="false">
+		<div class="card-title">
+	       <el-button v-on:click="clickAddSaveBtn"><i class="fa fa-save" 
+	       aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+	       <el-button v-on:click="clickAddCancelBtn"><i class="fa fa-eraser" 
+	       aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+	    </div>
+	
+	  <div class="card">
+	  <div class="card-body">
+	  <div class="row">
+	  	<div class="col-md-12">
+			<el-form   :rules="rules" ref="addForm" :model="addInstance" label-suffix=":">
+				<el-row>
+					<el-col :span="12">
+						  <el-form-item label="年份" prop="year">
+						  	<el-date-picker v-model="addInstance.year" type="year" value-format="yyyy" style="width: 140px;" placeholder="选择年"></el-date-picker>
+						  </el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="季节" prop="season">
+						  	<el-select v-model="addInstance.season" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,key) in seasonItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="月份" prop="month">
+						  	<el-select v-model="addInstance.month" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+							          :label="item" :value="item">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="系列" prop="serial">
+						  	<el-select v-model="addInstance.serial" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,key) in serialItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="店铺" prop="planShopNo">
+						  	<el-select :filterable="true" v-model="addInstance.planShopNo" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,key) in planShopNoItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="是否参与企划" prop="status">
+						  	<el-select v-model="addInstance.status" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,key) in isOrNotItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="参考店铺" prop="referToPlanShopNo">
+						  	<el-select :filterable="true" v-model="addInstance.referToPlanShopNo" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,key) in planShopNoItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+			</el-form>
+	  	</div>
+	  </div>
+
+	  </div>
+	  </div>
+	</Drawer>
+	<!-- </el-dialog>
+	<el-dialog ref="updatePanel" :title="dialogTitle" :visible.sync="showDialog" 
+	 v-loading="updatingShopPlanning" :lock-scroll="false" size="large"> -->
+	 <Drawer :title="dialogTitle" v-model="showDialog" width="50%" :mask-closable="false">
+		  <div class="card-title">
+	        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+	        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+	      </div>
+
+		  <div class="card">
+		  	<div class="card-body">
+
+		  <div class="row">
+		  	<div class="col-md-12">
+			<el-form   :rules="rules" ref="updateForm" :model="updateInstance" label-suffix=":">
+				<el-row>
+					<el-col :span="12">
+						  <el-form-item label="年份" prop="year">
+						  	<el-date-picker v-model="updateInstance.year" type="year" value-format="yyyy" style="width: 140px;" placeholder="选择年"></el-date-picker>
+						  </el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="季节" prop="season">
+						  	<el-select v-model="updateInstance.season" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,key) in seasonItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="月份" prop="month">
+						  	<el-select v-model="updateInstance.month" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+							          :label="item" :value="item">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="系列" prop="serial">
+						  	<el-select v-model="updateInstance.serial" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,key) in serialItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="店铺" prop="planShopNo">
+						  	<el-select :filterable="true" v-model="updateInstance.planShopNo" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,key) in planShopNoItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="是否参与企划" prop="status">
+						  	<el-select v-model="updateInstance.status" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,key) in isOrNotItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="参考店铺" prop="referToPlanShopNo">
+						  	<el-select :filterable="true" v-model="updateInstance.referToPlanShopNo" align="left" style="width: 140px;" :clearable="true">
+							 		<el-option v-for="(item,key) in planShopNoItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+			</el-form>
+	  	</div>
+	  </div>
+
+	  </div>
+	  </div>
+	</Drawer>
+	<!-- </el-dialog> -->
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+	  
+  let this_let; 
+  var vm = new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  year:'',//new Date().getFullYear()+'',
+        	  season:"",
+        	  month:[],
+        	  serial:"",
+        	  planShopNo:[],
+        	  status:"",
+        	  referToPlanShopNo:[],
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          //queryingShopPlanning:false,
+          updatingShopPlanning:false,
+          addingShopPlanning:false,
+          addInstance:{},
+          updateInstance:{},
+          isUpdate:false,
+          dialogTitle:"",
+          showDialog:false,
+          showAddDialog:false,
+          rules: {
+        	  year: [
+                  {required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  season: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  month: [
+                  { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  serial: [
+                  { max: 10, message: '长度不能超过10', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  planShopNo: [
+                  { max: 30, message: '长度不能超过30', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  status: [
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  /* referToPlanShopNo: [
+                  { max: 30, message: '长度不能超过30', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ], */
+          },
+          //importingFile:false,
+          expandCondition:false,
+          expandText:"展开查询面板",
+          //exportingFile:false,
+          searchColumn: "",
+          searchValue: "",
+          updateInstance:{},
+          isUpdate:false,
+          monthItems:[1,2,3,4,5,6,7,8,9,10,11,12],
+          seasonItems:[[${seasonItems}]],
+          serialItems:[[${serialItems}]],
+          planShopNoItems:[[${planShopNoItems}]],
+          isOrNotItems:[[${isOrNotItems}]],
+          multipleSelection: [],
+          deleteDialogVisible: false,
+          uploadDialogVisible:false,
+          fileList: [],
+          isLoad: false,
+          tableHeight:500,
+          loading:false,
+          loadText:"查询数据中。。。",
+        }
+      },
+      created: function() {
+    	  this.isLoad = true;
+    	  this_let = this;
+    	  this.queryShopPlanning();
+      },
+      methods: {
+    	initAddInstance(){
+    		this.addInstance = {
+				year:"",
+				season:"",
+				month:"",
+				serial:"",
+				planShopNo:"",
+				status:"",
+				referToPlanShopNo:"",
+            };
+    	},
+		clickAddBtn() {
+  			this.initAddInstance();
+  			this.isUpdate = false;
+  			this.dialogTitle = '新增';
+  			this.showAddDialog = true;
+  		},
+  		clickUpdateBtn() {
+			if (this.multipleSelection.length == 0) {
+        		this.$message({showClose: true,message: '请选择一条数据,  左侧复选框 选中',type: 'error'});
+                return;
+            }
+			if (this.multipleSelection.length > 1) {
+        		this.$message({showClose: true,message: '只能选择一条数据,  左侧复选框 选中',type: 'error'});
+                return;
+            }
+			_this = this;
+			var url = '/ShopPlanning/'+this.multipleSelection[0].id;
+			axios.get(url) .then(function (response) {
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '修改数据查询失败，请刷新页面重试',message: response.data.message,offset: 100});
+			    	_this.$data.addingShopPlanning = false;
+			    }else{
+			    	console.log(response.data.data)
+			    	_this.updateInstance = response.data.data;
+			    	_this.updateInstance.year = _this.updateInstance.year+'';
+			    	_this.updateInstance.status = _this.updateInstance.status+'';
+			    	_this.isUpdate = true;
+			    	_this.dialogTitle = '修改';
+			    	_this.showDialog = true;
+			    } 
+			  }).catch(function (error) {
+			    console.log(error);
+			    _this.$notify.error({title: '错误',message: '修改数据查询失败，请刷新页面重试!',offset: 100});
+			  });
+  		},
+  		clickAddCancelBtn() {
+			this.showAddDialog = false;
+			this.initAddInstance();
+		}, 
+		clickCancelBtn() {
+			this.showDialog = false;
+			this.updateInstance = {};
+		},
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryShopPlanning();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryShopPlanning();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryShopPlanning();
+    	},
+    	clickAddSaveBtn(){
+       	  this.$refs["addForm"].validate((valid) => {
+  	          if (valid) {
+  				_this = this;
+  				this.addingShopPlanning = true;
+	        	var url = '/ShopPlanning/insert';
+				axios.post(url,this.addInstance) .then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '新增失败',message: response.data.message,offset: 100});
+				    	_this.$data.addingShopPlanning = false;
+				    }else{
+					    _this.$notify.info({title: '新增成功',message: '新增成功',offset: 100});
+					    _this.$data.addingShopPlanning = false;
+					    _this.$data.showAddDialog = false;
+					    _this.queryShopPlanning(_this.queryResult.currPage);
+					    _this.initAddInstance();
+				    } 
+				  }).catch(function (error) {
+				    console.log(error);
+				    _this.$notify.error({title: '错误',message: '新增数据失败，请联系系统管理员',offset: 100});
+				  });
+	   	       } else {
+		            console.log('error submit!!');
+		            return false;
+		          }
+		       });
+        },  clickSaveBtn() {
+	        this.$refs["updateForm"].validate((valid) => {
+	          if (valid) {
+				_this = this;
+				this.updatingShopPlanning = true;
+					var url = '/ShopPlanning/update';
+					console.log("修改时 ： "+JSON.stringify(this.updateInstance));
+					axios.put(url,this.updateInstance)
+					  .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '更新失败',message: response.data.message,offset: 100});
+					    	_this.$data.updatingShopPlanning = false;
+					    }else{
+						    _this.$notify.info({title: '更新成功',message: '更新成功',offset: 100});
+						    _this.$data.updatingShopPlanning = false;
+						    _this.$data.showDialog = false;
+						    _this.queryShopPlanning(_this.queryResult.currPage);
+					    }
+					  
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '更新数据失败，请联系系统管理员',offset: 100});
+					  });
+	          } else {
+	            console.log('error submit!!');
+	            return false;
+	          }
+	        });
+		},
+        queryShopPlanning() {
+          _this = this;
+
+          var url = '/ShopPlanning/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+	      //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+          restRequest.addCondition("year",this.queryCondition.year,"eq");
+          restRequest.addCondition("season",this.queryCondition.season,"eq");
+          restRequest.addCondition("month",this.queryCondition.month.join(","),"in");
+          restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+          restRequest.addCondition("planShopNo",this.queryCondition.planShopNo.join(","),"in");
+          restRequest.addCondition("status",this.queryCondition.status,"eq");
+          restRequest.addCondition("referToPlanShopNo",this.queryCondition.referToPlanShopNo.join(","),"in");
+
+          this.loading = true;
+          this.loadText = "查询数据中...";
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+              //console.log(response);
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.loading = false;
+			    	_this.queryResult={
+				          	  totalRecordNum:0,
+				          	  currPage:1,
+				          	  pageSize:20
+				            };
+			    	
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.loading = false;
+	              _this.expandCondition=false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  	  clickExportBtn(){
+	          _this = this;
+	          var url = '/ShopPlanning/export';
+	
+	          var restRequest = new URRestRequest();
+	
+	          //可以指定排序字段
+		      //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	          restRequest.addCondition("year",this.queryCondition.year,"eq");
+	          restRequest.addCondition("season",this.queryCondition.season,"eq");
+	          restRequest.addCondition("month",this.queryCondition.month.join(","),"in");
+	          restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+	          restRequest.addCondition("planShopNo",this.queryCondition.planShopNo.join(","),"in");
+	          restRequest.addCondition("status",this.queryCondition.status,"eq");
+	          restRequest.addCondition("referToPlanShopNo",this.queryCondition.referToPlanShopNo.join(","),"in");
+	
+	          this.loading = true;
+	          this.loadText = "导出数据中...";
+	
+	          axios.post(url,restRequest.getRequestData())
+	            .then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+				    	_this.$data.loading = false;
+				    }else{
+		              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+		              _this.$data.loading = false;
+		              downloadFile(downloadLink);
+				    }
+	
+	            })
+	            .catch(function (error) {
+	              console.log(error);
+	              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+	            });
+		  },
+          clickResetBtn() {
+			  this.queryCondition.year="";
+	          this.queryCondition.season="";
+	          this.queryCondition.month=[];
+	          this.queryCondition.serial="";
+	          this.queryCondition.planShopNo=[];
+	          this.queryCondition.status="";
+	          this.queryCondition.referToPlanShopNo=[];
+            /* for(var key in this.queryCondition){
+            	this.queryCondition[key] = "";
+            } */
+          },
+          clickImportBtn(){
+        	  this.uploadDialogVisible=true;
+          },
+          clickDeleteBtn(){
+        	  if (this.multipleSelection.length == 0) {
+	        		this.$message({showClose: true,message: '请至少选择一条数据,  左侧复选框 选中',type: 'error'});
+	                return;
+	            }
+	        	this.deleteDialogVisible = true;
+          },
+          handleRowClick(val){
+        	  this.$refs.multipleTable.toggleRowSelection(val);
+          },
+          handleSelectionChange(val) {
+              this.multipleSelection = val;
+          },
+          delSummitBtn(){
+	        	this.deleteDialogVisible = false;
+	        	var ids = [];
+	        	for(var i=0;i<this.multipleSelection.length;i++) {
+	        		ids.push(this.multipleSelection[i].id);
+	        	}
+	        	
+	        	this.loading = true;
+	            this.loadText = "删除数据中...";
+               var url = '/ShopPlanning/del';
+				 axios.put(url, ids).then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '删除失败',message: response.data.message,offset: 100});
+				    	_this.$data.loading = false;
+				    }else{
+					    _this.$notify.info({title: '',message: '删除成功',offset: 100});
+					    _this.$data.loading = false;
+					    _this.queryShopPlanning(_this.queryResult.currPage);
+				    }
+				  }).catch(function (error) {
+					console.log(error);
+				    _this.$notify.error({title: '错误',message: '删除数据失败，请联系系统管理员',offset: 100});
+				    _this.$data.loading = false;
+				  });	
+	        },
+	        handleUploadSuccess(res,file,fileList){
+				this.fileList=[];
+				this.uploadDialogVisible=false;
+				if(JSON.stringify(res.success)==="false"){
+					this.$message({message: '导入失败: ' + JSON.stringify(res.message), type: 'error' });
+				}else{
+					this.$message({ message: '导入成功',type: 'success' });
+					 _this.queryShopPlanning(_this.queryResult.currPage);
+				}
+			},handleUploadError(err, file, fileList){
+   			    this.fileList=[];
+				this.uploadDialogVisible=false;
+				this.$message({message: '导入失败' + err, type: 'error' });
+			},
+			beforeUpload(file) {
+                let Xls = file.name.split('.');
+                if(Xls[1] === 'xls'||Xls[1] === 'xlsx'){
+                    return file
+                }else {
+                    this.$message.error('只能上传   xls、xlsx 文件');
+                    return false;
+                }
+            }, setScreenHeight(){
+          	  if(this.expandCondition){//展开 
+        		  $("#cardDiv").show();
+          	      this.expandText="关闭查询面板";
+        	  }else{
+        		  $("#cardDiv").hide();
+        		  this.expandText="展开查询面板";
+        	  }
+        	  this.tableHeight =   $(window).height() -$("#data_table").offset().top; 
+			}
+        }
+    })
+    var dialogCallback = function() {
+    		closedialog();
+    		vm.clickSearchBtn();
+    }
+    
+  $(document).ready(function(){    	  
+	  $(document).keydown(function (e) {
+  	    if ( e.which == 13) {	   
+  	    	if(this_let.expandCondition===true){
+  	    		this_let.clickSearchBtn();	
+  	    	}else{
+  	    		this_let.expandCondition=true;
+  	    	}
+  	    }else if(e.which == 46){
+  	    	if(this_let.expandCondition===false){
+  	    		this_let.clickDeleteBtn();	
+  	    	}else{
+  	    		this_let.clickResetBtn();
+  	    	}
+  	    }
+  	});  
+	  
+  	$(window).load(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+      });
+  	
+  	$(window).resize(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+  	});    	
+  });
+  
+    /*]]>*/
+  </script>
+</html>

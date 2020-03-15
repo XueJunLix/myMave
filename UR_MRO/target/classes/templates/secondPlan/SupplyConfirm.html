@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('二次企划供给确认表')"></head>
+
+<body>
+<div id="app" class="container-fluid" style="display: none;" v-loading="loading" :element-loading-text="loadText"
+     v-show="isLoad">
+    <nav class="navbar navbar-search">
+        <el-tooltip :content="expandText" placement="top">
+            <el-switch v-model="expandCondition"></el-switch>
+        </el-tooltip>
+
+        <el-popover
+                width="200"
+                trigger="click">
+            <div class="visibleColumns">
+                <ul>
+                    <li>
+                        <el-switch v-model="visibleColumns.createTime" inactive-text="创建时间"></el-switch>
+                    </li>
+                    <li>
+                        <el-switch v-model="visibleColumns.createByName" inactive-text="创建者"></el-switch>
+                    </li>
+                    <li>
+                        <el-switch v-model="visibleColumns.modifyTime" inactive-text="修改时间"></el-switch>
+                    </li>
+                    <li>
+                        <el-switch v-model="visibleColumns.modifyByName" inactive-text="修改者"></el-switch>
+                    </li>
+                </ul>
+            </div>
+            <el-tag size="mini" slot="reference">列 显示 / 隐藏</el-tag>
+        </el-popover>
+    </nav>
+
+    <Drawer title="查询面板" v-model="expandCondition" width="50%">
+        <el-row>
+            <el-col :span="8">
+                <div class="ur-stack-label">年份</div>
+                <el-date-picker v-model="queryCondition.year" type="year" value-format="yyyy" placeholder="选择年份"
+                                style="width: 100%;"></el-date-picker>
+            </el-col>
+            <!-- <el-col :span="8">
+                <div class="ur-stack-label">季节</div>
+                <el-select v-model="queryCondition.season" placeholder="请选择季节"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,key) in seasonItems" :key="key" align="left"
+                               :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col> -->
+            <el-col :span="8">
+                <div class="ur-stack-label">月份</div>
+                <el-select v-model="queryCondition.month" placeholder="请选择月份"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,index) in monthItems" :key="index" align="left"
+                               :label="item" :value="item"></el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="8">
+                <div class="ur-stack-label">指定款</div>
+                <el-select v-model="queryCondition.specifyType" placeholder="请选择指定款"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,key) in specifyTypeItems" :key="key" align="left"
+                               :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col>
+        </el-row>
+        <el-row>
+
+            <el-col :span="8">
+                <div class="ur-stack-label">品牌</div>
+                <el-select v-model="queryCondition.brand" placeholder="请选择品牌"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,key) in brandItems" :key="key" align="left"
+                               :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="8">
+                <div class="ur-stack-label">系列</div>
+                <el-select v-model="queryCondition.serial" placeholder="请选择系列" filterable="true"
+                           align="left" size="small" :clearable="true" v-on:change="changeSerial" style="width: 100%;">
+                    <el-option v-for="(item,key) in serialItems" :key="key" align="left"
+                               :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="8">
+                <div class="ur-stack-label">原系列</div>
+                <el-select v-model="queryCondition.originalSerial" placeholder="请选择原系列" filterable="true"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,key) in serialItems" :key="key" align="left"
+                               :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+                <div class="ur-stack-label">风格</div>
+                <el-select v-model="queryCondition.style" placeholder="请选择风格" filterable="true"
+                           align="left" size="small" :clearable="true" :multiple="true" style="width: 100%;">
+                    <el-option v-for="(item,index) in styleItems" :key="index" align="left"
+                               :label="item.svalue" :value="item.skey"></el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="12">
+                <div class="ur-stack-label">商品层</div>
+                <el-select v-model="queryCondition.goodsLevel" placeholder="请选择商品层" :multiple="true" filterable="true"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,key) in goodsLevelItems" :key="key" align="left"
+                               :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+                <div class="ur-stack-label">品类</div>
+                <el-select v-model="queryCondition.category" placeholder="请选择品类" :multiple="true"
+                           v-on:change="changeCategory" filterable="true"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,key) in categoryItems" :key="key" align="left"
+                               :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="12">
+                <div class="ur-stack-label">中品类</div>
+                <el-select v-model="queryCondition.subCategory" placeholder="请选择品类" :multiple="true" filterable="true"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,index)  in subCategoryItems" :key="index" align="left"
+                               :label="item.svalue" :value="item.skey"></el-option>
+                </el-select>
+            </el-col>
+        </el-row>
+		<el-row>
+		  <el-col :span="12">
+		  <div class="ur-stack-label">唯一码</div>
+		  <el-input v-model="queryCondition.uniqueCode" placeholder="唯一码" style="width: 100%;"></el-input>
+		  </el-col>
+		  <el-col :span="12">
+		  <div class="ur-stack-label">设计号</div>
+		  <el-input v-model="queryCondition.designNo" placeholder="设计号" style="width: 100%;"></el-input>
+		  </el-col>
+		</el-row>
+		<el-row>
+            <el-col :span="8">
+                <div class="ur-stack-label">是否供给</div>
+                <el-select v-model="queryCondition.isSupply" placeholder="请选择"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,key) in isOrNotItems" :key="key" align="left"
+                               :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="8">
+                <div class="ur-stack-label">是否特殊款</div>
+                <el-select v-model="queryCondition.isSpecify" placeholder="请选择"
+                           align="left" size="small" :clearable="true" style="width: 100%;">
+                    <el-option v-for="(item,key) in isOrNotItems" :key="key" align="left"
+                               :label="item" :value="key"></el-option>
+                </el-select>
+            </el-col>
+        </el-row>
+        <div class="search-panel-btn">
+            <el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true"
+                                                      style="padding-right:5px"></i>查询
+            </el-button>
+            <el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true"
+                                                     style="padding-right:5px"></i>重置
+            </el-button>
+        </div>
+    </Drawer>
+    <div class="clearfix" style="margin-bottom: 5px;"></div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <el-dialog :visible.sync="uploadDialogVisible">
+                <a href="template/SupplyConfirmTemplate.xlsx" style="font-size: 15px; color: red;">模版下载</a>
+                <div style="margin-top: 10px; margin-left: -5px; color: #000;">请按同一年份，季节，月份，系列的数据导入。</div>
+                <div style="height: 50px;"></div>
+                <el-form style="width: 30rem;" v-loading="importing" element-loading-text="导入数据中，请耐心等待..."
+                         class="form uploadform">
+                    <el-form-item>
+                        <el-upload ref="upload" :action="importActionUrl"
+                                   :before-upload="beforeUpload" :limit="1"
+                                   :file-list="fileList" :auto-upload='true' :show-upload-list="false"
+                                   :on-success="handleUploadSuccess"
+                                   :on-error="handleUploadError">
+                            <el-button slot="trigger" type="primary" :disabled="importing">点击上传</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传xls/xlsx 文件,每次只能上传一个</div>
+                        </el-upload>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
+
+
+            <!-- 更新begin -->
+            <el-dialog :title="showCalculateTitle" v-if="showCalculate===true" :visible.sync="showCalculateDialog"
+                       :close-on-click-modal="false">
+                <el-form :inline="true" label-position="right" v-loading="calculateData"
+                         :element-loading-text="taskResult.message">
+                    <el-form-item label="年份" label-width="70px">
+                        <el-date-picker v-model="calculateCondition.year" size="small" type="year" value-format="yyyy"
+                                        placeholder="选择年份" style="width: 100%;"></el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="月份" label-width="70px">
+                        <el-select v-model="calculateCondition.month" placeholder="请选择月份"
+                                   align="left" size="small" :clearable="true" style="width: 100%;">
+                            <el-option v-for="(item,index) in monthItems" :key="index" align="left"
+                                       :label="item" :value="item"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="系列" label-width="70px">
+                        <el-select v-model="calculateCondition.serial" placeholder="请选择系列"
+                                   align="left" size="small" :clearable="true" style="width: 100%;">
+                            <el-option v-for="(item,key) in serialItems" :key="key" align="left"
+                                       :label="item" :value="key"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+                <div v-if="calculateData===true" style="padding-top: 20px;">
+                    <el-progress :text-inside="true" :stroke-width="20" :percentage="taskResult.percentage"
+                                 :status="taskResult.progressStatus"></el-progress>
+                </div>
+                <span slot="footer" class="dialog-footer">
+				    <el-button v-on:click="showCalculateDialog = false" :disabled="calculateData">关闭</el-button>
+				    <el-button type="primary" v-on:click="calculate" :disabled="calculateData">开始{{showCalculateTitle}}</el-button>
+				</span>
+            </el-dialog>
+            <!-- 更新end-->
+            <nav class="navbar">
+
+                <ul class="nav">
+                    <li>
+                        <el-button v-if="showCalculate===true" v-on:click="clickCalculateBtn('suggest')">
+                        	<i class="fa fa-calculator" aria-hidden="true" style="padding-right:5px"></i>建议供给计算
+                        </el-button>
+                        <el-button v-on:click="clickImportBtn"><i class="fa fa-upload" aria-hidden="true"
+                                                                  style="padding-right:5px"></i>导入
+                        </el-button>
+                        <el-button v-on:click="clickExportBtn()"><i class="fa fa-download" aria-hidden="true"
+                                                                    style="padding-right:5px"></i>导出
+                        </el-button>
+                        <!-- <el-button v-on:click="clickDeleteBtn"><i class="fa fa-trash" aria-hidden="true"
+                                                                  style="padding-right:5px"></i>删除
+                        </el-button> -->
+                        <el-button v-if="showCalculate===true" v-on:click="clickCalculateBtn('update')"><i
+                                class="fa fa-refresh" aria-hidden="true" style="padding-right:5px"></i>资料更新
+                        </el-button>
+                    </li>
+                </ul>
+                <el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage"
+                               v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange"
+                               layout="total, sizes, prev, pager, next, jumper">
+                </el-pagination>
+            </nav>
+
+            <el-table id="data_table" stripe="" :data="this.queryResult.data" :border="true"
+                      :highlight-current-row="true" :height="this.tableHeight">
+              
+              <el-table-column property="brandName" label="品牌" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="year" label="年" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="seasonName" label="季节" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="serialName" label="系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column property="originalSerialName" label="原系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column property="month" label="月" min-width="60" :show-overflow-tooltip="true"></el-table-column>          
+	          <el-table-column property="orderNo" label="单号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="uniqueCode" label="唯一码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column property="designNo" label="设计号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column property="goodsNo" label="商品编码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column property="colorNoName" label="色号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column label="图片" align="center" min-width="90">
+			      <template scope="scope">
+			      <img  :src="getIMG(scope.row.goodsNo, scope.row.colorNo)" v-on:click="showCYImg(scope.row.goodsNo, scope.row.colorNo)"
+						 style="width:80px; height: 100px; max-width:80px; max-height: 100px; border: 1px solid #eee;cursor:pointer !important;"  /> 
+			      </template>          
+	          </el-table-column>  
+	          <el-table-column property="marketingDate" label="上市日期" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="orderTypeName" label="订单属性" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="styleName" label="风格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="goodsLevelName" label="商品层" min-width="70" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="categoryName" label="品类" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="subCategoryName" label="中品类" min-width="80" :show-overflow-tooltip="true"></el-table-column>  
+			  <el-table-column property="displayGenreName" label="陈列类型" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="specifyTypeName" label="指定款" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="isSpecifyName" label="特殊款" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="secondPlanModuleNum" label="二次企划模块号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  <el-table-column property="secondPlanModuleLevel" label="二次企划模块等级" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  <el-table-column property="price" label="企划单价" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  <el-table-column property="intDepth" label="企划数量" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  <el-table-column property="planAmount" label="企划金额" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="supplyPrice" label="单价" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  
+	     	  <el-table-column property="enabledDistributionQty" label="可配货数" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  <el-table-column property="actualQty" label="入仓数" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  <el-table-column property="bookingDeliveryQty" label="预约送货" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  <el-table-column property="realCutQty" label="实裁" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  <el-table-column property="orderMarkingQty" label="制单" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  <el-table-column property="orderQty" label="下单数" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  
+	     	  <el-table-column property="enabledDistributionAmount" label="可配金额" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  <!-- <el-table-column property="supplyDepth" label="下单数量" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	     	  <el-table-column property="supplyAmount" label="下单金额" min-width="120" :show-overflow-tooltip="true"></el-table-column> -->
+     	  	  <el-table-column property="onlinePlanDepth" label="电商企划数量" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+     	   	  <el-table-column property="onlinePlanAmount" label="电商企划金额" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+     	   	  <el-table-column property="overseasOfflinePlanDepth" label="海外线下企划数量" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+     	   	  <el-table-column property="overseasOfflinePlanAmount" label="海外线下企划金额" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+     	      <el-table-column property="reserveDepth" label="预留数量" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+     	   	  <el-table-column property="reserveAmount" label="预留金额" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+     	   	  <el-table-column property="internalOfflineDepth" label="国内线下可配数量" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+     	   	  <el-table-column property="internalOfflineAmount" label="国内线下可配金额" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+     	      <el-table-column property="isInPlanName" label="企划内" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="priorityDistributionAreaName" label="优先配货区域" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="isSupplyName" label="作为供给" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+	         
+                <el-table-column v-if="visibleColumns.createTime" property="createTime" label="创建时间" min-width="150"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column v-if="visibleColumns.createByName" property="createByName" label="创建者" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column v-if="visibleColumns.modifyTime" property="modifyTime" label="修改时间" min-width="150"
+                                 :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column v-if="visibleColumns.modifyByName" property="modifyByName" label="修改者" min-width="120"
+                                 :show-overflow-tooltip="true"></el-table-column>
+            </el-table>
+
+        </div>
+    </div>
+</div>
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                queryCondition: {
+                    year: "",
+                    season: "",
+                    month: "",
+                    /* rangeType: "planShopNo",
+                    rangeValue: "", */
+                    brand: "",
+                    serial: "",
+                    originalSerial: "",
+                    style: [],
+                    goodsLevel: [],
+                    category: [],
+                    subCategory: [],
+                    /* goodsArea: [],
+                    levelCode: [] */
+                    specifyType: "",
+                    isSupply: "",
+                    uniqueCode:"",
+                    designNo:"",
+                    isSpecify: "",
+                },
+                queryResult: {
+                    totalRecordNum: 0,
+                    currPage: 1,
+                    pageSize: 20
+                },
+                expandText: "展开查询面板",
+                expandCondition: false,
+                tableHeight: 500,
+                monthItems: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                seasonItems: [[${seasonItems}]],
+                serialItems: [[${serialItems}]],
+                allStyleItems: [[${styleItems}]],
+                styleItems: [],
+                goodsLevelItems: [[${goodsLevelItems}]],
+                categoryItems: [[${categoryItems}]],
+                allSubCategoryItems: [[${subCategoryItems}]],
+                subCategoryItems: [],
+                /* goodsAreaItems: [[${goodsAreaItems}]],
+                levelCodeItems: [[${levelCodeItems}]], */
+                brandItems: [[${brandItems}]],
+                specifyTypeItems: [[${specifyTypeItems}]],
+                isOrNotItems: [[${isOrNotItems}]],
+                
+                /* dataTypeItems: [[${dataTypeItems}]],
+                rangeTypeItems: [[${rangeTypeItems}]], */
+                loading: false,
+                loadText: "查询数据中。。。",
+                uploadDialogVisible: false,
+                fileList: [],
+                importing: false,
+                dataType: 'calculate_result',
+                visibleColumns: {
+                    dataTypeName: false,
+                    createTime: false,
+                    createByName: false,
+                    modifyTime: true,
+                    modifyByName: true,
+                },
+                valueColumns: [[${valueColumns}]],
+                importActionUrl: "SupplyConfirm/importExcel",
+                /* allRangeValueItems: [[${allRangeValueItems}]],
+                rangeValueItems: [], */
+                showCalculate: true,
+                taskResult: {
+                    status: "",
+                    message: "",
+                    percentage: 0,
+                    progressStatus: ""
+                },
+                showCalculateDialog: false,
+                calculateData: false,
+                calculateCondition: {
+                    year: "",
+                    month: "",
+                    serial: "",
+                },
+                showCalculateTitle: "",
+                showCalculateType: "",
+                showCalculateUrl: "",
+                /* countryItems: [[${countryItems}]],
+                monthEmpty: [[${monthEmpty}]], */
+            }
+        },
+        created: function () {
+            this.isLoad = true;
+            this_let = this;
+            this.queryCondition.year = new Date();
+            /* this.changeRangeType(); */
+        },
+        methods: {
+            handleCurrentChange(val) {
+                this.queryResult.currPage = val;
+                this.queryData();
+            },
+            handleSizeChange(val) {
+                this.queryResult.pageSize = val;
+                this.queryData();
+            },
+            getIMG(goodsNo, colorNo){
+        		//var goodsNo = skuNo.substring(0,skuNo.length-2);
+        		//var colorNo = skuNo.substring(goodsNo.length,skuNo.length);
+        		var url = 'http://pic.ur.com.cn/admin/sys/file/cyImageOnZ?designNoOrBarCode='+goodsNo+'_M&color='+colorNo;
+        		return url; 		
+        	},
+        	showCYImg(goodsNo, colorNo){    	
+        		//var goodsNo = skuNo.substring(0,skuNo.length-2);
+        		//var colorNo = skuNo.substring(goodsNo.length,skuNo.length);
+        		this.bigImgUrl = 'http://pic.ur.com.cn/admin/sys/file/cyImageOnZ?designNoOrBarCode='+goodsNo+'_M&color='+colorNo;
+        		this.imgDialogVisible=true;    		
+        	},
+            clickSearchBtn() {
+                this.queryResult.currPage = 1;
+                this.queryData();
+            },
+            changeSerial() {
+                this.styleItems = [];
+                this.queryCondition.style = [];
+                if (this.queryCondition.serial) {
+                    var serial = this.queryCondition.serial;
+                    for (var i = 0; i < this.allStyleItems.length; i++) {
+                        if (this.allStyleItems[i].parentKey === serial) {
+                            this.styleItems.push(this.allStyleItems[i]);
+                        }
+                    }
+                }
+            },
+            changeCategory() {
+                this.subCategoryItems = [];
+                if (this.queryCondition.category) {
+                    var category = this.queryCondition.category;
+                    for (var i = 0; i < this.allSubCategoryItems.length; i++) {
+                        for (var j = 0; j < category.length; j++) {
+                            if (category[j] === this.allSubCategoryItems[i].parentKey) {
+                                this.subCategoryItems.push(this.allSubCategoryItems[i]);
+                            }
+                        }
+                    }
+                }
+            },
+            queryData() {
+                _this = this;
+
+                var url = '/SupplyConfirm/search';
+                var page = this.queryResult.currPage;
+
+                if (page == null) {
+                    page = 1;
+                }
+
+                var restRequest = new URRestRequest();
+                restRequest.setCurrPage(page);
+                restRequest.setPageSize(this.queryResult.pageSize);
+
+                //可以指定排序字段
+                //restRequest.addOrderBy("columnName??? desc");
+				  // 按年份、季节（秋冬、春夏）、系列、原系列、风格、商品层、品类、中品类降序				
+	   	          restRequest.addOrderBy("a.year desc");
+	   	          restRequest.addOrderBy("b.season desc");
+	   	          restRequest.addOrderBy("b.serial desc");
+	   	          restRequest.addOrderBy("b.original_serial desc");
+	   	          restRequest.addOrderBy("b.style desc");
+	   	          restRequest.addOrderBy("b.goods_level desc");
+	   	          restRequest.addOrderBy("b.category desc");
+	   	          restRequest.addOrderBy("b.sub_category desc");
+
+                let year = '';
+                if (typeof this.queryCondition.year == 'object') year = this.queryCondition.year.getFullYear();
+                else year = this.queryCondition.year;
+
+                //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+                restRequest.addCondition("a.year", year, "eq");
+                /* restRequest.addCondition("a.season", this.queryCondition.season, "eq"); */
+                restRequest.addCondition("a.month", this.queryCondition.month, "eq");
+                restRequest.addCondition("a.specify_type", this.queryCondition.specifyType, "eq");
+                restRequest.addCondition("a.is_supply", this.queryCondition.isSupply, "eq");
+                restRequest.addCondition("b.brand", this.queryCondition.brand, "eq");
+                restRequest.addCondition("b.serial", this.queryCondition.serial, "eq");
+                restRequest.addCondition("b.original_serial", this.queryCondition.originalSerial, "eq");
+                restRequest.addCondition("b.style", this.queryCondition.style.join(","), "in");
+                restRequest.addCondition("b.goods_level", this.queryCondition.goodsLevel.join(","), "in");
+                restRequest.addCondition("b.category", this.queryCondition.category.join(","), "in");
+                restRequest.addCondition("b.sub_category", this.queryCondition.subCategory.join(","), "in");
+                restRequest.addCondition("b.unique_code", this.queryCondition.uniqueCode, "eq");
+                restRequest.addCondition("b.design_no", this.queryCondition.designNo, "eq");
+                restRequest.addCondition("a.is_specify", this.queryCondition.isSpecify, "eq");
+                
+
+                this.loading = true;
+                this.loadText = "查询数据中...";
+
+                axios.post(url, restRequest.getRequestData())
+                    .then(function (response) {
+                        _this.$data.queryResult.data = [];
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.error({title: '查询数据失败', message: response.data.message, offset: 100});
+                            _this.$data.loading = false;
+                        } else {
+                            if (!response.data.data) {
+                                _this.$notify({title: '警告', message: "没有满足查询条件的数据！", offset: 100, type: 'warning'});
+                            }
+                            _this.$data.queryResult = response.data;
+                            _this.$data.loading = false;
+                            _this.expandCondition = false;
+                        }
+                    })
+                    .catch(function (error) {
+                        _this.$notify.error({title: '错误', message: '查询数据失败，请联系系统管理员', offset: 100});
+                    });
+            },
+            clickExportBtn() {
+                _this = this;
+                var url = '/SupplyConfirm/export';
+                if (!this.queryCondition.year) {
+                    this.$notify({title: '警告', message: "请选择年份！", offset: 100, type: 'warning'});
+                    return;
+                }
+                /* if (!this.queryCondition.month && this.monthEmpty === 'false') {
+                    this.$notify({title: '警告', message: "请选择月份！", offset: 100, type: 'warning'});
+                    return;
+                } */
+                if (!this.queryResult.data) {
+                    this.$notify({title: '警告', message: "请先查询出数据再导出！", offset: 100, type: 'warning'});
+                    return;
+                }
+
+                let year = '';
+                if (typeof this.queryCondition.year == 'object') year = this.queryCondition.year.getFullYear();
+                else year = this.queryCondition.year;
+
+                var restRequest = new URRestRequest();
+                //可以指定排序字段
+                //restRequest.addOrderBy("columnName??? desc");
+				  // 按年份、季节（秋冬、春夏）、系列、原系列、风格、商品层、品类、中品类降序				
+	   	          restRequest.addOrderBy("a.year desc");
+	   	          restRequest.addOrderBy("b.season desc");
+	   	          restRequest.addOrderBy("b.serial desc");
+	   	          restRequest.addOrderBy("b.original_serial desc");
+	   	          restRequest.addOrderBy("b.style desc");
+	   	          restRequest.addOrderBy("b.goods_level desc");
+	   	          restRequest.addOrderBy("b.category desc");
+	   	          restRequest.addOrderBy("b.sub_category desc");
+	   	          
+                restRequest.addCondition("a.year", year, "eq");
+                /* restRequest.addCondition("a.season", this.queryCondition.season, "eq"); */
+                restRequest.addCondition("a.month", this.queryCondition.month, "eq");
+                restRequest.addCondition("a.specify_type", this.queryCondition.specifyType, "eq");
+                restRequest.addCondition("a.is_supply", this.queryCondition.isSupply, "eq");
+                restRequest.addCondition("b.brand", this.queryCondition.brand, "eq");
+                restRequest.addCondition("b.serial", this.queryCondition.serial, "eq");
+                restRequest.addCondition("b.original_serial", this.queryCondition.originalSerial, "eq");
+                restRequest.addCondition("b.style", this.queryCondition.style.join(","), "in");
+                restRequest.addCondition("b.goods_level", this.queryCondition.goodsLevel.join(","), "in");
+                restRequest.addCondition("b.category", this.queryCondition.category.join(","), "in");
+                restRequest.addCondition("b.sub_category", this.queryCondition.subCategory.join(","), "in");
+                restRequest.addCondition("b.unique_code", this.queryCondition.uniqueCode, "eq");
+                restRequest.addCondition("b.design_no", this.queryCondition.designNo, "eq");
+                restRequest.addCondition("a.is_specify", this.queryCondition.isSpecify, "eq");
+
+                this.$data.loading = true;
+                this.$data.loadText = "导出数据中...";
+
+                axios.post(url, restRequest.getRequestData())
+                    .then(function (response) {
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.error({title: '导出失败', message: response.data.message, offset: 100});
+                            _this.$data.loading = false;
+                        } else {
+                            //var downloadLink = "/DownloadFile/" + response.data.data.fileName + "/" + response.data.data.extName;
+                            _this.$data.loading = false;
+                            //downloadFile(downloadLink);
+                            downloadFileReName(response.data.data.fileName,response.data.data.extName,'二次企划供给确认表');
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        _this.$notify.error({title: '错误', message: '导出数据失败，请联系系统管理员', offset: 100});
+                    });
+            },
+            clickResetBtn() {
+                this.queryCondition.year = "";
+                this.queryCondition.season = "";
+                this.queryCondition.month = "";
+                this.queryCondition.brand = "";
+                this.queryCondition.serial = "";
+                this.queryCondition.originalSerial = "";
+                this.queryCondition.style = [];
+                this.queryCondition.goodsLevel = [];
+                this.queryCondition.category = [];
+                this.queryCondition.subCategory = [];
+                this.queryCondition.specifyType = "";
+                this.queryCondition.isSupply = "";
+                this.queryCondition.uniqueCode = "";
+                this.queryCondition.designNo = "";
+                this.queryCondition.isSpecify = "";
+            },
+            /* clickDeleteBtn() {
+
+                if (!this.queryCondition.year) {
+                    this.$notify({title: '警告', message: "请选择年份！", offset: 100, type: 'warning'});
+                    return;
+                }
+                if (!this.queryCondition.month && this.monthEmpty === 'false') {
+                    this.$notify({title: '警告', message: "请选择月份！", offset: 100, type: 'warning'});
+                    return;
+                }
+                if (!this.queryCondition.serial) {
+                    this.$notify({title: '警告', message: "请选择系列！", offset: 100, type: 'warning'});
+                    return;
+                }
+                if (!this.queryResult.data) {
+                    this.$notify({title: '警告', message: "请先查询出数据再删除！", offset: 100, type: 'warning'});
+                    return;
+                }
+
+                this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }).then(() => {
+                    this.deleteData();
+                }).catch(() => {
+                });
+            },
+            deleteData() {
+                _this = this;
+                var url = '/PlanCalculateResult/delete';
+                var restRequest = new URRestRequest();
+                let year = '';
+                if (typeof this.queryCondition.year == 'object') year = this.queryCondition.year.getFullYear();
+                else year = this.queryCondition.year;
+
+                restRequest.addCondition("a.data_type", this.dataType, "eq");
+                restRequest.addCondition("a.year", year, "eq");
+                restRequest.addCondition("a.season", this.queryCondition.season, "eq");
+                restRequest.addCondition("a.month", this.queryCondition.month, "eq");
+                restRequest.addCondition("a.range_type", this.queryCondition.rangeType, "eq");
+                restRequest.addCondition("a.range_value", this.queryCondition.rangeValue.join(","),"in");
+                restRequest.addCondition("b.brand", this.queryCondition.brand, "eq");
+                restRequest.addCondition("b.serial", this.queryCondition.serial, "eq");
+                restRequest.addCondition("b.original_serial", this.queryCondition.originalSerial, "eq");
+                restRequest.addCondition("b.style", this.queryCondition.style.join(","), "in");
+                restRequest.addCondition("b.goods_level", this.queryCondition.goodsLevel.join(","), "in");
+                restRequest.addCondition("b.category", this.queryCondition.category.join(","), "in");
+                restRequest.addCondition("b.sub_category", this.queryCondition.subCategory.join(","), "in");
+                restRequest.addCondition("goods_area", this.queryCondition.goodsArea.join(","), "in");
+                restRequest.addCondition("level_code", this.queryCondition.levelCode.join(","), "in");
+
+                this.loading = true;
+                this.loadText = "删除数据中...";
+
+                axios.post(url, restRequest.getRequestData())
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.error({title: '删除失败', message: response.data.message, offset: 100});
+                            _this.$data.loading = false;
+                        } else {
+                            _this.$notify({
+                                title: '删除成功',
+                                message: response.data.message,
+                                offset: 100,
+                                type: "success"
+                            });
+                            _this.queryResult.currPage = 1;
+                            _this.queryData();
+                            _this.$data.loading = false;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        _this.$notify.error({title: '错误', message: '删除失败，请联系系统管理员', offset: 100});
+                    });
+            }, */
+            clickImportBtn() {
+                this.uploadDialogVisible = true;
+            }
+            ,
+            beforeUpload(file) {
+                let Xls = file.name.split('.');
+                if (Xls[1] === 'xls' || Xls[1] === 'xlsx') {
+                    this.importing = true;
+                    return file
+                } else {
+                    this.$message.error('只能上传   xls、xlsx 文件');
+                    return false;
+                }
+            },
+            handleUploadSuccess(res, file, fileList) {
+                this.fileList = [];
+                this.uploadDialogVisible = false;
+                this.importing = false;
+                if (JSON.stringify(res.success) === "false") {
+                    this.$message({
+                        message: '导入失败: ' + JSON.stringify(res.message),
+                        type: 'error',
+                        duration: 0,
+                        showClose: true
+                    });
+                } else {
+                    this.$message({message: JSON.stringify(res.message), type: 'success'});
+                    this.queryResult.currPage = 1;
+                    this.clickResetBtn();
+                    this.queryData();
+                }
+            },
+            handleUploadError(err, file, fileList) {
+                this.importing = false;
+                this.fileList = [];
+                this.uploadDialogVisible = false;
+                this.$message({message: '导入失败' + err, type: 'error'});
+            },
+            /* changeRangeType() {
+                this.rangeValueItems = [];
+                this.queryCondition.rangeValue = "";
+                if (this.queryCondition.rangeType) {
+                    var rangeType = this.queryCondition.rangeType;
+                    console.log(this.allRangeValueItems);
+                    this.rangeValueItems = this.allRangeValueItems[rangeType];
+                }
+            }, */
+            clickCalculateBtn(type) {
+                this.showCalculateDialog = true;
+                this.showCalculateType = type;
+                if("suggest"===this.showCalculateType){
+                    this.showCalculateTitle = "建议供给计算";
+                    this.showCalculateUrl = "/SupplyConfirm/createSuggestSupplyConfirm";
+                }else if("update"===this.showCalculateType){
+                    this.showCalculateTitle = "资料更新";
+                    this.showCalculateUrl = "/SupplyConfirm/updateSupplyConfirm";
+                }
+            },
+            /* valueFormater(row, column, cellValue) {
+                if (!cellValue) return cellValue;
+                if (column.property == 'value4' || column.property == 'value6' || column.property == 'value9') cellValue += '%';
+                return cellValue;
+            }, */
+            calculate() {
+                this.taskResult = {
+                    status: "",
+                    message: this.showCalculateTitle+"，请耐心等待！",
+                    percentage: 0,
+                    progressStatus: ""
+                };
+                if (!this.calculateCondition.year) {
+                    this.$notify({title: '警告', message: "请选择年份！", offset: 100, type: 'warning'});
+                    return;
+                }
+                if (!this.calculateCondition.month) {
+                    this.$notify({title: '警告', message: "请选择月份！", offset: 100, type: 'warning'});
+                    return;
+                }
+                if (!this.calculateCondition.serial) {
+                    this.$notify({title: '警告', message: "请选择系列！", offset: 100, type: 'warning'});
+                    return;
+                }
+                var _this = this;
+                this.$confirm('确定'+this.showCalculateTitle+'吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.calculateData = true;
+                    var url = _this.showCalculateUrl + "/" + this.calculateCondition.year + "/" + this.calculateCondition.month + "/" + this.calculateCondition.serial;
+                    axios.post(url)
+                        .then(function (response) {
+                            if (response.data.code == null || response.data.code != 0) {
+                                _this.$notify.error({
+                                    title: '操作失败',
+                                    message: response.data.message,
+                                    offset: 100,
+                                    duration: 0
+                                });
+                                _this.calculateData = false;
+                            } else {
+
+                                _this.taskResult.message = response.data.message;
+                                var redisKey = response.data.data;
+                                var refreshMsg = setInterval(function () {
+                                    axios.post("/RedisMessage/getMsg/" + redisKey, [])
+                                        .then(function (response) {
+                                            console.log(response.data);
+                                            if (response.data.code == null || response.data.code != 0) {
+                                                _this.calculateData = false;
+                                            } else {
+                                                if (response.data.data.status === 'end') {
+                                                    _this.calculateData = false;
+                                                    clearInterval(refreshMsg);
+                                                    if (response.data.data.progressStatus === 'success') {
+                                                        _this.$notify.success({
+                                                            title: '成功',
+                                                            message: response.data.data.message,
+                                                            offset: 100,
+                                                            duration: 0
+                                                        });
+                                                    } else {
+                                                        _this.$notify.error({
+                                                            title: '失败',
+                                                            message: response.data.data.message,
+                                                            offset: 100,
+                                                            duration: 0
+                                                        });
+                                                    }
+                                                } else {
+                                                    _this.taskResult = response.data.data;
+                                                }
+                                            }
+                                        });
+                                }, 5000);
+                            }
+                        })
+                        .catch(function (error) {
+                            _this.calculateData = false;
+                            _this.$notify.error({title: '错误', message: '更新失败，请联系系统管理员', offset: 100, duration: 0});
+                        });
+                }).catch(() => {
+
+                });
+            },
+            
+        }
+    });
+    $(document).ready(function () {
+        $(document).keydown(function (e) {
+            if (e.which == 13) {
+                if (this_let.expandCondition === true) {
+                    this_let.clickSearchBtn();
+                } else {
+                    this_let.expandCondition = true;
+                }
+            } else if (e.which == 46) {
+                /* if (this_let.expandCondition === false) {
+                    this_let.clickDeleteBtn();
+                } else {
+                    this_let.clickResetBtn();
+                } */
+            }
+        });
+
+        $(window).load(function () {
+            this_let.tableHeight = $(window).height() - $("#data_table").offset().top - 1;
+        });
+
+        $(window).resize(function () {
+            this_let.tableHeight = $(window).height() - $("#data_table").offset().top - 1;
+        });
+    });
+    /*]]>*/
+</script>
+</html>

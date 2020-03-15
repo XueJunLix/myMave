@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head th:include="common/common_head :: commonHeader('用户组管理')"></head>
+<style>
+    #app{
+        /*min-width: 1200px;*/
+        /*width: 1200px;*/
+    }
+.article_tit{
+
+    display: block;
+    /* height: 40px; */
+    line-height: 40px;
+    background: #fbfbfb;
+    padding-left: 10px;
+    font-weight: bolder;
+    /* margin: 5px 0; */
+    border-bottom: 1px dashed #ececec;
+    margin-bottom: 10px;
+}
+    .card-title{
+        padding: 10px ;
+        padding-bottom:0px;
+    }
+    [v-cloak]{
+        display: none;
+    }
+    .itembox{
+        border: 1px solid #e4e4e4;
+        padding-top: 10px;
+
+    }
+    .usercheck{
+        margin: 10px;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    .el-checkbox{
+        margin: 5px;
+        background: white;
+    }
+    .el-checkbox.is-bordered.el-checkbox--medium{
+        margin-left: 10px;
+    }
+    .el-checkbox.is-bordered+.el-checkbox.is-bordered{
+        margin-left: 5px;
+    }
+
+/***用户列表标签***/
+  .el-tag + .el-tag {
+    margin: 10px;
+  }
+  .button-new-tag {
+    margin: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+    cursor: pointer;
+  }
+  
+	.padding_div {
+    	padding-left: 15px;
+    }
+    .itbox{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+.itbox2{
+    min-width: 20%;
+    width: 25%;
+    height: 40px;
+    background: white;
+    
+}
+.notestyle{
+	font-family: "Microsoft YaHei";
+	font-size: 10px;
+	color: red;
+}
+
+/*自定义transfer宽度和考度样式*/
+.el-transfer-panel {
+    border: 1px solid #EBEEF5;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #FFF;
+    display: inline-block;
+    vertical-align: middle;
+    width: 300px;
+    height: 350px;
+    box-sizing: border-box;
+    position: relative;
+}
+.el-transfer-panel__list.is-filterable {
+    height: 240px;
+    padding-top: 0;
+}
+
+</style>
+<body class="article_bg">
+
+<div id="app" v-cloak  style="padding: 10px">
+    <p class="article_tit">用户组管理</p>
+	<div class="clearfix"></div>
+    <div class="card-title">
+        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存
+        </el-button>
+        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消
+        </el-button>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <el-form label-width="150px" label-suffix=":" :rules="rules" ref="updateForm" :model="adminUserGroup">
+                        <el-row>
+                            <el-form-item label="用户组编码" prop="groupCode" :clearable="true">
+                                <el-input v-model="adminUserGroup.groupCode" placeholder="用户组编码" clearable="true"
+                                          style="width:400px"></el-input>
+                                <span class="notestyle">格式：MRO_xxx</span>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="用户组名称" prop="groupName" :clearable="true">
+                                <el-input v-model="adminUserGroup.groupName" placeholder="用户组名称" clearable="true"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="状态" prop="status">
+                                <el-checkbox v-model="adminUserGroup.status" :true-label="1"
+                                             :false-label="0" :checked=isCheck></el-checkbox>
+                            </el-form-item>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="用户组描述" prop="memo">
+                                <el-input v-model="adminUserGroup.memo" placeholder="用户组描述"
+                                          style="width:400px"></el-input>
+                            </el-form-item>
+                        </el-row>
+                    </el-form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="card">
+        <div class="card-body">
+            <p class="article_tit">已分配人员</p>
+             <div class="itbox">
+	           <div class="itbox2"
+	            v-for="tag in currGroupUsers"
+	            :key="tag.key"
+	           >
+	           	<el-tag
+					  closable
+					  :disable-transitions="false"
+					  @close="handleTagClose(tag.key)">
+					  {{tag.label}}
+					</el-tag>
+	           </div>
+       		</div>
+       		<i class="el-icon-circle-plus button-new-tag" @click="dialogVisible = true"></i>
+       </div>
+     </div>
+     
+     <el-dialog
+		  title="选择用户" 
+		  :visible.sync="dialogVisible" 
+		  :before-close="handleClose" 
+		  width="780px" 
+		  top="10px"
+		  :close-on-press-escape="true" 
+		  :show-close="false" 
+		  :lock-scroll="true" 
+		  >
+			<template> 
+				<el-transfer filterable
+					:filter-method="filterMethod" 
+					filter-placeholder="请输入账号或名称拼音"
+					:titles="titles"
+					v-model="transferC_selUser" 
+					:data="transferC_allUser"
+					@change="handleChange"
+					> 
+					
+				</el-transfer> 
+			</template>
+		  <span slot="footer" class="dialog-footer">
+		  	<el-button @click="dialogVisible = false">关 闭</el-button>
+		  </span>
+		</el-dialog>
+</div>
+
+</body>
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    new Vue({
+        el: '#app',
+        data: function () {
+        	const generateData2 = _ => {
+                const data = [];
+                const cities = ['上海上海上海上海上海上海', '北京北京北京北京北京北京北京', '广州', '深圳', '南京', '西安', '成都','上海1', '北京1', '广州1', '深圳1', '南京1', '西安1', '成都1'];
+                const pinyin = ['shanghai', 'beijing', 'guangzhou', 'shenzhen', 'nanjing', 'xian', 'chengdu','shanghai', 'beijing', 'guangzhou', 'shenzhen', 'nanjing', 'xian', 'chengdu'];
+                cities.forEach((city, index) => {
+                  data.push({
+                    label: city,
+                    key: index,
+                    pinyin: pinyin[index]
+                  });
+                });
+                return data;
+              };
+        	
+            return {
+            	queryResult: {
+                    totalRecordNum: 0,
+                    currPage: 1,
+                    pageSize: 20
+                },
+            	adminUserInfo: {
+            		loginId: '',
+                	adminUserName: ''
+            	},
+                adminUserGroup:[[${adminUserGroup}]],
+                rules:{
+                    groupName:[
+                        {required:true,message:'字段不能为空',trigger:'blur'}
+                    ],
+                    groupCode:[
+                        {required:true,message:'字段不能为空',trigger:'blur'}
+                    ]
+                },
+                isUpdate: [[${isUpdate}]],
+                isCheck: false,
+                currGroupUsers: [[${adminUserGroup.currUserArray}]],
+                
+                dialogVisible: false,
+                loading: true,
+                
+                
+              	//transferC_allUser: generateData2(),
+            	transferC_allUser: [[${allUserArray}]],	//transfer控件左边区域显示的数据
+                transferC_selUser: [[${selectUsers}]],	//transfer空间右边区域显示的数据，根据左边区域显示
+                filterMethod(query, item) {
+                  return item.label.indexOf(query) > -1;
+                },
+                titles: ['用户列表','已选用户']
+            }
+        },
+        created: function () {
+        	var isCheckTag = this.adminUserGroup.status;
+        	if(isCheckTag == "1"){
+        		this.isCheck = true;
+        	}
+        },
+        methods: {
+        	handleChange(value, direction, movedKeys) {
+       			movedKeys.forEach(movItem => {
+       				
+       				if(direction == "left"){	//删除已选
+        				let idx = -1;
+        				this.transferC_selUser.forEach((valItem, index) => {
+                			if(movItem == valItem){
+                				idx = index;
+                				return;
+                			}
+                		});
+        				this.transferC_selUser.splice(idx, 1);
+        				
+        				idx = -1;
+        				this.currGroupUsers.forEach((objItem, index) => {
+                			if(movItem == objItem.key){
+                				idx = index;
+                				return;
+                			}
+                		});
+                    	this.currGroupUsers.splice(idx, 1);
+                   	
+       				}
+       				//	增加
+       				else if(direction == "right"){
+       					this.transferC_selUser.push(movItem);      				
+       					this.transferC_allUser.forEach(allItem => {
+               				if(movItem == allItem.key){
+               					this.currGroupUsers.push(allItem);
+               					return;
+               				}
+                   		});
+               		}
+       			});
+            },
+        	handleTagClose(tagKey) {
+            	//需要增加去掉transferC_selUser内容
+            	let idx = -1;
+  				this.transferC_selUser.forEach((valItem, index) => {
+          			if(tagKey == valItem){
+          				idx = index;
+          				return;
+          			}
+          		});
+  				this.transferC_selUser.splice(idx, 1);
+     				
+   				idx = -1;
+   				this.currGroupUsers.forEach((objItem, index) => {
+           			if(tagKey == objItem.key){
+           				idx = index;
+           				return;
+           			}
+           		});
+               	this.currGroupUsers.splice(idx, 1);
+            },
+            
+            /* 
+            submitSelection(){
+            	this.dialogVisible = false;
+            },
+            selectionChange(selection){
+            	this.addGroupUsers = this.$refs.moviesTable.selection;	//获取所选人员列表
+            },
+            rowClick(row, event, column){
+            	this.$refs.moviesTable.toggleRowSelection(row);
+            },
+            statusFormat(row, column){
+            	var status = row.status;
+            	if(status == 0){
+            		return "正常";
+            	}else{
+            		return "失效";
+            	}
+            },
+          	//重置查询条件
+            clickResetBtn() {
+                for(var key in this.adminUserInfo){
+                    this.adminUserInfo[key] = "";
+                }
+            },
+            clickSearchBtn(){
+                console.log(this.adminUserInfo);
+                this.queryResult.currPage = 1;
+                this.queryEnumGroup();
+            }, */
+            showUserDialog(){
+            	//this.dialogVisible = true;
+            	//this.queryEnumGroup();
+            },
+            handleClose(done) {
+              this.$confirm('确认关闭？')
+                .then(_ => {
+                  done();
+                })
+                .catch(_ => {});
+            },
+            /* handleCurrentChange(val) {
+                this.queryResult.currPage = val;
+                this.queryEnumGroup();
+            },
+            handleSizeChange(val) {
+                this.queryResult.pageSize = val;
+                this.queryEnumGroup();
+            }, */
+            clickCancelBtn() {
+                window.history.back(-1);
+            },
+            clickSaveBtn(){
+                this.$refs["updateForm"].validate((valid)=>{
+                    if(valid) {
+                        _this = this;
+                        
+                        var reg = /^MRO_[A-Za-z0-9]\S+$/;
+                       	if(!reg.test(_this.adminUserGroup.groupCode)){
+                       		alert("编码不符合规定，请确认！");return
+                       	}
+                        
+                        var url = "/usergroup/AdminUserGroup/insert";
+                        if(_this.isUpdate){
+                        	url = "/usergroup/AdminUserGroup/update";
+                        }
+                        this.adminUserGroup.currUserArray = this.currGroupUsers;
+                        axios.post(url, this.adminUserGroup)
+                            .then(function (response) {
+                                console.log(response);
+                                if (response.data.code == null || response.data.code != 0) {
+                                    _this.$notify.error({title: '操作数据失败', message: response.data.message, offset: 100});
+                                } else {
+                                    alert("操作成功!");
+                                    window.history.back(-1);
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                                _this.$notify.error({title: '错误', message: '操作数据失败，请联系系统管理员', offset: 100});
+                            });
+
+                    } else {
+                        console.log("角色名称不能为空!");
+                    }
+                });
+            }
+            /* queryEnumGroup() {
+                _this = this;
+                var url = '/user/SysUserInfo/search';
+                var page = this.queryResult.currPage;
+                if (page == null) {
+                    page = 1;
+                }
+                var restRequest = new URRestRequest();
+                restRequest.setCurrPage(page);
+                restRequest.setPageSize(this.queryResult.pageSize);
+
+                restRequest.addCondition("loginName", this.adminUserInfo.loginId, "like");
+                restRequest.addCondition("name", this.adminUserInfo.adminUserName, "like");
+                if(this.currGroupUsers.length > 0){
+                	var ids = "-1";
+                	for(var i = 0 ; i < this.currGroupUsers.length ; i++){
+            			var item = this.currGroupUsers[i];
+            			ids += "," + item.id;
+                	}
+                	restRequest.addCondition("id", ids, "notin");
+                }
+
+                axios.post(url, restRequest.getRequestData())
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.error({title: '查询数据失败', message: response.data.message, offset: 100});
+                        } else {
+                            _this.$data.queryResult = response.data;
+                            _this.loading = false;
+                        }
+                    })
+                    .catch(function (error) {
+                        _this.$notify.error({title: '错误', message: '查询数据失败，请联系系统管理员', offset: 100});
+                    });
+            } */
+        }
+
+    })
+    /*]]>*/
+</script>
+</html>

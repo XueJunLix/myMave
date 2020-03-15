@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="onloadJS">
+
+    <!-- 引入 Vue -->
+    <!-- <script src="/resources/js/vue.js"></script> -->
+    <script src="/resources/js/vue.min.js"></script>
+    <!-- 引入element组件库 -->
+    <script src="/resources/js/element/lib/index.min.js"></script>
+
+    <!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+    <script src="/resources/js/axios.min.js"></script>
+    <script src="/resources/js/es6-promise.auto.min.js"></script>
+
+    <script type='text/javascript' src="/resources/js/jquery.1.4.2-min.js"></script>
+
+    <!-- 引入 自定义 -->
+    <script src="/resources/default.js"></script>
+
+    <!--<script src="/resources/js/jquery-ui.js"></script>-->
+    <script src="/resources/ur_dialog.js"></script>
+    <script src="/resources/js/swiper.min.js"></script>
+    <!-- element 多语言 -->
+    <!--   <script src="/resources/js/vue-i18n.js"></script>
+    <script src="/resources/js/locale/zh-CN.js"></script>
+    <script src="/resources/js/locale/en.js"></script> -->
+
+    <!-- iview -->
+    <script type='text/javascript' src="/resources/js/iview.min.js"></script>
+
+	<div id="dialog"  style="display: none;">
+      <iframe id="dialogIframe" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"  src="" style=""></iframe>
+    </div>
+
+</div>
+</body>
+</html>

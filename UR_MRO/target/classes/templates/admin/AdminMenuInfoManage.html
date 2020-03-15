@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head th:include="common/common_head :: commonHeader('菜单管理')"></head>
+<style>
+    #app{
+        /*min-width: 1200px;*/
+        /*width: 1200px;*/
+    }
+.article_tit{
+
+    display: block;
+    /* height: 40px; */
+    line-height: 40px;
+    background: #fbfbfb;
+    padding-left: 10px;
+    font-weight: bolder;
+    /* margin: 5px 0; */
+    border-bottom: 1px dashed #ececec;
+    margin-bottom: 10px;
+}
+    .card-title{
+        padding: 10px ;
+        padding-bottom:0px;
+    }
+    [v-cloak]{
+        display: none;
+    }
+    .itembox{
+        border: 1px solid #e4e4e4;
+        padding-top: 10px;
+
+    }
+    .usercheck{
+        margin: 10px;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    .el-checkbox{
+        margin: 5px;
+        background: white;
+    }
+    .el-checkbox.is-bordered.el-checkbox--medium{
+        margin-left: 10px;
+    }
+    .el-checkbox.is-bordered+.el-checkbox.is-bordered{
+        margin-left: 5px;
+    }
+
+.itbox{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+.itbox2{
+    min-width: 20%;
+    width: 25%;
+    height: 40px;
+    background: white;
+    margin-bottom: 10px;
+    
+}
+.notestyle{
+	font-family: "Microsoft YaHei";
+	font-size: 10px;
+	color: red;
+}
+</style>
+<body class="article_bg">
+<div id="app" v-cloak  style="padding: 10px">
+	<p class="article_tit">菜单管理</p>
+    <div class="clearfix"></div>
+    <div class="card-title">
+        <el-button v-on:click="clickSaveBtn" plain type="primary"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存
+        </el-button>
+        <el-button v-on:click="clickCancelBtn" plain type="info"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消
+        </el-button>
+        
+    </div>
+  
+    <div class="card">
+        <div class="card-body">
+            <div class="row" >
+                <div class="col-md-12">
+                    <el-form label-width="100px" label-suffix=":" :rules="rules" ref="updateForm" :model="adminMenuInfo">
+                        <input type="hidden" v-model="adminMenuInfo.id"/>
+	                    <el-row class="itembox">
+	                        <el-row>
+	                            <el-form-item label="菜单代码" prop="menuCode" :clearable="true">
+	                                <el-input v-model="adminMenuInfo.menuCode" placeholder="菜单代码" clearable="true"
+	                                          style="width:400px"></el-input>
+	                                <span class="notestyle">格式：MRO_xxx</span>
+	                            </el-form-item>
+	                        </el-row>
+	                        <el-row>
+	                            <el-form-item label="菜单名称" prop="menuName">
+	                                <el-input v-model="adminMenuInfo.menuName" placeholder="菜单名称"
+	                                          style="width:400px"></el-input>
+	                            </el-form-item>
+	                        </el-row>
+	                        <el-row>
+	                            <el-form-item label="上级菜单" prop="parentMenuItems">
+	                                <el-col :span="6">
+	                                	<el-cascader :show-all-levels="true" v-model="parentMenuItems" filterable="true" :clearable="true"
+	                                                 :options="parentMenus" :filterable="true" :change-on-select="true" >
+	                                    </el-cascader>
+	                                </el-col>
+	                            </el-form-item>
+	                        </el-row>
+	                        <el-row>
+	                            <el-col :span="8">
+	                                <el-form-item label="菜单层级" prop="menuLevel">
+	                                    <el-select v-model="adminMenuInfo.menuLevel" placeholder="菜单层级">
+	                                        <el-option v-for="(item,key) in menuLevels" :label="key" :value="item"
+	                                                   :key="item"></el-option>
+	                                    </el-select>
+	                                </el-form-item>
+	                            </el-col>
+	                        </el-row>
+	                        <el-row>
+	                            <el-form-item label="菜单链接" prop="menuUrl">
+	                                <el-input v-model="adminMenuInfo.menuUrl" placeholder="菜单链接"
+	                                          style="width:400px"></el-input>
+	                            </el-form-item>
+	                        </el-row>
+	                        
+	                        <el-row>
+	                            <el-form-item label="菜单描述" prop="menuDesc">
+	                                <el-input v-model="adminMenuInfo.menuDesc" placeholder="菜单描述"
+	                                          style="width:400px"></el-input>
+	                            </el-form-item>
+	                        </el-row>
+	                        <el-row>
+	                            <el-form-item label="菜单顺序" prop="orderBy">
+	                                <el-input v-model="adminMenuInfo.orderBy" placeholder="菜单顺序"
+	                                          style="width:400px"></el-input>
+	                            </el-form-item>
+	                        </el-row>
+	                        <el-row>
+	                            <el-form-item label="状态">
+	                                <el-checkbox v-model="adminMenuInfo.status" :true-label="1"
+	                                             :false-label="0" :checked=isCheck></el-checkbox>
+	                            </el-form-item>
+	                        </el-row>
+                        </el-row>
+                    </el-form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <br/>
+    <div class="card">
+        <div class="card-body">
+            <p class="article_tit">操作按钮 </p>
+			<el-checkbox border v-model="ButtoncheckAllFlag" @change="ButtonHandleCheckAllChange">全选</el-checkbox>
+            <div style="margin: 15px 0;"></div>
+            <el-checkbox-group  v-model="ButtonChecked" @change="ButtonsCheckChange" v-loading="loading">
+                <div class="itbox">
+        			<div class="itbox2"
+         				v-for="button in CurrButtons"
+         				:key="button" >
+        				<el-checkbox border :label="button.id" :key="button.id">{{button.buttonName}} ({{button.buttonCode}})</el-checkbox>
+        			</div>
+   				</div>
+           	</el-checkbox-group>
+       </div>
+     </div>
+    <br/>
+    
+    <div class="card">
+        <div class="card-body">
+            <p class="article_tit">授权角色 </p>
+			<el-checkbox border v-model="RolecheckAllFlag" @change="RoleHandleCheckAllChange">全选</el-checkbox>
+            <div style="margin: 15px 0;"></div>
+            <el-checkbox-group  v-model="RolesChecked" @change="RolesCheckGroupChange" v-loading="loading">
+                <div class="itbox">
+        			<div class="itbox2"
+         				v-for="role in CurrRoles"
+         				:key="role" >
+        				<el-checkbox border :label="role.id" :key="role.id">{{role.roleName}}</el-checkbox>
+        			</div>
+   				</div>
+           	</el-checkbox-group>
+       </div>
+     </div>
+     
+     <br/>
+    <div class="card">
+        <div class="card-body">
+            <p class="article_tit">授权用户组</p>
+	        <el-checkbox border v-model="UserGroupcheckAllFlag" @change="UserGroupHandleCheckAllChange">全选</el-checkbox>
+	        <div style="margin: 15px 0;"></div>
+	        <el-checkbox-group  v-model="UserGroupChecked" @change="UserGroupCheckGroupChange" v-loading="loading">
+	        	<div class="itbox">
+        			<div class="itbox2"
+         				v-for="usergroup in CurrUserGroups"
+         				:key="usergroup" >
+        				<el-checkbox border :label="usergroup.id" :key="usergroup.id">{{usergroup.groupName}}</el-checkbox>
+        			</div>
+   				</div>
+	        </el-checkbox-group>
+       </div>
+     </div>
+</div>
+</body>
+
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+ 
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+            	//操作按钮
+            	ButtoncheckAllFlag: false, //全选按钮
+            	ButtoncheckAllInit: [[${currAllbuttonsInitArray}]], //全选初始化
+            	ButtonChecked: [[${adminMenuInfo.checkedButtons}]],  //选中的按钮
+                CurrButtons: [[${currAllbuttonsArray}]],  //全部按钮数据
+            	
+                // 用户组
+                UserGroupcheckAllFlag: false,  //全选用户组
+                UserGroupcheckAllInit: [[${currAllUserGroupInitArray}]], //全选初始化
+                UserGroupChecked: [[${adminMenuInfo.checkedUserGroups}]],  //选中的用户组
+                CurrUserGroups: [[${currAllUserGroupArray}]],  //全部用户组数据
+
+                RolecheckAllFlag: false, //全选角色
+                RolecheckAllInit: [[${currAllrolesInitArray}]], //全选初始化
+                RolesChecked: [[${adminMenuInfo.checkedRoles}]],  //选中的角色
+                CurrRoles: [[${currAllroles}]],  //全部角色数据
+
+                adminMenuInfo: [[${adminMenuInfo}]],
+                adminOperationInfoAllList: false,
+                menuLevels: {
+                    '一级': 1,
+                    '二级': 2,
+                    '三级': 3
+                },
+                parentMenuItems: [[${adminMenuInfo.parentMenuItemsShow}]],
+                parentMenus: [[${adminMenuInfo.parentMenus}]],
+                queryResult: {
+                    totalRecordNum: 0,
+                    currPage: 1,
+                    pageSize: 20
+                },
+                adminResourceInfo: {
+                    typeId: '',
+                    resourceName: ''
+                },
+                typeNameItems: false,
+                rules:{
+                    menuCode: [
+                        {required: true, message: '该字段不能为空', trigger: 'blur'}
+                    ],
+                    menuName: [
+                        {required: true, message: '该字段不能为空', trigger: 'blur'}
+                    ],
+                    menuLevel: [
+                        {required: true, message: '该字段不能为空', trigger: 'blur'}
+                    ],
+                    orderBy: [
+                        {required: true, message: '该字段不能为空', trigger: 'blur'}
+                    ]
+                },
+                isCheck: false,
+                loading: true
+            }
+        },
+        created: function () {
+        	var isCheckTag = this.adminMenuInfo.status;
+        	if(isCheckTag == "1"){
+        		this.isCheck = true;
+        	}
+        	this.loading = false;
+            this.queryEnumGroup();
+        },
+        methods: {
+        	
+        	testClick(){
+        		alert(3333);
+        	},
+        	
+        	ButtonHandleCheckAllChange(val) {
+            	this.ButtonChecked = val ? this.ButtoncheckAllInit : [];
+            },
+            ButtonsCheckChange(value) {
+                let checkedCount = value.length;
+                this.ButtoncheckAllFlag = checkedCount == this.CurrButtons.length;
+            },
+        	
+        	RoleHandleCheckAllChange(val) {
+            	this.RolesChecked = val ? this.RolecheckAllInit : [];
+            },
+            RolesCheckGroupChange(value) {
+                let checkedCount = value.length;
+                this.RolecheckAllFlag = checkedCount == this.CurrRoles.length;
+            },
+
+            UserGroupHandleCheckAllChange(val) {
+                this.UserGroupChecked = val ? this.UserGroupcheckAllInit : [];
+            },
+            UserGroupCheckGroupChange(value) {
+                let checkedCount = value.length;
+                this.UserGroupcheckAllFlag = checkedCount == this.CurrUserGroups.length;
+            },
+            clickCancelBtn() {
+                window.history.back(-1);
+            },
+            clickSaveBtn() {
+                this.$refs["updateForm"].validate((valid)=>{
+                    if (valid) {
+                        _this = this;
+                        
+                        var reg = /^MRO_[A-Za-z0-9]\S+$/;
+                       	if(!reg.test(_this.adminMenuInfo.menuCode)){
+                       		alert("编码不符合规定，请确认！");return
+                       	}
+                        
+                    	var url = "/menu/AdminMenuInfo/insert";
+                    	if(_this.adminMenuInfo.id != -1){
+                    		url = "/menu/AdminMenuInfo/update";
+                    	}
+                    	
+                    	/* 
+                    	var tstr = "=====id=" + _this.adminMenuInfo.id + "====parentMenuItems=" +  _this.parentMenuItems +"====level==" + _this.adminMenuInfo.menuLevel ;
+                    	alert(tstr);
+                    	  */
+                    	if(_this.adminMenuInfo.menuLevel == 3 && _this.parentMenuItems != null && _this.parentMenuItems.length != 2){
+                    		alert("三级菜单只能挂在二级菜单下面！");return;
+                    	} else if(_this.adminMenuInfo.menuLevel == 2 && _this.parentMenuItems != null && _this.parentMenuItems.length != 1){
+                    		alert("二级菜单只能且必须挂在一级菜单下面！");return;
+                    	} else if(_this.adminMenuInfo.menuLevel == 1 && _this.parentMenuItems != null && _this.parentMenuItems.length > 0){
+                    		alert("一级菜单不能挂在其他菜单下面！");return;
+                    	}
+                    	//alert("=====:" + _this.parentMenuItems);
+                    	_this.adminMenuInfo.parentMenuItemsShow = _this.parentMenuItems;
+                      	_this.adminMenuInfo.checkedRoles = _this.RolesChecked;
+                      	_this.adminMenuInfo.checkedUserGroups = _this.UserGroupChecked; 
+                      	_this.adminMenuInfo.checkedButtons = _this.ButtonChecked;
+                    	  
+                        axios.post(url, _this.adminMenuInfo)
+                            .then(function (response) {
+                                // console.log(response);
+                                if (response.data.code == null || response.data.code != 0) {
+                                    _this.$notify.warning({title: '提示!', message: response.data.message, offset: 100});
+                                } else {
+                                    alert("操作成功!");
+                                    // window.location.href = "/admin/adminMenuInfoList"
+                                    window.history.back(-1);
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                                _this.$notify.error({title: '错误', message: '操作数据失败，请联系系统管理员', offset: 100});
+                            });
+                    }else{
+                        console.log("输入字段为空!");
+                    }
+               });
+
+            },
+            //弹出框div浏览资源列表
+            menuResource(e) {
+                e.stopPropagation();   // 阻止冒泡
+                $('#back').css("display", "block");   // 显示
+                $("#showRename").css("display", "block");
+
+                $("#back").bind("click", function (e) {   // 相当于点击空白消失
+                    $('#back').css("display", "none");
+                    $("#showRename").css("display", "none");
+                });
+            },
+            //选择资源
+            selectAdminMenuInfo(index, row) {
+                _this = this;
+                //点击选择后弹出框小时
+                $('#back').css("display", "none");
+                $("#showRename").css("display", "none");
+                //设置绑定数据
+                this.adminMenuInfo.resourceName = row.resourceName;
+                this.adminMenuInfo.resourceId = row.resourceId;
+                axios.post("/admin/getOperationInfoByResourceId/"+row.resourceId)
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.error({title: '查询数据失败', message: response.data.message, offset: 100});
+                        } else {
+                            _this.adminOperationInfoAllList = response.data.data;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        _this.$notify.error({title: '错误', message: '查询数据失败，请联系系统管理员', offset: 100});
+                    });
+
+            },
+            handleTableCurrentChange(currentRow) {
+                this.currInstance = currentRow;
+            },
+            handleCurrentChange(val) {
+                this.queryResult.currPage = val;
+                this.queryEnumGroup();
+            },
+            handleSizeChange(val) {
+                this.queryResult.pageSize = val;
+                this.queryEnumGroup();
+            },
+            searchBtn() {
+                this.queryResult.currPage = 1;
+                this.queryEnumGroup();
+            },
+            queryEnumGroup() {
+                _this = this;
+                var url = '/admin/adminResourceInfoList/search';
+                var page = this.queryResult.currPage;
+                if (page == null) {
+                    page = 1;
+                }
+                var restRequest = new URRestRequest();
+                restRequest.setCurrPage(page);
+                restRequest.setPageSize(this.queryResult.pageSize);
+
+                //可以指定排序字段
+                // restRequest.addOrderBy(this.getSequence());
+
+                restRequest.addCondition("typeId", this.adminResourceInfo.typeId, "like");
+                restRequest.addCondition("resourceName", this.adminResourceInfo.resourceName, "like");
+
+                /* axios.post(url, restRequest.getRequestData())
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.error({title: '查询数据失败', message: response.data.message, offset: 100});
+                        } else {
+                            _this.$data.queryResult = response.data;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        _this.$notify.error({title: '错误', message: '查询数据失败，请联系系统管理员', offset: 100});
+                    }); */
+            }
+        } 
+
+    })
+    /*]]>*/
+</script>
+</html>

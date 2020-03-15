@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="/common/common_head :: commonHeader('UfStoreBasedata')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="padding-top: 5px" v-loading="exportingFile" element-loading-text="正在生成导出文件">
+
+<nav class="navbar" style="background-color:#eef1f6">
+    <ul class="nav">
+      <li style="padding-left:20px">
+		  <el-select v-model="searchColumn" placeholder="请选择搜索字段" :clearable="true">
+		    <el-option label="id" value="id"></el-option>
+		    <el-option label="acc" value="acc"></el-option>
+		    <el-option label="address" value="address"></el-option>
+		    <el-option label="area" value="area"></el-option>
+		    <el-option label="areaManager" value="areaManager"></el-option>
+		    <el-option label="brand" value="brand"></el-option>
+		    <el-option label="bussinessCircle" value="bussinessCircle"></el-option>
+		    <el-option label="city" value="city"></el-option>
+		    <el-option label="country" value="country"></el-option>
+		    <el-option label="isOutRant" value="isOutRant"></el-option>
+		    <el-option label="isStreetStore" value="isStreetStore"></el-option>
+		    <el-option label="man" value="man"></el-option>
+		    <el-option label="openDate" value="openDate"></el-option>
+		    <el-option label="projectId" value="projectId"></el-option>
+		    <el-option label="property" value="property"></el-option>
+		    <el-option label="region" value="region"></el-option>
+		    <el-option label="regionManager" value="regionManager"></el-option>
+		    <el-option label="sports" value="sports"></el-option>
+		    <el-option label="status" value="status"></el-option>
+		    <el-option label="storeId" value="storeId"></el-option>
+		    <el-option label="storeLevel" value="storeLevel"></el-option>
+		    <el-option label="storeManager" value="storeManager"></el-option>
+		    <el-option label="storeManagerTel" value="storeManagerTel"></el-option>
+		    <el-option label="storeName" value="storeName"></el-option>
+		    <el-option label="storeTel" value="storeTel"></el-option>
+		    <el-option label="woman" value="woman"></el-option>
+		    <el-option label="youth" value="youth"></el-option>
+		    <el-option label="createdBy" value="createdBy"></el-option>
+		    <el-option label="createdTime" value="createdTime"></el-option>
+		    <el-option label="lastUpdatedBy" value="lastUpdatedBy"></el-option>
+		    <el-option label="lastUpdatedTime" value="lastUpdatedTime"></el-option>
+		    <el-option label="deleted" value="deleted"></el-option>
+		    <el-option label="hkSet" value="hkSet"></el-option>
+		    <el-option label="cgSet" value="cgSet"></el-option>
+		    <el-option label="ppsSet" value="ppsSet"></el-option>
+		    <el-option label="biSet" value="biSet"></el-option>
+		    <el-option label="kids" value="kids"></el-option>
+		    <el-option label="storeemail" value="storeemail"></el-option>
+		    <el-option label="countrycode" value="countrycode"></el-option>
+		    <el-option label="provincecode" value="provincecode"></el-option>
+		    <el-option label="citycode" value="citycode"></el-option>
+		    <el-option label="regincode" value="regincode"></el-option>
+		    <el-option label="areacode" value="areacode"></el-option>
+		    <el-option label="busscirclecode" value="busscirclecode"></el-option>
+		    <el-option label="province" value="province"></el-option>
+		    <el-option label="cgProvincecode" value="cgProvincecode"></el-option>
+		    <el-option label="cgCitycode" value="cgCitycode"></el-option>
+		    <el-option label="cgStorelevel" value="cgStorelevel"></el-option>
+		    <el-option label="cgManagerjob" value="cgManagerjob"></el-option>
+		    <el-option label="cgImagelevel" value="cgImagelevel"></el-option>
+		    <el-option label="cgIsoverfloor" value="cgIsoverfloor"></el-option>
+		    <el-option label="cgSalebudget" value="cgSalebudget"></el-option>
+		    <el-option label="cgContractarea" value="cgContractarea"></el-option>
+		    <el-option label="cgProperty" value="cgProperty"></el-option>
+		    <el-option label="invoiceHead" value="invoiceHead"></el-option>
+		    <el-option label="temperaturezone" value="temperaturezone"></el-option>
+		    <el-option label="storemanagercode" value="storemanagercode"></el-option>
+		    <el-option label="district" value="district"></el-option>
+		    <el-option label="longitude" value="longitude"></el-option>
+		    <el-option label="latitude" value="latitude"></el-option>
+		  </el-select> 
+      </li>
+      <li style="padding-left:20px">
+        <el-input v-model="searchValue" placeholder="请输入搜索内容"></el-input> 
+      </li>
+      <li style="padding-left:20px">
+        <el-button type="text" icon="search" v-on:click="clickSearchBtn">搜索</el-button>
+      </li>
+    </ul>
+	<el-switch v-model="expandCondition" off-text="展开" on-text="收缩"></el-switch>
+</nav>
+
+  <div class="card" v-if="expandCondition">  	
+
+	<div class="card-body">
+  <div class="row">
+  	<div class="col-md-12">
+		<el-form label-width="150px">
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="id">
+		    <el-input v-model="queryCondition.id" placeholder="id"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="acc">
+		    <el-input v-model="queryCondition.acc" placeholder="acc"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="address">
+		    <el-input v-model="queryCondition.address" placeholder="address"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="area">
+		    <el-input v-model="queryCondition.area" placeholder="area"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="areaManager">
+		    <el-input v-model="queryCondition.areaManager" placeholder="areaManager"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="brand">
+		    <el-input v-model="queryCondition.brand" placeholder="brand"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="bussinessCircle">
+		    <el-input v-model="queryCondition.bussinessCircle" placeholder="bussinessCircle"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="city">
+		    <el-input v-model="queryCondition.city" placeholder="city"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="country">
+		    <el-input v-model="queryCondition.country" placeholder="country"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="isOutRant">
+		    <el-input v-model="queryCondition.isOutRant" placeholder="isOutRant"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="isStreetStore">
+		    <el-input v-model="queryCondition.isStreetStore" placeholder="isStreetStore"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="man">
+		    <el-input v-model="queryCondition.man" placeholder="man"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="openDate">
+						    <el-date-picker v-model="queryCondition.openDate" type="datetime" placeholder="openDate"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="projectId">
+		    <el-input v-model="queryCondition.projectId" placeholder="projectId"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="property">
+		    <el-input v-model="queryCondition.property" placeholder="property"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="region">
+		    <el-input v-model="queryCondition.region" placeholder="region"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="regionManager">
+		    <el-input v-model="queryCondition.regionManager" placeholder="regionManager"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="sports">
+		    <el-input v-model="queryCondition.sports" placeholder="sports"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="status">
+		    <el-input v-model="queryCondition.status" placeholder="status"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="storeId">
+		    <el-input v-model="queryCondition.storeId" placeholder="storeId"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="storeLevel">
+		    <el-input v-model="queryCondition.storeLevel" placeholder="storeLevel"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="storeManager">
+		    <el-input v-model="queryCondition.storeManager" placeholder="storeManager"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="storeManagerTel">
+		    <el-input v-model="queryCondition.storeManagerTel" placeholder="storeManagerTel"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="storeName">
+		    <el-input v-model="queryCondition.storeName" placeholder="storeName"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="storeTel">
+		    <el-input v-model="queryCondition.storeTel" placeholder="storeTel"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="woman">
+		    <el-input v-model="queryCondition.woman" placeholder="woman"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="youth">
+		    <el-input v-model="queryCondition.youth" placeholder="youth"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="createdBy">
+		    <el-input v-model="queryCondition.createdBy" placeholder="createdBy"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="createdTime">
+						    <el-date-picker v-model="queryCondition.createdTime" type="datetime" placeholder="createdTime"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="lastUpdatedBy">
+		    <el-input v-model="queryCondition.lastUpdatedBy" placeholder="lastUpdatedBy"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="lastUpdatedTime">
+						    <el-date-picker v-model="queryCondition.lastUpdatedTime" type="datetime" placeholder="lastUpdatedTime"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="deleted">
+		    <el-input v-model="queryCondition.deleted" placeholder="deleted"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="hkSet">
+		    <el-input v-model="queryCondition.hkSet" placeholder="hkSet"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="cgSet">
+		    <el-input v-model="queryCondition.cgSet" placeholder="cgSet"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="ppsSet">
+		    <el-input v-model="queryCondition.ppsSet" placeholder="ppsSet"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="biSet">
+		    <el-input v-model="queryCondition.biSet" placeholder="biSet"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="kids">
+		    <el-input v-model="queryCondition.kids" placeholder="kids"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="storeemail">
+		    <el-input v-model="queryCondition.storeemail" placeholder="storeemail"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="countrycode">
+		    <el-input v-model="queryCondition.countrycode" placeholder="countrycode"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="provincecode">
+		    <el-input v-model="queryCondition.provincecode" placeholder="provincecode"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="citycode">
+		    <el-input v-model="queryCondition.citycode" placeholder="citycode"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="regincode">
+		    <el-input v-model="queryCondition.regincode" placeholder="regincode"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="areacode">
+		    <el-input v-model="queryCondition.areacode" placeholder="areacode"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="busscirclecode">
+		    <el-input v-model="queryCondition.busscirclecode" placeholder="busscirclecode"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="province">
+		    <el-input v-model="queryCondition.province" placeholder="province"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="cgProvincecode">
+		    <el-input v-model="queryCondition.cgProvincecode" placeholder="cgProvincecode"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="cgCitycode">
+		    <el-input v-model="queryCondition.cgCitycode" placeholder="cgCitycode"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="cgStorelevel">
+		    <el-input v-model="queryCondition.cgStorelevel" placeholder="cgStorelevel"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="cgManagerjob">
+		    <el-input v-model="queryCondition.cgManagerjob" placeholder="cgManagerjob"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="cgImagelevel">
+		    <el-input v-model="queryCondition.cgImagelevel" placeholder="cgImagelevel"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="cgIsoverfloor">
+		    <el-input v-model="queryCondition.cgIsoverfloor" placeholder="cgIsoverfloor"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="cgSalebudget">
+		    <el-input v-model="queryCondition.cgSalebudget" placeholder="cgSalebudget"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="cgContractarea">
+		    <el-input v-model="queryCondition.cgContractarea" placeholder="cgContractarea"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="cgProperty">
+		    <el-input v-model="queryCondition.cgProperty" placeholder="cgProperty"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="invoiceHead">
+		    <el-input v-model="queryCondition.invoiceHead" placeholder="invoiceHead"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="temperaturezone">
+		    <el-input v-model="queryCondition.temperaturezone" placeholder="temperaturezone"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="storemanagercode">
+		    <el-input v-model="queryCondition.storemanagercode" placeholder="storemanagercode"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+		  <el-form-item label="district">
+		    <el-input v-model="queryCondition.district" placeholder="district"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="longitude">
+		    <el-input v-model="queryCondition.longitude" placeholder="longitude"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+		  <el-form-item label="latitude">
+		    <el-input v-model="queryCondition.latitude" placeholder="latitude"></el-input>
+		  </el-form-item>
+	</el-col>
+</el-row>
+		</el-form>
+  	</div>
+  </div>
+
+	<div class="text-center">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   
+
+	</div>
+  </div>
+</div>
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickAddBtn" icon="plus">添加</el-button>
+        <el-button v-on:click="clickUpdateBtn" icon="edit">修改</el-button>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+		<el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+		</el-pagination>
+</nav>
+
+        <el-table v-loading="queryingUfStoreBasedata" :data="this.queryResult.data" :border="true" :highlight-current-row="true" :height="this.tableHeight" v-on:current-change="handleTableCurrentChange">
+          <el-table-column property="id" label="id" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="acc" label="acc" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="address" label="address" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="area" label="area" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="areaManager" label="areaManager" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="brand" label="brand" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="bussinessCircle" label="bussinessCircle" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="city" label="city" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="country" label="country" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isOutRant" label="isOutRant" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="isStreetStore" label="isStreetStore" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="man" label="man" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="openDate" label="openDate" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="projectId" label="projectId" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="property" label="property" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="region" label="region" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="regionManager" label="regionManager" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="sports" label="sports" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="status" label="status" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="storeId" label="storeId" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="storeLevel" label="storeLevel" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="storeManager" label="storeManager" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="storeManagerTel" label="storeManagerTel" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="storeName" label="storeName" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="storeTel" label="storeTel" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="woman" label="woman" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="youth" label="youth" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createdBy" label="createdBy" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createdTime" label="createdTime" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="lastUpdatedBy" label="lastUpdatedBy" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="lastUpdatedTime" label="lastUpdatedTime" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="deleted" label="deleted" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="hkSet" label="hkSet" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cgSet" label="cgSet" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="ppsSet" label="ppsSet" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="biSet" label="biSet" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="kids" label="kids" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="storeemail" label="storeemail" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="countrycode" label="countrycode" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="provincecode" label="provincecode" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="citycode" label="citycode" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="regincode" label="regincode" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="areacode" label="areacode" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="busscirclecode" label="busscirclecode" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="province" label="province" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cgProvincecode" label="cgProvincecode" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cgCitycode" label="cgCitycode" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cgStorelevel" label="cgStorelevel" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cgManagerjob" label="cgManagerjob" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cgImagelevel" label="cgImagelevel" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cgIsoverfloor" label="cgIsoverfloor" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cgSalebudget" label="cgSalebudget" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cgContractarea" label="cgContractarea" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="cgProperty" label="cgProperty" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="invoiceHead" label="invoiceHead" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="temperaturezone" label="temperaturezone" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="storemanagercode" label="storemanagercode" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="district" label="district" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="longitude" label="longitude" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="latitude" label="latitude" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+
+	</div>
+</div>
+
+
+
+			<el-dialog ref="updatePanel" :title="dialogTitle" :visible.sync="showDialog"  v-loading="updatingUfStoreBasedata" :lock-scroll="false" size="large">
+
+				  <div class="card-title">
+			        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+			        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+			      </div>
+
+				  <div class="card">
+				  	<div class="card-body">
+
+				  <div class="row">
+				  	<div class="col-md-12">
+						<el-form  label-width="150px" :rules="rules" ref="updateForm" :model="updateInstance" label-suffix=":">
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="id" prop="id">
+						    <el-input-number v-model="updateInstance.id" :controls="false"></el-input-number>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="acc" prop="acc">
+						    <el-input v-model="updateInstance.acc" placeholder="acc"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="address" prop="address">
+						    <el-input v-model="updateInstance.address" placeholder="address"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="area" prop="area">
+						    <el-input v-model="updateInstance.area" placeholder="area"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="areaManager" prop="areaManager">
+						    <el-input v-model="updateInstance.areaManager" placeholder="areaManager"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="brand" prop="brand">
+						    <el-input v-model="updateInstance.brand" placeholder="brand"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="bussinessCircle" prop="bussinessCircle">
+						    <el-input v-model="updateInstance.bussinessCircle" placeholder="bussinessCircle"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="city" prop="city">
+						    <el-input v-model="updateInstance.city" placeholder="city"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="country" prop="country">
+						    <el-input v-model="updateInstance.country" placeholder="country"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="isOutRant" prop="isOutRant">
+						    <el-input v-model="updateInstance.isOutRant" placeholder="isOutRant"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="isStreetStore" prop="isStreetStore">
+						    <el-input v-model="updateInstance.isStreetStore" placeholder="isStreetStore"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="man" prop="man">
+						    <el-input v-model="updateInstance.man" placeholder="man"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="openDate" prop="openDate">
+						    <el-date-picker v-model="updateInstance.openDate" type="datetime" placeholder="openDate"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="projectId" prop="projectId">
+						    <el-input v-model="updateInstance.projectId" placeholder="projectId"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="property" prop="property">
+						    <el-input v-model="updateInstance.property" placeholder="property"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="region" prop="region">
+						    <el-input v-model="updateInstance.region" placeholder="region"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="regionManager" prop="regionManager">
+						    <el-input v-model="updateInstance.regionManager" placeholder="regionManager"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="sports" prop="sports">
+						    <el-input v-model="updateInstance.sports" placeholder="sports"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="status" prop="status">
+						    <el-input v-model="updateInstance.status" placeholder="status"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="storeId" prop="storeId">
+						    <el-input v-model="updateInstance.storeId" placeholder="storeId"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="storeLevel" prop="storeLevel">
+						    <el-input v-model="updateInstance.storeLevel" placeholder="storeLevel"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="storeManager" prop="storeManager">
+						    <el-input v-model="updateInstance.storeManager" placeholder="storeManager"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="storeManagerTel" prop="storeManagerTel">
+						    <el-input v-model="updateInstance.storeManagerTel" placeholder="storeManagerTel"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="storeName" prop="storeName">
+						    <el-input v-model="updateInstance.storeName" placeholder="storeName"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="storeTel" prop="storeTel">
+						    <el-input v-model="updateInstance.storeTel" placeholder="storeTel"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="woman" prop="woman">
+						    <el-input v-model="updateInstance.woman" placeholder="woman"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="youth" prop="youth">
+						    <el-input v-model="updateInstance.youth" placeholder="youth"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="createdBy" prop="createdBy">
+						    <el-input v-model="updateInstance.createdBy" placeholder="createdBy"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="createdTime" prop="createdTime">
+						    <el-date-picker v-model="updateInstance.createdTime" type="datetime" placeholder="createdTime"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="lastUpdatedBy" prop="lastUpdatedBy">
+						    <el-input v-model="updateInstance.lastUpdatedBy" placeholder="lastUpdatedBy"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="lastUpdatedTime" prop="lastUpdatedTime">
+						    <el-date-picker v-model="updateInstance.lastUpdatedTime" type="datetime" placeholder="lastUpdatedTime"></el-date-picker>	
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="deleted" prop="deleted">
+						    <el-input v-model="updateInstance.deleted" placeholder="deleted"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="hkSet" prop="hkSet">
+						    <el-input v-model="updateInstance.hkSet" placeholder="hkSet"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="cgSet" prop="cgSet">
+						    <el-input v-model="updateInstance.cgSet" placeholder="cgSet"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="ppsSet" prop="ppsSet">
+						    <el-input v-model="updateInstance.ppsSet" placeholder="ppsSet"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="biSet" prop="biSet">
+						    <el-input v-model="updateInstance.biSet" placeholder="biSet"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="kids" prop="kids">
+						    <el-input v-model="updateInstance.kids" placeholder="kids"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="storeemail" prop="storeemail">
+						    <el-input v-model="updateInstance.storeemail" placeholder="storeemail"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="countrycode" prop="countrycode">
+						    <el-input v-model="updateInstance.countrycode" placeholder="countrycode"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="provincecode" prop="provincecode">
+						    <el-input v-model="updateInstance.provincecode" placeholder="provincecode"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="citycode" prop="citycode">
+						    <el-input v-model="updateInstance.citycode" placeholder="citycode"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="regincode" prop="regincode">
+						    <el-input v-model="updateInstance.regincode" placeholder="regincode"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="areacode" prop="areacode">
+						    <el-input v-model="updateInstance.areacode" placeholder="areacode"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="busscirclecode" prop="busscirclecode">
+						    <el-input v-model="updateInstance.busscirclecode" placeholder="busscirclecode"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="province" prop="province">
+						    <el-input v-model="updateInstance.province" placeholder="province"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="cgProvincecode" prop="cgProvincecode">
+						    <el-input v-model="updateInstance.cgProvincecode" placeholder="cgProvincecode"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="cgCitycode" prop="cgCitycode">
+						    <el-input v-model="updateInstance.cgCitycode" placeholder="cgCitycode"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="cgStorelevel" prop="cgStorelevel">
+						    <el-input v-model="updateInstance.cgStorelevel" placeholder="cgStorelevel"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="cgManagerjob" prop="cgManagerjob">
+						    <el-input v-model="updateInstance.cgManagerjob" placeholder="cgManagerjob"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="cgImagelevel" prop="cgImagelevel">
+						    <el-input v-model="updateInstance.cgImagelevel" placeholder="cgImagelevel"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="cgIsoverfloor" prop="cgIsoverfloor">
+						    <el-input v-model="updateInstance.cgIsoverfloor" placeholder="cgIsoverfloor"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="cgSalebudget" prop="cgSalebudget">
+						    <el-input v-model="updateInstance.cgSalebudget" placeholder="cgSalebudget"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="cgContractarea" prop="cgContractarea">
+						    <el-input v-model="updateInstance.cgContractarea" placeholder="cgContractarea"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="cgProperty" prop="cgProperty">
+						    <el-input v-model="updateInstance.cgProperty" placeholder="cgProperty"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="invoiceHead" prop="invoiceHead">
+						    <el-input v-model="updateInstance.invoiceHead" placeholder="invoiceHead"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="temperaturezone" prop="temperaturezone">
+						    <el-input v-model="updateInstance.temperaturezone" placeholder="temperaturezone"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="storemanagercode" prop="storemanagercode">
+						    <el-input v-model="updateInstance.storemanagercode" placeholder="storemanagercode"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="8">
+						  <el-form-item label="district" prop="district">
+						    <el-input v-model="updateInstance.district" placeholder="district"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="longitude" prop="longitude">
+						    <el-input v-model="updateInstance.longitude" placeholder="longitude"></el-input>
+						  </el-form-item>
+	</el-col>
+	<el-col :span="8">
+						  <el-form-item label="latitude" prop="latitude">
+						    <el-input v-model="updateInstance.latitude" placeholder="latitude"></el-input>
+						  </el-form-item>
+	</el-col>
+</el-row>
+						</el-form>
+				  	</div>
+				  </div>
+
+				  </div>
+				</div>
+			</el-dialog>
+
+
+
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="/common/onload_js :: onloadJS"></div>
+
+  <script>
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  id:"",
+        	  acc:"",
+        	  address:"",
+        	  area:"",
+        	  areaManager:"",
+        	  brand:"",
+        	  bussinessCircle:"",
+        	  city:"",
+        	  country:"",
+        	  isOutRant:"",
+        	  isStreetStore:"",
+        	  man:"",
+        	  openDate:"",
+        	  projectId:"",
+        	  property:"",
+        	  region:"",
+        	  regionManager:"",
+        	  sports:"",
+        	  status:"",
+        	  storeId:"",
+        	  storeLevel:"",
+        	  storeManager:"",
+        	  storeManagerTel:"",
+        	  storeName:"",
+        	  storeTel:"",
+        	  woman:"",
+        	  youth:"",
+        	  createdBy:"",
+        	  createdTime:"",
+        	  lastUpdatedBy:"",
+        	  lastUpdatedTime:"",
+        	  deleted:"",
+        	  hkSet:"",
+        	  cgSet:"",
+        	  ppsSet:"",
+        	  biSet:"",
+        	  kids:"",
+        	  storeemail:"",
+        	  countrycode:"",
+        	  provincecode:"",
+        	  citycode:"",
+        	  regincode:"",
+        	  areacode:"",
+        	  busscirclecode:"",
+        	  province:"",
+        	  cgProvincecode:"",
+        	  cgCitycode:"",
+        	  cgStorelevel:"",
+        	  cgManagerjob:"",
+        	  cgImagelevel:"",
+        	  cgIsoverfloor:"",
+        	  cgSalebudget:"",
+        	  cgContractarea:"",
+        	  cgProperty:"",
+        	  invoiceHead:"",
+        	  temperaturezone:"",
+        	  storemanagercode:"",
+        	  district:"",
+        	  longitude:"",
+        	  latitude:""
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          queryingUfStoreBasedata:false,
+          updatingUfStoreBasedata:false,
+          exportingFile:false,
+          expandCondition:false,
+          searchColumn: "",
+          searchValue: "",
+          updateInstance:{},
+          isUpdate:false,
+          dialogTitle:"",
+          showDialog:false,
+          rules: {
+        	  id: [
+                { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+              ],
+        	  acc: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  address: [
+                { max: 1000, message: '长度不能超过1000', trigger: 'blur' }
+              ],
+        	  area: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  areaManager: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  brand: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  bussinessCircle: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  city: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  country: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  isOutRant: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  isStreetStore: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  man: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  projectId: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  property: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  region: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  regionManager: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  sports: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  status: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  storeId: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  storeLevel: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  storeManager: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  storeManagerTel: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  storeName: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  storeTel: [
+                { max: 30, message: '长度不能超过30', trigger: 'blur' }
+              ],
+        	  woman: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  youth: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  createdBy: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  lastUpdatedBy: [
+                { max: 50, message: '长度不能超过50', trigger: 'blur' }
+              ],
+        	  deleted: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  hkSet: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  cgSet: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  ppsSet: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  biSet: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  kids: [
+                { max: 10, message: '长度不能超过10', trigger: 'blur' }
+              ],
+        	  storeemail: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  countrycode: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  provincecode: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  citycode: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  regincode: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  areacode: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  busscirclecode: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  province: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  cgProvincecode: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  cgCitycode: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  cgStorelevel: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  cgManagerjob: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  cgImagelevel: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  cgIsoverfloor: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  cgSalebudget: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  cgContractarea: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  cgProperty: [
+                { max: 20, message: '长度不能超过20', trigger: 'blur' }
+              ],
+        	  invoiceHead: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  temperaturezone: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  storemanagercode: [
+                { max: 30, message: '长度不能超过30', trigger: 'blur' }
+              ],
+        	  district: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  longitude: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ],
+        	  latitude: [
+                { max: 100, message: '长度不能超过100', trigger: 'blur' }
+              ]
+          },
+          tableHeight:500
+        }
+      },
+      created: function() {
+    	  this.tableHeight = $(document).height() - 115;
+    	  this.queryUfStoreBasedata();
+      },
+      methods: {
+  		clickAddBtn() {
+			this.updateInstance = {};
+			this.isUpdate = false;
+			this.dialogTitle = '新增';
+			this.showDialog = true;
+		},
+		clickUpdateBtn() {
+			if(this.currInstance==null){
+				return;
+			}
+			this.updateInstance = this.currInstance;
+			this.isUpdate = true;
+			this.dialogTitle = '修改';
+			this.showDialog = true;
+		},
+		clickCancelBtn() {
+			this.showDialog = false;
+		},
+		clickSaveBtn() {
+	        this.$refs["updateForm"].validate((valid) => {
+	          if (valid) {
+				_this = this;
+				this.updatingUfStoreBasedata = true;
+				if(this.isUpdate==false){
+					var url = '/UfStoreBasedata/insert';
+					axios.post(url,this.updateInstance)
+					  .then(function (response) {
+					    console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '新增失败',message: response.data.message,offset: 100});
+					    	_this.$data.updatingUfStoreBasedata = false;
+					    }else{
+						    _this.$notify.info({title: '新增成功',message: '新增成功',offset: 100});
+						    _this.$data.updatingUfStoreBasedata = false;
+						    _this.$data.showDialog = false;
+					    }
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '新增数据失败，请联系系统管理员',offset: 100});
+					  });
+				}else{
+					var url = '/UfStoreBasedata/update';
+					axios.put(url,this.updateInstance)
+					  .then(function (response) {
+					    console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '更新失败',message: response.data.message,offset: 100});
+					    	_this.$data.updatingUfStoreBasedata = false;
+					    }else{
+						    _this.$notify.info({title: '更新成功',message: '更新成功',offset: 100});
+						    _this.$data.updatingUfStoreBasedata = false;
+						    _this.$data.showDialog = false;
+					    }
+					  })
+					  .catch(function (error) {
+					    console.log(error);
+					    _this.$notify.error({title: '错误',message: '更新数据失败，请联系系统管理员',offset: 100});
+					  });
+				}
+	          } else {
+	            console.log('error submit!!');
+	            return false;
+	          }
+	        });
+
+		},
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryUfStoreBasedata();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryUfStoreBasedata();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryUfStoreBasedata();
+    	},
+        queryUfStoreBasedata() {
+          _this = this;
+
+          var url = '/UfStoreBasedata/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+          //restRequest.addOrderBy("columnName??? desc");
+
+          if(this.expandCondition==true){
+	          //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	          restRequest.addCondition("id",this.queryCondition.id,"eq");
+	          restRequest.addCondition("acc",this.queryCondition.acc,"eq");
+	          restRequest.addCondition("address",this.queryCondition.address,"eq");
+	          restRequest.addCondition("area",this.queryCondition.area,"eq");
+	          restRequest.addCondition("areaManager",this.queryCondition.areaManager,"eq");
+	          restRequest.addCondition("brand",this.queryCondition.brand,"eq");
+	          restRequest.addCondition("bussinessCircle",this.queryCondition.bussinessCircle,"eq");
+	          restRequest.addCondition("city",this.queryCondition.city,"eq");
+	          restRequest.addCondition("country",this.queryCondition.country,"eq");
+	          restRequest.addCondition("isOutRant",this.queryCondition.isOutRant,"eq");
+	          restRequest.addCondition("isStreetStore",this.queryCondition.isStreetStore,"eq");
+	          restRequest.addCondition("man",this.queryCondition.man,"eq");
+	          restRequest.addCondition("openDate",this.queryCondition.openDate,"eq");
+	          restRequest.addCondition("projectId",this.queryCondition.projectId,"eq");
+	          restRequest.addCondition("property",this.queryCondition.property,"eq");
+	          restRequest.addCondition("region",this.queryCondition.region,"eq");
+	          restRequest.addCondition("regionManager",this.queryCondition.regionManager,"eq");
+	          restRequest.addCondition("sports",this.queryCondition.sports,"eq");
+	          restRequest.addCondition("status",this.queryCondition.status,"eq");
+	          restRequest.addCondition("storeId",this.queryCondition.storeId,"eq");
+	          restRequest.addCondition("storeLevel",this.queryCondition.storeLevel,"eq");
+	          restRequest.addCondition("storeManager",this.queryCondition.storeManager,"eq");
+	          restRequest.addCondition("storeManagerTel",this.queryCondition.storeManagerTel,"eq");
+	          restRequest.addCondition("storeName",this.queryCondition.storeName,"eq");
+	          restRequest.addCondition("storeTel",this.queryCondition.storeTel,"eq");
+	          restRequest.addCondition("woman",this.queryCondition.woman,"eq");
+	          restRequest.addCondition("youth",this.queryCondition.youth,"eq");
+	          restRequest.addCondition("createdBy",this.queryCondition.createdBy,"eq");
+	          restRequest.addCondition("createdTime",this.queryCondition.createdTime,"eq");
+	          restRequest.addCondition("lastUpdatedBy",this.queryCondition.lastUpdatedBy,"eq");
+	          restRequest.addCondition("lastUpdatedTime",this.queryCondition.lastUpdatedTime,"eq");
+	          restRequest.addCondition("deleted",this.queryCondition.deleted,"eq");
+	          restRequest.addCondition("hkSet",this.queryCondition.hkSet,"eq");
+	          restRequest.addCondition("cgSet",this.queryCondition.cgSet,"eq");
+	          restRequest.addCondition("ppsSet",this.queryCondition.ppsSet,"eq");
+	          restRequest.addCondition("biSet",this.queryCondition.biSet,"eq");
+	          restRequest.addCondition("kids",this.queryCondition.kids,"eq");
+	          restRequest.addCondition("storeemail",this.queryCondition.storeemail,"eq");
+	          restRequest.addCondition("countrycode",this.queryCondition.countrycode,"eq");
+	          restRequest.addCondition("provincecode",this.queryCondition.provincecode,"eq");
+	          restRequest.addCondition("citycode",this.queryCondition.citycode,"eq");
+	          restRequest.addCondition("regincode",this.queryCondition.regincode,"eq");
+	          restRequest.addCondition("areacode",this.queryCondition.areacode,"eq");
+	          restRequest.addCondition("busscirclecode",this.queryCondition.busscirclecode,"eq");
+	          restRequest.addCondition("province",this.queryCondition.province,"eq");
+	          restRequest.addCondition("cgProvincecode",this.queryCondition.cgProvincecode,"eq");
+	          restRequest.addCondition("cgCitycode",this.queryCondition.cgCitycode,"eq");
+	          restRequest.addCondition("cgStorelevel",this.queryCondition.cgStorelevel,"eq");
+	          restRequest.addCondition("cgManagerjob",this.queryCondition.cgManagerjob,"eq");
+	          restRequest.addCondition("cgImagelevel",this.queryCondition.cgImagelevel,"eq");
+	          restRequest.addCondition("cgIsoverfloor",this.queryCondition.cgIsoverfloor,"eq");
+	          restRequest.addCondition("cgSalebudget",this.queryCondition.cgSalebudget,"eq");
+	          restRequest.addCondition("cgContractarea",this.queryCondition.cgContractarea,"eq");
+	          restRequest.addCondition("cgProperty",this.queryCondition.cgProperty,"eq");
+	          restRequest.addCondition("invoiceHead",this.queryCondition.invoiceHead,"eq");
+	          restRequest.addCondition("temperaturezone",this.queryCondition.temperaturezone,"eq");
+	          restRequest.addCondition("storemanagercode",this.queryCondition.storemanagercode,"eq");
+	          restRequest.addCondition("district",this.queryCondition.district,"eq");
+	          restRequest.addCondition("longitude",this.queryCondition.longitude,"eq");
+	          restRequest.addCondition("latitude",this.queryCondition.latitude,"eq");
+          }else{
+        	  restRequest.addCondition(this.searchColumn,this.searchValue,"eq");
+          }
+
+          this.$data.queryingUfStoreBasedata = true;
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+              console.log(response);
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.queryingUfStoreBasedata = false;
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.queryingUfStoreBasedata = false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  		clickExportBtn(){
+		          _this = this;
+		          var url = '/UfStoreBasedata/export';
+
+		          var restRequest = new URRestRequest();
+
+          //可以指定排序字段
+          //restRequest.addOrderBy("columnName??? desc");
+
+          if(this.expandCondition==true){
+	          //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	          restRequest.addCondition("id",this.queryCondition.id,"eq");
+	          restRequest.addCondition("acc",this.queryCondition.acc,"eq");
+	          restRequest.addCondition("address",this.queryCondition.address,"eq");
+	          restRequest.addCondition("area",this.queryCondition.area,"eq");
+	          restRequest.addCondition("areaManager",this.queryCondition.areaManager,"eq");
+	          restRequest.addCondition("brand",this.queryCondition.brand,"eq");
+	          restRequest.addCondition("bussinessCircle",this.queryCondition.bussinessCircle,"eq");
+	          restRequest.addCondition("city",this.queryCondition.city,"eq");
+	          restRequest.addCondition("country",this.queryCondition.country,"eq");
+	          restRequest.addCondition("isOutRant",this.queryCondition.isOutRant,"eq");
+	          restRequest.addCondition("isStreetStore",this.queryCondition.isStreetStore,"eq");
+	          restRequest.addCondition("man",this.queryCondition.man,"eq");
+	          restRequest.addCondition("openDate",this.queryCondition.openDate,"eq");
+	          restRequest.addCondition("projectId",this.queryCondition.projectId,"eq");
+	          restRequest.addCondition("property",this.queryCondition.property,"eq");
+	          restRequest.addCondition("region",this.queryCondition.region,"eq");
+	          restRequest.addCondition("regionManager",this.queryCondition.regionManager,"eq");
+	          restRequest.addCondition("sports",this.queryCondition.sports,"eq");
+	          restRequest.addCondition("status",this.queryCondition.status,"eq");
+	          restRequest.addCondition("storeId",this.queryCondition.storeId,"eq");
+	          restRequest.addCondition("storeLevel",this.queryCondition.storeLevel,"eq");
+	          restRequest.addCondition("storeManager",this.queryCondition.storeManager,"eq");
+	          restRequest.addCondition("storeManagerTel",this.queryCondition.storeManagerTel,"eq");
+	          restRequest.addCondition("storeName",this.queryCondition.storeName,"eq");
+	          restRequest.addCondition("storeTel",this.queryCondition.storeTel,"eq");
+	          restRequest.addCondition("woman",this.queryCondition.woman,"eq");
+	          restRequest.addCondition("youth",this.queryCondition.youth,"eq");
+	          restRequest.addCondition("createdBy",this.queryCondition.createdBy,"eq");
+	          restRequest.addCondition("createdTime",this.queryCondition.createdTime,"eq");
+	          restRequest.addCondition("lastUpdatedBy",this.queryCondition.lastUpdatedBy,"eq");
+	          restRequest.addCondition("lastUpdatedTime",this.queryCondition.lastUpdatedTime,"eq");
+	          restRequest.addCondition("deleted",this.queryCondition.deleted,"eq");
+	          restRequest.addCondition("hkSet",this.queryCondition.hkSet,"eq");
+	          restRequest.addCondition("cgSet",this.queryCondition.cgSet,"eq");
+	          restRequest.addCondition("ppsSet",this.queryCondition.ppsSet,"eq");
+	          restRequest.addCondition("biSet",this.queryCondition.biSet,"eq");
+	          restRequest.addCondition("kids",this.queryCondition.kids,"eq");
+	          restRequest.addCondition("storeemail",this.queryCondition.storeemail,"eq");
+	          restRequest.addCondition("countrycode",this.queryCondition.countrycode,"eq");
+	          restRequest.addCondition("provincecode",this.queryCondition.provincecode,"eq");
+	          restRequest.addCondition("citycode",this.queryCondition.citycode,"eq");
+	          restRequest.addCondition("regincode",this.queryCondition.regincode,"eq");
+	          restRequest.addCondition("areacode",this.queryCondition.areacode,"eq");
+	          restRequest.addCondition("busscirclecode",this.queryCondition.busscirclecode,"eq");
+	          restRequest.addCondition("province",this.queryCondition.province,"eq");
+	          restRequest.addCondition("cgProvincecode",this.queryCondition.cgProvincecode,"eq");
+	          restRequest.addCondition("cgCitycode",this.queryCondition.cgCitycode,"eq");
+	          restRequest.addCondition("cgStorelevel",this.queryCondition.cgStorelevel,"eq");
+	          restRequest.addCondition("cgManagerjob",this.queryCondition.cgManagerjob,"eq");
+	          restRequest.addCondition("cgImagelevel",this.queryCondition.cgImagelevel,"eq");
+	          restRequest.addCondition("cgIsoverfloor",this.queryCondition.cgIsoverfloor,"eq");
+	          restRequest.addCondition("cgSalebudget",this.queryCondition.cgSalebudget,"eq");
+	          restRequest.addCondition("cgContractarea",this.queryCondition.cgContractarea,"eq");
+	          restRequest.addCondition("cgProperty",this.queryCondition.cgProperty,"eq");
+	          restRequest.addCondition("invoiceHead",this.queryCondition.invoiceHead,"eq");
+	          restRequest.addCondition("temperaturezone",this.queryCondition.temperaturezone,"eq");
+	          restRequest.addCondition("storemanagercode",this.queryCondition.storemanagercode,"eq");
+	          restRequest.addCondition("district",this.queryCondition.district,"eq");
+	          restRequest.addCondition("longitude",this.queryCondition.longitude,"eq");
+	          restRequest.addCondition("latitude",this.queryCondition.latitude,"eq");
+          }else{
+        	  restRequest.addCondition(this.searchColumn,this.searchValue,"eq");
+          }
+
+		          this.$data.exportingFile = true;
+
+		          axios.post(url,restRequest.getRequestData())
+		            .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+					    	_this.$data.exportingFile = false;
+					    }else{
+			              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+			              _this.$data.exportingFile = false;
+			              downloadFile(downloadLink);
+					    }
+
+		            })
+		            .catch(function (error) {
+		              console.log(error);
+		              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+		            });
+			},
+          clickResetBtn() {
+            for(var key in this.queryCondition){
+            	this.queryCondition[key] = "";
+            }
+          }
+        }
+    })
+    /*]]>*/
+  </script>
+</html>

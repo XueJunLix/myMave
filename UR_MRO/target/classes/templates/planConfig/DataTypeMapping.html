@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('数据类型映射')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="display: none;"
+ v-show="isLoad"  v-loading="loading" :element-loading-text="loadText">
+ <nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition"></el-switch>
+	</el-tooltip>
+</nav>
+
+<Drawer  title="查询面板" v-model="expandCondition" width="50%">
+ <el-row>
+  <el-col :span="8">
+  <div class="ur-stack-label">类型</div>
+  <el-select :filterable="true" v-model="queryCondition.typeCode" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+			<el-option v-for="(item,key) in typeItems" align="left" :label="item" :value="key"></el-option>
+	      </el-select>
+  </el-col>
+  <el-col :span="8">
+  <div class="ur-stack-label">Value字段</div>
+  <el-select :filterable="true" v-model="queryCondition.valueField" placeholder="请选择" align="left" size="small" :clearable="true" style="width: 100%;">
+			<el-option v-for="(item,key) in valueFieldItems" align="left" :label="item" :value="key"></el-option>
+	      </el-select>
+  </el-col>
+  <el-col :span="8">
+  <div class="ur-stack-label">Value字段名</div>
+  <el-input v-model="queryCondition.valueFieldName" placeholder="Value字段名" style="width: 100%;"></el-input>
+  </el-col>
+  </el-row>
+  <div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+</Drawer>
+
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+      	<!-- <el-button v-on:click="clickAddBtn" icon="plus">新增</el-button> -->
+        <!-- <el-button v-on:click="clickUpdateBtn" icon="edit">修改</el-button> -->
+        <el-button v-on:click="clickAddBtn" icon="plus">新增</el-button>
+        <el-button v-on:click="clickUpdateBtn" icon="editByType">修改</el-button>
+        <!-- <el-button v-on:click="clickDeleteBtn" icon="delete">删除</el-button> -->
+        <el-button v-on:click="clickImportBtn" ><i class="fa fa-upload" aria-hidden="true" style="padding-right:5px"></i>导入</el-button>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+    <!-- <el-dialog title="提示"  :visible.sync="deleteDialogVisible"  width="20%">
+	  <span>确定要删除这  {{multipleSelection.length}} 项吗?</span>
+	  <span slot="footer" class="dialog-footer">
+	    <el-button v-on:click="deleteDialogVisible = false">取 消</el-button>
+	    <el-button type="primary" v-on:click="delSummitBtn">确 定</el-button>
+	  </span>
+	</el-dialog> -->
+	
+	<el-dialog ref="uploadPanel" :visible.sync="uploadDialogVisible" >
+		 <a href="/template/DataTypeMappingTemplate.xlsx" style="font-size: 15px; color: red;">模版下载</a>
+		  <!-- <div style="margin-top: 10px; margin-left: -5px; color: #000;">
+			 	“导入”功能是只新增或修改shuj导入的数据，不会覆盖已有数据；故导入前，请先删除原有数据。</div> -->
+			    <div style="height: 50px;"></div>
+         		<el-form style="width: 30rem;"
+         		  class="form uploadform">
+	         		 <el-form-item>
+		         		<el-upload  ref="upload"  action="/DataTypeMapping/importExcel" 
+		         		 	:before-upload="beforeUpload" :limit="1"
+			         		:file-list="fileList"  :auto-upload='true' :show-upload-list="false" 
+			         		:on-success="handleUploadSuccess"
+			         		:on-error="handleUploadError">
+			                <el-button slot="trigger"  type="primary">点击上传</el-button>
+			           		<div slot="tip" class="el-upload__tip">只能上传xls/xlsx 文件,每次只能上传一个</div>
+		            	</el-upload>
+	            	</el-form-item>
+            	</el-form>
+	</el-dialog>
+      
+	<el-pagination :page-size="20" :pager-count="4" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next">
+	</el-pagination>
+</nav>
+
+        <el-table id="data_table"  stripe="" :data="this.queryResult.data" :highlight-current-row="true" 
+        :height="this.tableHeight" ref="multipleTable" v-on:row-click="handleRowClick"
+        v-on:current-change="handleTableCurrentChange" v-on:selection-change="handleSelectionChange">
+        <el-table-column type="selection"  width="45"></el-table-column>
+          
+		  <el-table-column property="typeCode" label="类型Code" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+		  <el-table-column property="typeName" label="类型名" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="valueFieldDesc" label="Value字段" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="valueFieldName" label="Value字段名" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="description" label="描述" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="priorityOrder" label="优先顺序" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTime" label="创建时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createByName" label="创建者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyTime" label="修改时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyByName" label="修改者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          
+        </el-table>
+
+	</div>
+</div>
+
+	<!-- <Drawer  :title="dialogTitle" v-model="showDialog" width="70%" :mask-closable="false"> -->
+	
+	<!-- <el-dialog ref="updatePanel" :title="dialogTitle" :visible.sync="showDialog" 
+	 v-loading="updatingDataTypeMapping" :lock-scroll="false" size="large">  -->
+	 <el-dialog ref="updatePanel" :title="dialogTitle" :visible.sync="showDialog" 
+	  :lock-scroll="false" fullscreen="true"> 
+		  <div class="card-title">
+	        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存</el-button>
+	        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消</el-button>
+	      </div>
+
+		  <div class="card">
+		  	<div class="card-body">
+
+		  <div class="row">
+		  	<div class="col-md-12">
+			<!-- <el-form   :rules="rules" ref="updateForm" :model="updateInstance" label-suffix=":"> -->
+			<el-form ref="updateForm" :model="updateInstance" label-suffix=":">
+				<el-row>
+					<el-col :span="24">
+						<el-form-item :filterable="true" label="类型" prop="typeCode" label-width="100px">
+						  	<el-select v-model="updateTypeBOInstance.typeCode" v-on:change="changeType" align="left" style="width: 200px;" :clearable="true">
+							 		<el-option v-for="(item,key) in typeItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				
+				<el-row>
+				<template>
+				  <el-table :data="updateTypeBOInstance.mappingList" border="false" style="width: 100%;" height="400">
+				    <el-table-column fixed="left" label="Value字段" width="150">
+				      <template slot-scope="scope">
+				        <el-select v-model="scope.row.valueField" align="left" style="width: 120px;" :clearable="true">
+					 		<el-option v-for="(item,key) in valueFieldItems" align="left" style="font-size:10px;"
+					          :label="item" :value="key">
+					        </el-option>
+						</el-select>
+				      </template>
+				    </el-table-column>
+				    <el-table-column  fixed="left" label="Value字段名" width="210">
+				      <template slot-scope="scope">
+				        <el-input type="textarea" v-model="scope.row.valueFieldName" :controls="false" style="width: 180px;"></el-input>
+				      </template>
+				    </el-table-column>
+				    <el-table-column  fixed="left" label="描述" width="200">
+				      <template slot-scope="scope">
+				        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容"
+							  v-model="scope.row.description">
+						  </el-input>
+				      </template>
+				    </el-table-column>
+				    
+				    <el-table-column fixed="left" label="操作" width="200">
+				      <template slot-scope="scope">
+				        <el-button v-on:click="moveUpward(scope.$index)" type="text" size="small">上移</el-button>
+				        <el-button v-on:click="moveDown(scope.$index)" type="text" size="small">下移</el-button>
+				        <el-button v-on:click="deleteValueField(scope.$index)" type="text" size="small">删除</el-button>
+				      </template>
+				    </el-table-column>
+				  </el-table>
+				</template>
+				</el-row>
+				
+				<!-- <el-row v-for="(mappingBO,index) in updateTypeBOInstance.mappingList">
+					<el-col :span="6">
+						<el-form-item :filterable="true" label="Value字段" prop="valueField" label-width="120px">
+						  	<el-select v-model="mappingBO.valueField" align="left" style="width: 120px;" :clearable="true">
+							 		<el-option v-for="(item,key) in valueFieldItems" align="left" style="font-size:10px;"
+							          :label="item" :value="key">
+							        </el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="6">
+						  <el-form-item label="Value字段名" prop="valueFieldName" label-width="120px">
+						  <el-input v-model="mappingBO.valueFieldName" :controls="false" style="width: 180px;"></el-input>
+						  </el-form-item>
+					</el-col>
+					<el-col :span="6">
+						  <el-form-item label="描述" prop="description" label-width="120px">
+						  <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容"
+							  v-model="mappingBO.description">
+						  </el-input>
+						    <el-input v-model="updateInstance.description" :controls="false" style="width: 220px;"></el-input>
+						  </el-form-item>
+					</el-col>
+				</el-row> -->
+				
+			</el-form>
+	  	</div>
+	  	<div class="card-title">
+	  		<el-button v-show="isShowAddValueBnt" v-on:click="clickAddValueBtn" icon="plus">新增</el-button>
+	    </div>
+	  </div>
+
+	  </div>
+	  </div>
+	<!-- </Drawer> -->
+	</el-dialog>
+	
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+	  
+  let this_let; 
+  var vm = new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  typeCode:"",
+        	  valueField:"",
+        	  valueFieldName:"",
+        	  description:"",
+        	  priorityOrder:"",
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          addInstance:{},
+          updateInstance:{},
+          isUpdate:false,
+          dialogTitle:"",
+          showDialog:false,
+          showAddDialog:false,
+          rules: {
+        	  typeCode: [
+                  { max: 50, message: '长度不能超过50', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  valueField: [
+                  { max: 50, message: '长度不能超过50', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  valueFieldName: [
+                  { max: 50, message: '长度不能超过50', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  description: [
+                  { max: 300, message: '长度不能超过300', trigger: 'blur' },
+                  { required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          	  priorityOrder: [
+                  { type:'number', required: true, message: '该字段不能为空', trigger: 'blur' }
+                ],
+          },
+          expandCondition:false,
+          expandText:"展开查询面板",
+          typeItems:[[${typeItems}]],
+          valueFieldItems:[[${valueFieldItems}]],
+          multipleSelection: [],
+          uploadDialogVisible:false,
+          fileList: [],
+          isLoad: false,
+          tableHeight:500,
+          loading:false,
+          loadText:"查询数据中。。。",
+          updateTypeBOInstance: {},
+          isShowAddValueBnt:false,
+        }
+      },
+      created: function() {
+    	  this.isLoad = true;
+    	  this_let = this;
+    	  this.queryDataTypeMapping();
+      },
+      methods: {
+		clickCancelBtn() {
+			this.showDialog = false;
+			this.updateInstance = {};
+		},
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryDataTypeMapping();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryDataTypeMapping();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryDataTypeMapping();
+    	},
+        queryDataTypeMapping() {
+          _this = this;
+
+          var url = '/DataTypeMapping/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+	      //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+          restRequest.addCondition("typeCode",this.queryCondition.typeCode,"eq");
+          restRequest.addCondition("valueField",this.queryCondition.valueField,"eq");
+          restRequest.addCondition("valueFieldName",this.queryCondition.valueFieldName,"eq");
+
+          this.loading = true;
+          this.loadText = "查询数据中...";
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.loading = false;
+			    	_this.queryResult={
+				          	  totalRecordNum:0,
+				          	  currPage:1,
+				          	  pageSize:20
+				            };
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.loading = false;
+	              _this.expandCondition=false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  	  clickExportBtn(){
+	          _this = this;
+	          var url = '/DataTypeMapping/export';
+	
+	          var restRequest = new URRestRequest();
+	
+	          //可以指定排序字段
+		      //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+		      restRequest.addCondition("typeCode",this.queryCondition.typeCode,"eq");
+	          restRequest.addCondition("valueField",this.queryCondition.valueField,"eq");
+	          restRequest.addCondition("valueFieldName",this.queryCondition.valueFieldName,"eq");
+	
+	          this.loading = true;
+	          this.loadText = "导出数据中...";
+	
+	          axios.post(url,restRequest.getRequestData())
+	            .then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+				    	_this.$data.loading = false;
+				    }else{
+		              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+		              _this.$data.loading = false;
+		              downloadFile(downloadLink);
+				    }
+	
+	            })
+	            .catch(function (error) {
+	              console.log(error);
+	              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+	            });
+		  },
+          clickResetBtn() {
+            for(var key in this.queryCondition){
+            	this.queryCondition[key] = "";
+            }
+          },
+          clickImportBtn(){
+        	  this.uploadDialogVisible=true;
+          },
+          handleRowClick(val){
+        	  this.$refs.multipleTable.toggleRowSelection(val);
+          },
+          handleSelectionChange(val) {
+              this.multipleSelection = val;
+          },
+	      handleUploadSuccess(res,file,fileList){
+			  this.fileList=[];
+			  this.uploadDialogVisible=false;
+			  if(JSON.stringify(res.success)==="false"){
+			  	this.$message({message: '导入失败: ' + JSON.stringify(res.message), type: 'error' });
+			  }else{
+				  this.$message({ message: '导入成功: ' + JSON.stringify(res.message), type: 'success' });
+				   _this.queryDataTypeMapping(_this.queryResult.currPage);
+			  }
+		  },handleUploadError(err, file, fileList){
+   		      this.fileList=[];
+		      this.uploadDialogVisible=false;
+			  this.$message({message: '导入失败' + err, type: 'error' });
+		  },
+		  beforeUpload(file) {
+              let Xls = file.name.split('.');
+              if(Xls[1] === 'xls'||Xls[1] === 'xlsx'){
+                  return file
+              }else {
+                  this.$message.error('只能上传   xls、xlsx 文件');
+                  return false;
+              }
+          },
+          clickAddBtn() {
+    			this.dialogTitle = '新增';
+    			this.showDialog = true;
+    			this.updateTypeBOInstance={};
+    			this.isShowAddValueBnt=false;
+    	  }, 
+          clickUpdateBtn() {
+  			if (this.multipleSelection.length == 0) {
+          		this.$message({showClose: true,message: '请选择一条数据,  左侧复选框 选中',type: 'error'});
+                  return;
+              }
+  			if (this.multipleSelection.length > 1) {
+          		this.$message({showClose: true,message: '只能选择一条数据,  左侧复选框 选中',type: 'error'});
+                  return;
+              }
+  			_this = this;
+  			var url = '/DataTypeMapping/getDataTypeBO/'+this.multipleSelection[0].typeCode;
+  			axios.get(url) .then(function (response) {
+  			    if(response.data.code==null||response.data.code!=0){
+  			    	_this.$notify.error({title: '修改数据查询失败，请刷新页面重试',message: response.data.message,offset: 100});
+					_this.$data.showDialog = false;
+  			    }else{
+  			    	_this.updateTypeBOInstance = response.data.data;
+  			    	//_this.isUpdate = true;
+  			    	_this.dialogTitle = '修改';
+  			    	_this.showDialog = true;
+  			    	_this.isShowAddValueBnt = true;
+  			    } 
+  			  }).catch(function (error) {
+				_this.$data.showDialog = false;
+  			    console.log(error);
+  			    _this.$notify.error({title: '错误',message: '修改数据查询失败，请刷新页面重试!',offset: 100});
+  			  });
+    	  },
+    	  changeType(){
+    		_this = this;
+    		if(this.updateTypeBOInstance.typeCode){
+    			var url = '/DataTypeMapping/getDataTypeBO/'+this.updateTypeBOInstance.typeCode;
+       			axios.get(url) .then(function (response) {
+       			    if(response.data.code==null||response.data.code!=0){
+       			    	_this.$notify.error({title: '修改数据查询失败，请刷新页面重试',message: response.data.message,offset: 100});
+       			    }else{
+       			    	_this.updateTypeBOInstance = response.data.data;
+       			    	_this.dialogTitle = '修改';
+      			    	_this.isShowAddValueBnt = true;
+       			    } 
+       			  }).catch(function (error) {
+       			    console.log(error);
+       			    _this.$notify.error({title: '错误',message: '修改数据查询失败，请刷新页面重试!',offset: 100});
+       			  });
+    		}else{
+    			_this.updateTypeBOInstance={};
+			    _this.isShowAddValueBnt = false;
+    		}
+   			
+    	  },
+    	  clickAddValueBtn(){
+    		  var dataTypeMapping = {id:"", valueField:"", valueFieldName:"", description:"", priorityOrder:""};
+    		  this.updateTypeBOInstance.mappingList.push(dataTypeMapping);
+    	  },
+    	  clickSaveBtn() {
+    		  _this = this;
+    		  if(!this.updateTypeBOInstance.typeCode){
+    			  _this.$notify.error({title: '提交失败',message: "类型不能为空!",offset: 100});
+    			  return;
+    		  }
+    		  if(!this.updateTypeBOInstance.mappingList || this.updateTypeBOInstance.mappingList.length===0){
+    			  _this.$notify.error({title: '提交失败',message: "类型明细不能为空!",offset: 100});
+    			  return;
+    		  }
+    		  var checkResult = false;
+    		  var valueFields = [];
+    		  for(var i=0; i<this.updateTypeBOInstance.mappingList.length; i++){
+    			  if(!this.updateTypeBOInstance.mappingList[i].valueField){
+    				  _this.$notify.error({title: '提交失败',message: "Value字段不能为空!",offset: 100});
+    				  checkResult = true;
+    				  break;
+    			  }
+    			  if(!this.updateTypeBOInstance.mappingList[i].valueFieldName){
+    				  _this.$notify.error({title: '提交失败',message: "Value字段名不能为空!",offset: 100});
+    				  checkResult = true;
+    				  break;
+    			  }
+    			  if(!this.updateTypeBOInstance.mappingList[i].description){
+    				  _this.$notify.error({title: '提交失败',message: "描述不能为空!",offset: 100});
+    				  checkResult = true;
+    				  break;
+    			  }
+    			  if(valueFields.indexOf(this.updateTypeBOInstance.mappingList[i].valueField)>-1){
+    				  _this.$notify.error({title: '提交失败',message: "Value字段不能有重复!",offset: 100});
+    				  checkResult = true;
+    				  break;
+    			  }
+    			  valueFields.push(this.updateTypeBOInstance.mappingList[i].valueField);
+    		  }
+    		  if(checkResult){
+    			  return;
+    		  }
+	    		  
+				var url = '/DataTypeMapping/update';
+				//console.log("修改时 ： "+JSON.stringify(this.updateInstance));
+				axios.put(url,this.updateTypeBOInstance)
+				  .then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '更新失败',message: response.data.message,offset: 100});
+				    	//_this.$data.updatingDataTypeMapping = false;
+					    _this.$data.showDialog = false;
+				    }else{
+					    _this.$notify.info({title: '更新成功',message: '更新成功',offset: 100});
+					    //_this.$data.updatingDataTypeMapping = false;
+					    _this.$data.showDialog = false;
+					    _this.queryDataTypeMapping(_this.queryResult.currPage);
+				    }
+				  
+				  })
+				  .catch(function (error) {
+					_this.$data.showDialog = false;
+				    console.log(error);
+				    _this.$notify.error({title: '错误',message: '更新数据失败，请联系系统管理员',offset: 100});
+				  });
+  		  },
+  		  moveUpward(index){
+  			  if(index>0){
+  				var thisObj = this.updateTypeBOInstance.mappingList[index];
+  				var preObj = this.updateTypeBOInstance.mappingList[index-1];
+  				this.updateTypeBOInstance.mappingList.splice(index-1,2,thisObj,preObj)
+  			  }
+  		  },
+  		  moveDown(index){
+  			  if(index<this.updateTypeBOInstance.mappingList.length-1){
+  				var thisObj = this.updateTypeBOInstance.mappingList[index];
+				var nextObj = this.updateTypeBOInstance.mappingList[index+1];
+				this.updateTypeBOInstance.mappingList.splice(index,2,nextObj,thisObj)
+  			  }
+  		  },
+  		  deleteValueField(index){
+  			this.updateTypeBOInstance.mappingList.splice(index,1)
+  		  },
+        }
+    })
+    var dialogCallback = function() {
+    		closedialog();
+    		vm.clickSearchBtn();
+    }
+    
+  $(document).ready(function(){    
+	  $(document).keydown(function (e) {
+  	    if ( e.which == 13) {	   
+  	    	if(this_let.expandCondition===true){
+  	    		this_let.clickSearchBtn();	
+  	    	}else{
+  	    		this_let.expandCondition=true;
+  	    	}
+  	    }else if(e.which == 46){
+  	    	if(this_let.expandCondition===false){
+  	    		this_let.clickDeleteBtn();	
+  	    	}else{
+  	    		this_let.clickResetBtn();
+  	    	}
+  	    }
+  	});
+  	
+  	$(window).load(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top-1;
+      });
+  	
+  	$(window).resize(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top-1;
+  	});   	
+  });
+  
+    /*]]>*/
+  </script>
+</html>

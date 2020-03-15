@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head th:include="common/common_head :: commonHeader('权限定义列表')"></head>
+
+
+<body class="article_bg">
+<div id="app">
+
+    <p class="article_tit">权限定义列表</p>
+
+    <div class="clearfix" style="margin-bottom: 5px;"></div>
+
+    <div class="card-title">
+        <el-button v-on:click="modifysubbtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存
+        </el-button>
+        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消
+        </el-button>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <template>
+                <el-table :data="operationInfoAllList" :border="true" :highlight-current-row="true">
+                    <el-table-column prop="checkStatus" label="选择">
+                        <template scope="scope">
+                            <el-checkbox size="small" v-model="scope.row.checkStatus"
+                                         :true-label="1" :false-label="0"></el-checkbox>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="operationName" label="操作"></el-table-column>
+                    <el-table-column prop="privilegeDesc" label="描述"
+                                     :rules="[{ required: true, message: '请输入姓名', trigger: 'blur' }]">
+                        <template scope="scope">
+                            <el-input size="small" v-model="scope.row.privilegeDesc" placeholder="请输入描述"></el-input>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </template>
+        </div>
+    </div>
+</div>
+
+</body>
+
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                operationInfoAllList: [[${operationInfoAllList}]]
+            }
+        },
+        created: function () {
+            console.log(this.operationInfoAllList);
+        },
+        methods: {
+            clickCancelBtn() {
+                window.history.back(-1);
+            },
+            save(operationInfoAllList) {
+                _this = this;
+                var url = "/admin/adminPrivilegeDefineSave";
+                axios.post(url, operationInfoAllList)
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.code == null && response.data.code != 0) {
+                            _this.$notify.error({title: '保存数据失败', message: response.data.message, offset: 100});
+                        } else {
+                            alert("保存成功!");
+                            window.location.href = "/admin/adminResourceInfoList";
+                        }
+                    }).catch(function (error) {
+                    console.log(error);
+                    _this.$notify.error({title: '错误', message: '保存数据失败，请联系系统管理员', offset: 100});
+                });
+            }
+
+        }
+    })
+
+    /*]]>*/
+</script>
+</html>

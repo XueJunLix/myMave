@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('demo')"></head>
+
+<style scoped>
+	[v-cloak] {
+		display: none;
+	}
+
+	body,
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6,
+	hr,
+	p,
+	blockquote,
+		/* structural elements 结构元素 */
+
+	dl,
+	dt,
+	dd,
+	ul,
+	ol,
+	li,
+		/* list elements 列表元素 */
+
+	pre,
+		/* text formatting elements 文本格式元素 */
+
+	fieldset,
+	lengend,
+	button,
+	input,
+	textarea,
+		/* form elements 表单元素 */
+
+	th,
+	td {
+		/* table elements 表格元素 */
+		margin: 0;
+		padding: 0;
+	}
+	/* 设置默认字体 */
+
+	body,
+	button,
+	input,
+	select,
+	textarea {
+		/* for ie */
+		/*font: 12px/1 Tahoma, Helvetica, Arial, "宋体", sans-serif;*/
+		font: 12px/1 Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+		/* 用 ascii 字符表示，使得在任何编码下都无问题 */
+	}
+
+	h1 {
+		font-size: 18px;
+		/* 18px / 12px = 1.5 */
+	}
+
+	h2 {
+		font-size: 16px;
+	}
+
+	h3 {
+		font-size: 14px;
+	}
+
+	h4,
+	h5,
+	h6 {
+		font-size: 100%;
+	}
+
+	address,
+	cite,
+	dfn,
+	em,
+	var {
+		font-style: normal;
+	}
+	/* 将斜体扶正 */
+
+	code,
+	kbd,
+	pre,
+	samp,
+	tt {
+		font-family: "Courier New", Courier, monospace;
+	}
+	/* 统一等宽字体 */
+
+	small {
+		font-size: 12px;
+	}
+	/* 小于 12px 的中文很难阅读，让 small 正常化 */
+	/* 重置列表元素 */
+
+	ul,
+	ol {
+		list-style: none;
+	}
+	/* 重置文本格式元素 */
+	.parentnav a{
+		font-size: 16px !important;
+	}
+	/*a {
+        text-decoration: none;
+        color: white;
+    }*/
+	/*a:hover { text-decoration: underline; }*/
+
+	abbr[title],
+	acronym[title] {
+		/* 注：1.ie6 不支持 abbr; 2.这里用了属性选择符，ie6 下无效果 */
+		border-bottom: 1px dotted;
+		cursor: help;
+	}
+
+	q:before,
+	q:after {
+		content: '';
+	}
+	/* 重置表单元素 */
+
+	legend {
+		color: #000;
+	}
+	/* for ie6 */
+
+	fieldset,
+	img {
+		border: none;
+	}
+	/* img 搭车：让链接里的 img 无边框 */
+	/* 注：optgroup 无法扶正 */
+
+	button,
+	input,
+	select,
+	textarea {
+		font-size: 100%;
+		/* 使得表单元素在 ie 下能继承字体大小 */
+	}
+	/* 重置表格元素 */
+
+	table {
+		border-collapse: collapse;
+		border-spacing: 0;
+	}
+	/* 重置 hr */
+
+	hr {
+		border: none;
+		height: 1px;
+	}
+	/* 让非ie浏览器默认也显示垂直滚动条，防止因滚动条引起的闪烁 */
+
+	html {
+		/*overflow-y: scroll;*/
+	}
+	/*  浮动  */
+
+	.fl {
+		float: left
+	}
+
+	.fr {
+		float: right
+	}
+	/*  清除浮动  */
+
+	.clearfix:after {
+		content: " ";
+		display: block;
+		clear: both;
+		visibility: hidden;
+	}
+
+	html,
+	body {
+		position: relative;
+		width: 100%;
+		height: 100%;
+
+	}
+
+	/*input[type="checkbox"] {*/
+	/*display: none;*/
+	/*}*/
+	/*label {*/
+	/*position: relative;*/
+	/*display: inline-block;*/
+	/*z-index: 1;*/
+	/*border: 1px solid #3c3c3c;*/
+	/*margin-left: 10px;*/
+	/*border-radius: 1px;*/
+	/*width: 12px;*/
+	/*height: 12px;*/
+	/*cursor: pointer;*/
+	/*}*/
+	/*.peizhibox label{*/
+	/*position:'';*/
+	/*display: '';*/
+	/*z-index:'';*/
+	/*border:0;*/
+	/*margin-left: '';*/
+	/*border-radius:0;*/
+	/*width:0;*/
+	/*height:0;*/
+	/*cursor: '';*/
+	/*}*/
+
+	/*label {*/
+	/*position: relative;*/
+	/*display: inline-block;*/
+	/*z-index: 1;*/
+	/*border: 1px solid #3c3c3c;*/
+	/*margin-left: 10px;*/
+	/*border-radius: 1px;*/
+	/*width: 12px;*/
+	/*height: 12px;*/
+	/*cursor: pointer;*/
+	/*}*/
+
+	/*label.mark {*/
+	/*background: url("data:image/png;base64,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") no-repeat -1px -1px;*/
+	/*}*/
+
+	a:hover {
+		color: #ff8000;
+		text-decoration: underline;
+	}
+
+
+	label.mark {
+		background: url("data:image/png;base64,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") no-repeat -1px -1px;
+	}
+	/*.parentnav:hover a{
+        color:black;
+    }*/
+	.childnavitem>div{
+		height: 20px;
+		line-height: 20px;
+		font-size: 16px;
+	}
+	a:hover {
+		color:black;
+		text-decoration: /*underline*/;
+	}
+
+	#cart {
+		width: 100%;
+		height: 100%;
+		background: white;
+		/*display: flex;*/
+		/*flex-direction: column;*/
+	}
+	#appbox{
+		width: 100%;
+		height: 100%;
+		background: white;
+		display: flex;
+		flex-direction: column;
+	}
+	.cartMain {
+		position: relative;
+		flex: 1;
+		display: -webkit-box;
+		display: -ms-flexbox;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		margin: 0 5px;
+
+	}
+	/*tab选项卡——————————————————————————————————————————*/
+
+	.tav_list {
+		margin: 0 auto;
+		width: 100%;
+		height: 50px;
+		background: white;
+		display: flex;
+		box-sizing: border-box;
+		justify-content: space-between;
+	}
+
+	.tav_list li {
+		flex: 1;
+		height: 50px;
+		line-height: 50px;
+		background: white;
+		text-align: center;
+		cursor: pointer;
+		font-size: 16px;
+		box-sizing: border-box;
+	}
+
+	.tav_list li:hover {
+		border-bottom: 3px solid #ccc;
+	}
+	/*购物车头部*/
+
+	.cartMain_hd {
+		width: 100%;
+		/*position: fixed;
+top: 0;*/
+		min-width: 1280px;
+		background: salmon;
+		min-height: 40px;
+		max-height: 40px;
+		line-height: 40px;
+		color: #3c3c3c;
+		z-index: 200;
+		/*border-top: 6px solid #ededed;*/
+	}
+
+	.cartMain_hd .cartTop {
+		display: flex;
+		max-height: 40px;
+		min-height: 40px;
+	}
+
+	.cartMain_hd .cartTop li {
+		flex: 1;
+	}
+
+	.cartMain_hd .cartTop .list_chk {
+		text-indent: 45px;
+		/*max-width: 30px;*/
+	}
+
+	.cartMain_hd .cartTop .list_chk label {
+		/*position: absolute;
+left: 59px;
+top: 20px;
+margin: 0;*/
+	}
+
+	.carttopbox {
+
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		overflow: auto;
+
+	}
+
+	.list_chk {
+		display: flex;
+		justify-content: flex-end;
+		/*min-width: 100px;*/
+	}
+
+	.cartMain_hd .cartTop .list_info {
+		min-width: 250px;
+		padding: 0;
+		/*text-indent: 15px;*/
+		/*width: 20%;*/
+		/*min-width: 250px;*/
+	}
+	/*.cartMain_hd .cartTop .list_con{
+text-indent: 140px;
+}*/
+
+	.mainbox {
+		width: 100%;
+		flex: 1;
+		height: auto;
+		overflow: auto;
+	}
+
+	.cartBox {
+		/*width: 100%;
+margin-bottom: 15px;*/
+	}
+
+	.cartBox .shop_info {
+		width: 100%;
+		min-width: 1280px;
+		display: flex;
+		align-items: center;
+		height: 40px;
+		line-height: 40px;
+		background: rgb(243, 243, 243);
+	}
+
+	.cartBox .shop_info .all_check {
+		position: relative;
+		float: left;
+		width: 30px;
+
+		text-align: center;
+		/*height: 38px;*/
+	}
+
+	/*.cartBox .shop_info .all_check input[type="checkbox"] {*/
+	/*position: absolute;*/
+	/*z-index: 0;*/
+	/*left: -20px;*/
+	/*top: -20px;*/
+	/*}*/
+	/*.cartBox .shop_info .all_check .shop {
+position: absolute;
+top: 13px;
+}*/
+
+	.cartBox .shop_info .shop_name {
+		font-size: 14px;
+		color: #000000;
+		font-weight: bold;
+		padding-left: 10px;
+		flex: 0.5;
+	}
+	/*商品列表*/
+
+	.cartBox .order_content {
+		display: flex;
+		flex-direction: column;
+		background: #e5e5e5;
+
+	}
+
+	.order_content .order_lists {
+		background: white;
+		/*transition: background 2.5s;*/
+	}
+
+	.order_content .order_lists:hover {
+		background: linear-gradient(to right, #fffdfd, #f5efef);
+	}
+	/*.cartBox .order_content a{
+display: block;
+}*/
+
+	.order_charge {
+		width: 100%;
+		height: 40px;
+		border-bottom: 1px solid #e7e7e7;
+	}
+	.cartBox{
+		min-width: 1290px;
+		margin-bottom: 5px;
+		border: 1px solid #dcdfe6;
+		border-radius: 10px;
+		overflow: hidden;
+	}
+	.order_charge p {
+		display: inline-block;
+		line-height: 40px;
+	}
+
+	.order_charge p.charge_info {
+		margin: 0 30px 0 50px;
+	}
+
+	.order_charge p.charge_info span {
+		border: 1px solid #f60;
+		padding: 2px;
+		color: #f60;
+	}
+	/*店铺盒子*/
+
+	.order_lists {
+		display: flex;
+		width: 100%;
+		min-width: 1280px;
+		height: 86px;
+		border-bottom: 1px dashed #e5e5e5;
+		align-content: center;
+		/* margin-bottom: 1px; */
+		background: white;
+		font-size: 13px;
+	}
+
+	.order_lists.cartTop {
+		font-size: 14px;
+
+		color: #3c3c3c;
+		/*background: #e5e5e5;*/
+	}
+
+	.order_lists .list_text {
+		min-width: 250px;
+	}
+
+	.order_lists:last-child {
+		border-bottom: none;
+	}
+
+	.order_lists li {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		/*float: left;*/
+		height: 100%;
+		/*min-width: 50px;*/
+	}
+
+	.order_lists .list_chk {
+		position: relative;
+		max-width: 30px;
+	}
+
+	/*.order_lists .list_chk input[type="checkbox"] {*/
+	/*position: absolute;*/
+	/*z-index: 0;*/
+	/*left: -20px;*/
+	/*top: -20px;*/
+	/*}*/
+	/*.order_lists .list_chk label{
+margin: 20px 0 0 24px;
+}*/
+
+	.order_lists .list_con {
+		max-width: 80px;
+		height: 100%;
+		margin: 0 10px;
+	}
+
+	.order_lists .list_con img {
+		display: block;
+		width: 80px;
+		height: 80px;
+	}
+
+	.order_lists .list_con .list_text {
+		margin: 20px 0 0 10px;
+		line-height: 18px;
+		width: 250px;
+		float: left;
+	}
+
+	.order_lists .list_con .list_text a {
+		color: #3c3c3c;
+		margin-bottom: 5px;
+	}
+
+	.order_lists .list_con .list_text a:hover {
+		color: #ff873e;
+		text-decoration: underline;
+	}
+
+	.order_lists .list_con .list_text .list_custom {
+		background-color: #ff8000;
+		padding: 3px;
+		border-radius: 3px;
+		color: #fff;
+	}
+
+	.order_lists .list_info {
+		/*min-width: 100px;*/
+		box-sizing: border-box;
+		/*padding: 20px 0;*/
+	}
+
+
+
+	.list_info {
+		/*min-width: 130px;*/
+	}
+
+	.order_lists .list_info p {
+		/*line-height: 18px;*/
+		/*margin-left: 15px;*/
+	}
+
+	.order_lists .list_price {
+		/*min-width: 100px;*/
+	}
+
+	.order_lists .list_price .price {
+		margin-top: 20px;
+		line-height: 18px;
+		font-family: Verdana, Tahoma, arial;
+		color: #3c3c3c;
+		font-weight: bold;
+	}
+
+	.order_lists .list_price .charge {
+		position: relative;
+		z-index: 4
+	}
+
+	.order_lists .list_price .charge p {
+		color: #ff0000;
+		border: 1px solid #ff0000;
+		width: 50px;
+		height: 15px;
+		line-height: 15px;
+		padding: 3px;
+	}
+
+	.order_lists .list_price .charge .chargebox {
+		display: none;
+		width: 300px;
+		height: 110px;
+		background: #000;
+		z-index: 1;
+	}
+
+	.order_lists .list_amount {
+		min-width:86.7px;
+		/*min-width: 100px;*/
+	}
+
+	.order_lists .list_amount .amount_box {
+		/*margin-top: 53px;*/
+		width: 77px;
+		height: 25px;
+		position: relative;
+	}
+
+	.order_lists .list_amount .amount_box input {
+		width: 39px;
+		height: 23px;
+		line-height: 15px;
+		border: 1px solid #aaa;
+		color: #343434;
+		text-align: center;
+		padding: 4px 0;
+		background-color: #fff;
+		z-index: 2;
+		position: absolute;
+		left: 18px;
+		float: left;
+	}
+
+	.order_lists .list_amount .amount_box a {
+		float: left;
+		height: 23px;
+		width: 17px;
+		border: 1px solid #b0b0b0;
+		background: #f1f1f1;
+		text-align: center;
+		line-height: 23px;
+		color: #444;
+		position: absolute;
+		top: 0;
+	}
+
+	.order_lists .list_amount .amount_box a:hover {
+		border-color: #ff873e;
+		text-decoration: none;
+		color: #ff873e;
+		z-index: 3;
+	}
+
+	.order_lists .list_amount .amount_box .reduce {
+		left: 2px;
+	}
+
+	.order_lists .list_amount .amount_box .reSty {
+		color: black;
+		border: 1px solid #b0b0b0;
+	}
+
+	.order_lists .list_amount .amount_box .reSty:hover {
+		/*border-right: none;*/
+		border-color: #ff873e;
+		text-decoration: none;
+		color: #ff873e;
+		/* background: #52a0e5; */
+	}
+
+	.order_lists .list_amount .amount_box .plus {
+		right: 4px;
+	}
+
+	.order_lists .list_sum {
+		/*min-width: 100px;*/
+	}
+
+	.order_lists .list_sum .sum_price {
+		line-height: 18px;
+		margin-top: 20px;
+		font-family: Verdana, Tahoma, arial;
+		color: #900;
+		font-weight: bold;
+	}
+
+	.order_lists .list_op {
+		width: 10%;
+		word-break: break-all;
+		/*min-width: 100px;*/
+	}
+
+	.order_lists .list_op .collect {
+		margin-top: 20px;
+	}
+
+	.order_lists .list_op .del {
+		line-height: 18px;
+		margin: 5px 0;
+	}
+
+	.order_lists .list_op .custombox {
+		width: 200px;
+		height: 350px;
+		background-color: #000;
+		display: none;
+		position: relative;
+		z-index: 9
+	}
+	/*底部总计算价*/
+
+	.bar-wrapper {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		height: 50px;
+		background: linear-gradient(to top, #cccccc, #fbfbfb);
+	}
+
+	.bar-wrapper .bar-right {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		height: 50px;
+	}
+
+	.bar-wrapper .bar-right strong {
+		color: #900;
+	}
+
+	.bar-wrapper .bar-right .piece {
+		float: left;
+		/* min-width: 110px; */
+		margin-right: 20px;
+		height: 49px;
+		line-height: 49px;
+	}
+
+	.bar-wrapper .bar-right .piece .piece_num {
+		display: inline-block;
+		padding: 0 10px;
+		font-weight: 700;
+		font-size: 18px;
+		font-family: tohoma, arial;
+	}
+	.el-button{
+		box-shadow: 2px 2px 2px #CCCCCC;
+	}
+	.bar-wrapper .bar-right .totalMoney {
+		float: left;
+		/*min-width: 100px;*/
+		height: 50px;
+		line-height: 50px;
+	}
+
+	.bar-wrapper .bar-right .totalMoney .total_text {
+		float: right;
+		font-weight: 400;
+		font-size: 20px;
+		font-family: Arial;
+		vertical-align: middle;
+		margin-right: 10px;
+		margin-left: 15px;
+	}
+
+	.bar-wrapper .bar-right .calBtn {
+		height: 50px;
+		width: 100px;
+		background: linear-gradient(to top, #FF9800, #f9f9f8);
+		float: left;
+		text-align: center;
+		line-height: 50px;
+		font-size: 18px;
+		font-weight: bold;
+		color: black;
+		cursor: pointer;
+	}
+
+	.bar-wrapper .bar-right .calBtn:hover {
+		/*background: linear-gradient(to top, #cdcdcd, #ff8000);*/
+		color: #ffffff;
+	}
+
+	.bar-wrapper .bar-right .calBtn a {
+		display: block;
+		width: 120px;
+		height: 50px;
+		color: #fff;
+		background: #B0B0B0;
+		cursor: not-allowed;
+		font-size: 22px;
+		/*letter-spacing: 5px;*/
+		text-decoration: none;
+		line-height: 50px;
+		text-align: center;
+		border-radius: 2px;
+	}
+
+	.bar-wrapper .bar-right .calBtn a.btn_sty {
+		background: #ff873e;
+		cursor: pointer;
+	}
+	/*自己定义的模态框*/
+
+	.model_bg {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		background: rgba(0, 0, 0, .6);
+		z-index: 999;
+		display: none;
+	}
+
+	.my_model {
+		position: fixed;
+		display: none;
+		top: 50%;
+		left: 50%;
+		margin-top: -50px;
+		margin-left: -200px;
+		z-index: 9999;
+		width: 360px;
+		height: 120px;
+		border: 1px solid #aeaeae;
+		border-radius: 3px;
+		padding: 20px;
+		background: #fff;
+	}
+
+	.my_model .title {
+		font-size: 14px;
+		color: #3c3c3c;
+		font-weight: 700;
+		margin-bottom: 20px;
+	}
+
+	.my_model .title .closeModel {
+		float: right;
+		cursor: pointer;
+	}
+
+	.my_model p {
+		line-height: 16px;
+	}
+
+	.my_model .opBtn {
+		margin-top: 20px;
+	}
+
+	.my_model .opBtn a {
+		width: 58px;
+		height: 28px;
+		line-height: 28px;
+		text-align: center;
+		-webkit-border-radius: 1px;
+		-moz-border-radius: 1px;
+		-ms-border-radius: 1px;
+		border-radius: 1px;
+		display: inline-block;
+		margin-right: 10px;
+		font-weight: 700;
+	}
+
+	.my_model .dialog-sure {
+		background: #52a0e5;
+		color: #fff;
+		border: 1px solid #52a0e5;
+	}
+
+	.my_model .dialog-close {
+		background: #fff;
+		border: 1px solid #d9d9d9;
+		color: #3c3c3c;
+	}
+
+	input[type='number'] {
+		-moz-appearance: textfield;
+	}
+
+	input[type=number]::-webkit-inner-spin-button,
+	input[type=number]::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	.tav_list li.active {
+		background: linear-gradient(to bottom, #e7e7e7, rgba(247, 17, 17, 0));
+		color: black;
+		font-weight: bold;
+		/*border-bottom: 2px solid #ccc;*/
+	}
+
+	.tabbbox {
+		display: flex;
+		min-height: 40px;
+		max-height: 40px;
+		padding: 0 5px;
+		justify-content: space-between;
+		top: -1px;
+		z-index: 99;
+		background: white;
+	}
+
+	.upbox {
+		width: 100%;
+		height: 100%;
+		background: rgba(239, 238, 238, 0.7);
+		position: fixed;
+		top: 0;
+		z-index: 9999;
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.upsearchbox {
+		width: 100%;
+		height: 100%;
+		background: rgba(239, 238, 238, 0.7);
+		position: fixed;
+		top: 0;
+		z-index: 9999;
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.upbox .up_tbox {
+		/*min-height: 400px;*/
+		max-height: 100%;
+		min-width: 380px;
+		width: 30%;
+		background: white;
+		padding: 5px;
+		box-sizing: border-box;
+		border-right: 1px solid #ccc;
+		padding-top: 5px;
+		overflow: auto;
+	}
+
+	.upbox .up_bbox {
+
+		max-height: 100%;
+		min-width: 380px;
+		width: 30%;
+		background: white;
+		display: flex;
+		overflow: auto;
+		padding-left: 5px;
+		padding-top: 5px;
+	}
+
+	.up_tbox_item {
+		width: 100%;
+		height: 50px;
+		background: white;
+		display: flex;
+		margin-bottom: 5px;
+	}
+
+	.up_tbox_l {
+		width: 100px;
+		height: 46px;
+		line-height: 46px;
+		/* border-bottom: 2px dashed#f0ecec; */
+		text-align: right;
+		font-size: 14px;
+		/* padding-right: 10px; */
+		box-sizing: border-box;
+		font-weight: bold;
+		color: #474646;
+	}
+
+	.up_tbox_r {
+		flex: 1;
+		height: 46px;
+		line-height: 46px;
+		font-size: 14px;
+		/* font-family: 雅黑; */
+		/*border-bottom: 1px solid skyblue;*/
+		border-radius: 10px;
+		text-align: left;
+		box-shadow: 5px 5px 5px #efeded;
+		padding-left: 5px;
+	}
+
+	.up_bbox {
+		display: flex;
+		flex-direction: column;
+		overflow: auto;
+	}
+
+	.up_bbox_item {
+		min-height: 108px;
+		width: 100%;
+		background: white;
+		display: flex;
+		margin-bottom: 5px;
+		padding-right: 5px;
+		box-sizing: border-box;
+		/*border-bottom: 1px dashed#ccc;*/
+		box-shadow: 5px 5px 5px #f0eeee;
+	}
+
+	.up_bbox_l {
+		width: 104px;
+		height: 104px;
+		/*background: yellow;*/
+	}
+
+	.up_bbox_l img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		border-radius: 10px;
+	}
+
+	.up_bbox_r {
+		justify-content: space-around;
+		flex: 1;
+		height: 104px;
+		background: white;
+		display: flex;
+		flex-direction: column;
+		padding: 0 5px;
+	}
+
+	.up_bbox_r div {
+		height: 27px;
+		line-height: 27px;
+		width: 100%;
+		background: #fdf9f9;
+	}
+
+	.list_shengqingdan {
+		cursor: pointer;
+		color: #2196F3;
+		font-weight: bold;
+	}
+
+	.four_listbox {
+		height: 100%;
+		width: 100%;
+		overflow: auto;
+	}
+
+	.fourbox_databox {
+		border-bottom: 1px solid #ebebeb;
+		/*position: fixed;*/
+		/*background:linear-gradient(to bottom, #e7e7e7, rgba(247, 17, 17, 0));;*/
+		width: 100%;
+		display: flex;
+		justify-content: flex-end;
+		height: 50px;
+		align-items: center;
+		padding: 10px;
+		box-sizing: border-box;
+	}
+
+	.four_fenye {
+		/*min-width: 200px;
+        width: 100%;
+        height: 50px;*/
+		/*position: fixed;*/
+		bottom: -3px;
+		z-index: 99;
+		background: #ffffff;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.peizhibox {
+		height: 100%;
+		width: 440px;
+		background: white;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		align-items: flex-start;
+		padding: 10px;
+		box-sizing: border-box;
+		align-content: flex-start;
+	}
+
+	.tanpeizhi {
+		width: 100%;
+		height: 100%;
+		background: rgba(127, 127, 127, 0.5);
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 1500;
+		display: flex;
+		justify-content: flex-end;
+	}
+	.list_wzsq{
+		/*min-width: 120px !important;*/
+	}
+	.el-pagination.is-background .btn-next, .el-pagination.is-background .btn-prev, .el-pagination.is-background .el-pager li{
+		margin: 0 2px  !important;
+	}
+	.el-pagination__sizes{
+		margin: 0 !important;
+	}
+	.activerow{
+		background: rgb(253, 247, 229) !important;
+	}
+	.itemlength{
+		min-width: 200px;
+		text-align: center;
+
+		height: 30px;
+		line-height: 30px;
+
+	}
+	.search-form{
+		display: flex;
+		flex-wrap: wrap;
+
+		padding: 16px 0px;
+		border: 1px solid rgb(204, 204, 204);
+		background: linear-gradient(to top, rgb(255, 255, 255), rgb(218, 232, 251));
+		border-radius: 10px;
+		margin-bottom: 10px;
+		box-shadow: rgb(204, 204, 204);
+	}
+	.codecss{
+		flex: 1;
+		display: flex;
+		align-items: center;
+		text-overflow:-o-ellipsis-lastline;
+		overflow:hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp:3;
+		-webkit-box-orient:vertical;
+	}
+	.miaoshicss{
+		display:flex;
+		width:100%;
+		height: 40px;
+		text-align:left;
+		align-items: center;
+	}
+	.order_lists>li{
+		word-wrap: break-word;word-break: break-all;text-align: center
+	}
+	.el-dialog{
+		width: 80%;
+		height: 84%;
+		position: relative;
+		margin: 49px auto 1vh;
+		display: flex;
+		flex-direction: column;
+	}
+	.el-dialog__body{
+		flex: 1;
+		width: 100%;
+		padding: 0;
+	}
+	.el-form-item{
+		margin-bottom: 5px;
+	}
+	.zanwushuju{
+		position: absolute;
+		left: 50%;
+		top: 50%;
+
+	}
+</style>
+
+
+
+<body>
+<div id="cart" v-cloak  v-loading="loading">
+	<div id='appbox'>
+		<!--弹框-->
+		<div class="upbox" @click="isshowtipbox" v-show='isshowtips' >
+			<div class="up_tbox" v-loading="shengqinloading">
+				<div class="up_tbox_item">
+					<div class="up_tbox_l">申请人：</div>
+					<div class="up_tbox_r">{{shenqingData.createName}}</div>
+				</div>
+
+				<div class="up_tbox_item">
+					<div class="up_tbox_l">申请部门：</div>
+					<div class="up_tbox_r">{{shenqingData.dept}}</div>
+				</div>
+
+				<div class="up_tbox_item">
+					<div class="up_tbox_l">使用人：</div>
+					<div class="up_tbox_r">{{shenqingData.useName}}</div>
+				</div>
+
+				<div class="up_tbox_item">
+					<div class="up_tbox_l">店铺名称：</div>
+					<div class="up_tbox_r">{{shenqingData.shopName}}</div>
+				</div>
+				<div class="up_tbox_item">
+					<div class="up_tbox_l">店铺编码：</div>
+					<div class="up_tbox_r">{{shenqingData.shopCode}}</div>
+				</div>
+				<div class="up_tbox_item">
+					<div class="up_tbox_l">申请理由：</div>
+					<div class="up_tbox_r">{{shenqingData.reason}}</div>
+				</div>
+				<div class="up_tbox_item">
+					<div class="up_tbox_l">申请类别：</div>
+					<div class="up_tbox_r">{{shenqingData.type}}</div>
+				</div>
+				<div class="up_tbox_item">
+					<div class="up_tbox_l">总价(元)：</div>
+					<div class="up_tbox_r">{{shenqingData.price}}</div>
+				</div>
+				<div class="up_tbox_item">
+					<div class="up_tbox_l">申请时间：</div>
+
+					<div class="up_tbox_r">{{shenqingData.creatTime}}</div>
+				</div>
+
+			</div>
+			<div class="up_bbox" style="position: relative" v-loading="shengqinloading">
+				<div v-show="shenqingData.picList.length==0?true:false" style="position: absolute;left: 50%;top:50%;margin-left:-24px;">暂无数据</div>
+
+				<div class="up_bbox_item" v-for="item in shenqingData.picList">
+					<div class="up_bbox_l">
+						<img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1826397436,1732740655&fm=26&gp=0.jpg" alt="" />
+					</div>
+					<div class="up_bbox_r">
+						<div>名称：{{item.name}}</div>
+						<div>编号：{{item.code}}</div>
+						<div>数量：{{item.quality}}</div>
+						<div>小计：{{item.price*item.quality}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--<div class="upsearchbox" @click="isshowtipbox" v-show='isshowsearchtips'>
+        啥搜索啥搜索所所
+        </div>-->
+		<transition name="fade">
+			<div class="tanpeizhi" @click.self='onctrshow' v-show="isshowsearchtips">
+				<div class="peizhibox" v-show='isshowsearchtips' style='width: 810px;'>
+					<div class="btnbox" style='margin-bottom: 10px;'>
+						<el-button @click='tosearch' style='box-shadow: 2px 2px 2px #ccc;' type="primary" plain>查询</el-button>
+						<el-button @click="resetForm('queryCondition')" style='box-shadow: 2px 2px 2px #ccc;' type="info" plain>重置</el-button>
+					</div>
+					<el-form
+							label-width="100px"
+							class='search-form'
+							:model="queryCondition"
+							ref="queryCondition">
+						<el-form-item
+								label="送货单"
+								style='width:48%'
+								prop="shNo">
+							<el-input type="text" v-model="queryCondition.shNo"></el-input>
+						</el-form-item>
+
+						<el-form-item
+								label="物料编号"
+								style='width:48%'
+								prop="matCode">
+							<el-input type="text" v-model="queryCondition.matCode" ></el-input>
+						</el-form-item>
+
+						<el-form-item
+								label="物料名称"
+								style='width:48%'
+								prop="matName">
+							<el-input type="text" v-model="queryCondition.matName" ></el-input>
+						</el-form-item>
+
+						<el-form-item
+								label="申请单"
+								style='width:48%'
+								prop="prNo">
+							<el-input type="text" v-model="queryCondition.prNo"></el-input>
+						</el-form-item>
+
+						<el-form-item
+								label="申请人"
+								style='width:48%'
+								prop="createByName">
+							<el-input type="text" v-model="queryCondition.createByName"></el-input>
+						</el-form-item>
+
+						<el-form-item
+								label="申请时间"
+								style='width:48%'
+								prop="createdTime">
+							<el-date-picker
+									value-format="yyyy-MM-dd"
+									style="width: 100%;"
+									v-model="queryCondition.createdTime"
+									type="date"
+									placeholder="选择日期">
+							</el-date-picker>
+							<!--<el-input type="text" v-model="queryCondition.createdTime"></el-input>-->
+						</el-form-item>
+						<el-form-item label="物流单号" style='width:48%' prop="wlNo">
+							<el-input type="text" v-model="queryCondition.wlNo"></el-input>
+						</el-form-item>
+
+						<el-form-item style='width:97%;display:flex;justify-content: flex-end;'>
+
+						</el-form-item>
+					</el-form>
+				</div>
+			</div>
+		</transition>
+
+		<!--搜索按钮——————————————————————————————————————-->
+		<section class="tabbbox">
+			<div class="container" style='height: 100%;display: flex;align-items: center;margin:0;padding: 0;'>
+				<!--<el-tooltip :content="'Switch value: ' + value" placement="top">-->
+				<el-switch
+						active-text=""
+						inactive-text="搜索"
+						v-model="ctrshow_search"
+						active-color="#ccc"
+						inactive-color="skyblue"
+						active-value='1'
+						inactive-value='0'
+						@change='inchange'
+						style='margin-right: 20px;'>
+				</el-switch>
+			</div>
+
+
+		</section>
+		<section class="tabbbox">
+			<div class="container" style='height: 100%;display: flex;align-items: center;margin:0;padding: 0;'>
+				<el-button
+						v-show='fetchData.list.length==0?false:true'
+						size='small'
+						@click="cartchoose()"
+						v-text="fetchData.status?'全选状态：已全选':'全选状态：未全选'">全选</el-button>
+				<!--<input type="checkbox" id="all" class="whole_check"  v-model="">-->
+				<!--<el-checkbox id="all" label="全选" class="whole_check"  v-model="fetchData.status"> </el-checkbox>-->
+
+				<!--<el-checkbox v-model="fetchData.status"  border @click.stop="cartchoose()">-->
+			</div>
+			<div class="four_fenye">
+				<div class="block">
+					<!--<span class="demonstration">完整功能</span>-->
+					<el-pagination
+							background
+							@size-change="handleSizeChange"
+							@current-change="handleCurrentChange"
+							:current-page="queryResult.currPage"
+							:page-sizes="[20,40,80,100,200,300,400]"
+							:page-size="queryResult.pageSize"
+							layout="total, sizes, prev, pager, next, jumper"
+							:total="queryResult.totalRecordNum">
+					</el-pagination>
+				</div>
+			</div>
+		</section>
+
+		<div class="mainbox">
+			<div class="zanwushuju"
+				 v-show="fetchData.list.length==0?true:false">
+				暂无数据
+			</div>
+			<section class="cartMain" v-show="nowIndex===0">
+				<div class="carttopbox">
+
+					<!--<div class="cartMain_hd">-->
+					<!--<ul class="order_lists cartTop">-->
+					<!--<li class="list_chk">-->
+					<!--&lt;!&ndash;所有商品全选&ndash;&gt;-->
+					<!--&lt;!&ndash;<input type="checkbox" id="all" class="whole_check" @click="cartchoose()" v-model="fetchData.status">&ndash;&gt;-->
+					<!--&lt;!&ndash;<label for="all" :class="fetchData.status?'mark':''" ></label>&ndash;&gt;-->
+					<!--</li>-->
+					<!--<li class="list_con">图片</li>-->
+					<!--<li class="list_info">物料描述</li>-->
+					<!--<li class="list_wzsq">凭证号</li>-->
+					<!--<li class="list_ren">申请人</li>-->
+					<!--<li class="list_shengqtime">申请时间</li>-->
+					<!--<li class="list_shengqdan">申请单</li>-->
+					<!--<li class="list_price">价格</li>-->
+					<!--<li class="list_xiadannumb">下单数量</li>-->
+					<!--<li class="list_xiadannumb">送货数量</li>-->
+					<!--<li class="list_shouhuonumb">收货数量</li>-->
+					<!--<li class="list_shouhuonumb">已收数量</li>-->
+					<!--<li class="list_songhuonumb">物流单号</li>-->
+					<!--<li class="list_shouhuachayi">收货差异</li>-->
+
+					<!--</ul>-->
+					<!--</div>-->
+					<div style='flex: 1; '>
+
+
+						<div class="cartBox" v-for="item in fetchData.list" key="item">
+							<div class="shop_info" @click="isshowitem(fetchData.list,item)">
+								<div class="all_check">
+									<input type="checkbox"  @click.stop="shopchoose(item)" v-model="item.check"/>
+									<!--<label for="shop_a" class="shop" :class="item.check?'mark':''" @click="shopchoose(item)"></label>-->
+								</div>
+								<div class="shop_name">
+									送货单：{{item.delivery_note}}
+
+								</div>
+
+								<div class="itemlength">
+									共{{item.products.length}}条信息
+									<i class="el-icon-arrow-down" v-show="!item.isshow"></i>
+									<i class="el-icon-arrow-up" v-show="item.isshow"></i>
+								</div>
+
+							</div>
+
+							<div class="order_content" v-show="!item.isshow">
+								<div class="cartMain_hd">
+									<ul class="order_lists cartTop">
+										<li class="list_chk">
+
+										</li>
+										<li class="list_con">图片</li>
+										<li class="list_info">物料描述</li>
+										<!--<li class="list_wzsq">凭证</li>-->
+										<li class="list_ren">申请人</li>
+										<li class="list_shengqtime">申请时间</li>
+										<li class="list_shengqdan">申请单</li>
+										<li class="list_price">价格(元)</li>
+										<li class="list_xiadannumb">下单数量</li>
+										<li class="list_xiadannumb">送货数量</li>
+										<li class="list_shouhuonumb">收货数量</li>
+										<li class="list_shouhuonumb">已收数量</li>
+										<li class="list_songhuonumb">物流单号</li>
+										<li class="list_shouhuachayi">收货差异</li>
+
+									</ul>
+								</div>
+								<ul
+										class="order_lists"
+										v-for="pro in item.products"
+										:key="pro"
+										:class="pro.checked?'activerow':''"
+										v-on:click.stop="rowchoose(item,pro)"
+								>
+									<li class="list_chk" v-on:click.stop="choose(item,pro)" >
+										<!--<input type="checkbox" id="checkbox_2" class="son_check">-->
+										<input type="checkbox" v-model="pro.checked"/>
+										<!--<label for="checkbox_2" :class="pro.checked?'mark':''" ></label>-->
+									</li>
+									<li class="list_con"><img :src="pro.abbfileName" alt=""></li>
+									<li class="list_text" style='display: flex;flex-direction: column;'>
+										<div class="miaoshicss">
+											<div style="width: 40px;">名称：</div>
+											<div class="codecss">{{pro.matName}}</div>
+										</div>
+										<div class="miaoshicss">
+											<div style="width: 40px;">编号：</div>
+											<div class="codecss">{{pro.matCode}}</div>
+										</div>
+
+									</li>
+									<!--<li class="list_wzsq" style='cursor: pointer;color: #2196F3;font-weight: bold;'@click.stop="togopingzheng(item,pro)">{{pro.shNo}}</li>-->
+									<li class="list_ren">{{pro.createByName}}</li>
+									<li class="list_xtime">
+										<p class="price">{{pro.createdTime}}</p>
+									</li>
+
+									<li class="list_shengqingdan" @click.stop='lookforAplist(pro.prNO)'>{{pro.prNO}}</li>
+									<li class="list_op">{{pro.price}}</li>
+									<li class="list_op">{{pro.poQut}}</li>
+
+									<li class="list_op">{{pro.shQut}}</li>
+									<li class="list_amount">
+										<el-input-number
+												class="jishubox"
+												size='mini'
+												v-model="pro.qcShQut"
+												@change="handleChange(item,pro,$event)"
+												:min='0' :max="getmax(item,pro)"
+												label="描述文字"></el-input-number>
+									</li>
+									<li class="list_op">{{pro.sjShQut}}</li>
+									<li class="list_op">{{pro.wlNo}}</li>
+									<li class="list_op">{{pro.cyQut}}</li>
+								</ul>
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+			</section>
+			<el-dialog  :visible.sync="dialogTableVisible" style="height: 100%;" :fullscreen="fullscreen" top="10">
+				<div slot="title">
+					<el-button size="small" type="primary" plain @click="changefullscreen">全屏|缩小</el-button>
+				</div>
+				<iframe :src="TKurl1" frameborder="0" style="border: 0;height: 100%;width: 100%;" v-show="nowtype=='1'"></iframe>
+				<iframe :src="TKurl2" frameborder="0" style="border: 0;height: 100%;width: 100%;" v-show="nowtype=='2'"></iframe>
+				<iframe :src="TKurl3" frameborder="0" style="border: 0;height: 100%;width: 100%;" v-show="nowtype=='3'"></iframe>
+			</el-dialog>
+		</div>
+		<div class="bar-wrapper">
+			<div class="bar-right">
+				<div class="piece">已选商品<strong class="piece_num">{{this.fetchData.allnum}}</strong>件</div>
+				<div class="calBtn" @click="sendgo">
+					确认收货
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<div th:include="common/onload_js :: onloadJS"></div>
+<script th:inline="javascript">
+	/*<![CDATA[*/
+
+	new Vue({
+		el: '#cart',
+		data() {
+			return {
+				searchurl:'/delivery/search',
+				TKurl1:"/SHtest/SH1",
+				TKurl2:"/SHtest/SH2",
+				TKurl3:"/SHtest/SH3",
+				WLurl:"/delivery/search",
+				PrUrl:"pro/info/",
+				//申请查看
+				shenqingData: {
+                    picList:[]
+                },
+				queryResult: {
+					totalRecordNum:20,
+					currPage: 1,
+					pageSize: 20
+				},
+				queryCondition: {
+					shNo:'',
+					matCode:'',
+					matName:'',
+					prNo :'',
+					createByName :'',
+					createdTime:'',
+					wlNo:'',
+					currPage: 1,
+					pageSize: 20
+				},
+				fullscreen:false,
+				nowtype:'2',
+				dialogTableVisible:false,  //弹框
+				loading: false,
+				searchdata: [], //查询
+				//						显示弹框
+				isshowsearchtips: false,
+				ctrshow_search: '1',
+				isshowtips: false,
+				nowIndex: 0,
+				tabsParam: ['待收货', '已收货', '待发货', '所有申请'],
+				isactive1: true,
+				isactive2: false,
+				isactive3: false,
+				isactive4: false,
+				currentPage4: 4,
+                shengqinloading:true,  //申请单loading
+				value7: '', //所以申请的日期查询
+				pickerOptions2: {
+					shortcuts: [{
+						text: '最近一星期',
+						onClick(picker) {
+							const end = new Date();
+							const start = new Date();
+							start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '最近一个月',
+						onClick(picker) {
+							const end = new Date();
+							const start = new Date();
+							start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '最近三个月',
+						onClick(picker) {
+							const end = new Date();
+							const start = new Date();
+							start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '最近半年',
+						onClick(picker) {
+							const end = new Date();
+							const start = new Date();
+							start.setTime(start.getTime() - 3600 * 1000 * 24 * 180);
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '最近一年',
+						onClick(picker) {
+							const end = new Date();
+							const start = new Date();
+							start.setTime(start.getTime() - 3600 * 1000 * 24 * 360);
+							picker.$emit('pick', [start, end]);
+						}
+					}]
+				},
+				isshow_shouhuo: true,
+				choosegoods: [],
+
+				//待收货
+				fetchData: {
+					'status': false, //全选选中状态
+					'allchoose': 0, //店铺选中个数
+					'allnum': 0, //总计数量
+
+					'list': []
+				}
+
+
+
+			}
+		},
+		methods: {
+			onctrshow() {
+				if(window.event.target.className == 'tanpeizhi') {
+					this.isshowsearchtips = false;
+					//							this.ctrshow_peizhi = false;
+					this.ctrshow_search = '1';
+				}
+
+			},
+			//查询方法
+			tosearch() {
+
+				// 控制其他
+				this.ctrshowtankuang = false;
+				this.ctrshow_search = false;
+				this.ctrshow = false;
+				this.valuesearch = '0';
+
+				// 查询后设置第1页，和1页20条
+				this.queryResult.currPage=1;
+				this.queryResult.pageSize=20;
+
+				// 执行查询方法
+				this.queryMaterial();
+			},
+			queryMaterial() {
+				this.loading=true;
+				var restRequest = new URRestRequest();
+				restRequest.addCondition("SH_NO", this.queryCondition.shNo, "like");
+				restRequest.addCondition("MAT_CODE", this.queryCondition.matCode, "like");
+				restRequest.addCondition("MAT_NAME", this.queryCondition.matName, "like");
+				restRequest.addCondition("PR_NO", this.queryCondition.prNo, "like");
+				restRequest.addCondition("CREATED_BY_NAME", this.queryCondition.createByName, "like");
+				restRequest.addCondition("CREATED_TIME", this.queryCondition.createdTime, "eq");
+				restRequest.addCondition("WL_NO", this.queryCondition.wlNo, "like");
+				restRequest.setCurrPage(this.queryResult.currPage);
+				restRequest.setPageSize(this.queryResult.pageSize);
+				axios.post(this.WLurl, restRequest.getRequestData())
+						.then((response) => {
+
+
+					setTimeout(()=>{
+					// 渲染分页组件
+					this.queryResult.totalRecordNum=response.data.totalRecordNum;
+					this.queryResult.currPage=response.data.currPage;
+					this.queryResult.pageSize=response.data.pageSize;
+
+					this.fetchData.list = response.data.data==null?[]:response.data.data;
+					this.loading=false;
+					this.isshowsearchtips=false;
+					this.ctrshow_search='1'
+
+					if(this.fetchData.list.length==0){
+                        this.$message({
+                            message: '没有找到相关的送货单信息',
+                            type: 'info',
+                            center:true
+                        });
+					}
+				},500)
+
+
+				// 处理点击收货数量按钮的冒泡时间
+                this.$nextTick(()=>{
+                    setTimeout(()=>{
+                    $(".jishubox").on('click',function(){
+                        window.event.stopPropagation();
+                    });
+                },1000)
+            })
+
+			})
+			.catch((error) => {
+					this.loading=false;
+				this.$message({
+					message: '查询数据失败,请联系系统管理员',
+					type: 'error'
+				});
+			});
+				this.isshowsearchtips=false;
+				this.ctrshow_search='1'
+			},
+			inchange(scope) {
+				this.isshowsearchtips = true;
+				//
+			},
+			lookforAplist(row) {
+
+				this.isshowtips = true;
+                var url = this.PrUrl+row;
+                this.shengqinloading=true;
+               axios.get(url)
+				   .then(response=>{
+                    	if(response.data.code==null||response.data.code!=0){
+                   		}else{
+                      		 console.log(response.data.data)
+                             this.shenqingData=response.data.data
+					console.log(this.shenqingData)
+                             this.isshowtips = true;
+                   }
+                setTimeout(()=>{
+                    this.shengqinloading=false;
+            }, 500 )
+                  }).catch(error=>{
+                    console.log(error);
+                    setTimeout(()=>{
+                        this.shengqinloading=false;
+					}, 500 )
+               });
+                setTimeout(()=>{
+                    this.shengqinloading=false;
+            }, 500 )
+			},
+			isshowtipbox(e) {
+				if(e.target.className == 'upbox') {
+					this.isshowtips = !this.isshowtips
+				}
+				//							console.log(e.target.className)
+
+			},
+			handleChange(item,pro,val){
+				pro.cyQut=pro.shQut-pro.qcShQut-pro.sjShQut;
+			},
+			toggleTabs(index) {
+				this.nowIndex = index;
+				//						window.resize();
+			},
+			changeclass(item) {
+				this.isactive1 = false;
+				this.isactive2 = false;
+				this.isactive3 = false;
+				this.isactive4 = false;
+
+			},
+			choosetrue(item, pro) {
+				console.log(5555)
+				pro.checked = true //将商品选中状态改为true
+
+				++item.choose === item.products.length ? item.check = true : '' //这里执行了两部，选中商品数量先+1，再与该店铺商品数量比较，如果相等就更改店铺选中状态为true
+				item.check ? ++this.fetchData.allchoose === this.fetchData.list.length ? this.fetchData.status = true : this.fetchData.status = false : '' //如果店铺选中状态改为true，选中店铺数量先+1，再与店铺数量比较，如果相等就更改全选选中状态为true
+				this.fetchData.allsum += pro.sum
+				this.fetchData.allnum += parseInt(pro.num)
+				this.fetchData.allnum = this.getallnum()
+
+			},
+			choosefalse(item, pro) {
+				pro.checked = false //将商品选中状态改为false
+				--item.choose //选中商品数量-1
+				if(item.check) { //如果店铺是被选中的，更改店铺选中状态
+					item.check = false
+					--this.fetchData.allchoose //并且选中店铺数量-1
+				}
+				this.fetchData.status = false //无论之前全选的状态，将其改为false就行
+				this.fetchData.allsum -= pro.sum //商品总计价格变动
+				this.fetchData.allnum -= pro.num
+				this.fetchData.allnum = this.getallnum()
+
+			},
+
+			choose(item,pro) {
+				console.log(pro.checked)
+				!pro.checked ? this.choosetrue(item,pro) : this.choosefalse(item,pro)
+				if(this.choosegoods.length == 0) {
+					this.choosegoods.push(pro)
+				} else {
+					if(pro.checked == false) {
+						this.choosegoods = this.choosegoods.filter(item => {
+							console.log(item.id)
+							return (item.id+'').indexOf(pro.id) < 0
+					})
+					} else {
+						this.choosegoods.push(pro)
+					}
+				}
+				this.fetchData.allnum = this.getallnum()
+			},
+
+			//					店铺全选
+			shoptrue(item) {
+				console.log('执行了店铺全选')
+				item.products.forEach((pro) => {
+					pro.checked === false ? this.choosetrue(item, pro) : '' //循环店铺中的商品，先筛选出目前没选中的商品，给它执行choosetrue函数
+				})
+
+				this.fetchData.allnum = this.getallnum()
+
+			},
+
+			//					店铺反选
+			shopfalse(item) {
+				item.products.forEach((pro) => {
+					pro.checked === true ? this.choosefalse(item, pro) : '' //循环店铺中的商品，先筛选出目前被选中的商品，给它执行choosefalse函数
+				})
+			},
+
+			//					当前店铺的商品全选
+			shopchoose(item) {
+
+
+
+				!item.check ? this.shoptrue(item) : this.shopfalse(item)
+
+			},
+
+			cartchoose() {
+				this.fetchData.status = !this.fetchData.status //取反改变状态
+				this.fetchData.status ? this.fetchData.list.forEach((item) => this.shoptrue(item)) : this.fetchData.list.forEach((item) => this.shopfalse(item)) //根据取反后的状态进行相应的店铺按钮操作
+			},
+
+			add(pro) {
+
+				pro.ShouHshuliang++
+				if(pro.ShouHshuliang>=pro.XDshuliang){
+					pro.ShouHshuliang=pro.XDshuliang;
+				}
+
+				pro.checked ? this.fetchData.allnum++ : ''
+
+				pro.cyQut = pro.XDshuliang-pro.ShouHshuliang ;
+				//						pro.sum += pro.price
+				//						pro.checked ? this.fetchData.allsum += pro.price : this.fetchData.allsum
+			},
+			reduce(pro) {
+
+				pro.ShouHshuliang--
+				if(pro.ShouHshuliang < 0) {
+					pro.ShouHshuliang = 0
+				}
+				//								pro.checked ? this.fetchData.allnum-- : ''
+				//							pro.sum -= pro.price
+				//							pro.checked ? this.fetchData.allsum -= pro.price : this.fetchData.allsum
+				pro.cyQut =  pro.XDshuliang-pro.ShouHshuliang;
+			},
+			calculate(pro) {
+
+				if(pro.nums < 0) {
+					pro.nums = 0
+				}
+				if(pro.ShouHshuliang >= pro.XDshuliang){
+					pro.ShouHshuliang = pro.XDshuliang
+				}
+				pro.cyQut = pro.XDshuliang-pro.ShouHshuliang;
+				//						let oldsum = pro.sum //之前的总价
+				//						let oldnum = oldsum / pro.price //之前的数量
+				//						pro.num = parseInt(pro.num) //现在的数量
+				//						pro.num > 0 ? pro.sum = pro.num * pro.price : pro.num = oldnum //如果输入数量大于0，计算价格，否则返回之前的数量
+				//						let diffsum = pro.sum - oldsum //差价
+				//						let diffnum = pro.num - oldnum //差量
+				//						if(pro.checked) { //如果商品被选中
+				//							this.fetchData.allsum += diffsum //计算总价
+				//							this.fetchData.allnum += diffnum //计算总量
+				//						}
+			},
+			sendgo() {
+				this.choosegoods = [];
+				this.fetchData.list.forEach(item => {
+					item.products.forEach(items => {
+						if(items.checked == true) {
+					this.choosegoods.push(items)
+				}
+			})
+			})
+                axios.put('saveDelivery',this.choosegoods)
+                    .then(response => {
+                    if(response.data.code == null || response.data.code != 0){
+                        console.log(this.choosegoods.forEach(item=>{
+
+						}))
+                     	this.$message({
+                        	message: '收货失败',
+                        	type: 'error',
+                        	center: true
+                   		});
+                	}else{
+                    this.$message({
+                        message: '收货成功',
+                        type: 'success',
+                        center: true
+                    });
+                    this.queryMaterial();
+                    console.log(this.choosegoods);
+                }
+            }) .catch(error => {
+                    this.$message({
+                    message: '收货失败',
+                    type: 'error',
+                    center: true
+                });
+            })
+
+
+
+			},
+			getallnum() {
+				var allnum = [];
+				this.fetchData.list.forEach(item => {
+					item.products.forEach(items => {
+						if(items.checked == true) {
+					allnum.push(items)
+				}
+			})
+			})
+				return allnum.length
+			},
+			handleSizeChange(val) {
+				// 查询后设置第1页，和1页20条
+				this.queryResult.pageSize=val;
+				this.queryMaterial();
+			},
+			handleCurrentChange(val) {
+				this.queryResult.currPage=val;
+				this.queryMaterial();
+			},
+			rowchoose(item,pro){
+				console.log('执行了行选择')
+				!pro.checked ? this.choosetrue(item, pro) : this.choosefalse(item, pro)
+				if(this.choosegoods.length == 0) {
+					this.choosegoods.push(pro)
+				} else {
+					if(pro.checked == false) {
+						this.choosegoods = this.choosegoods.filter(item => {
+							return (item.id+'').indexOf(pro.id) < 0
+					})
+					} else {
+						this.choosegoods.push(pro)
+					}
+				}
+				this.fetchData.allnum = this.getallnum()
+			},
+			isshowitem(list,item){
+				// list.forEach((item)=>{
+				//     item.isshow=false;
+				// })
+				item.isshow=!item.isshow;
+
+			},
+			togopingzheng(item,pro){
+				this.dialogTableVisible=true;
+				if(item.nowtype=='1'){
+					this.nowtype ='1';
+
+				}else if(item.nowtype=='2'){
+					this.nowtype='2';
+				}else if(item.nowtype=='3'){
+					this.nowtype='3';
+				}
+			},
+			getmax(item,pro){
+				return pro.shQut - pro.sjShQut;
+			},
+			changefullscreen(){
+				this.fullscreen=!this.fullscreen;
+			},
+			go(){
+				alert(444)
+			},
+			resetForm(formName){
+				this.$refs[formName].resetFields();
+			}
+
+		},
+		mounted() {
+			this.queryMaterial();
+
+			console.log(this.fetchData)
+			console.log(this.fetchData.list.length)
+
+		},
+		created(){
+
+
+		}
+	})
+	/*]]>*/
+</script>
+</body>
+
+</html>

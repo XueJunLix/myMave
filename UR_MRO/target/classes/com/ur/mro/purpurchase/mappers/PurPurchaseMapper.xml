@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.purpurchase.mappers.PurPurchaseMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.purpurchase.model.PurPurchase" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="APPLY_BY" property="applyBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="APPLY_DEPARTMENT" property="applyDepartment" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CURRENCY" property="currency" jdbcType="VARCHAR" javaType="String" />
+    <result column="EXCHANGE_RATE" property="exchangeRate" jdbcType="NUMERIC" javaType="String" />
+    <result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" javaType="String" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="ORDER_STATUS" property="orderStatus" jdbcType="INTEGER" javaType="Integer" />
+    <result column="ORDER_TYPE" property="orderType" jdbcType="VARCHAR" javaType="String" />
+    <result column="PROCESSING_MODE" property="processingMode" jdbcType="VARCHAR" javaType="String" />
+    <result column="PURCHASE" property="purchase" jdbcType="VARCHAR" javaType="String" />
+    <result column="PURCHASE_ORG" property="purchaseOrg" jdbcType="VARCHAR" javaType="String" />
+    <result column="STORE_ID" property="storeId" jdbcType="VARCHAR" javaType="String" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="FLOW_BY" property="flowBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="FLOW_ID" property="flowId" jdbcType="VARCHAR" javaType="String" />
+    <result column="AFFIRM_STATUS" property="affirmStatus" jdbcType="VARCHAR" javaType="String" />
+    <result column="CURRERY_TECH" property="curreryTech" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUBMIT_TIME" property="submitTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="SUBMIT_USER" property="submitUser" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUPPLIER_CODE" property="supplierCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUPPLIER_NAME" property="supplierName" jdbcType="VARCHAR" javaType="String" />
+    <result column="PURCHASE_BY" property="purchaseBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="FLOW_TYPE" property="flowType" jdbcType="INTEGER" javaType="Integer" />
+    <result column="REFER_PO" property="referPo" jdbcType="VARCHAR" javaType="String" />
+    <result column="MATERIAL_REQUIRED" property="materialRequired" jdbcType="VARCHAR" javaType="String" />
+    <result column="DJ_TYPE" property="djType" jdbcType="VARCHAR" javaType="String" />
+    <result column="APPLY_TYPE" property="applyType" jdbcType="VARCHAR" javaType="String" />
+    <result column="REFER_APPLY_NO" property="referApplyNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_ORDER_FINISH" property="isOrderFinish" jdbcType="VARCHAR" javaType="String" />
+    <result column="TASK_TYPE" property="taskType" jdbcType="VARCHAR" javaType="String" />
+    <result column="BRAND_TYPE" property="brandType" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_IMAGE" property="shopImage" jdbcType="VARCHAR" javaType="String" />
+    <result column="REQID" property="reqid" jdbcType="VARCHAR" javaType="String" />
+    <result column="ISOK" property="isok" jdbcType="VARCHAR" javaType="String" />
+    <result column="FLAG" property="flag" jdbcType="VARCHAR" javaType="String" />
+    <result column="OA_FW_STATUS" property="oaFwStatus" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_TB" property="isTb" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_SEND" property="isSend" jdbcType="VARCHAR" javaType="String" />
+    <result column="COST_CENTER_CODE" property="costCenterCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="COST_CENTER_NAME" property="costCenterName" jdbcType="VARCHAR" javaType="String" />
+    <result column="APPLY_NAME" property="applyName" jdbcType="VARCHAR" javaType="String" />
+    <result column="REMOVED" property="removed" jdbcType="INTEGER" javaType="Integer" />
+    <result column="FLOW_FINISH_TIME" property="flowFinishTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="IS_DB" property="isDb" jdbcType="VARCHAR" javaType="String" />
+    <result column="REFER_PR" property="referPr" jdbcType="VARCHAR" javaType="String" />
+    <result column="REFER_BG" property="referBg" jdbcType="VARCHAR" javaType="String" />
+    <result column="OA_CREATE_NO" property="oaCreateNo" jdbcType="VARCHAR" javaType="String" />
+      <result column="user_By" property="userBy" jdbcType="VARCHAR" javaType="String" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,APPLY_BY,APPLY_DEPARTMENT,COMMENTS,CURRENCY,EXCHANGE_RATE,GROUP_ID,ORDER_NO,ORDER_STATUS,ORDER_TYPE,PROCESSING_MODE,PURCHASE,PURCHASE_ORG,STORE_ID,DELETED,FLOW_BY,FLOW_ID,AFFIRM_STATUS,CURRERY_TECH,SUBMIT_TIME,SUBMIT_USER,SUPPLIER_CODE,SUPPLIER_NAME,PURCHASE_BY,FLOW_TYPE,REFER_PO,MATERIAL_REQUIRED,DJ_TYPE,APPLY_TYPE,REFER_APPLY_NO,IS_ORDER_FINISH,TASK_TYPE,BRAND_TYPE,SHOP_IMAGE,REQID,ISOK,FLAG,OA_FW_STATUS,IS_TB,IS_SEND,COST_CENTER_CODE,COST_CENTER_NAME,APPLY_NAME,REMOVED,FLOW_FINISH_TIME,IS_DB,REFER_PR,REFER_BG,OA_CREATE_NO
+  </sql>
+  
+  <select id="getPurPurchaseByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from SRM_PUR_PURCHASE_APPLY
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertPurPurchase" parameterType="com.ur.mro.purpurchase.model.PurPurchase" >
+    insert into SRM_PUR_PURCHASE_APPLY (
+        CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,APPLY_BY,APPLY_DEPARTMENT,COMMENTS,CURRENCY,EXCHANGE_RATE,GROUP_ID,ORDER_NO,ORDER_STATUS,ORDER_TYPE,PROCESSING_MODE,PURCHASE,PURCHASE_ORG,STORE_ID,DELETED,FLOW_BY,FLOW_ID,AFFIRM_STATUS,CURRERY_TECH,SUBMIT_TIME,SUBMIT_USER,SUPPLIER_CODE,SUPPLIER_NAME,PURCHASE_BY,FLOW_TYPE,REFER_PO,MATERIAL_REQUIRED,DJ_TYPE,APPLY_TYPE,REFER_APPLY_NO,IS_ORDER_FINISH,TASK_TYPE,BRAND_TYPE,SHOP_IMAGE,REQID,ISOK,FLAG,OA_FW_STATUS,IS_TB,IS_SEND,COST_CENTER_CODE,COST_CENTER_NAME,APPLY_NAME,REMOVED,FLOW_FINISH_TIME,IS_DB,REFER_PR,REFER_BG,OA_CREATE_NO
+    )values(
+        #{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{applyBy,jdbcType=VARCHAR},#{applyDepartment,jdbcType=NVARCHAR},#{comments,jdbcType=NVARCHAR},#{currency,jdbcType=VARCHAR},#{exchangeRate,jdbcType=NUMERIC},#{groupId,jdbcType=VARCHAR},#{orderNo,jdbcType=VARCHAR},#{orderStatus,jdbcType=INTEGER},#{orderType,jdbcType=VARCHAR},#{processingMode,jdbcType=VARCHAR},#{purchase,jdbcType=VARCHAR},#{purchaseOrg,jdbcType=VARCHAR},#{storeId,jdbcType=VARCHAR},#{deleted,jdbcType=INTEGER},#{flowBy,jdbcType=VARCHAR},#{flowId,jdbcType=VARCHAR},#{affirmStatus,jdbcType=VARCHAR},#{curreryTech,jdbcType=VARCHAR},#{submitTime,jdbcType=TIMESTAMP},#{submitUser,jdbcType=VARCHAR},#{supplierCode,jdbcType=VARCHAR},#{supplierName,jdbcType=VARCHAR},#{purchaseBy,jdbcType=VARCHAR},#{flowType,jdbcType=INTEGER},#{referPo,jdbcType=VARCHAR},#{materialRequired,jdbcType=VARCHAR},#{djType,jdbcType=VARCHAR},#{applyType,jdbcType=VARCHAR},#{referApplyNo,jdbcType=VARCHAR},#{isOrderFinish,jdbcType=VARCHAR},#{taskType,jdbcType=VARCHAR},#{brandType,jdbcType=VARCHAR},#{shopImage,jdbcType=VARCHAR},#{reqid,jdbcType=VARCHAR},#{isok,jdbcType=VARCHAR},#{flag,jdbcType=VARCHAR},#{oaFwStatus,jdbcType=VARCHAR},#{isTb,jdbcType=VARCHAR},#{isSend,jdbcType=VARCHAR},#{costCenterCode,jdbcType=VARCHAR},#{costCenterName,jdbcType=VARCHAR},#{applyName,jdbcType=VARCHAR},#{removed,jdbcType=INTEGER},#{flowFinishTime,jdbcType=TIMESTAMP},#{isDb,jdbcType=VARCHAR},#{referPr,jdbcType=VARCHAR},#{referBg,jdbcType=VARCHAR},#{oaCreateNo,jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <update id="updatePurPurchaseByPKSelective" parameterType="com.ur.mro.purpurchase.model.PurPurchase" >
+    update SRM_PUR_PURCHASE_APPLY
+    <set>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyBy != null" >
+        APPLY_BY = #{applyBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applyDepartment != null" >
+        APPLY_DEPARTMENT = #{applyDepartment,jdbcType=NVARCHAR},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=NVARCHAR},
+      </if>
+      <if test="currency != null" >
+        CURRENCY = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeRate != null" >
+        EXCHANGE_RATE = #{exchangeRate,jdbcType=NUMERIC},
+      </if>
+      <if test="groupId != null" >
+        GROUP_ID = #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderStatus != null" >
+        ORDER_STATUS = #{orderStatus,jdbcType=INTEGER},
+      </if>
+      <if test="orderType != null" >
+        ORDER_TYPE = #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="processingMode != null" >
+        PROCESSING_MODE = #{processingMode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchase != null" >
+        PURCHASE = #{purchase,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseOrg != null" >
+        PURCHASE_ORG = #{purchaseOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="storeId != null" >
+        STORE_ID = #{storeId,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="flowBy != null" >
+        FLOW_BY = #{flowBy,jdbcType=VARCHAR},
+      </if>
+      <if test="flowId != null" >
+        FLOW_ID = #{flowId,jdbcType=VARCHAR},
+      </if>
+      <if test="affirmStatus != null" >
+        AFFIRM_STATUS = #{affirmStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="curreryTech != null" >
+        CURRERY_TECH = #{curreryTech,jdbcType=VARCHAR},
+      </if>
+      <if test="submitTime != null" >
+        SUBMIT_TIME = #{submitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submitUser != null" >
+        SUBMIT_USER = #{submitUser,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null" >
+        SUPPLIER_CODE = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null" >
+        SUPPLIER_NAME = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseBy != null" >
+        PURCHASE_BY = #{purchaseBy,jdbcType=VARCHAR},
+      </if>
+      <if test="flowType != null" >
+        FLOW_TYPE = #{flowType,jdbcType=INTEGER},
+      </if>
+      <if test="referPo != null" >
+        REFER_PO = #{referPo,jdbcType=VARCHAR},
+      </if>
+      <if test="materialRequired != null" >
+        MATERIAL_REQUIRED = #{materialRequired,jdbcType=VARCHAR},
+      </if>
+      <if test="djType != null" >
+        DJ_TYPE = #{djType,jdbcType=VARCHAR},
+      </if>
+      <if test="applyType != null" >
+        APPLY_TYPE = #{applyType,jdbcType=VARCHAR},
+      </if>
+      <if test="referApplyNo != null" >
+        REFER_APPLY_NO = #{referApplyNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isOrderFinish != null" >
+        IS_ORDER_FINISH = #{isOrderFinish,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null" >
+        TASK_TYPE = #{taskType,jdbcType=VARCHAR},
+      </if>
+      <if test="brandType != null" >
+        BRAND_TYPE = #{brandType,jdbcType=VARCHAR},
+      </if>
+      <if test="shopImage != null" >
+        SHOP_IMAGE = #{shopImage,jdbcType=VARCHAR},
+      </if>
+      <if test="reqid != null" >
+        REQID = #{reqid,jdbcType=VARCHAR},
+      </if>
+      <if test="isok != null" >
+        ISOK = #{isok,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        FLAG = #{flag,jdbcType=VARCHAR},
+      </if>
+      <if test="oaFwStatus != null" >
+        OA_FW_STATUS = #{oaFwStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="isTb != null" >
+        IS_TB = #{isTb,jdbcType=VARCHAR},
+      </if>
+      <if test="isSend != null" >
+        IS_SEND = #{isSend,jdbcType=VARCHAR},
+      </if>
+      <if test="costCenterCode != null" >
+        COST_CENTER_CODE = #{costCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="costCenterName != null" >
+        COST_CENTER_NAME = #{costCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyName != null" >
+        APPLY_NAME = #{applyName,jdbcType=VARCHAR},
+      </if>
+      <if test="removed != null" >
+        REMOVED = #{removed,jdbcType=INTEGER},
+      </if>
+      <if test="flowFinishTime != null" >
+        FLOW_FINISH_TIME = #{flowFinishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDb != null" >
+        IS_DB = #{isDb,jdbcType=VARCHAR},
+      </if>
+      <if test="referPr != null" >
+        REFER_PR = #{referPr,jdbcType=VARCHAR},
+      </if>
+      <if test="referBg != null" >
+        REFER_BG = #{referBg,jdbcType=VARCHAR},
+      </if>
+      <if test="oaCreateNo != null" >
+        OA_CREATE_NO = #{oaCreateNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchPurPurchaseCount" resultType="int" >
+    select count(*) from SRM_PUR_PURCHASE_APPLY
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchPurPurchase" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from SRM_PUR_PURCHASE_APPLY
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by ID
+    	</if>
+    <if test="pageBean != null" >
+     	   Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+  
+  <!-- manual added -->
+  <select id="getPurchaseOrderByNo" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_PUR_PURCHASE_APPLY
+    where   DELETED=0 AND
+    ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="djType != null" >
+      and  DJ_TYPE = #{djType,jdbcType=VARCHAR},
+    </if>
+  </select>
+
+  <select id="getPurchaseInfoByOrderNo" resultType="com.ur.mro.purpurchase.model.ShenqingData">
+  SELECT
+	 t.APPLY_NAME as createName,
+    dbo.getDcSkeyBySvalue(t.APPLY_DEPARTMENT,'GC_dept') as dept,
+    dbo.getDcSkeyBySvalue(t.ORDER_TYPE,'GC_PUR_ORDER_TYPE') as type,
+    t.user_By as useName,
+    t.comments as reason,
+    t.CREATED_TIME as creatTime,
+    t2.SHOP_NAME as shopName,
+    t2.SHOP_NO as shopCode,
+    t2.MAT_CODE as code,
+    t2.MAT_NAME as name,
+    t3.PURCHASE_UNIT_PRICE as totalPrice,
+    ISNULL(t3.PURCHASE_ACTUAL_AMOUNT,t3.PURCHASE_UNIT_PRICE*t3.PURCHASE_ACTUAL_COUNT) AS price,
+    t3.PURCHASE_ACTUAL_COUNT as quality,
+    ISNULL(F1.ABBFILE_NAME,'e4da034a-c98c-4882-b439-e2103e6f5edb') AS url
+    FROM
+        SRM_PUR_PURCHASE_APPLY t--PR主表
+    INNER JOIN SRM_PUR_APPLY_INFO t2 ON t.ID = t2.APPLY_ID --PR明细表
+    LEFT JOIN SRM_MAT_MATERIAL m ON t2.MAT_CODE = m.CODE  AND m.DELETED = 0
+    LEFT JOIN
+    (SELECT poh.ORDER_NO,poi.PR_ROW_ID,poi.APPLY_ORDER_NO,poi.ROW_ID,poi.PURCHASE_ACTUAL_AMOUNT,poi.PURCHASE_ACTUAL_COUNT,poi.PURCHASE_UNIT_PRICE FROM SRM_PUR_PURCHASE_ORDER poh
+    INNER JOIN SRM_PUR_ORDER_INFO  poi ON poh.ID = poi.ORDER_ID
+    WHERE poh.DELETED = 0 AND poi.DELETED = 0)t3
+    ON t2.ROW_ID = t3.PR_ROW_ID AND t.ORDER_NO = t3.APPLY_ORDER_NO
+
+    LEFT JOIN  SRM_SYS_ATTACHMENT F1 ON F1.ROW_ID=m.ID AND  F1.DELETED = 0  AND F1.ID IN
+    (SELECT MIN(F2.ID) FROM SRM_SYS_ATTACHMENT F2 WHERE  F2.ROW_ID=m.ID AND  F2.DELETED = 0 )
+    where t.DELETED=0
+    and  t.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

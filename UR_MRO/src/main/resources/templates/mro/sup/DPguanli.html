@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('demo')"></head>
+<style scoped>
+	[v-cloak] {
+		display: none;
+	}
+
+	html,
+	body {
+		height: 100%;
+	}
+
+	#app {
+		height: 100%;
+	}
+
+	#app1 {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+	}
+
+	#appbox {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+	}
+
+	/*配置弹窗——————————————————————————————————————————————————————*/
+
+	.tanpeizhi {
+		width: 100%;
+		height: 100%;
+		background: rgba(127, 127, 127, 0.5);
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 10;
+		display: flex;
+		justify-content: flex-end;
+		/*opacity: 0.2;*/
+	}
+
+	.el-checkbox.is-bordered {
+		width: 120px;
+	}
+
+	.el-checkbox.is-bordered+.el-checkbox.is-bordered {
+		margin: 10px !important;
+	}
+
+	.tanpeizhi .peizhibox {
+		height: 100%;
+		width: 440px;
+		background: white;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		align-items: flex-start;
+		padding: 10px;
+		box-sizing: border-box;
+		align-content: flex-start;
+	}
+
+	.control-bar {
+		height: 40px;
+		width: 100%;
+		background: #ffffff;
+	}
+
+	.control-bar .MYcontainer {
+		display: flex;
+		align-items: center;
+		height: 40px;
+		background: #ffffff;
+	}
+
+	.search-bar {
+		/*height: 206px;*/
+		width: 100%;
+		background: white;
+	}
+
+	.search-bar .MYcontainer {
+		/*height: 206px;*/
+		background: #ffffff;
+		/*border: 1px solid #eef1f6;*/
+		box-sizing: border-box;
+		border-radius: 5px;
+	}
+
+	.action-bar {
+		min-height: 50px;
+		width: 100%;
+		background: white;
+	}
+
+	.action-bar .MYcontainer {
+		min-height: 50px;
+		background: #ffffff;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+
+	.action-bar .MYcontainer .action-left {
+		margin: 2px;
+	}
+
+	.action-left .el-button {
+		box-shadow: 2px 2px 2px #CCCCCC;
+	}
+
+	.action-bar .MYcontainer .action-right {
+		flex: 0.2;
+		height: 40px;
+		background: white;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	.main-bar {
+		flex: 1;
+		width: 100%;
+		background: white;
+		overflow: auto;
+	}
+
+	.main-bar .MYcontainer {
+		height: 100%;
+		/*background: pink;*/
+		/*border: 1px solid #eef1f6;*/
+		box-sizing: border-box;
+	}
+
+	/*.el-table {
+            height: 100% !important;
+        }*/
+
+	.el-table td,
+	.el-table th.is-leaf {
+		text-align: center;
+	}
+
+	.fade-enter-active,
+	.fade-leave-active {
+		transition: opacity 0.5s;
+	}
+
+	.fade-enter,
+	.fade-leave-to
+		/* .fade-leave-active below version 2.1.8 */
+
+	{
+		opacity: 0;
+	}
+
+	.el-table th {
+		background: linear-gradient(to bottom, #fdfdfd, #f1f7ff);
+	}
+
+	.el-table thead {
+		background: linear-gradient(to bottom, #fdfdfd, #f1f7ff);
+	}
+
+	.el-form-item {
+		margin-bottom: 10px;
+	}
+
+	.el-form-item__label {
+		color: #666666 !important;
+	}
+
+	/*.el-table__fixed-body-wrapper {
+            top: 48px !important;
+        }*/
+	/*.el-table__footer-wrapper,
+        .el-table__header-wrapper {
+            height: 48px !important;
+        }*/
+
+	.el-table--scrollable-y .el-table__body-wrapper {
+		flex: 1 !important;
+	}
+
+	.el-table .el-table--fit .el-table--scrollable-x .el-table--scrollable-y .el-table--enable-row-hover .el-table--enable-row-transition {
+		display: flex;
+	}
+
+	.el-table__body tr.cuurent-row>td {
+		background: skyblue;
+	}
+
+	.el-table td {
+		padding: 0;
+	}
+
+	.gutter {
+		display: none;
+	}
+
+	/*.el-dialog__body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        .el-dialog__header{
+            min-width: 500px !important;
+        }
+        .el-dialog__body{
+            min-width: 500px !important;
+        }
+        .el-dialog .el-dialog--center{
+            min-width: 500px !important;
+        }*/
+
+	.customWidth {
+		min-width: 500px;
+	}
+
+	.mubantip {
+		width: 100%;
+		/*min-height: 38px;*/
+		line-height: 38px;
+		text-align: center;
+		background: #ECECEC;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		color: red;
+	}
+
+	.el-pagination__jump {
+		margin-left: 0 !important;
+	}
+
+	.el-pagination__sizes {
+		margin: 0 !important;
+	}
+
+	.el-pagination__total {
+		margin-right: 0 !important;
+	}
+
+	.el-pagination.is-background .btn-next,
+	.el-pagination.is-background .btn-prev,
+	.el-pagination.is-background .el-pager li {
+		margin: 0px 2px !important;
+	}
+
+	.el-button+.el-button {
+		margin-left: 0 !important;
+	}
+
+	.peizhibox .el-form-item {
+		margin: 10px 0;
+	}
+
+	.el-carousel__item.is-animating {
+		transition: noset !important;
+	}
+
+	.el-dialog--center {
+		height: 80%;
+		display: flex !important;
+		flex-direction: column !important;
+	}
+
+	.el-dialog__body {
+		flex: 1 !important;
+		display: flex !important;
+		flex-direction: column !important;
+	}
+
+	.el-carousel--horizontal {
+		flex: 1 !important;
+		display: flex !important;
+		flex-direction: column !important;
+	}
+
+	.el-carousel__MYcontainer {
+		flex: 1;
+	}
+	.WLcodebox{
+		cursor: pointer;
+		color: #606266;
+
+	}
+	.WLcodebox:hover{
+		background: skyblue;
+		color: white;
+	}
+</style>
+
+</head>
+
+<body>
+
+<div id='app' v-cloak>
+	<div id='app1' v-cloak>
+		<div id="appbox" v-cloak>
+			<transition name="fade">
+				<div class="tanpeizhi" @click='onctrshow' v-show="ctrshowtankuang">
+					<div class="peizhibox" v-show='ctrshow_peizhi'>
+						<el-checkbox v-model="ctrpeizhi.ct_code" label="店铺编号" disabled border fill='#409EFF'
+									 style='margin:10px;'></el-checkbox>
+						<el-checkbox v-model="ctrpeizhi.ct_name" label="店铺名称" disabled border fill='#409EFF'></el-checkbox>
+						<el-checkbox v-model="ctrpeizhi.ct_type" label="类型" border></el-checkbox>
+						<el-checkbox v-model="ctrpeizhi.ct_salesLevel" label="销售级别" border fill='#409EFF'></el-checkbox>
+						<el-checkbox v-model="ctrpeizhi.ct_brandType" label="品牌" border fill='#409EFF'></el-checkbox>
+						<el-checkbox v-model="ctrpeizhi.ct_imageLevel" label="形象级别" border fill='#409EFF'></el-checkbox>
+						<el-checkbox v-model="ctrpeizhi.ct_country" label="省份" border fill='#409EFF'></el-checkbox>
+						<el-checkbox v-model="ctrpeizhi.ct_city" label="城市" border fill='#409EFF'></el-checkbox>
+						<el-checkbox v-model="ctrpeizhi.ct_address" label="地址" border fill='#409EFF'></el-checkbox>
+
+						<el-button @click='onpeizhiwancheng' style='width:100%' type="primary" plain>保存配置项
+						</el-button>
+					</div>
+
+					<div class="peizhibox" v-show='ctrshow_search' style='width: 810px;'>
+						<div class="btnbox" style='margin-bottom: 10px;'>
+							<el-button @click='tosearch' style='box-shadow: 2px 2px 2px #ccc;margin-right: 10px;'
+									   type="primary" plain>查询</el-button>
+							<el-button style='box-shadow: 2px 2px 2px #ccc;' type="info" plain @click="resetForm('queryCondition')">重置</el-button>
+						</div>
+						<el-form
+								class="demo-dynamic"
+								:model="queryCondition"
+								ref="queryCondition"
+								label-width="100px"
+								style='display: flex;
+    flex-wrap: wrap;
+    padding: 4px 0px;
+    border: 1px solid rgb(204, 204, 204);
+    background: linear-gradient(to top, rgb(255, 255, 255), rgb(218, 232, 251));
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: rgb(204, 204, 204) 2px 2px 2px;'>
+							<el-form-item label="店铺编号" style='width:48%' prop="code">
+								<el-input type="text" v-model="queryCondition.code"></el-input>
+							</el-form-item>
+							<el-form-item label="店铺名称" style='width:48%' prop="name">
+								<el-input type="text" v-model="queryCondition.name"></el-input>
+							</el-form-item>
+							<el-form-item label="类型" style='width:48%' prop="matType">
+								<el-select v-model="queryCondition.matType" placeholder="请选择" style='width:100%'>
+									<el-option :label="item" :value="key"  v-for="(item,key) in matTypes"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="品牌" style='width:48%' prop="brandType">
+								<el-select v-model="queryCondition.brandType" placeholder="请选择" style='width:100%'>
+									<el-option :label="item" :value="key"  v-for="(item,key) in brandTypes"></el-option>
+								</el-select>
+							</el-form-item>
+						</el-form>
+					</div>
+				</div>
+			</transition>
+
+			
+			<el-dialog :visible.sync="dialogVisible" @close='closeDialog' :fullscreen='fullscreen' width='50%'
+					   height='800px' center>
+				<template>
+					<!--<el-button @click='fangdaimgbox'>全屏</el-button>-->
+					<el-carousel :initial-index='0' arrow="always" height='100%' indicator-position="outside"
+								 :autoplay='false'>
+						<el-carousel-item v-for="(item,index) in dialogImageUrl" :key="index"
+										  style='display: flex;justify-content: center;'>
+							<img :src="item" alt="" style='max-width: 100%;height: 100%;'>
+						</el-carousel-item>
+					</el-carousel>
+				</template>
+			</el-dialog>
+
+			<el-dialog :visible.sync="dialogdaochu">
+				<el-button>
+					<a href="http://dev-ims.ur.com.cn:9090/template/TransferTemplate.xlsx">模板下载</a>
+				</el-button>
+				<div class="mubantip">
+					当前导入的excel文件的数据日期必须一致！且导入数据只做新增，不做修改保存，若数据行已存在系统中，将忽略该行数据！
+				</div>
+				<el-upload :limit='1' accept='.xlsx,.xls' class="upload-demo"
+						   action="https://jsonplaceholder.typicode.com/posts/" :on-change="handleChange"
+						   :file-list="fileList">
+					<el-button size="small" type="primary">点击上传</el-button>
+					<div slot="tip" class="el-upload__tip">只能上传.xlsx,.xls文件，且不超过500kb</div>
+				</el-upload>
+			</el-dialog>
+
+			<div class="control-bar">
+				<div class="MYcontainer">
+					<el-switch active-text="" inactive-text="搜索" v-model="ctrshow_search" active-color="skyblue"
+							   inactive-color="#ccc" active-value='1' inactive-value='0' @change='inchange'
+							   style='margin-right: 20px;'>
+					</el-switch>
+					<el-switch active-text="" inactive-text="显示列配置" v-model="ctrshow_peizhi" active-color="skyblue"
+							   inactive-color="#ccc" active-value='1' inactive-value='0' @change='changepeizhi'>
+					</el-switch>
+				</div>
+			</div>
+
+
+			<div class="action-bar">
+
+				<div class="MYcontainer">
+					<div class="action-left">
+						<el-button icon='el-icon-folder-add' size='small' @click='toadd'>
+							新增
+						</el-button>
+						<el-button icon='el-icon-edit' @click='toedit' size='small'>编辑</el-button>
+						<el-button icon='el-icon-delete' @click='todel' size='small'>删除</el-button>
+						<!--<el-button icon='el-icon-close' @click='tostop' size='small'>禁用</el-button>-->
+						<el-button icon='el-icon-view' @click='tolook' size='small'>查看</el-button>
+						<!--<el-button icon='el-icon-document-copy' @click='tocopy' size='small'>复制</el-button>-->
+						<!--<el-button icon='el-icon-download' @click='todownload' size='small' :loading="daochuloading">导出</el-button>-->
+						<el-button icon='el-icon-position' size='small' @click='todaoru'>导入</el-button>
+						<el-button icon='el-icon-refresh' size='small' @click='totongbu'>同步</el-button>
+						<!--<el-button icon='el-icon-upload2' @click='tosendOA' size='small'>提交OA</el-button>-->
+					</div>
+
+					<!--分页组件————————————————————————————————-->
+
+					<div class="action-right">
+						<el-pagination background
+									   @current-change="handleCurrentChange"
+									   @size-change="handleSizeChange"
+									   :current-page="queryResult.currPage"
+									   :page-sizes="[20, 40, 80, 100,1000]" :page-size="queryResult.pageSize"
+									   layout="total, sizes, prev, pager, next, jumper" :total="queryResult.totalRecordNum">
+						</el-pagination>
+					</div>
+
+				</div>
+			</div>
+
+
+			<!--主数据列表——————————————————————————————-->
+			<div class="main-bar" v-loading="loading">
+				<div class="MYcontainer">
+					<el-table
+							height='100%'
+							empty-text="当前没有店铺数据"
+							:row-style="rowClass"
+							ref="multipleTable"
+							:data="tableData"
+							tooltip-effect="dark"
+							@row-click="handleRowClick"
+							@row-dblclick="dbhandleRowClick"
+							@selection-change="handleSelectionChange"
+					>
+						<el-table-column  fixed type="selection" width="50">
+						</el-table-column>
+						<el-table-column label="店铺编号" v-if='ctrpeizhi.ct_code' min-width='150' >
+							<template slot-scope="scope" >
+								<div class='WLcodebox' @click.stop="togoedit(scope.row)">
+									{{ scope.row.code==null||scope.row.code==''?'无':scope.row.code}}
+								</div>
+							</template>
+						</el-table-column>
+						<el-table-column  label="店铺名称"  v-if='ctrpeizhi.ct_name' min-width='150'>
+							<template slot-scope="scope">{{ scope.row.name==null||scope.row.name==''?'无': scope.row.name}}</template>
+						</el-table-column>
+						<el-table-column label="类型" min-width="100" v-if='ctrpeizhi.ct_type'>
+							<template slot-scope="scope">{{ scope.row.type==null||scope.row.type==''?'无':scope.row.type }}</template>
+						</el-table-column>
+						<el-table-column label="品牌" min-width="100" v-if='ctrpeizhi.ct_brandType'>
+							<template slot-scope="scope">{{ scope.row.brandType==null||scope.row.brandType==''?'无':scope.row.brandType }}</template>
+						</el-table-column>
+						<el-table-column label="形象级别" min-width="100" v-if='ctrpeizhi.ct_imageLevel'>
+							<template slot-scope="scope">{{ scope.row.imageLevel==null||scope.row.imageLevel==''?'无':scope.row.imageLevel }}</template>
+						</el-table-column>
+						<el-table-column label="省份" min-width="100" v-if='ctrpeizhi.ct_country'>
+							<template slot-scope="scope">{{ scope.row.country==null||scope.row.country==''?'无':scope.row.country }}</template>
+						</el-table-column>
+						<el-table-column label="城市" min-width="100" v-if='ctrpeizhi.ct_city'>
+							<template slot-scope="scope">{{ scope.row.city==null||scope.row.city==''?'无':scope.row.city }}</template>
+						</el-table-column>
+						<el-table-column label="地址" min-width="100" v-if='ctrpeizhi.ct_address'>
+							<template slot-scope="scope">{{ scope.row.address==null||scope.row.address==''?'无':scope.row.address }}</template>
+						</el-table-column>
+					</el-table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="common/onload_js :: onloadJS"></div>
+<script  th:inline="javascript">
+    /*<![CDATA[*/
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            PKID:'',
+
+
+//			店铺主数据请求地址———————————————————
+            WLurl: '/mat/Material/search',    //查询接口
+            deletWLurl:'/mat/deleteMaterial', //删除接口
+            copyWLurl:'/mat/copyMaterial',    //复制接口
+            editWLurl:'/mat/editMaterial',    //编辑接口
+            updateBatchStatusWLurl:'/mat/updateBatchStatus',
+//			————————————————————————————
+
+            pickerOptions2: {
+                shortcuts: [{
+                    text: '最近一周',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '最近一个月',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '最近三个月',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }]
+            },
+            value3: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+            value4: '',
+            fullscreen: false,
+            ctrshow_peizhi: '0',
+            ctrshow_search: '0',
+            selectRow: [],
+            selectData: [],
+            ctrpeizhi: {},
+            checked1: '',
+            checked2: '',
+            ctrshowtankuang: false,
+            valuepeizhi: '0',
+
+
+
+            valuesearch: '0',
+            ctrshow: false,
+            tableHeight: 50,
+            theight: '100%',
+
+            //					主数据数据————————————————————————————————————————————
+            tableData: [{
+                code:'5165165',
+                name:'5416516',
+                type:'452452',
+                salesLevel:'4527452',
+                brandType:'454524',
+                imageLevel:'453453',
+                country:'4534534',
+                city:'453453',
+                address:'453453',
+            }],
+
+            multipleSelection: [],
+            currentPage4: 1,
+            currentPage: 1,
+            loading: false,
+            dialogImageUrl: [],
+            dialogVisible: false,
+            dialogdaochu: false,
+            fileList: [],
+            queryResult: {
+                totalRecordNum:20,
+                currPage: 1,
+                pageSize: 20
+            },
+            queryCondition: {
+                id: '',
+                name: '',
+                code: '',
+                brandType: '',
+                categoryA: '',
+                categoryB: '',
+                categoryC: '',
+                matType: '',
+                status: ''
+
+            },
+            brandTypes:[[${brandType}]],
+            categoryAs:[[${categoryA}]],
+            allCategoryB:[[${allCategoryB}]],
+            allCategoryC:[[${allCategoryC}]],
+            matTypes:[[${matType}]],
+            matStatus:[[${matStatus}]],
+            daochuloading:false
+
+        },
+        created(){
+//					获取店铺主数据方法——————————————————————————————————————————————
+            this.queryMaterial();
+        },
+        mounted() {
+
+            if (localStorage.getItem('zhushuju_peizhi') == null) {
+                console.log('没数据')
+                let peizhidata = {
+                    ct_code: true,
+                    ct_name: true,
+                    ct_type: true,
+                    ct_salesLevel: true,
+                    ct_brandType: true,
+                    ct_imageLevel: true,
+                    ct_country: true,
+                    ct_city: true,
+                    ct_address: true
+                }
+                this.ctrpeizhi = peizhidata;
+            } else {
+                this.ctrpeizhi = JSON.parse(localStorage.getItem('zhushuju_peizhi'));
+
+            }
+
+        },
+        watch: {
+            selectData(data) {
+                this.selectRow = [];
+                if (data.length > 0) {
+                    data.forEach((item, index) => {
+                        this.selectRow.push(this.tableData.indexOf(item));
+                    });
+                }
+            }
+        },
+        methods: {
+
+            // 获取店铺数据————————————————————————
+            dbhandleRowClick(row){
+                window.open(`${this.editWLurl}?id=${row.id}`,'_self')
+            },
+            tochangeL(val,row){
+                this.queryCondition.categoryB='';
+                this.queryCondition.categoryC='';
+            },
+            tochangeM(val,row){
+                this.queryCondition.categoryC='';
+            },
+            queryMaterial() {
+                this.loading=true;
+                var restRequest = new URRestRequest();
+                restRequest.addCondition("code", this.queryCondition.code, "like");
+                restRequest.addCondition("name", this.queryCondition.name, "like");
+                restRequest.addCondition("type", this.queryCondition.type, "eq");
+                restRequest.addCondition("salesLevel", this.queryCondition.salesLevel, "eq");
+
+                restRequest.setCurrPage(this.queryResult.currPage);
+                restRequest.setPageSize(this.queryResult.pageSize);
+                axios.post(this.WLurl, restRequest.getRequestData())
+                    .then((response) => {
+                        // console.log(response.data)
+                        setTimeout(()=>{
+                            console.log(response.data)
+                            this.queryResult=response.data;
+                            this.tableData = response.data.data;
+                            this.loading=false;
+                        },500)
+                    })
+                    .catch((error) => {
+                        this.loading=false;
+                        this.$message({
+                            message: '查询数据失败,请联系系统管理员',
+                            type: 'error'
+                        });
+                    });
+            },
+            tostop(){
+                console.log(this.selectData)
+
+                this.$confirm('此操作将禁用该店铺, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    if (this.selectData.length == 0) {
+                        this.$message({
+                            message: '请选择需要禁用的店铺主数据',
+                            type: 'warning',
+                            center: true
+                        });
+                    } else {
+                        axios.put(this.updateBatchStatusWLurl, this.selectData).then(response=> {
+                            if(response.data.code==null||response.data.code!=0){
+                                this.$message.error(response.data.message);
+                                this.$data.loading = false;
+                            }else{
+                                this.$message({
+                                    message:'禁用成功',
+                                    type: 'success',
+                                    center: true
+                                });
+                                this.$data.loading = false;
+                                this.queryMaterial(this.queryResult.currPage);
+                            }
+                        }).catch(function (error) {
+                            this.$message.error('禁用失败,请联系系统管理员');
+                        });
+                    }
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消禁用',
+                        center: true
+                    });
+                });
+
+
+            },
+
+            todownload() {
+
+                if(this.queryResult.totalRecordNum>500){
+                    this.$confirm('由于您导出的数据大于500条,可能需要较长的时间,是否继续导出?','提示',{
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        console.log('正在导出')
+
+                        this.todaochu();
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消导出操作'
+                        });
+                    });
+                }else{
+                    console.log('正在导出')
+                    this.todaochu();
+                }
+
+
+            },
+            todaochu(){
+                this.daochuloading=true;
+                this.$message('正在努力导出中，请耐心等待');
+                var url = 'Material/export';
+                var restRequest = new URRestRequest();
+                restRequest.addCondition("name", this.queryCondition.name, "like");
+                restRequest.addCondition("code", this.queryCondition.code, "like");
+                restRequest.addCondition("categoryA", this.queryCondition.categoryA, "eq");
+                restRequest.addCondition("categoryB", this.queryCondition.categoryB, "eq");
+                restRequest.addCondition("categoryC", this.queryCondition.categoryC, "eq");
+                restRequest.addCondition("matType", this.queryCondition.matType, "eq");
+                restRequest.addCondition("status", this.queryCondition.status, "eq");
+                axios.post(url,restRequest.getRequestData())
+                    .then(response=> {
+
+                        if(response.data.code==null||response.data.code!=0){
+                            this.$message.error('导出失败,请联系系统管理员');
+                            this.$data.exportingFile = false;
+                            this.daochuloading=false;
+
+                        }else{
+                            var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+                            this.$data.exportingFile = false;
+                            downloadFile(downloadLink);
+                            this.daochuloading=false;
+                            this.$message.success('导出成功');
+                        }
+                    })
+                    .catch(error=>{
+                        console.log(error);
+                        this.daochuloading=false;
+                        this.$message.error('导出失败,请联系系统管理员');
+
+                    });
+            },
+            handleChange() {
+
+            },
+            todaoru() {
+                this.dialogdaochu = true;
+            },
+            tosendOA() {
+
+                console.log(this.selectData)
+                if (this.selectData.length == 0) {
+                    this.$message({
+                        message: '请选择需要提交到OA的店铺主数据',
+                        type: 'warning',
+                        center: true
+                    });
+                } else {
+                    this.$confirm('当前数据是否提交到OA？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '提交OA成功!'
+                        });
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                }
+            },
+
+            // 删除数据
+            todel() {
+                console.log(this.selectData)
+                if (this.selectData.length == 0) {
+                    this.$message({
+                        message: '请选择需要删除的店铺主数据',
+                        type: 'warning',
+                        center: true
+                    });
+                } else {
+                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.put(this.deletWLurl, this.selectData).then(response=> {
+                            if(response.data.code==null||response.data.code!=0){
+                                this.$message.error('删除失败');
+                                this.$data.loading = false;
+                            }else{
+                                this.$message({
+                                    message: '删除成功',
+                                    type: 'success',
+                                    center: true
+                                });
+                                this.$data.loading = false;
+                                this.queryMaterial(this.queryResult.currPage);
+                            }
+                        }).catch(function (error) {
+                            this.$message.error('删除失败，请联系系统管理员');
+                        });
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除',
+                            center: true
+                        });
+                    });
+                }
+
+
+
+            },
+            tolook() {
+
+                // console.log(this.selectData)
+                if (this.selectData.length == 1) {
+                    this.$message.error('暂无开放')
+                    // this.$message.error('暂无开放')
+                } else if (this.selectData.length == 0) {
+                    // this.$message({
+                    // 	message: '请选择需要查看的店铺主数据',
+                    // 	type: 'warning',
+                    // 	center: true
+                    // });
+                } else {
+                    this.$message({
+                        message: '请选择一行数据进行查看',
+                        type: 'warning',
+                        center: true
+                    });
+                }
+            },
+            toedit() {
+                console.log(this.selectData)
+                if (this.selectData.length == 1) {
+                    window.open(`${this.editWLurl}?id=${this.selectData[0].id}`,'_self')
+                }else if (this.selectData.length == 0) {
+                    this.$message({
+                        message: '请选择需要编辑的店铺主数据',
+                        type: 'warning',
+                        center: true
+                    });
+                } else {
+                    this.$message({
+                        message: '请选择一行数据进行编辑',
+                        type: 'warning',
+                        center: true
+                    });
+                }
+            },
+            tocopy() {
+                console.log(this.selectData)
+                if (this.selectData.length == 1) {
+                    window.open(`${this.copyWLurl}?id=${this.selectData[0].id}`,'_self')
+                }else if (this.selectData.length == 0) {
+                    this.$message({
+                        message: '请选择需要复制的店铺主数据',
+                        type: 'warning',
+                        center: true
+                    });
+                } else {
+                    this.$message({
+                        message: '请选择一行数据进行复制',
+                        type: 'warning',
+                        center: true
+                    });
+                }
+
+
+            },
+            tosearch() {
+
+                this.ctrshowtankuang = false;
+                // this.ctrshow_peizhi = '0';
+                this.ctrshow_search = false;
+                this.ctrshow = false;
+                this.valuesearch = '0';
+                this.queryResult.currPage=1;
+                this.queryResult.pageSize=20;
+                this.queryMaterial();
+            },
+
+            handleEdit(index, row) {
+                console.log(row)
+                this.dialogVisible = true;
+                this.dialogImageUrl = row.checkPictureList;
+
+            },
+            handleSelectionChange(data) {
+                console.log(data)
+                this.selectData = data;
+                //
+            }, // 多选高亮选中行
+            rowClass({
+                         row,
+                         rowIndex
+                     }) {
+                if (this.selectRow.includes(rowIndex)) {
+                    return {
+                        "background-color": "rgba(253, 247, 229, 1)"
+                    }
+                }
+            },
+            onpeizhi(item) {
+
+                //						this.item=true;
+                console.log(this.ctrpeizhi.ct_type)
+                //						console.log(this.item)
+            },
+            //					点击配置按钮
+            changepeizhi() {
+                this.ctrshowtankuang = true;
+                this.ctrshow_peizhi = '1';
+                this.ctrshow_search = false;
+                console.log(this.ctrshow_peizhi)
+
+            },
+
+            //点击弹框的灰色区域
+            onctrshow() {
+                if (window.event.target.className == 'tanpeizhi') {
+                    this.ctrshowtankuang = false;
+                    this.ctrshow_peizhi = false;
+                    this.ctrshow_search = false;
+                }
+
+            },
+            onpeizhiwancheng() {
+                this.ctrshowtankuang = false;
+                this.ctrshow_peizhi = false;
+                this.ctrshow_search = false;
+                localStorage.setItem('zhushuju_peizhi', JSON.stringify(this.ctrpeizhi));
+                this.$message.success('保存配置成功')
+            },
+            //					点击搜索按钮
+            inchange(scope) {
+                this.ctrshowtankuang = true;
+                this.ctrshow_search = '1';
+                this.ctrshow_peizhi = false;
+
+            },
+            // 更改当前页数
+            handleCurrentChange(val) {
+                this.queryResult.currPage=val;
+                this.queryMaterial();
+            },
+            // 更改每页显示数量
+            handleSizeChange(val){
+                this.queryResult.pageSize = val;
+                this.queryMaterial();
+            },
+
+            // 勾选当前行
+            handleRowClick(row, column, event) {
+
+                if (window.event.target.className != 'imgboxitem') {
+                    this.$refs.multipleTable.toggleRowSelection(row);
+                }
+            },
+            closeDialog() {
+                this.dialogImageUrl = [];
+            },
+            fangdaimgbox() {
+                this.fullscreen = true;
+            },
+            toadd(){
+                window.open('createMaterial','_self')
+            },
+            resetForm(formName) {
+                // console.log(formName)
+                this.$refs[formName].resetFields();
+            },
+            togoedit(row){
+                window.open(`${this.editWLurl}?id=${row.id}`,'_self')
+            },
+            totongbu(){
+
+			}
+        }
+    })
+    /*]]>*/
+</script>
+
+</body>
+
+</html>

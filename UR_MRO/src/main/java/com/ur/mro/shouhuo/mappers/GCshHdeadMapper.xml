@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.shouhuo.mappers.GCshHdeadMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.shouhuo.model.GCshHdead" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SH_NO" property="shNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_NO" property="shopNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_NAME" property="shopName" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUP_NO" property="supNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUP_NAME" property="supName" jdbcType="VARCHAR" javaType="String" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" javaType="String" />
+    <result column="CONTACTS" property="contacts" jdbcType="VARCHAR" javaType="String" />
+    <result column="BOXES" property="boxes" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SUP_SHNO" property="supShno" jdbcType="VARCHAR" javaType="String" />
+    <result column="COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SUP_TEL" property="supTel" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUP_LINK_MAN" property="supLinkMan" jdbcType="VARCHAR" javaType="String" />
+    <result column="ADDR" property="addr" jdbcType="VARCHAR" javaType="String" />
+    <result column="SH_TYPE" property="shType" jdbcType="VARCHAR" javaType="String" />
+    <result column="REQUIRED_ARRIVAL_DATE" property="requiredArrivalDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="IS_ALREADY_EXPORT" property="isAlreadyExport" jdbcType="INTEGER" javaType="Integer" />
+    <result column="IS_SUBMIT" property="isSubmit" jdbcType="INTEGER" javaType="Integer" />
+    <result column="IS_HASH_CHANGE_MAT" property="isHashChangeMat" jdbcType="VARCHAR" javaType="String" />
+    <result column="MY_CHECK_BOX" property="myCheckBox" jdbcType="INTEGER" javaType="Integer" />
+    <result column="BRAND_TYPE" property="brandType" jdbcType="NVARCHAR" javaType="String" />
+    <result column="GC_SH_STATUS" property="gcShStatus" jdbcType="VARCHAR" javaType="String" />
+    <result column="FREIGHT" property="freight" jdbcType="NUMERIC" javaType="String" />
+    <result column="SUPPLIER_DELIVER_DATE" property="supplierDeliverDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" javaType="String" />
+    <result column="WL_NO" property="wlNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_SEND" property="isSend" jdbcType="VARCHAR" javaType="String" />
+    <result column="BOX_NO" property="boxNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_GCJLSIGN" property="isGcjlsign" jdbcType="VARCHAR" javaType="String" />
+    <result column="OUTER_WAREHOUSE_NO" property="outerWarehouseNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="OUTER_WAREHOUSE_NAME" property="outerWarehouseName" jdbcType="VARCHAR" javaType="String" />
+    <result column="OUTER_WAREHOUSE_CONTACTS" property="outerWarehouseContacts" jdbcType="VARCHAR" javaType="String" />
+    <result column="OUTER_WAREHOUSE_TEL" property="outerWarehouseTel" jdbcType="VARCHAR" javaType="String" />
+    <result column="OUTER_WAREHOUSE_EMAIL" property="outerWarehouseEmail" jdbcType="VARCHAR" javaType="String" />
+    <result column="OUTER_WAREHOUSE_ADDR" property="outerWarehouseAddr" jdbcType="VARCHAR" javaType="String" />
+    <result column="SH_TASK_TYPE" property="shTaskType" jdbcType="VARCHAR" javaType="String" />
+    <result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="SH_QUT" property="shQut" jdbcType="VARCHAR" javaType="String" />
+    <result column="PO_QUT" property="poQut" jdbcType="VARCHAR" javaType="String" />
+    <result column="SJ_SH_QUT" property="sjShQut" jdbcType="VARCHAR" javaType="String" />
+    <result column="YS_QUT" property="ysOut" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_BY_NAME" property="createByName" jdbcType="VARCHAR" javaType="String" />
+    <result column="ABBFILE_NAME" property="abbfileName" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_NAME" property="matName" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_CODE" property="matCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="PURCHASE_UNIT_PRICE" property="price" jdbcType="VARCHAR" javaType="String" />
+    <result column="PR_NO" property="prNO" jdbcType="VARCHAR" javaType="String" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID,SH_NO,SHOP_NO,SHOP_NAME,SUP_NO,SUP_NAME,TEL,CONTACTS,BOXES,SUP_SHNO,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,SUP_TEL,SUP_LINK_MAN,ADDR,SH_TYPE,REQUIRED_ARRIVAL_DATE,IS_ALREADY_EXPORT,IS_SUBMIT,IS_HASH_CHANGE_MAT,MY_CHECK_BOX,BRAND_TYPE,GC_SH_STATUS,FREIGHT,SUPPLIER_DELIVER_DATE,EMAIL,WL_NO,IS_SEND,BOX_NO,IS_GCJLSIGN,OUTER_WAREHOUSE_NO,OUTER_WAREHOUSE_NAME,OUTER_WAREHOUSE_CONTACTS,OUTER_WAREHOUSE_TEL,OUTER_WAREHOUSE_EMAIL,OUTER_WAREHOUSE_ADDR,SH_TASK_TYPE,COMPANY_CODE
+  </sql>
+
+  <select id="getGCshHdeadByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_PO2GC_GCSHHEAD
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insertGCshHdead" parameterType="com.ur.mro.shouhuo.model.GCshHdead" >
+    insert into SRM_PO2GC_GCSHHEAD (
+        SH_NO,SHOP_NO,SHOP_NAME,SUP_NO,SUP_NAME,TEL,CONTACTS,BOXES,SUP_SHNO,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,SUP_TEL,SUP_LINK_MAN,ADDR,SH_TYPE,REQUIRED_ARRIVAL_DATE,IS_ALREADY_EXPORT,IS_SUBMIT,IS_HASH_CHANGE_MAT,MY_CHECK_BOX,BRAND_TYPE,GC_SH_STATUS,FREIGHT,SUPPLIER_DELIVER_DATE,EMAIL,WL_NO,IS_SEND,BOX_NO,IS_GCJLSIGN,OUTER_WAREHOUSE_NO,OUTER_WAREHOUSE_NAME,OUTER_WAREHOUSE_CONTACTS,OUTER_WAREHOUSE_TEL,OUTER_WAREHOUSE_EMAIL,OUTER_WAREHOUSE_ADDR,SH_TASK_TYPE,COMPANY_CODE
+    )values(
+        #{shNo,jdbcType=VARCHAR},#{shopNo,jdbcType=VARCHAR},#{shopName,jdbcType=VARCHAR},#{supNo,jdbcType=VARCHAR},#{supName,jdbcType=VARCHAR},#{tel,jdbcType=VARCHAR},#{contacts,jdbcType=VARCHAR},#{boxes,jdbcType=INTEGER},#{supShno,jdbcType=VARCHAR},#{comments,jdbcType=NVARCHAR},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=INTEGER},#{supTel,jdbcType=VARCHAR},#{supLinkMan,jdbcType=VARCHAR},#{addr,jdbcType=VARCHAR},#{shType,jdbcType=VARCHAR},#{requiredArrivalDate,jdbcType=TIMESTAMP},#{isAlreadyExport,jdbcType=INTEGER},#{isSubmit,jdbcType=INTEGER},#{isHashChangeMat,jdbcType=VARCHAR},#{myCheckBox,jdbcType=INTEGER},#{brandType,jdbcType=NVARCHAR},#{gcShStatus,jdbcType=VARCHAR},#{freight,jdbcType=NUMERIC},#{supplierDeliverDate,jdbcType=TIMESTAMP},#{email,jdbcType=VARCHAR},#{wlNo,jdbcType=VARCHAR},#{isSend,jdbcType=VARCHAR},#{boxNo,jdbcType=VARCHAR},#{isGcjlsign,jdbcType=VARCHAR},#{outerWarehouseNo,jdbcType=VARCHAR},#{outerWarehouseName,jdbcType=VARCHAR},#{outerWarehouseContacts,jdbcType=VARCHAR},#{outerWarehouseTel,jdbcType=VARCHAR},#{outerWarehouseEmail,jdbcType=VARCHAR},#{outerWarehouseAddr,jdbcType=VARCHAR},#{shTaskType,jdbcType=VARCHAR},#{companyCode,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <update id="updateGCshHdeadByPKSelective" parameterType="com.ur.mro.shouhuo.model.GCshHdead" >
+    update SRM_PO2GC_GCSHHEAD
+    <set>
+      <if test="shNo != null" >
+        SH_NO = #{shNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shopNo != null" >
+        SHOP_NO = #{shopNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shopName != null" >
+        SHOP_NAME = #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="supNo != null" >
+        SUP_NO = #{supNo,jdbcType=VARCHAR},
+      </if>
+      <if test="supName != null" >
+        SUP_NAME = #{supName,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null" >
+        CONTACTS = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="boxes != null" >
+        BOXES = #{boxes,jdbcType=INTEGER},
+      </if>
+      <if test="supShno != null" >
+        SUP_SHNO = #{supShno,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=NVARCHAR},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="supTel != null" >
+        SUP_TEL = #{supTel,jdbcType=VARCHAR},
+      </if>
+      <if test="supLinkMan != null" >
+        SUP_LINK_MAN = #{supLinkMan,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        ADDR = #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="shType != null" >
+        SH_TYPE = #{shType,jdbcType=VARCHAR},
+      </if>
+      <if test="requiredArrivalDate != null" >
+        REQUIRED_ARRIVAL_DATE = #{requiredArrivalDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isAlreadyExport != null" >
+        IS_ALREADY_EXPORT = #{isAlreadyExport,jdbcType=INTEGER},
+      </if>
+      <if test="isSubmit != null" >
+        IS_SUBMIT = #{isSubmit,jdbcType=INTEGER},
+      </if>
+      <if test="isHashChangeMat != null" >
+        IS_HASH_CHANGE_MAT = #{isHashChangeMat,jdbcType=VARCHAR},
+      </if>
+      <if test="myCheckBox != null" >
+        MY_CHECK_BOX = #{myCheckBox,jdbcType=INTEGER},
+      </if>
+      <if test="brandType != null" >
+        BRAND_TYPE = #{brandType,jdbcType=NVARCHAR},
+      </if>
+      <if test="gcShStatus != null" >
+        GC_SH_STATUS = #{gcShStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="freight != null" >
+        FREIGHT = #{freight,jdbcType=NUMERIC},
+      </if>
+      <if test="supplierDeliverDate != null" >
+        SUPPLIER_DELIVER_DATE = #{supplierDeliverDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="email != null" >
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="wlNo != null" >
+        WL_NO = #{wlNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isSend != null" >
+        IS_SEND = #{isSend,jdbcType=VARCHAR},
+      </if>
+      <if test="boxNo != null" >
+        BOX_NO = #{boxNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isGcjlsign != null" >
+        IS_GCJLSIGN = #{isGcjlsign,jdbcType=VARCHAR},
+      </if>
+      <if test="outerWarehouseNo != null" >
+        OUTER_WAREHOUSE_NO = #{outerWarehouseNo,jdbcType=VARCHAR},
+      </if>
+      <if test="outerWarehouseName != null" >
+        OUTER_WAREHOUSE_NAME = #{outerWarehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="outerWarehouseContacts != null" >
+        OUTER_WAREHOUSE_CONTACTS = #{outerWarehouseContacts,jdbcType=VARCHAR},
+      </if>
+      <if test="outerWarehouseTel != null" >
+        OUTER_WAREHOUSE_TEL = #{outerWarehouseTel,jdbcType=VARCHAR},
+      </if>
+      <if test="outerWarehouseEmail != null" >
+        OUTER_WAREHOUSE_EMAIL = #{outerWarehouseEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="outerWarehouseAddr != null" >
+        OUTER_WAREHOUSE_ADDR = #{outerWarehouseAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="shTaskType != null" >
+        SH_TASK_TYPE = #{shTaskType,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null" >
+        COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchGCshHdeadCount" resultType="int" >
+    select count(1) from(
+        select  distinct  a.ID,
+        a.SH_NO,a.WL_NO,a.CREATED_TIME,a.SHOP_NO,a.SHOP_NAME,b.PR_NO,b.MAT_NAME,b.MAT_CODE,b.MAT_SPEC,b.MAT_CZ,b.MAKE_IE,b.PO_NO,a.BRAND_TYPE,b.PO_NO AS ORDER_NO, b.SJ_SH_QUT AS KS_QUT
+        ,ISNULL(F1.ABBFILE_NAME,'e4da034a-c98c-4882-b439-e2103e6f5edb') AS ABBFILE_NAME,pr.CREATED_BY_NAME, b.SH_QUT,b.PO_QUT,b.SJ_SH_QUT,b.YS_QUT
+        FROM SRM_PO2GC_GCSHHEAD a
+        left join SRM_PO2GC_GCSHITEM b on b.SH_ID = a.ID and b.DELETED=0
+        LEFT JOIN
+        (
+        SELECT DISTINCT py.OA_CREATE_NO,py.ORDER_NO,
+        CASE WHEN py.CREATED_BY = 'ANONYMOUS' THEN '【OA】'+dbo.getUserName(py.OA_CREATE_NO)
+        ELSE dbo.getUserName(py.CREATED_BY) END as CREATED_BY_NAME
+        FROM  SRM_PUR_PURCHASE_APPLY py
+        WHERE  py.DELETED = 0  AND py.ORDER_NO LIKE '%PR%'
+        ) pr ON b.PR_NO =pr.ORDER_NO
+
+        LEFT JOIN SRM_MAT_MATERIAL m ON b.MAT_CODE = m.CODE
+        LEFT JOIN  SRM_SYS_ATTACHMENT F1 ON F1.ROW_ID=m.ID AND  F1.DELETED = 0
+        where a.DELETED=0  and a.GC_SH_STATUS ='05'  and a.WL_NO is not null
+        and
+        ((
+        (a.SH_TYPE='supToShop' or a.SH_TYPE='WLtoShop')
+        and b.SJ_SH_QUT is not null
+        )
+        or(
+        (a.SH_TYPE='supToShop' or a.SH_TYPE='WLtoShop' or a.SH_TYPE='WCtoShop')
+        and b.SJ_SH_QUT is  null
+        )
+        )
+        and a.SHOP_NO in(
+        (SELECT distinct d.SHOP_NO  FROM SRM_SHOP2GC_SHOPMANAGER c
+        inner join SRM_SHOP2GC_SHOPMANAGERITEM d on c.ID =d.SHOP_MANAGER_ID and d.DELETED=0
+        WHERE c.DELETED=0 AND (c.USER_NO =#{userName}
+        ) )
+        )
+        union
+        SELECT distinct a.ID,
+        a.SH_NO,a.WL_NO,a.CREATED_TIME,a.SHOP_NO,a.SHOP_NAME,b.PR_NO,b.MAT_NAME,b.MAT_CODE,b.MAT_SPEC,b.MAT_CZ,b.MAKE_IE ,b.PO_NO,a.BRAND_TYPE,b.PO_NO AS ORDER_NO, b.SJ_SH_QUT AS KS_QUT
+        ,ISNULL(F1.ABBFILE_NAME,'e4da034a-c98c-4882-b439-e2103e6f5edb') AS ABBFILE_NAME,pr.CREATED_BY_NAME, b.SH_QUT,b.PO_QUT,b.SJ_SH_QUT,b.YS_QUT
+        FROM SRM_PO2GC_GCSHHEAD a
+        left join SRM_PO2GC_GCSHITEM b on b.SH_ID = a.ID and b.DELETED=0
+        LEFT JOIN
+        (
+        SELECT DISTINCT py.OA_CREATE_NO,py.ORDER_NO,
+        CASE WHEN py.CREATED_BY = 'ANONYMOUS' THEN '【OA】'+dbo.getUserName(py.OA_CREATE_NO)
+        ELSE dbo.getUserName(py.CREATED_BY) END as CREATED_BY_NAME
+        FROM  SRM_PUR_PURCHASE_APPLY py
+        WHERE  py.DELETED = 0 AND py.ORDER_NO LIKE '%PR%'
+        ) pr ON b.PR_NO =pr.ORDER_NO
+
+        LEFT JOIN SRM_MAT_MATERIAL m ON b.MAT_CODE = m.CODE
+        LEFT JOIN  SRM_SYS_ATTACHMENT F1 ON F1.ROW_ID=m.ID AND  F1.DELETED = 0
+        where a.DELETED=0 and (a.SH_TYPE='supToShop' or a.SH_TYPE='WLtoShop' or a.SH_TYPE='WCtoShop') and a.GC_SH_STATUS ='05'  and a.WL_NO is not null
+        and (( b.SJ_SH_QUT is not null
+        ) or (
+        b.SJ_SH_QUT is  null
+        ))
+        and a.SHOP_NO =#{userName}
+    )temp
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT('%',#{cond.value}),'%')
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            <if test="cond.columnName=='CREATED_TIME'">
+                    CONVERT(varchar(100), CREATED_TIME, 23)
+            </if>
+            <if test="cond.columnName!='CREATED_TIME'">
+               ${cond.columnName}
+            </if>
+
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchGCshHdead" resultMap="BaseResultMap" >
+    select  *  from (
+    select
+    <choose>
+      <when test="selectFields != null">
+        <foreach item="field" index="index" collection="selectFields" separator=",">
+          ${field}
+        </foreach>
+        from SRM_PO2GC_GCSHHEAD
+      </when>
+      <otherwise>
+        distinct a.ID,spo.PURCHASE_UNIT_PRICE,
+        a.SH_NO,a.WL_NO,a.CREATED_TIME,a.SHOP_NO,a.SHOP_NAME,b.PR_NO,b.MAT_NAME,b.MAT_CODE,b.MAT_SPEC,b.MAT_CZ,b.MAKE_IE,b.PO_NO,a.BRAND_TYPE,b.PO_NO AS ORDER_NO, b.SJ_SH_QUT AS KS_QUT
+        ,ISNULL(F1.ABBFILE_NAME,'e4da034a-c98c-4882-b439-e2103e6f5edb') AS ABBFILE_NAME,pr.CREATED_BY_NAME,b.SH_QUT,b.PO_QUT,b.SJ_SH_QUT,b.YS_QUT
+        FROM SRM_PO2GC_GCSHHEAD a
+        left join SRM_PO2GC_GCSHITEM b on b.SH_ID = a.ID and b.DELETED=0
+        LEFT JOIN
+        (
+        SELECT DISTINCT py.OA_CREATE_NO,py.ORDER_NO,
+        CASE WHEN py.CREATED_BY = 'ANONYMOUS' THEN '【OA】'+dbo.getUserName(py.OA_CREATE_NO)
+        ELSE dbo.getUserName(py.CREATED_BY) END as CREATED_BY_NAME
+        FROM  SRM_PUR_PURCHASE_APPLY py
+        WHERE  py.DELETED = 0  AND py.ORDER_NO LIKE '%PR%'
+        ) pr ON b.PR_NO =pr.ORDER_NO
+
+        inner  join  SRM_PUR_PURCHASE_ORDER  spp  on spp.ORDER_NO=b.PO_NO
+        INNER JOIN SRM_PUR_ORDER_INFO spo ON spp.ID = spo.ORDER_ID and b.MAT_CODE=spo.MAT_CODE
+
+        LEFT JOIN SRM_MAT_MATERIAL m ON b.MAT_CODE = m.CODE
+        LEFT JOIN  SRM_SYS_ATTACHMENT F1 ON F1.ROW_ID=m.ID AND  F1.DELETED = 0
+        where a.DELETED=0  and a.GC_SH_STATUS ='05'  and a.WL_NO is not null
+        and
+        ((
+        (a.SH_TYPE='supToShop' or a.SH_TYPE='WLtoShop')
+        and b.SJ_SH_QUT is not null
+
+        )
+        or(
+        (a.SH_TYPE='supToShop' or a.SH_TYPE='WLtoShop' or a.SH_TYPE='WCtoShop')
+        and b.SJ_SH_QUT is  null
+
+        )
+        )
+        and a.SHOP_NO in(
+        (SELECT distinct d.SHOP_NO  FROM SRM_SHOP2GC_SHOPMANAGER c
+        inner join SRM_SHOP2GC_SHOPMANAGERITEM d on c.ID =d.SHOP_MANAGER_ID and d.DELETED=0
+        WHERE c.DELETED=0 AND (c.USER_NO =#{userName}
+        ) )
+        )
+        union
+        SELECT a.ID,spo.PURCHASE_UNIT_PRICE,
+        a.SH_NO,a.WL_NO,a.CREATED_TIME,a.SHOP_NO,a.SHOP_NAME,b.PR_NO,b.MAT_NAME,b.MAT_CODE,b.MAT_SPEC,b.MAT_CZ,b.MAKE_IE ,b.PO_NO,a.BRAND_TYPE,b.PO_NO AS ORDER_NO, b.SJ_SH_QUT AS KS_QUT
+        ,ISNULL(F1.ABBFILE_NAME,'e4da034a-c98c-4882-b439-e2103e6f5edb') AS ABBFILE_NAME,pr.CREATED_BY_NAME, b.SH_QUT,b.PO_QUT,b.SJ_SH_QUT,b.YS_QUT
+        FROM SRM_PO2GC_GCSHHEAD a
+        left join SRM_PO2GC_GCSHITEM b on b.SH_ID = a.ID and b.DELETED=0
+        LEFT JOIN
+        (
+        SELECT DISTINCT py.OA_CREATE_NO,py.ORDER_NO,
+        CASE WHEN py.CREATED_BY = 'ANONYMOUS' THEN '【OA】'+dbo.getUserName(py.OA_CREATE_NO)
+        ELSE dbo.getUserName(py.CREATED_BY) END as CREATED_BY_NAME
+        FROM  SRM_PUR_PURCHASE_APPLY py
+        WHERE  py.DELETED = 0  AND py.ORDER_NO LIKE '%PR%'
+        ) pr ON b.PR_NO =pr.ORDER_NO
+
+        inner  join  SRM_PUR_PURCHASE_ORDER  spp  on spp.ORDER_NO=b.PO_NO
+        INNER JOIN SRM_PUR_ORDER_INFO spo ON spp.ID = spo.ORDER_ID and b.MAT_CODE=spo.MAT_CODE
+
+        LEFT JOIN SRM_MAT_MATERIAL m ON b.MAT_CODE = m.CODE
+        LEFT JOIN  SRM_SYS_ATTACHMENT F1 ON F1.ROW_ID=m.ID AND  F1.DELETED = 0
+        where a.DELETED=0 and (a.SH_TYPE='supToShop' or a.SH_TYPE='WLtoShop' or a.SH_TYPE='WCtoShop') and a.GC_SH_STATUS ='05'  and a.WL_NO is not null
+        and (( b.SJ_SH_QUT is not null
+
+        ) or (
+        b.SJ_SH_QUT is  null
+        ))
+        and a.SHOP_NO =#{userName}
+      </otherwise>
+    </choose>
+    )temp
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT('%',#{cond.value}),'%')
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+
+            <if test="cond.columnName=='CREATED_TIME'">
+              CONVERT(varchar(100), CREATED_TIME, 23)
+            </if>
+            <if test="cond.columnName!='CREATED_TIME'">
+              ${cond.columnName}
+            </if>
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    <if test='orderByList == null'>
+      order by ID
+    </if>
+    <if test="pageBean != null" >
+      Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+
+  <!-- manual added -->
+
+  <select id="findGCshHeadByShno" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from SRM_PO2GC_GCSHHEAD
+    where DELETED = 0 and SH_NO =#{shNo}
+  </select>
+</mapper>

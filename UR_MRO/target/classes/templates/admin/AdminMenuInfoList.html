@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head th:include="common/common_head :: commonHeader('菜单管理')"></head>
+<style>
+.article_tit{
+    display: block;
+    /* height: 40px; */
+    line-height: 40px;
+    background: #fbfbfb;
+    padding-left: 10px;
+    font-weight: bolder;
+    /* margin: 5px 0; */
+    border-bottom: 1px dashed #ececec;
+    margin-bottom: 10px;
+}
+[v-cloak] {
+        display: none !important;
+    }
+</style>
+
+<body class="article_bg">
+<div id="app" v-cloak style="padding: 0px 10px 0px 10px">
+    <p class="article_tit">菜单列表</p>
+    <div class="card">
+        <div class="card-body">
+            <el-form label-width="100px" :model="adminMenuInfo">
+                <el-row>
+                    <el-col :span="6">
+                        <el-form-item label="菜单名称" prop="menuName" label-width="100px">
+                            <el-input v-model="adminMenuInfo.menuName" placeholder="菜单名称" 
+                                      style="width:200px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item label="菜单代码" prop="menuCode" label-width="100px">
+                            <el-input v-model="adminMenuInfo.menuCode" placeholder="菜单代码" 
+                                      style="width:200px"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item label="菜单层级" label-width="100px" prop="menuType">
+                            <el-select v-model="adminMenuInfo.menuLevel" placeholder="菜单层级">
+                                <el-option v-for="(item,index) in menuLevel" :label="item" :value="index" :key="index"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item label="菜单状态" label-width="100px" prop="status">
+                            <el-select v-model="adminMenuInfo.status" placeholder="菜单状态">
+                                <el-option v-for="(item,index) in menuStatus" :label="item" :value="index" :key="index"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+                
+            <div class="text-center">
+                <el-button v-on:click="clickSearchBtn()"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+                <el-button v-on:click="clickResetBtn()"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix" style="margin-bottom: 5px;"></div>
+		<nav class="navbar">
+            <ul class="nav">
+                <li>
+                    <el-button v-on:click="newJob()" icon="el-icon-plus">新建</el-button>
+                    <el-button v-on:click="clickUpdateBtn()" icon="el-icon-edit" type="info">修改</el-button>
+                    
+                </li>
+            </ul>
+            <el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage"
+                           v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange"
+                           layout="total, sizes, prev, pager, next, jumper">
+            </el-pagination>
+        </nav>
+        <template>
+            <el-table :data="this.queryResult.data" :border="true" v-loading="loading"
+                      :highlight-current-row="true" :height="this.tableHeight"
+                      v-on:current-change="handleTableCurrentChange">
+                <el-table-column prop="id" label="ID"></el-table-column>
+                <el-table-column prop="menuCode" label="菜单代码"></el-table-column>
+                <el-table-column prop="menuName" label="菜单名称"></el-table-column>
+                <el-table-column prop="parentMenuNames" label="上级菜单"></el-table-column>
+                <el-table-column :formatter="menuLevelFormat" label="菜单层级"></el-table-column>
+                <el-table-column prop="orderBy" label="顺序"></el-table-column>
+                <el-table-column :formatter="statusFormat" label="菜单状态"></el-table-column>
+            </el-table>
+        </template>
+</div>
+
+</body>
+
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+            	ab:'testClick',
+                queryResult: {
+                    totalRecordNum: 0,
+                    currPage: 1,
+                    pageSize: 20
+                },
+                adminMenuInfo: {
+                    menuName: "",
+                    menuCode: "",
+                    parentMenuId: "",
+                    menuLevel: "",
+                    status: ""
+                },
+                menuLevel: [[${level}]],
+                menuStatus: [[${status}]],
+                loading: true
+                
+            }
+        },
+        created: function () {
+        	console.log()
+            this.queryEnumGroup();
+        },
+        methods: {
+        	
+        	
+        	testClick(){
+        		alert(3333);
+        	},
+        	
+            clickSearchBtn(){
+                this.queryResult.currPage = 1;
+                this.queryEnumGroup();
+            },
+            //清空所有
+            clickResetBtn() {
+                for(var key in this.adminMenuInfo){
+                    this.adminMenuInfo[key] = "";
+                }
+            },
+            //行点击选中事件
+            handleTableCurrentChange(currentRow) {
+                this.currInstance = currentRow;
+            },
+            newJob(){
+                window.location.href = "/menu/AdminMenuInfoManage/menuId=-1?random=" + Math.random();
+            },
+            clickUpdateBtn() {
+                if(this.currInstance==null){
+                    this.$message({
+                        message:"请点击一行再进行操作",
+                        type:'warning'
+                    });
+                    return;
+                }
+                window.location.href = "/menu/AdminMenuInfoManage/menuId=" + this.currInstance.id + "?random=" + Math.random();
+            },
+            //当前页码改变触发的方法,handleSizeChange()同时触发
+            handleCurrentChange(val) {
+                this.queryResult.currPage = val;
+                this.queryEnumGroup();
+            },
+            handleSizeChange(val) {
+                this.queryResult.pageSize = val;
+                this.queryEnumGroup();
+            },
+            statusFormat(row, column){
+            	var status = row.status;
+            	if(status == 1){
+            		return "正常";
+            	}else{
+            		return "失效";
+            	}
+            },
+            menuLevelFormat(row, column){
+            	var menuLevel = row.menuLevel;
+            	if(menuLevel == 1){
+            		return "一级";
+            	}if(menuLevel == 2){
+            		return "二级";
+            	}if(menuLevel == 3){
+            		return "三级";
+            	}else{
+            		return "";
+            	}
+            },
+            queryEnumGroup() {
+                _this = this;
+                var url = '/menu/AdminMenuInfo/search';
+                var page = this.queryResult.currPage;
+                if (page == null) {
+                    page = 1;
+                }
+                var restRequest = new URRestRequest();
+                restRequest.setCurrPage(page);
+                restRequest.setPageSize(this.queryResult.pageSize);
+
+                //可以指定排序字段
+               	restRequest.addOrderBy(" PARENT_MENU_ID asc, ORDERBY asc ");
+
+                restRequest.addCondition("menuCode", this.adminMenuInfo.menuCode, "like");
+                restRequest.addCondition("menuName", this.adminMenuInfo.menuName, "like");
+                restRequest.addCondition("menuLevel", this.adminMenuInfo.menuLevel, "eq");
+                restRequest.addCondition("status", this.adminMenuInfo.status, "eq");
+
+                axios.post(url, restRequest.getRequestData())
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.error({title: '查询数据失败', message: response.data.message, offset: 100});
+                        } else {
+                            _this.$data.queryResult = response.data;
+                            _this.loading = false;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        _this.$notify.error({title: '错误', message: '查询数据失败，请联系系统管理员', offset: 100});
+                    });
+            }
+        }
+    })
+    /*]]>*/
+</script>
+</html>

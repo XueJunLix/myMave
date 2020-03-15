@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('店铺等级配置')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="display: none;" v-loading="loading" :element-loading-text="loadText" v-show="isLoad">
+ <nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition"></el-switch>
+	</el-tooltip>
+</nav>
+
+<Drawer  title="查询面板" v-model="expandCondition" width="50%">
+ <el-row>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">类型</div>
+	  <el-select  v-model="queryCondition.dataType"  placeholder="请选择类型"   
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in typeItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">年份</div>
+	  <el-date-picker v-model="queryCondition.year" type="year" value-format="yyyy" placeholder="选择年份" style="width: 100%;"></el-date-picker>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">季节</div>
+	  <el-select  v-model="queryCondition.season"  placeholder="请选择季节"   
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in seasonItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+ </el-row>
+  <el-row>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">店铺</div>
+	  <el-select  v-model="queryCondition.planShopNo"  placeholder="请选择店铺"   filterable="true" 
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in shopItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">系列</div>
+	  <el-select  v-model="queryCondition.serial"  placeholder="请选择系列"   filterable="true" 
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">级别</div>
+	  <el-input v-model="queryCondition.levelCode" placeholder="级别" style="width: 100%;"></el-input>
+	  </el-col>
+ </el-row>
+  <div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+</Drawer>
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<el-dialog :visible.sync="uploadDialogVisible" >
+		 <a href="template/ShopLevelTemplate.xlsx" style="font-size: 15px; color: red;">模版下载</a>
+		 <div style="margin-top: 10px; margin-left: -5px; color: #000;">请按同一年份的数据导入。</div>
+			    <div style="height: 50px;"></div>
+			    <!-- :model="ruleForm" ref="ruleForm" -->
+         		<el-form  style="width: 30rem;"
+         		  class="form uploadform">
+	         		 <el-form-item><!-- :data="form" -->
+		         		<el-upload  ref="upload"  action="ShopLevel/importExcel" 
+		         		 	  :before-upload="beforeUpload" :limit="1"
+			         		:file-list="fileList"  :auto-upload='true' :show-upload-list="false" 
+			         		:on-success="handleUploadSuccess"
+			         		:on-error="handleUploadError">
+			                <el-button slot="trigger"  type="primary">点击上传</el-button>
+			           		<div slot="tip" class="el-upload__tip">只能上传xls/xlsx 文件,每次只能上传一个</div>
+		            	</el-upload>
+	            	</el-form-item>
+            	</el-form>
+      </el-dialog>
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+      <el-button v-on:click="clickImportBtn"><i class="fa fa-upload" aria-hidden="true" style="padding-right:5px"></i>导入</el-button>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+        <el-button v-on:click="clickDeleteBtn"><i class="fa fa-trash" aria-hidden="true" style="padding-right:5px"></i>删除</el-button>
+      </li>
+    </ul>
+		<el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+		</el-pagination>
+</nav>
+
+        <el-table id="data_table" stripe=""  v-loading="queryingShopLevel" :data="this.queryResult.data" :highlight-current-row="true" :height="this.tableHeight">          
+          <el-table-column property="dataTypeName" label="类型" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="year" label="年份" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="seasonName" label="季节" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="planShopNo" label="企划店铺编码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopNo" label="店铺编码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopName" label="店铺名" min-width="200" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="serialName" label="系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="levelCode" label="级别" min-width="50" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTime" label="创建时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createByName" label="创建者" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyTime" label="修改时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyByName" label="修改者" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+
+	</div>
+</div>
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  dataType:"",
+        	  year:"",
+        	  season:"",
+        	  planShopNo:"",
+        	  shopNo:"",
+        	  serial:"",
+        	  levelCode:"",
+        	  createTime:"",
+        	  createBy:"",
+        	  modifyTime:"",
+        	  modifyBy:""
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          queryingShopLevel:false,
+          updatingShopLevel:false,
+          exportingFile:false,
+          expandCondition:false,
+          expandText:"展开查询面板",
+          seasonItems:[[${seasonItems}]],
+          serialItems:[[${serialItems}]],
+          typeItems:[[${typeItems}]],
+          shopItems:[[${shopItems}]],
+          tableHeight:500,
+          isLoad: false,
+          loading:false,
+          loadText:"查询数据中。。。",
+          uploadDialogVisible:false,
+          fileList:[],
+        }
+      },
+      created: function() {
+    	  this.isLoad = true;
+    	  this_let = this;
+    	  this.queryCondition.year=new Date();
+    	  //this.queryShopLevel();
+      },
+      methods: {
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryShopLevel();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryShopLevel();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryShopLevel();
+    	},
+        queryShopLevel() {
+          _this = this;
+
+          var url = '/ShopLevel/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          
+	      restRequest.addCondition("dataType",this.queryCondition.dataType,"eq");
+	      restRequest.addCondition("year",this.queryCondition.year,"eq");
+	      restRequest.addCondition("season",this.queryCondition.season,"eq");
+	      restRequest.addCondition("planShopNo",this.queryCondition.planShopNo,"eq");
+	      restRequest.addCondition("shopNo",this.queryCondition.shopNo,"like");
+	      restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+	      restRequest.addCondition("levelCode",this.queryCondition.levelCode,"like");
+	      //restRequest.addCondition("createTime",this.queryCondition.createTime,"eq");
+	      //restRequest.addCondition("createBy",this.queryCondition.createBy,"eq");
+	      //restRequest.addCondition("modifyTime",this.queryCondition.modifyTime,"eq");
+	      //restRequest.addCondition("modifyBy",this.queryCondition.modifyBy,"eq");
+         
+
+          this.loading = true;
+          this.loadText = "查询数据中...";
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+              console.log(response);
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.loading = false;
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.loading = false;
+	              _this.expandCondition=false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  		clickExportBtn(){
+        	  if(!this.queryCondition.year){
+        		  this.$notify({title: '警告',message: "请选择年份！",offset: 100,type:'warning'});
+        		  return;
+        	  }
+		          _this = this;
+		          var url = '/ShopLevel/export';
+
+		          var restRequest = new URRestRequest();
+
+			      restRequest.addCondition("dataType",this.queryCondition.dataType,"eq");
+			      restRequest.addCondition("year",this.queryCondition.year,"eq");
+			      restRequest.addCondition("season",this.queryCondition.season,"eq");
+			      restRequest.addCondition("planShopNo",this.queryCondition.planShopNo,"eq");
+			      //restRequest.addCondition("shopNo",this.queryCondition.shopNo,"eq");
+			      restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+			      restRequest.addCondition("levelCode",this.queryCondition.levelCode,"like");
+			      //restRequest.addCondition("createTime",this.queryCondition.createTime,"eq");
+			      //restRequest.addCondition("createBy",this.queryCondition.createBy,"eq");
+			      //restRequest.addCondition("modifyTime",this.queryCondition.modifyTime,"eq");
+			      //restRequest.addCondition("modifyBy",this.queryCondition.modifyBy,"eq");
+
+		          this.$data.loading = true;
+		          this.$data.loadText = "导出数据中...";
+
+		          axios.post(url,restRequest.getRequestData())
+		            .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+					    	_this.$data.loading = false;
+					    }else{
+			              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+			              _this.$data.loading = false;
+			              downloadFile(downloadLink);
+					    }
+
+		            })
+		            .catch(function (error) {
+		              console.log(error);
+		              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+		            });
+			},
+          clickResetBtn() {
+            for(var key in this.queryCondition){
+            	this.queryCondition[key] = "";
+            }
+          },
+          clickImportBtn(){
+	          this.uploadDialogVisible=true;
+		  }
+	      ,beforeUpload(file) {
+              let Xls = file.name.split('.');
+              if(Xls[1] === 'xls'||Xls[1] === 'xlsx'){
+                  return file
+              }else {
+                  this.$message.error('只能上传   xls、xlsx 文件');
+                  return false;
+              }
+          },handleUploadSuccess(res,file,fileList){
+				this.fileList=[];
+				this.uploadDialogVisible=false;
+				if(JSON.stringify(res.success)==="false"){
+					this.$message({message: '导入失败: ' + JSON.stringify(res.message), type: 'error',duration:0 ,showClose:true});
+				}else{
+					this.$message({ message: JSON.stringify(res.message),type: 'success' ,duration:0,showClose:true});
+					this.queryResult.currPage = 1;
+					for(var key in this.queryCondition){
+		            	this.queryCondition[key] = "";
+		            }
+					this.queryShopLevel();
+				}
+			},handleUploadError(err, file, fileList){
+ 			    this.fileList=[];
+				this.uploadDialogVisible=false;
+				this.$message({message: '导入失败' + err, type: 'error' ,duration:0,showClose:true});
+			},clickDeleteBtn(){
+				if(!this.queryResult.data){
+      			  this.$notify({title: '警告',message: "请先查询出数据再删除！",offset: 100,type:'warning'});
+      			  return;
+      		    }				
+				this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+			          confirmButtonText: '确定',
+			          cancelButtonText: '取消',
+			          type: 'warning',
+			          center: true
+			        }).then(() => {
+			          this.deleteData();
+			        }).catch(() => {});
+				
+			},deleteData(){
+				_this = this;			    
+		          var url = '/ShopLevel/delete';
+		          var restRequest = new URRestRequest();
+			      restRequest.addCondition("dataType",this.queryCondition.dataType,"eq");
+			      restRequest.addCondition("year",this.queryCondition.year,"eq");
+			      restRequest.addCondition("season",this.queryCondition.season,"eq");
+			      restRequest.addCondition("planShopNo",this.queryCondition.planShopNo,"eq");
+			      //restRequest.addCondition("shopNo",this.queryCondition.shopNo,"eq");
+			      restRequest.addCondition("serial",this.queryCondition.serial,"eq");
+			      restRequest.addCondition("levelCode",this.queryCondition.levelCode,"like");
+			      //restRequest.addCondition("createTime",this.queryCondition.createTime,"eq");
+			      //restRequest.addCondition("createBy",this.queryCondition.createBy,"eq");
+			      //restRequest.addCondition("modifyTime",this.queryCondition.modifyTime,"eq");
+			      //restRequest.addCondition("modifyBy",this.queryCondition.modifyBy,"eq");
+		          
+
+		          this.loading = true;
+		          this.loadText = "删除数据中...";
+		          
+		          axios.post(url,restRequest.getRequestData())
+		            .then(function (response) {
+		              console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '删除失败',message: response.data.message,offset: 100});
+					    	_this.$data.loading = false;
+					    }else{
+					    	_this.$notify({title: '删除成功',message: response.data.message,offset: 100,type:"success"});
+					    	_this.queryResult.currPage = 1;
+					    	_this.queryShopLevel();
+			              _this.$data.loading = false;
+					    }
+		            })
+		            .catch(function (error) {
+		              console.log(error);
+		              _this.$notify.error({title: '错误',message: '删除失败，请联系系统管理员',offset: 100});
+		            });
+			}
+			
+        }
+    });
+  
+    $(document).ready(function(){    	
+    	$(document).keydown(function (e) {
+    		if ( e.which == 13) {	   
+    	    	if(this_let.expandCondition===true){
+    	    		this_let.clickSearchBtn();	
+    	    	}else{
+    	    		this_let.expandCondition=true;
+    	    	}
+    	    }else if(e.which == 46){
+    	    	if(this_let.expandCondition===false){
+    	    		this_let.clickDeleteBtn();	
+    	    	}else{
+    	    		this_let.clickResetBtn();
+    	    	}
+    	    }
+    	});  
+      	$(window).load(function(){
+      		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+          });
+      	
+      	$(window).resize(function(){
+      		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+      	});    	
+      });
+    /*]]>*/
+  </script>
+</html>

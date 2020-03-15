@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.shouhuo.mappers.DeliveryItemMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.shouhuo.model.DeliveryItem" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="DELIVERY_ID" property="deliveryId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="ROW_NO" property="rowNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_CODE" property="matCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_NAME" property="matName" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_SPEC" property="matSpec" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_CZ" property="matCz" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_SIZE" property="matSize" jdbcType="VARCHAR" javaType="String" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" javaType="String" />
+    <result column="SH_QUT" property="shQut" jdbcType="FLOAT" javaType="String" />
+    <result column="MAKE_IE" property="makeIe" jdbcType="VARCHAR" javaType="String" />
+    <result column="COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="B_TYPE" property="bType" jdbcType="VARCHAR" javaType="String" />
+    <result column="M_TYPE" property="mType" jdbcType="VARCHAR" javaType="String" />
+    <result column="S_TYPE" property="sType" jdbcType="VARCHAR" javaType="String" />
+    <result column="QC_SH_QUT" property="qcShQut" jdbcType="FLOAT" javaType="String" />
+    <result column="CY_QUT" property="cyQut" jdbcType="FLOAT" javaType="String" />
+    <result column="DEAL_RESULT" property="dealResult" jdbcType="VARCHAR" javaType="String" />
+    <result column="PO_NO" property="poNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="PR_NO" property="prNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="YS_QUT" property="ysQut" jdbcType="FLOAT" javaType="String" />
+    <result column="KS_QUT" property="ksQut" jdbcType="FLOAT" javaType="String" />
+    <result column="SHOP_NO" property="shopNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_NAME" property="shopName" jdbcType="VARCHAR" javaType="String" />
+    <result column="PO_ITEM_ROW_NO" property="poItemRowNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SH_ITEM_ID" property="shItemId" jdbcType="VARCHAR" javaType="String" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID,DELIVERY_ID,ROW_NO,MAT_CODE,MAT_NAME,MAT_SPEC,MAT_CZ,MAT_SIZE,UNIT,SH_QUT,MAKE_IE,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,B_TYPE,M_TYPE,S_TYPE,QC_SH_QUT,CY_QUT,DEAL_RESULT,PO_NO,PR_NO,YS_QUT,KS_QUT,SHOP_NO,SHOP_NAME,PO_ITEM_ROW_NO,SH_ITEM_ID
+  </sql>
+
+  <select id="getDeliveryItemByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_PO2GC_DELIVERYITEM
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insertDeliveryItem" parameterType="com.ur.mro.shouhuo.model.DeliveryItem" >
+    <selectKey keyProperty="id"  resultType="Integer" order="AFTER" >
+      select LAST_INSERT_ID()
+    </selectKey>
+    insert into SRM_PO2GC_DELIVERYITEM (
+    DELIVERY_ID,ROW_NO,MAT_CODE,MAT_NAME,MAT_SPEC,MAT_CZ,MAT_SIZE,UNIT,SH_QUT,MAKE_IE,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,B_TYPE,M_TYPE,S_TYPE,QC_SH_QUT,CY_QUT,DEAL_RESULT,PO_NO,PR_NO,YS_QUT,KS_QUT,SHOP_NO,SHOP_NAME,PO_ITEM_ROW_NO,SH_ITEM_ID
+    )values(
+    #{deliveryId,jdbcType=INTEGER},#{rowNo,jdbcType=VARCHAR},#{matCode,jdbcType=VARCHAR},#{matName,jdbcType=VARCHAR},#{matSpec,jdbcType=VARCHAR},#{matCz,jdbcType=VARCHAR},#{matSize,jdbcType=VARCHAR},#{unit,jdbcType=VARCHAR},#{shQut,jdbcType=FLOAT},#{makeIe,jdbcType=VARCHAR},#{comments,jdbcType=NVARCHAR},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=INTEGER},#{bType,jdbcType=VARCHAR},#{mType,jdbcType=VARCHAR},#{sType,jdbcType=VARCHAR},#{qcShQut,jdbcType=FLOAT},#{cyQut,jdbcType=FLOAT},#{dealResult,jdbcType=VARCHAR},#{poNo,jdbcType=VARCHAR},#{prNo,jdbcType=VARCHAR},#{ysQut,jdbcType=FLOAT},#{ksQut,jdbcType=FLOAT},#{shopNo,jdbcType=VARCHAR},#{shopName,jdbcType=VARCHAR},#{poItemRowNo,jdbcType=VARCHAR},#{shItemId,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <insert id="insertBatchDeliveryItem" parameterType="com.ur.mro.shouhuo.model.DeliveryItem" >
+    <selectKey keyProperty="id"  resultType="Integer" order="AFTER" >
+      select LAST_INSERT_ID()
+    </selectKey>
+    insert into SRM_PO2GC_DELIVERYITEM (
+    DELIVERY_ID,ROW_NO,MAT_CODE,MAT_NAME,MAT_SPEC,MAT_CZ,MAT_SIZE,UNIT,SH_QUT,MAKE_IE,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,B_TYPE,M_TYPE,S_TYPE,QC_SH_QUT,CY_QUT,DEAL_RESULT,PO_NO,PR_NO,YS_QUT,KS_QUT,SHOP_NO,SHOP_NAME,PO_ITEM_ROW_NO,SH_ITEM_ID
+    )values
+    <foreach collection ="list" item="item" separator =",">
+      (
+      #{item.deliveryId,jdbcType=INTEGER},#{item.rowNo,jdbcType=VARCHAR},#{item.matCode,jdbcType=VARCHAR},#{item.matName,jdbcType=VARCHAR},#{item.matSpec,jdbcType=VARCHAR},#{item.matCz,jdbcType=VARCHAR},#{item.matSize,jdbcType=VARCHAR},#{item.unit,jdbcType=VARCHAR},#{item.shQut,jdbcType=FLOAT},#{item.makeIe,jdbcType=VARCHAR},#{item.comments,jdbcType=NVARCHAR},#{item.createdBy,jdbcType=VARCHAR},#{item.createdTime,jdbcType=TIMESTAMP},#{item.lastUpdatedBy,jdbcType=VARCHAR},#{item.lastUpdatedTime,jdbcType=TIMESTAMP},#{item.deleted,jdbcType=INTEGER},#{item.bType,jdbcType=VARCHAR},#{item.mType,jdbcType=VARCHAR},#{item.sType,jdbcType=VARCHAR},#{item.qcShQut,jdbcType=FLOAT},#{item.cyQut,jdbcType=FLOAT},#{item.dealResult,jdbcType=VARCHAR},#{item.poNo,jdbcType=VARCHAR},#{item.prNo,jdbcType=VARCHAR},#{item.ysQut,jdbcType=FLOAT},#{item.ksQut,jdbcType=FLOAT},#{item.shopNo,jdbcType=VARCHAR},#{item.shopName,jdbcType=VARCHAR},#{item.poItemRowNo,jdbcType=VARCHAR},#{item.shItemId,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+
+  <update id="updateBathcDeliveryItemByPKSelective" parameterType="com.ur.mro.shouhuo.model.DeliveryItem" >
+    update SRM_PO2GC_DELIVERYITEM
+    <trim prefix="set" suffixOverrides=",">
+
+      <trim prefix="DELIVERY_ID =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.code!=null">
+            when id=#{i.id} then #{i.deliveryId,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="ROW_NO =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.rowNo!=null">
+            when id=#{i.id} then #{i.rowNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="MAT_CODE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.matCode!=null">
+            when id=#{i.id} then #{i.matCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="MAT_NAME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.matName!=null">
+            when id=#{i.id} then #{i.matName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="MAT_SPEC =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.matSpec!=null">
+            when id=#{i.id} then #{i.matSpec,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="MAT_CZ =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.matCz!=null">
+            when id=#{i.id} then #{i.matCz,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="MAT_SIZE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.matSize!=null">
+            when id=#{i.id} then #{i.matSize,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+
+      <trim prefix="UNIT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.unit!=null">
+            when id=#{i.id} then #{i.unit,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="SH_QUT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.shQut!=null">
+            when id=#{i.id} then #{i.shQut,jdbcType=FLOAT}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="MAKE_IE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.makeIe!=null">
+            when id=#{i.id} then #{i.makeIe,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="COMMENTS =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.comments!=null">
+            when id=#{i.id} then #{i.comments,jdbcType=NVARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="CREATED_BY =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.createdBy!=null">
+            when id=#{i.id} then #{i.createdBy,jdbcType=NVARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+           <trim prefix="CREATED_TIME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.createdTime!=null">
+            when id=#{i.id} then #{i.createdTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="LAST_UPDATED_BY =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.lastUpdatedBy!=null">
+            when id=#{i.id} then #{i.lastUpdatedBy,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="LAST_UPDATED_TIME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.lastUpdatedTime!=null">
+            when id=#{i.id} then #{i.lastUpdatedTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="DELETED =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.deleted!=null">
+            when id=#{i.id} then #{i.deleted,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="B_TYPE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.bType!=null">
+            when id=#{i.id} then #{i.bType,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="M_TYPE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.mType!=null">
+            when id=#{i.id} then #{i.mType,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="S_TYPE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.sType!=null">
+            when id=#{i.id} then #{i.sType,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="QC_SH_QUT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.qcShQut!=null">
+            when id=#{i.id} then #{i.qcShQut,jdbcType=FLOAT}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="CY_QUT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.cyQut!=null">
+            when id=#{i.id} then #{i.cyQut,jdbcType=FLOAT}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="DEAL_RESULT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.dealResult!=null">
+            when id=#{i.id} then #{i.dealResult,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="PO_NO =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.poNo!=null">
+            when id=#{i.id} then #{i.poNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="PR_NO =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.prNo!=null">
+            when id=#{i.id} then #{i.prNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="YS_QUT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.ysQut!=null">
+            when id=#{i.id} then #{i.ysQut,jdbcType=FLOAT}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="KS_QUT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.ksQut!=null">
+            when id=#{i.id} then #{i.ksQut,jdbcType=FLOAT}
+          </if>
+        </foreach>
+      </trim>
+
+
+
+      <trim prefix="SHOP_NO =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.shopNo!=null">
+            when id=#{i.id} then #{i.shopNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+
+      <trim prefix="SHOP_NAME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.shopName!=null">
+            when id=#{i.id} then #{i.shopName,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+
+      <trim prefix="PO_ITEM_ROW_NO =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.poItemRowNo!=null">
+            when id=#{i.id} then #{i.poItemRowNo,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+
+      <trim prefix="SH_ITEM_ID =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.shItemId!=null">
+            when id=#{i.id} then #{i.shItemId,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+
+
+      <trim prefix="SH_ITEM_ID =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          <if test="i.shItemId!=null">
+            when id=#{i.id} then #{i.shItemId,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where DELETED = 0 AND id in
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      #{item.id}
+    </foreach>
+  </update>
+
+
+  <update id="updateDeliveryItemByPKSelective" parameterType="com.ur.mro.shouhuo.model.DeliveryItem" >
+    update SRM_PO2GC_DELIVERYITEM
+    <set>
+      <if test="deliveryId != null" >
+        DELIVERY_ID = #{deliveryId,jdbcType=INTEGER},
+      </if>
+      <if test="rowNo != null" >
+        ROW_NO = #{rowNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matCode != null" >
+        MAT_CODE = #{matCode,jdbcType=VARCHAR},
+      </if>
+      <if test="matName != null" >
+        MAT_NAME = #{matName,jdbcType=VARCHAR},
+      </if>
+      <if test="matSpec != null" >
+        MAT_SPEC = #{matSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="matCz != null" >
+        MAT_CZ = #{matCz,jdbcType=VARCHAR},
+      </if>
+      <if test="matSize != null" >
+        MAT_SIZE = #{matSize,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="shQut != null" >
+        SH_QUT = #{shQut,jdbcType=FLOAT},
+      </if>
+      <if test="makeIe != null" >
+        MAKE_IE = #{makeIe,jdbcType=VARCHAR},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=NVARCHAR},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="bType != null" >
+        B_TYPE = #{bType,jdbcType=VARCHAR},
+      </if>
+      <if test="mType != null" >
+        M_TYPE = #{mType,jdbcType=VARCHAR},
+      </if>
+      <if test="sType != null" >
+        S_TYPE = #{sType,jdbcType=VARCHAR},
+      </if>
+      <if test="qcShQut != null" >
+        QC_SH_QUT = #{qcShQut,jdbcType=FLOAT},
+      </if>
+      <if test="cyQut != null" >
+        CY_QUT = #{cyQut,jdbcType=FLOAT},
+      </if>
+      <if test="dealResult != null" >
+        DEAL_RESULT = #{dealResult,jdbcType=VARCHAR},
+      </if>
+      <if test="poNo != null" >
+        PO_NO = #{poNo,jdbcType=VARCHAR},
+      </if>
+      <if test="prNo != null" >
+        PR_NO = #{prNo,jdbcType=VARCHAR},
+      </if>
+      <if test="ysQut != null" >
+        YS_QUT = #{ysQut,jdbcType=FLOAT},
+      </if>
+      <if test="ksQut != null" >
+        KS_QUT = #{ksQut,jdbcType=FLOAT},
+      </if>
+      <if test="shopNo != null" >
+        SHOP_NO = #{shopNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shopName != null" >
+        SHOP_NAME = #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="poItemRowNo != null" >
+        PO_ITEM_ROW_NO = #{poItemRowNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shItemId != null" >
+        SH_ITEM_ID = #{shItemId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchDeliveryItemCount" resultType="int" >
+    select count(*) from SRM_PO2GC_DELIVERYITEM
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchDeliveryItem" resultMap="BaseResultMap" >
+    select
+    <choose>
+      <when test="selectFields != null">
+        <foreach item="field" index="index" collection="selectFields" separator=",">
+          ${field}
+        </foreach>
+      </when>
+      <otherwise>
+        <include refid="Base_Column_List" />
+      </otherwise>
+    </choose>
+    from SRM_PO2GC_DELIVERYITEM
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    <if test='orderByList == null'>
+      order by ID
+    </if>
+    <if test="pageBean != null" >
+      limit #{pageBean.startRecordNum}, #{pageBean.perPageSize}
+    </if>
+  </select>
+
+  <!-- manual added -->
+  <select id="getDeliveryItemByShId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from SRM_PO2GC_DELIVERYITEM
+    where  DELETED=0 AND  SH_ITEM_ID = #{shItemId,jdbcType=VARCHAR}
+  </select>
+</mapper>

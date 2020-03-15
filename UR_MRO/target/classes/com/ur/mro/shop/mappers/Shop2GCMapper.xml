@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.shop.mappers.Shop2GCMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.shop.model.Shop2GC" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" javaType="String" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" javaType="String" />
+    <result column="CONTRACT_AREA" property="contractArea" jdbcType="VARCHAR" javaType="String" />
+    <result column="SALES_BUDGET" property="salesBudget" jdbcType="FLOAT" javaType="String" />
+    <result column="BRAND_TYPE" property="brandType" jdbcType="VARCHAR" javaType="String" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" javaType="String" />
+    <result column="SALES_LEVEL" property="salesLevel" jdbcType="VARCHAR" javaType="String" />
+    <result column="IMAGE_LEVEL" property="imageLevel" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_CROSS_LAYER" property="isCrossLayer" jdbcType="VARCHAR" javaType="String" />
+    <result column="RELOAD" property="reload" jdbcType="VARCHAR" javaType="String" />
+    <result column="IS_STREET_SHOP" property="isStreetShop" jdbcType="VARCHAR" javaType="String" />
+    <result column="OUTSIDE_HOUSE" property="outsideHouse" jdbcType="VARCHAR" javaType="String" />
+    <result column="STAFF_ESTABLISHING" property="staffEstablishing" jdbcType="VARCHAR" javaType="String" />
+    <result column="EXPECTED_OPEN_TIME" property="expectedOpenTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="OPEN_TIME" property="openTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="EXPECTED_ENGINEERING_DELIVERY_TIME" property="expectedEngineeringDeliveryTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="ENGINEERING_DELIVERY_TIME" property="engineeringDeliveryTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="EXPECTED_ENGINEERING_APPROACH_TIME" property="expectedEngineeringApproachTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="ENGINEERING_APPROACH_TIME" property="engineeringApproachTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="COUNTRY" property="country" jdbcType="VARCHAR" javaType="String" />
+    <result column="PROVINCE" property="province" jdbcType="VARCHAR" javaType="String" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" javaType="String" />
+    <result column="POSTCODE" property="postcode" jdbcType="VARCHAR" javaType="String" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="INVOICE_HEAD" property="invoiceHead" jdbcType="VARCHAR" javaType="String" />
+    <result column="DISABLED" property="disabled" jdbcType="VARCHAR" javaType="String" />
+    <result column="AREA" property="area" jdbcType="VARCHAR" javaType="String" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" javaType="String" />
+    <result column="TELEPHONE" property="TELEPHONE" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOPWIN_COUNT" property="shopWinCount" jdbcType="INTEGER" javaType="Integer" />
+    <result column="MOBILEPHONE" property="MOBILEPHONE" jdbcType="VARCHAR" javaType="String" />
+
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID,CODE,NAME,CONTRACT_AREA,SALES_BUDGET,BRAND_TYPE,TYPE,SALES_LEVEL,IMAGE_LEVEL,IS_CROSS_LAYER,RELOAD,IS_STREET_SHOP,OUTSIDE_HOUSE,STAFF_ESTABLISHING,EXPECTED_OPEN_TIME,OPEN_TIME,EXPECTED_ENGINEERING_DELIVERY_TIME,ENGINEERING_DELIVERY_TIME,EXPECTED_ENGINEERING_APPROACH_TIME,ENGINEERING_APPROACH_TIME,COUNTRY,PROVINCE,CITY,POSTCODE,ADDRESS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,INVOICE_HEAD,DISABLED,AREA,REGION,DISTRICT
+  </sql>
+
+  <select id="getShop2GCByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_SHOP2GC_INFO
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="findByStoreId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from SRM_SHOP2GC_INFO
+    where DELETED=0  and  CODE = #{code,jdbcType=VARCHAR}
+  </select>
+
+
+
+  <insert id="insertShop2GC" keyProperty="id" useGeneratedKeys="true" parameterType="com.ur.mro.shop.model.Shop2GC" >
+    insert into SRM_SHOP2GC_INFO (
+        CODE,NAME,CONTRACT_AREA,SALES_BUDGET,BRAND_TYPE,TYPE,SALES_LEVEL,IMAGE_LEVEL,IS_CROSS_LAYER,RELOAD,IS_STREET_SHOP,OUTSIDE_HOUSE,STAFF_ESTABLISHING,EXPECTED_OPEN_TIME,OPEN_TIME,EXPECTED_ENGINEERING_DELIVERY_TIME,ENGINEERING_DELIVERY_TIME,EXPECTED_ENGINEERING_APPROACH_TIME,ENGINEERING_APPROACH_TIME,COUNTRY,PROVINCE,CITY,POSTCODE,ADDRESS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,INVOICE_HEAD,DISABLED,AREA,REGION,DISTRICT
+    )values(
+        #{code,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{contractArea,jdbcType=VARCHAR},#{salesBudget,jdbcType=FLOAT},#{brandType,jdbcType=VARCHAR},#{type,jdbcType=VARCHAR},#{salesLevel,jdbcType=VARCHAR},#{imageLevel,jdbcType=VARCHAR},#{isCrossLayer,jdbcType=VARCHAR},#{reload,jdbcType=VARCHAR},#{isStreetShop,jdbcType=VARCHAR},#{outsideHouse,jdbcType=VARCHAR},#{staffEstablishing,jdbcType=VARCHAR},#{expectedOpenTime,jdbcType=TIMESTAMP},#{openTime,jdbcType=TIMESTAMP},#{expectedEngineeringDeliveryTime,jdbcType=TIMESTAMP},#{engineeringDeliveryTime,jdbcType=TIMESTAMP},#{expectedEngineeringApproachTime,jdbcType=TIMESTAMP},#{engineeringApproachTime,jdbcType=TIMESTAMP},#{country,jdbcType=VARCHAR},#{province,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{postcode,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=INTEGER},#{invoiceHead,jdbcType=VARCHAR},#{disabled,jdbcType=VARCHAR},#{area,jdbcType=VARCHAR},#{region,jdbcType=VARCHAR},#{district,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <update id="updateShop2GCByCode" parameterType="com.ur.mro.shop.model.Shop2GC" >
+    update SRM_SHOP2GC_INFO
+    <set>
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="contractArea != null" >
+        CONTRACT_AREA = #{contractArea,jdbcType=VARCHAR},
+      </if>
+      <if test="salesBudget != null" >
+        SALES_BUDGET = #{salesBudget,jdbcType=FLOAT},
+      </if>
+      <if test="brandType != null" >
+        BRAND_TYPE = #{brandType,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="salesLevel != null" >
+        SALES_LEVEL = #{salesLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="imageLevel != null" >
+        IMAGE_LEVEL = #{imageLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="isCrossLayer != null" >
+        IS_CROSS_LAYER = #{isCrossLayer,jdbcType=VARCHAR},
+      </if>
+      <if test="reload != null" >
+        RELOAD = #{reload,jdbcType=VARCHAR},
+      </if>
+      <if test="isStreetShop != null" >
+        IS_STREET_SHOP = #{isStreetShop,jdbcType=VARCHAR},
+      </if>
+      <if test="outsideHouse != null" >
+        OUTSIDE_HOUSE = #{outsideHouse,jdbcType=VARCHAR},
+      </if>
+      <if test="staffEstablishing != null" >
+        STAFF_ESTABLISHING = #{staffEstablishing,jdbcType=VARCHAR},
+      </if>
+      <if test="expectedOpenTime != null" >
+        EXPECTED_OPEN_TIME = #{expectedOpenTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="openTime != null" >
+        OPEN_TIME = #{openTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expectedEngineeringDeliveryTime != null" >
+        EXPECTED_ENGINEERING_DELIVERY_TIME = #{expectedEngineeringDeliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="engineeringDeliveryTime != null" >
+        ENGINEERING_DELIVERY_TIME = #{engineeringDeliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expectedEngineeringApproachTime != null" >
+        EXPECTED_ENGINEERING_APPROACH_TIME = #{expectedEngineeringApproachTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="engineeringApproachTime != null" >
+        ENGINEERING_APPROACH_TIME = #{engineeringApproachTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="country != null" >
+        COUNTRY = #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        CITY = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="postcode != null" >
+        POSTCODE = #{postcode,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceHead != null" >
+        INVOICE_HEAD = #{invoiceHead,jdbcType=VARCHAR},
+      </if>
+      <if test="disabled != null" >
+        DISABLED = #{disabled,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        AREA = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        DISTRICT = #{district,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where  CODE = #{code,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateBatchShop2GC" parameterType="java.util.List" >
+    update SRM_SHOP2GC_INFO
+    <trim prefix="set" suffixOverrides=",">
+    <trim prefix="code =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.code!=null">
+          when id=#{i.id} then #{i.code,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="name =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.name!=null">
+          when id=#{i.id} then #{i.name,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+
+    <trim prefix="CONTRACT_AREA =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.contractArea!=null">
+          when id=#{i.id} then #{i.contractArea,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+    <trim prefix="SALES_BUDGET =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.salesBudget!=null">
+          when id=#{i.id} then #{i.salesBudget,jdbcType=FLOAT}
+        </if>
+      </foreach>
+    </trim>
+
+    <trim prefix="BRAND_TYPE =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.brandType!=null">
+          when id=#{i.id} then #{i.brandType,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="TYPE =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.type!=null">
+          when id=#{i.id} then #{i.type,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="SALES_LEVEL =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.salesLevel!=null">
+          when id=#{i.id} then #{i.salesLevel,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="IMAGE_LEVEL =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.imageLevel!=null">
+          when id=#{i.id} then #{i.imageLevel,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+    <trim prefix="IS_CROSS_LAYER =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.isCrossLayer!=null">
+          when id=#{i.id} then #{i.isCrossLayer,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="RELOAD =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.RELOAD!=null">
+          when id=#{i.id} then #{i.RELOAD,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+    <trim prefix="IS_STREET_SHOP =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.isStreetShop!=null">
+          when id=#{i.id} then #{i.isStreetShop,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="OUTSIDE_HOUSE =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.outsideHouse!=null">
+          when id=#{i.id} then #{i.outsideHouse,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="STAFF_ESTABLISHING =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.staffEstablishing!=null">
+          when id=#{i.id} then #{i.staffEstablishing,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+    <trim prefix="EXPECTED_OPEN_TIME =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.expectedOpenTime!=null">
+          when id=#{i.id} then #{i.expectedOpenTime,jdbcType=TIMESTAMP}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="OPEN_TIME =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.openTime!=null">
+          when id=#{i.id} then #{i.openTime,jdbcType=TIMESTAMP}
+        </if>
+      </foreach>
+    </trim>
+
+    <trim prefix="EXPECTED_ENGINEERING_DELIVERY_TIME =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.expectedEngineeringDeliveryTime!=null">
+          when id=#{i.id} then #{i.expectedEngineeringDeliveryTime,jdbcType=TIMESTAMP}
+        </if>
+      </foreach>
+    </trim>
+
+    <trim prefix="ENGINEERING_DELIVERY_TIME =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.engineeringDeliveryTime!=null">
+          when id=#{i.id} then #{i.engineeringDeliveryTime,jdbcType=TIMESTAMP}
+        </if>
+      </foreach>
+    </trim>
+
+    <trim prefix="EXPECTED_ENGINEERING_APPROACH_TIME =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.expectedEngineeringApproachTime!=null">
+          when id=#{i.id} then #{i.expectedEngineeringApproachTime,jdbcType=TIMESTAMP}
+        </if>
+      </foreach>
+    </trim>
+
+    <trim prefix="ENGINEERING_APPROACH_TIME =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.engineeringApproachTime!=null">
+          when id=#{i.id} then #{i.engineeringApproachTime,jdbcType=TIMESTAMP}
+        </if>
+      </foreach>
+    </trim>
+
+    <trim prefix="COUNTRY =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.country!=null">
+          when id=#{i.id} then #{i.country,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="PROVINCE =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.province!=null">
+          when id=#{i.id} then #{i.province,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="CITY =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.city!=null">
+          when id=#{i.id} then #{i.city,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="POSTCODE =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.postcode!=null">
+          when id=#{i.id} then #{i.postcode,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="ADDRESS =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.address!=null">
+          when id=#{i.id} then #{i.address,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="CREATED_BY =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.createdBy!=null">
+          when id=#{i.id} then #{i.createdBy,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="CREATED_TIME =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.createdTime!=null">
+          when id=#{i.id} then #{i.createdTime,jdbcType=TIMESTAMP}
+        </if>
+      </foreach>
+    </trim>
+
+
+
+    <trim prefix="LAST_UPDATED_BY =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.lastUpdatedBy!=null">
+          when id=#{i.id} then #{i.lastUpdatedBy,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="LAST_UPDATED_TIME =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.lastUpdatedTime!=null">
+          when id=#{i.id} then #{i.lastUpdatedTime,jdbcType=TIMESTAMP}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="DELETED =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.deleted!=null">
+          when id=#{i.id} then #{i.deleted,jdbcType=INTEGER}
+        </if>
+      </foreach>
+    </trim>
+
+    <trim prefix="INVOICE_HEAD =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.invoiceHead!=null">
+          when id=#{i.id} then #{i.invoiceHead,jdbcType=INTEGER}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="DISABLED =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.disabled!=null">
+          when id=#{i.id} then #{i.disabled,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="AREA =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.area!=null">
+          when id=#{i.id} then #{i.area,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="REGION =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.region!=null">
+          when id=#{i.id} then #{i.region,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    <trim prefix="DISTRICT =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        <if test="i.district!=null">
+          when id=#{i.id} then #{i.district,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+    </trim>
+
+
+    </trim>
+    where DELETED = 0 AND id in
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      #{item.id}
+    </foreach>
+  </update>
+
+  <update id="updateShop2GCByPKSelective" parameterType="com.ur.mro.shop.model.Shop2GC" >
+    update SRM_SHOP2GC_INFO
+    <set>
+      <if test="code != null" >
+        CODE = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="contractArea != null" >
+        CONTRACT_AREA = #{contractArea,jdbcType=VARCHAR},
+      </if>
+      <if test="salesBudget != null" >
+        SALES_BUDGET = #{salesBudget,jdbcType=FLOAT},
+      </if>
+      <if test="brandType != null" >
+        BRAND_TYPE = #{brandType,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="salesLevel != null" >
+        SALES_LEVEL = #{salesLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="imageLevel != null" >
+        IMAGE_LEVEL = #{imageLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="isCrossLayer != null" >
+        IS_CROSS_LAYER = #{isCrossLayer,jdbcType=VARCHAR},
+      </if>
+      <if test="reload != null" >
+        RELOAD = #{reload,jdbcType=VARCHAR},
+      </if>
+      <if test="isStreetShop != null" >
+        IS_STREET_SHOP = #{isStreetShop,jdbcType=VARCHAR},
+      </if>
+      <if test="outsideHouse != null" >
+        OUTSIDE_HOUSE = #{outsideHouse,jdbcType=VARCHAR},
+      </if>
+      <if test="staffEstablishing != null" >
+        STAFF_ESTABLISHING = #{staffEstablishing,jdbcType=VARCHAR},
+      </if>
+      <if test="expectedOpenTime != null" >
+        EXPECTED_OPEN_TIME = #{expectedOpenTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="openTime != null" >
+        OPEN_TIME = #{openTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expectedEngineeringDeliveryTime != null" >
+        EXPECTED_ENGINEERING_DELIVERY_TIME = #{expectedEngineeringDeliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="engineeringDeliveryTime != null" >
+        ENGINEERING_DELIVERY_TIME = #{engineeringDeliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expectedEngineeringApproachTime != null" >
+        EXPECTED_ENGINEERING_APPROACH_TIME = #{expectedEngineeringApproachTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="engineeringApproachTime != null" >
+        ENGINEERING_APPROACH_TIME = #{engineeringApproachTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="country != null" >
+        COUNTRY = #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        CITY = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="postcode != null" >
+        POSTCODE = #{postcode,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceHead != null" >
+        INVOICE_HEAD = #{invoiceHead,jdbcType=VARCHAR},
+      </if>
+      <if test="disabled != null" >
+        DISABLED = #{disabled,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        AREA = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        DISTRICT = #{district,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchShop2GCCount" resultType="int" >
+    select count(1) from ( select  DISTINCT
+    a.ID,
+    a.CODE,
+    a.NAME,
+    a.REGION,
+    dbo.getDcSkeyBySvalue(a.TYPE,'GC_shopType') TYPE,
+    a.SALES_LEVEL,
+    dbo.getDcSkeyBySvalue(a.IMAGE_LEVEL,'GC_shopImage')  IMAGE_LEVEL,
+    dbo.getDcSkeyBySvalue(a.BRAND_TYPE,'GC_brand') BRAND_TYPE,
+    dbo.getDcSkeyBySvalue3(a.PROVINCE) PROVINCE,
+    dbo.getDcSkeyBySvalue3(a.CITY) CITY,
+    a.ADDRESS
+    FROM
+    SRM_SHOP2GC_INFO a
+    WHERE    a.DELETED = 0
+    ) temp
+
+    <if test="condList != null" >
+      <where>
+
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT('%',#{cond.value}),'%')
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchShop2GC" resultMap="BaseResultMap">
+select distinct * from (
+    select
+    <choose>
+      <when test="selectFields != null">
+        <foreach item="field" index="index" collection="selectFields" separator=",">
+          ${field}
+        </foreach>
+        from SRM_SHOP2GC_INFO
+      </when>
+      <otherwise>
+        DISTINCT
+        a.ID,
+        a.CODE,
+        a.NAME,
+        a.REGION,
+        a.CREATED_TIME,
+        dbo.getDcSkeyBySvalue(a.TYPE,'GC_shopType') TYPE,
+        dbo.getDcSkeyBySvalue(a.SALES_LEVEL,'GC_salesLevel') SALES_LEVEL,
+        dbo.getDcSkeyBySvalue(a.IMAGE_LEVEL,'GC_shopImage')  IMAGE_LEVEL,
+        dbo.getDcSkeyBySvalue(a.BRAND_TYPE,'GC_brand') BRAND_TYPE,
+        dbo.getDcSkeyBySvalue3(a.PROVINCE) PROVINCE,
+        dbo.getDcSkeyBySvalue3(a.CITY) CITY,
+        a.ADDRESS
+        FROM
+        SRM_SHOP2GC_INFO a
+        WHERE
+        a.DELETED = 0
+      </otherwise>
+    </choose>
+) temp
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT('%',#{cond.value}),'%')
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    <if test='orderByList == null'>
+      order by CREATED_TIME desc
+    </if>
+    <if test="pageBean != null" >
+      Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+
+  <select id="checkData" resultType="int">
+    select count(1) from
+    SRM_SHOP2GC_INFO
+    where DELETED = 0 and
+      CODE = #{code,jdbcType=VARCHAR}
+    <if test="name != null" >
+         and  NAME = #{name,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="getMasterIdByNameAndCode" resultMap="BaseResultMap">
+  select id,code,name from
+   SRM_SHOP2GC_INFO
+  where  DELETED = 0 and
+     CODE in
+    <foreach item="item" index="index" collection="list"  open="(" separator="," close=")">
+      #{item.storeid}
+    </foreach>
+</select>
+
+  <!-- manual added -->
+</mapper>

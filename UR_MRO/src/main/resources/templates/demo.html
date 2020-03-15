@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('demo')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="padding-top: 5px;display: none;"
+ v-show="isLoad" v-loading="exportingFile" element-loading-text="正在生成导出文件">
+
+<nav class="navbar" style="background-color:#eef1f6; height: 30px;line-height: 30px;">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition" v-on:change="setScreenHeight()"></el-switch>
+	</el-tooltip>
+</nav>
+
+  <div class="card" id="cardDiv" style="display: none;">  
+	<div style="padding: 3px !important;" class="card-body">
+  <div class="row">
+  	<div class="col-md-12">
+		<el-form label-position="left">
+<el-row>
+	<el-col :span="6">
+		  <el-form-item label="开始日期"  label-width="70px">
+			<el-date-picker style="width: 190px;" v-model="queryCondition.startDate" type="date" placeholder="开始日期"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="6">
+		  <el-form-item label="结束日期" label-width="70px">
+			<el-date-picker style="width: 190px;" v-model="queryCondition.endDate" type="date" placeholder="结束日期"></el-date-picker>	
+		  </el-form-item>
+	</el-col>
+	<el-col :span="7">
+		  <el-form-item label="店铺名称" label-width="70px">
+		  <el-select :filterable="true" style="width: 230px;"  v-model="queryCondition.shopNo" align="left" size="small"	:clearable="true">
+									   <el-option v-for="(item, key) in shopNoAndNameItems" align="left"  :label="item" :value="key"></el-option>
+									</el-select>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="5">
+		  <el-form-item label="系列" >
+		  <el-select style="width: 120px;"  v-model="queryCondition.series" align="left" size="small" :clearable="true">
+			<el-option v-for="(item,key) in seriesItems" align="left"  :label="item" :value="key"></el-option>
+	      </el-select>
+		  </el-form-item>
+	</el-col>
+</el-row>
+<el-row>
+	<el-col :span="6">
+		  <el-form-item label="行动" label-width="70px">
+		  <el-select style="width: 190px;"   v-model="queryCondition.type" align="left" size="small" :clearable="true">
+	   <el-option v-for="(item,key) in typeItems" align="left"  :label="item" :value="key"></el-option>
+		</el-select>
+		  </el-form-item>
+	</el-col>
+	<el-col :span="6">
+		  <el-form-item label="原因" label-width="70px">
+		    <el-input style="width: 190px;"   v-model="queryCondition.reason" 
+		    placeholder="不参与运算的原因"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col style="width: 210px;">
+		  <el-form-item label="创建人" label-width="70px">
+		    <el-input style="width: 130px;"   v-model="queryCondition.createBy" 
+		    placeholder="创建人"></el-input>
+		  </el-form-item>
+	</el-col>
+	<el-col style="width: 180px;">
+		<el-button v-on:click="clickSearchBtn" type="primary">
+		<i class="fa fa-search" aria-hidden="true" style="padding-right:2px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn" type="primary">
+		<i class="fa fa-eraser" aria-hidden="true" style="padding-right:2px"></i>重置</el-button>   
+	</el-col>
+</el-row>
+		</el-form>
+  	</div>
+  </div>
+
+	
+  </div>
+</div>
+
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickAddBtn" icon="plus">新增</el-button>
+        <el-button v-on:click="clickUpdateBtn" icon="edit">修改</el-button>
+        <el-button v-on:click="clickDeleteBtn" icon="delete">删除</el-button>
+        <el-button v-on:click="clickImportBtn" ><i class="fa fa-upload" aria-hidden="true" style="padding-right:5px"></i>导入</el-button>
+        <el-button v-on:click="clickExportBtn"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+      </li>
+    </ul>
+    <el-dialog title="提示"  :visible.sync="deleteDialogVisible"  width="20%">
+	  <span>确定要删除这  {{multipleSelection.length}} 项吗?</span>
+	  <span slot="footer" class="dialog-footer">
+	    <el-button v-on:click="deleteDialogVisible = false">取 消</el-button>
+	    <el-button type="primary" v-on:click="delSummitBtn">确 定</el-button>
+	  </span>
+	</el-dialog>
+	
+	<el-dialog ref="uploadPanel" :visible.sync="uploadDialogVisible" >
+		 <a href="template/ConfigNonParticipationTemplate.xlsx" style="font-size: 15px; color: red;">模版下载</a>
+		  <div style="margin-top: 10px; margin-left: -5px; color: #000;">
+			 	“导入”功能是新增导入的数据，不会覆盖已有数据；故导入前，请先删除原有数据。</div>
+			    <div style="height: 50px;"></div>
+         		<el-form style="width: 30rem;"
+         		  class="form uploadform">
+	         		 <el-form-item>
+		         		<el-upload  ref="upload"  action="ConfigNonParticipation/importExcel" 
+		         		 	:before-upload="beforeUpload" :limit="1"
+			         		:file-list="fileList"  :auto-upload='true' :show-upload-list="false" 
+			         		:on-success="handleUploadSuccess"
+			         		:on-error="handleUploadError">
+			                <el-button slot="trigger"  type="primary">点击上传</el-button>
+			           		<div slot="tip" class="el-upload__tip">只能上传xls/xlsx 文件,每次只能上传一个</div>
+		            	</el-upload>
+	            	</el-form-item>
+            	</el-form>
+      </el-dialog>
+      
+		<el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+		</el-pagination>
+</nav>
+
+        <el-table id="data_table"  stripe="" v-loading="queryingConfigNonParticipation" :data="this.queryResult.data" :border="true" :highlight-current-row="true" 
+        :height="this.tableHeight" v-on:current-change="handleTableCurrentChange" v-on:selection-change="handleSelectionChange">
+        <el-table-column type="selection"  width="45"></el-table-column>
+          <el-table-column property="startDate" label="开始日期" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="endDate" label="结束日期" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopNo" label="店铺编码" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="shopName" label="店铺名称" min-width="160" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="serialName" label="系列" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="typeName" label="行动" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="reason" label="原因" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createTimeFormat" label="创建时间" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createBy" label="创建者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="createByName" label="创建人" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyTimeFormat" label="修改时间" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="modifyByName" label="修改人" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+
+	</div>
+</div>
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+	  
+  let this_let; 
+  var vm = new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  startDate:"",
+        	  endDate:"",
+        	  shopNo:"",
+        	  series:"",
+        	  type:"",
+        	  reason:"",
+        	  createTime:"",
+        	  createBy:"",
+        	  modifyTime:"",
+        	  modifyBy:""
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20,
+        	  data:[{shopNo:'CAN001',shopName:'广州正佳广场店'},{shopNo:'CAN001',shopName:'广州正佳广场店'},{shopNo:'CAN001',shopName:'广州正佳广场店'},{shopNo:'CAN001',shopName:'广州正佳广场店'},{shopNo:'CAN001',shopName:'广州正佳广场店'}]
+          },
+          queryingConfigNonParticipation:false,
+          updatingConfigNonParticipation:false,
+          importingFile:false,
+          expandCondition:false,
+          expandText:"展开查询面板",
+          exportingFile:false,
+          searchColumn: "",
+          searchValue: "",
+          updateInstance:{},
+          isUpdate:false,
+          typeItems:[[${typeItems}]],
+          seriesItems:['WOMEN','YOUTH','MEN'],
+          shopNoAndNameItems: [[${shopNoAndNameItems}]],
+          multipleSelection: [],
+          deleteDialogVisible: false,
+          uploadDialogVisible:false,
+          fileList: [],
+          isLoad: false,
+          tableHeight:500,
+        }
+      },
+      created: function() {
+    	  this.isLoad = true;
+    	  this_let = this;
+      },
+      methods: {
+  		clickAddBtn() {
+			openDialog('新增','ConfigNonParticipationEdit',800,600,'max');
+		},
+		clickUpdateBtn() {
+			if(this.currInstance==null){
+				return;
+			}
+			openDialog('修改','ConfigNonParticipationEdit?id='+this.currInstance.id,800,600,'max');
+		},
+		handleTableCurrentChange(currentRow) {
+			this.currInstance = currentRow;
+		},
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryConfigNonParticipation();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryConfigNonParticipation();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryConfigNonParticipation();
+    	},
+        queryConfigNonParticipation() {
+          _this = this;
+
+          var url = '/ConfigNonParticipation/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+          //restRequest.addOrderBy("columnName??? desc");
+
+          if(this.queryCondition.startDate){
+        	  var y = this.queryCondition.startDate.getFullYear();
+			  var m = this.queryCondition.startDate.getMonth()+1;
+			  m = m < 10 ? ('0' + m) : m;    
+				  var d = this.queryCondition.startDate.getDate();
+				  d = d < 10 ? ('0' + d) : d;   
+				  var startDate=y+'-'+m+'-'+d;
+				  restRequest.addCondition("startDate",startDate,"eq");
+	      }
+	      if(this.queryCondition.endDate){
+	    	  var y = this.queryCondition.endDate.getFullYear();
+			  var m = this.queryCondition.endDate.getMonth()+1;
+			  m = m < 10 ? ('0' + m) : m;    
+				  var d = this.queryCondition.endDate.getDate();
+				  d = d < 10 ? ('0' + d) : d;   
+				  var endDate=y+'-'+m+'-'+d;
+				  restRequest.addCondition("endDate",endDate,"eq");
+	      }
+	          //restRequest.addCondition("startDate",this.queryCondition.startDate,"eq");
+	          //restRequest.addCondition("endDate",this.queryCondition.endDate,"eq");
+	          restRequest.addCondition("shopNo",this.queryCondition.shopNo,"eq");
+	          restRequest.addCondition("series",this.queryCondition.series,"eq");
+	          restRequest.addCondition("type",this.queryCondition.type,"eq");
+	          restRequest.addCondition("reason",this.queryCondition.reason,"like");
+	          restRequest.addCondition("createBy",this.queryCondition.createBy,"like");
+	          /* restRequest.addCondition("createTime",this.queryCondition.createTime,"eq");
+	          restRequest.addCondition("modifyTime",this.queryCondition.modifyTime,"eq");
+	          restRequest.addCondition("modifyBy",this.queryCondition.modifyBy,"eq"); */
+         
+
+          this.$data.queryingConfigNonParticipation = true;
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+              //console.log(response);
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.queryingConfigNonParticipation = false;
+			    	_this.queryResult={
+				          	  totalRecordNum:0,
+				          	  currPage:1,
+				          	  pageSize:20
+				            };
+			    }else{
+	              _this.$data.queryResult = response.data;
+	              _this.$data.queryingConfigNonParticipation = false;
+			    }
+            })
+            .catch(function (error) {
+              console.log(error);
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  	  clickExportBtn(){
+		          _this = this;
+		          var url = '/ConfigNonParticipation/export';
+
+		          var restRequest = new URRestRequest();
+
+          //可以指定排序字段
+          //restRequest.addOrderBy("columnName??? desc");
+	          //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+		      if(this.queryCondition.startDate){
+		        	  var y = this.queryCondition.startDate.getFullYear();
+					  var m = this.queryCondition.startDate.getMonth()+1;
+					  m = m < 10 ? ('0' + m) : m;    
+						  var d = this.queryCondition.startDate.getDate();
+						  d = d < 10 ? ('0' + d) : d;   
+						  var startDate=y+'-'+m+'-'+d;
+						  restRequest.addCondition("startDate",startDate,"eq");
+		      }
+		      if(this.queryCondition.endDate){
+	        	  var y = this.queryCondition.endDate.getFullYear();
+				  var m = this.queryCondition.endDate.getMonth()+1;
+				  m = m < 10 ? ('0' + m) : m;    
+					  var d = this.queryCondition.endDate.getDate();
+					  d = d < 10 ? ('0' + d) : d;   
+					  var endDate=y+'-'+m+'-'+d;
+					  restRequest.addCondition("endDate",endDate,"eq");
+	      }
+	          //restRequest.addCondition("startDate",this.queryCondition.startDate,"eq");
+	          //restRequest.addCondition("endDate",this.queryCondition.endDate,"eq");
+	          restRequest.addCondition("shopNo",this.queryCondition.shopNo,"eq");
+	          restRequest.addCondition("series",this.queryCondition.series,"eq");
+	          restRequest.addCondition("type",this.queryCondition.type,"eq");
+	          restRequest.addCondition("reason",this.queryCondition.reason,"like");
+	          restRequest.addCondition("createBy",this.queryCondition.createBy,"like");
+	          /* restRequest.addCondition("createTime",this.queryCondition.createTime,"eq");
+	          restRequest.addCondition("createBy",this.queryCondition.createBy,"eq");
+	          restRequest.addCondition("modifyTime",this.queryCondition.modifyTime,"eq");
+	          restRequest.addCondition("modifyBy",this.queryCondition.modifyBy,"eq"); */
+
+
+		          this.$data.importingFile = true;
+
+		          axios.post(url,restRequest.getRequestData())
+		            .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+					    	_this.$data.importingFile = false;
+					    }else{
+			              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+			              _this.$data.importingFile = false;
+			              downloadFile(downloadLink);
+					    }
+
+		            })
+		            .catch(function (error) {
+		              console.log(error);
+		              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+		            });
+			},
+          clickResetBtn() {
+            for(var key in this.queryCondition){
+            	this.queryCondition[key] = "";
+            }
+          },
+          clickImportBtn(){
+        	  this.uploadDialogVisible=true;
+          },
+          clickDeleteBtn(){
+        	  if (this.multipleSelection.length == 0) {
+	        		this.$message({showClose: true,message: '请至少选择一条数据,  左侧复选框 选中',type: 'error'});
+	                return;
+	            }
+	        	this.deleteDialogVisible = true;
+          },
+          handleSelectionChange(val) {
+              this.multipleSelection = val;
+          },
+          delSummitBtn(){
+	        	this.deleteDialogVisible = false;
+	        	var ids = [];
+	        	for(var i=0;i<this.multipleSelection.length;i++) {
+	        		ids.push(this.multipleSelection[i].id);
+	        	}
+	        	
+	        	 _this.$data.queryingConfigNonParticipation = true;
+               var url = '/ConfigNonParticipation/del';
+				 axios.put(url, ids).then(function (response) {
+				    if(response.data.code==null||response.data.code!=0){
+				    	_this.$notify.error({title: '删除失败',message: response.data.message,offset: 100});
+				    	_this.$data.queryingConfigNonParticipation = false;
+				    }else{
+					    _this.$notify.info({title: '',message: '删除成功',offset: 100});
+					    _this.$data.queryingConfigNonParticipation = false;
+					    _this.queryConfigNonParticipation(_this.queryResult.currPage);
+				    }
+				  }).catch(function (error) {
+					console.log(error);
+				    _this.$notify.error({title: '错误',message: '删除数据失败，请联系系统管理员',offset: 100});
+				    _this.$data.queryingConfigNonParticipation = false;
+				  });	
+	        },
+	        handleUploadSuccess(res,file,fileList){
+				this.fileList=[];
+				this.uploadDialogVisible=false;
+				if(JSON.stringify(res.success)==="false"){
+					this.$message({message: '导入失败: ' + JSON.stringify(res.message), type: 'error' });
+				}else{
+					this.$message({ message: '导入成功',type: 'success' });
+					 _this.queryConfigNonParticipation(_this.queryResult.currPage);
+				}
+			},handleUploadError(err, file, fileList){
+   			    this.fileList=[];
+				this.uploadDialogVisible=false;
+				this.$message({message: '导入失败' + err, type: 'error' });
+			},
+			beforeUpload(file) {
+                let Xls = file.name.split('.');
+                if(Xls[1] === 'xls'||Xls[1] === 'xlsx'){
+                    return file
+                }else {
+                    this.$message.error('只能上传   xls、xlsx 文件');
+                    return false;
+                }
+            }, setScreenHeight(){
+          	  if(this.expandCondition){//展开 
+        		  $("#cardDiv").show();
+          	      this.expandText="关闭查询面板";
+        	  }else{
+        		  $("#cardDiv").hide();
+        		  this.expandText="展开查询面板";
+        	  }
+        	  this.tableHeight =   $(window).height() -$("#data_table").offset().top; 
+			}
+        }
+    })
+    var dialogCallback = function() {
+    		closedialog();
+    		vm.clickSearchBtn();
+    }
+    
+  $(document).ready(function(){    	    	
+  	$(window).load(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+      });
+  	
+  	$(window).resize(function(){
+  		this_let.tableHeight =$(window).height() -$("#data_table").offset().top;
+  	});    	
+  });
+  
+    /*]]>*/
+  </script>
+</html>

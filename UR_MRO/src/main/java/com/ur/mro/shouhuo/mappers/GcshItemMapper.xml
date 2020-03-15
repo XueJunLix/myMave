@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.shouhuo.mappers.GcshItemMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.shouhuo.model.GcshItem" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SH_ID" property="shId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="PO_NO" property="poNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="ROW_NO" property="rowNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_CODE" property="matCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_NAME" property="matName" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_SPEC" property="matSpec" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_CZ" property="matCz" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_SIZE" property="matSize" jdbcType="VARCHAR" javaType="String" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" javaType="String" />
+    <result column="SH_QUT" property="shQut" jdbcType="FLOAT" javaType="String" />
+    <result column="PO_QUT" property="poQut" jdbcType="FLOAT" javaType="String" />
+    <result column="MAKE_IE" property="makeIe" jdbcType="VARCHAR" javaType="String" />
+    <result column="SJ_SH_QUT" property="sjShQut" jdbcType="FLOAT" javaType="String" />
+    <result column="COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="B_TYPE" property="bType" jdbcType="VARCHAR" javaType="String" />
+    <result column="M_TYPE" property="mType" jdbcType="VARCHAR" javaType="String" />
+    <result column="S_TYPE" property="sType" jdbcType="VARCHAR" javaType="String" />
+    <result column="PR_NO" property="prNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="YS_QUT" property="ysQut" jdbcType="REAL" javaType="String" />
+    <result column="SHOP_NO" property="shopNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SH_NO" property="shNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHOP_NAME" property="shopName" jdbcType="VARCHAR" javaType="String" />
+    <result column="CHANGE_TO_SHOP_NO" property="changeToShopNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="CHANGE_TO_SHOP_NAME" property="changeToShopName" jdbcType="VARCHAR" javaType="String" />
+    <result column="OUT_COUNT" property="outCount" jdbcType="FLOAT" javaType="String" />
+    <result column="CAN_SH_COUNT" property="canShCount" jdbcType="FLOAT" javaType="String" />
+    <result column="CHANGE_TO_PO_NO" property="changeToPoNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="CHANGE_TO_PO_COUNT" property="changeToPoCount" jdbcType="FLOAT" javaType="String" />
+    <result column="SIGN_DATE" property="signDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="BOX_NUM" property="boxNum" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUP_NO" property="supNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUP_NAME" property="supName" jdbcType="VARCHAR" javaType="String" />
+    <result column="PO_OR_PR_ID" property="poOrPrId" jdbcType="VARCHAR" javaType="String" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID,SH_ID,PO_NO,ROW_NO,MAT_CODE,MAT_NAME,MAT_SPEC,MAT_CZ,MAT_SIZE,UNIT,SH_QUT,PO_QUT,MAKE_IE,SJ_SH_QUT,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,B_TYPE,M_TYPE,S_TYPE,PR_NO,YS_QUT,SHOP_NO,SH_NO,SHOP_NAME,CHANGE_TO_SHOP_NO,CHANGE_TO_SHOP_NAME,OUT_COUNT,CAN_SH_COUNT,CHANGE_TO_PO_NO,CHANGE_TO_PO_COUNT,SIGN_DATE,BOX_NUM,SUP_NO,SUP_NAME,PO_OR_PR_ID
+  </sql>
+
+  <select id="getGcshItemByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_PO2GC_GCSHITEM
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insertGcshItem" parameterType="com.ur.mro.shouhuo.model.GcshItem" >
+    insert into SRM_PO2GC_GCSHITEM (
+        SH_ID,PO_NO,ROW_NO,MAT_CODE,MAT_NAME,MAT_SPEC,MAT_CZ,MAT_SIZE,UNIT,SH_QUT,PO_QUT,MAKE_IE,SJ_SH_QUT,COMMENTS,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,B_TYPE,M_TYPE,S_TYPE,PR_NO,YS_QUT,SHOP_NO,SH_NO,SHOP_NAME,CHANGE_TO_SHOP_NO,CHANGE_TO_SHOP_NAME,OUT_COUNT,CAN_SH_COUNT,CHANGE_TO_PO_NO,CHANGE_TO_PO_COUNT,SIGN_DATE,BOX_NUM,SUP_NO,SUP_NAME,PO_OR_PR_ID
+    )values(
+        #{shId,jdbcType=INTEGER},#{poNo,jdbcType=VARCHAR},#{rowNo,jdbcType=VARCHAR},#{matCode,jdbcType=VARCHAR},#{matName,jdbcType=VARCHAR},#{matSpec,jdbcType=VARCHAR},#{matCz,jdbcType=VARCHAR},#{matSize,jdbcType=VARCHAR},#{unit,jdbcType=VARCHAR},#{shQut,jdbcType=FLOAT},#{poQut,jdbcType=FLOAT},#{makeIe,jdbcType=VARCHAR},#{sjShQut,jdbcType=FLOAT},#{comments,jdbcType=NVARCHAR},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=INTEGER},#{bType,jdbcType=VARCHAR},#{mType,jdbcType=VARCHAR},#{sType,jdbcType=VARCHAR},#{prNo,jdbcType=VARCHAR},#{ysQut,jdbcType=REAL},#{shopNo,jdbcType=VARCHAR},#{shNo,jdbcType=VARCHAR},#{shopName,jdbcType=VARCHAR},#{changeToShopNo,jdbcType=VARCHAR},#{changeToShopName,jdbcType=VARCHAR},#{outCount,jdbcType=FLOAT},#{canShCount,jdbcType=FLOAT},#{changeToPoNo,jdbcType=VARCHAR},#{changeToPoCount,jdbcType=FLOAT},#{signDate,jdbcType=TIMESTAMP},#{boxNum,jdbcType=VARCHAR},#{supNo,jdbcType=VARCHAR},#{supName,jdbcType=VARCHAR},#{poOrPrId,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <update id="updateGcshItemByPKSelective" parameterType="com.ur.mro.shouhuo.model.GcshItem" >
+    update SRM_PO2GC_GCSHITEM
+    <set>
+      <if test="shId != null" >
+        SH_ID = #{shId,jdbcType=INTEGER},
+      </if>
+      <if test="poNo != null" >
+        PO_NO = #{poNo,jdbcType=VARCHAR},
+      </if>
+      <if test="rowNo != null" >
+        ROW_NO = #{rowNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matCode != null" >
+        MAT_CODE = #{matCode,jdbcType=VARCHAR},
+      </if>
+      <if test="matName != null" >
+        MAT_NAME = #{matName,jdbcType=VARCHAR},
+      </if>
+      <if test="matSpec != null" >
+        MAT_SPEC = #{matSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="matCz != null" >
+        MAT_CZ = #{matCz,jdbcType=VARCHAR},
+      </if>
+      <if test="matSize != null" >
+        MAT_SIZE = #{matSize,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="shQut != null" >
+        SH_QUT = #{shQut,jdbcType=FLOAT},
+      </if>
+      <if test="poQut != null" >
+        PO_QUT = #{poQut,jdbcType=FLOAT},
+      </if>
+      <if test="makeIe != null" >
+        MAKE_IE = #{makeIe,jdbcType=VARCHAR},
+      </if>
+      <if test="sjShQut != null" >
+        SJ_SH_QUT = #{sjShQut,jdbcType=FLOAT},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=NVARCHAR},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="bType != null" >
+        B_TYPE = #{bType,jdbcType=VARCHAR},
+      </if>
+      <if test="mType != null" >
+        M_TYPE = #{mType,jdbcType=VARCHAR},
+      </if>
+      <if test="sType != null" >
+        S_TYPE = #{sType,jdbcType=VARCHAR},
+      </if>
+      <if test="prNo != null" >
+        PR_NO = #{prNo,jdbcType=VARCHAR},
+      </if>
+      <if test="ysQut != null" >
+        YS_QUT = #{ysQut,jdbcType=REAL},
+      </if>
+      <if test="shopNo != null" >
+        SHOP_NO = #{shopNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shNo != null" >
+        SH_NO = #{shNo,jdbcType=VARCHAR},
+      </if>
+      <if test="shopName != null" >
+        SHOP_NAME = #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="changeToShopNo != null" >
+        CHANGE_TO_SHOP_NO = #{changeToShopNo,jdbcType=VARCHAR},
+      </if>
+      <if test="changeToShopName != null" >
+        CHANGE_TO_SHOP_NAME = #{changeToShopName,jdbcType=VARCHAR},
+      </if>
+      <if test="outCount != null" >
+        OUT_COUNT = #{outCount,jdbcType=FLOAT},
+      </if>
+      <if test="canShCount != null" >
+        CAN_SH_COUNT = #{canShCount,jdbcType=FLOAT},
+      </if>
+      <if test="changeToPoNo != null" >
+        CHANGE_TO_PO_NO = #{changeToPoNo,jdbcType=VARCHAR},
+      </if>
+      <if test="changeToPoCount != null" >
+        CHANGE_TO_PO_COUNT = #{changeToPoCount,jdbcType=FLOAT},
+      </if>
+      <if test="signDate != null" >
+        SIGN_DATE = #{signDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="boxNum != null" >
+        BOX_NUM = #{boxNum,jdbcType=VARCHAR},
+      </if>
+      <if test="supNo != null" >
+        SUP_NO = #{supNo,jdbcType=VARCHAR},
+      </if>
+      <if test="supName != null" >
+        SUP_NAME = #{supName,jdbcType=VARCHAR},
+      </if>
+      <if test="poOrPrId != null" >
+        PO_OR_PR_ID = #{poOrPrId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchGcshItemCount" resultType="int" >
+    select count(*) from SRM_PO2GC_GCSHITEM
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchGcshItem" resultMap="BaseResultMap" >
+    select
+    <choose>
+      <when test="selectFields != null">
+        <foreach item="field" index="index" collection="selectFields" separator=",">
+          ${field}
+        </foreach>
+      </when>
+      <otherwise>
+        <include refid="Base_Column_List" />
+      </otherwise>
+    </choose>
+    from SRM_PO2GC_GCSHITEM
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    <if test='orderByList == null'>
+      order by ID
+    </if>
+    <if test="pageBean != null" >
+      Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+
+  <select id="getListGcshItemByShId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from SRM_PO2GC_GCSHITEM
+    where  DELETED=0 and SH_ID = #{shId,jdbcType=INTEGER}
+  </select>
+
+
+</mapper>

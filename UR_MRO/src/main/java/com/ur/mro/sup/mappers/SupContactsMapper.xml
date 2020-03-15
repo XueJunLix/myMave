@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.sup.mappers.SupContactsMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.sup.model.SupContacts" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="NAME" property="name" jdbcType="NVARCHAR" javaType="String" />
+    <result column="PHONENUMBER" property="phonenumber" jdbcType="VARCHAR" javaType="String" />
+    <result column="TELNUMBER" property="telnumber" jdbcType="VARCHAR" javaType="String" />
+    <result column="FAXNUMBER" property="faxnumber" jdbcType="VARCHAR" javaType="String" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" javaType="String" />
+    <result column="ISDEFAULT" property="isdefault" jdbcType="INTEGER" javaType="Boolean" />
+    <result column="SUPPLIER_ID" property="supplierId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="POSITION" property="position" jdbcType="VARCHAR" javaType="String" />
+    <result column="MRLXR" property="mrLxr" jdbcType="BIT" javaType="Boolean" />
+    <result column="MRSHLXR" property="mrShLxr" jdbcType="BIT" javaType="Boolean" />
+    <result column="MRCWLXR" property="mrCwLxr" jdbcType="BIT" javaType="Boolean" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID,NAME,PHONENUMBER,TELNUMBER,FAXNUMBER,EMAIL,ISDEFAULT,SUPPLIER_ID,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,POSITION,MRLXR,MRSHLXR,MRCWLXR
+  </sql>
+  
+  <select id="getSupContactsByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from SRM_SUP_CONTACTS
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getSupContactsListBySupplierId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_SUP_CONTACTS
+    where DELETED = '0' AND SUPPLIER_ID = #{supplierId}
+  </select>
+  
+  <insert id="insertSupContacts" parameterType="com.ur.mro.sup.model.SupContacts" >
+    insert into SRM_SUP_CONTACTS (
+        NAME,PHONENUMBER,TELNUMBER,FAXNUMBER,EMAIL,ISDEFAULT,SUPPLIER_ID,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,POSITION,MRLXR,MRSHLXR,MRCWLXR
+    )values(
+        #{name,jdbcType=NVARCHAR},#{phonenumber,jdbcType=VARCHAR},#{telnumber,jdbcType=VARCHAR},#{faxnumber,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{isdefault,jdbcType=INTEGER},#{supplierId,jdbcType=INTEGER},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=INTEGER},#{position,jdbcType=VARCHAR},#{mrLxr,jdbcType=BIT},#{mrShLxr,jdbcType=BIT},#{mrCwLxr,jdbcType=BIT}
+    )
+  </insert>
+
+  <update id="deleteSupContacts" parameterType="java.lang.Integer" >
+    UPDATE SRM_SUP_CONTACTS SET SRM_SUP_CONTACTS.DELETED = '1' ,LAST_UPDATED_TIME = CONVERT(varchar,GETDATE(),120)
+    WHERE SRM_SUP_CONTACTS.SUPPLIER_ID = #{supplierId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateSupContactsByPKSelective" parameterType="com.ur.mro.sup.model.SupContacts" >
+    update SRM_SUP_CONTACTS
+    <set>
+      <if test="name != null" >
+        NAME = #{name,jdbcType=NVARCHAR},
+      </if>
+      <if test="phonenumber != null" >
+        PHONENUMBER = #{phonenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="telnumber != null" >
+        TELNUMBER = #{telnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="faxnumber != null" >
+        FAXNUMBER = #{faxnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="isdefault != null" >
+        ISDEFAULT = #{isdefault,jdbcType=INTEGER},
+      </if>
+      <if test="supplierId != null" >
+        SUPPLIER_ID = #{supplierId,jdbcType=INTEGER},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="position != null" >
+        POSITION = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="mrLxr != null" >
+        MRLXR = #{mrLxr,jdbcType=BIT},
+      </if>
+      <if test="mrShLxr != null" >
+        MRSHLXR = #{mrShLxr,jdbcType=BIT},
+      </if>
+      <if test="mrCwLxr != null" >
+        MRCWLXR = #{mrCwLxr,jdbcType=BIT},
+      </if>
+    </set>
+
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchSupContactsCount" resultType="int" >
+    select count(*) from SRM_SUP_CONTACTS
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchSupContacts" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from SRM_SUP_CONTACTS
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by ID
+    	</if>
+    <if test="pageBean != null" >
+     	   Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+  
+  <!-- manual added -->
+  
+</mapper>

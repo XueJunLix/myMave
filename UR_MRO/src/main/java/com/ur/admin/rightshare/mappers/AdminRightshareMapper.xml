@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.admin.rightshare.mappers.AdminRightshareMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.admin.rightshare.model.AdminRightshare" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="RIGHT_TYPE" property="rightType" jdbcType="VARCHAR" javaType="String" />
+    <result column="RIGHT_SOURCE_ID" property="rightSourceId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="RESOURCE_TYPE" property="resourceType" jdbcType="VARCHAR" javaType="String" />
+    <result column="RESOURCE_ID" property="resourceId" jdbcType="INTEGER" javaType="Integer" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID,RIGHT_TYPE,RIGHT_SOURCE_ID,RESOURCE_TYPE,RESOURCE_ID
+  </sql>
+  
+  <select id="getAdminRightshareByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from ADMIN_RIGHTSHARE
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertAdminRightshare" parameterType="com.ur.admin.rightshare.model.AdminRightshare" >
+    insert into ADMIN_RIGHTSHARE (
+        RIGHT_TYPE,RIGHT_SOURCE_ID,RESOURCE_TYPE,RESOURCE_ID
+    )values(
+        #{rightType,jdbcType=VARCHAR},#{rightSourceId,jdbcType=INTEGER},#{resourceType,jdbcType=VARCHAR},#{resourceId,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <update id="updateAdminRightshareByPKSelective" parameterType="com.ur.admin.rightshare.model.AdminRightshare" >
+    update ADMIN_RIGHTSHARE
+    <set>
+      <if test="rightType != null" >
+        RIGHT_TYPE = #{rightType,jdbcType=VARCHAR},
+      </if>
+      <if test="rightSourceId != null" >
+        RIGHT_SOURCE_ID = #{rightSourceId,jdbcType=INTEGER},
+      </if>
+      <if test="resourceType != null" >
+        RESOURCE_TYPE = #{resourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceId != null" >
+        RESOURCE_ID = #{resourceId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="deleteAdminRightshareByPKSelective" parameterType="com.ur.admin.rightshare.model.AdminRightshare" >
+    delete from ADMIN_RIGHTSHARE
+    where 1=1 
+    	<if test="rightType != null" >
+    		and	RIGHT_TYPE = #{rightType,jdbcType=VARCHAR}
+    	</if>
+    	<if test="rightSourceId != null" >
+      		and RIGHT_SOURCE_ID = #{rightSourceId,jdbcType=INTEGER}
+      	</if>
+      	<if test="resourceType != null" >
+      		and RESOURCE_TYPE = #{resourceType,jdbcType=VARCHAR}
+      	</if>
+      	<if test="resourceId != null" >
+        	and RESOURCE_ID = #{resourceId,jdbcType=INTEGER}
+        </if>
+  </delete>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchAdminRightshareCount" resultType="int" >
+    select count(*) from ADMIN_RIGHTSHARE
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchAdminRightshare" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from ADMIN_RIGHTSHARE
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by ID
+    	</if>
+    <if test="pageBean != null" >
+     	   Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+  
+  <!-- manual added -->
+  
+</mapper>

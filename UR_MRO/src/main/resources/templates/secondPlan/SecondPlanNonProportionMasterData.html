@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('二次企划非占比主数据')"></head>
+
+<body>
+<div id="app" class="container-fluid" style="display: none;" v-loading="loading" :element-loading-text="loadText" v-show="isLoad">
+<nav class="navbar navbar-search">
+   <el-tooltip :content="expandText" placement="top">
+	   <el-switch v-model="expandCondition"></el-switch>
+	</el-tooltip>
+	
+	<el-popover
+  width="200"
+  trigger="click">
+  <div class="visibleColumns">
+  <ul>
+  <li><el-switch v-model="visibleColumns.dataTypeName" inactive-text="数据类型"></el-switch></li>
+  <li v-for="(item, index) in this.valueColumns">
+  <el-switch v-model="item.display" :inactive-text="item.valueFieldName"></el-switch>
+  </li>
+    <li><el-switch v-model="visibleColumns.createTime" inactive-text="创建时间"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.createByName" inactive-text="创建者"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.modifyTime" inactive-text="修改时间"></el-switch></li>  
+    <li><el-switch v-model="visibleColumns.modifyByName" inactive-text="修改者"></el-switch></li></ul>  
+  </div>
+  <el-tag size="mini" slot="reference">列 显示 / 隐藏</el-tag>
+</el-popover>
+</nav>
+
+<Drawer  title="查询面板" v-model="expandCondition" width="50%">
+	<el-row>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">年份</div>
+	  <el-date-picker v-model="queryCondition.year" type="year" value-format="yyyy" placeholder="选择年份" style="width: 100%;"></el-date-picker>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">季节</div>
+	  <el-select  v-model="queryCondition.season"  placeholder="请选择季节"   
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in seasonItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">月份</div>
+	  <el-select  v-model="queryCondition.month"  placeholder="请选择月份"   
+								   align="left"  size="small" :clearable="true"  style="width: 100%;">
+								   	<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+								          :label="item" :value="item"></el-option>
+				</el-select>
+	  </el-col>
+	</el-row>
+	<el-row  v-if="configMasterDataTableMapping.rangeTypeSgroup!=null">
+	  <el-col :span="24">
+	  <div class="ur-stack-label">{{configMasterDataTableMapping.rangeTypeName}}</div>
+	   <el-select  v-model="queryCondition.rangeValue"  placeholder="请选择"   filterable="true" :multiple="true"
+								   align="left"  size="small" :clearable="true"  style="width: 100%;">
+								   	<el-option v-for="(item,key) in rangeValueDictionaryItems" :key="key" align="left" 
+								           :label="item" :value="key"></el-option>
+				</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+
+	  <el-col :span="8">
+	  <div class="ur-stack-label">品牌</div>
+	  <el-select  v-model="queryCondition.brand"  placeholder="请选择品牌"   
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in brandItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	 <el-col :span="8">
+	  <div class="ur-stack-label">系列</div>
+	   <el-select  v-model="queryCondition.serial"  placeholder="请选择系列"   filterable="true"
+							   align="left"  size="small" :clearable="true" v-on:change="changeSerial"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="8">
+	  <div class="ur-stack-label">原系列</div>
+	  <el-select  v-model="queryCondition.originalSerial"  placeholder="请选择原系列"   filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in serialItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">风格</div>
+	   <el-select  v-model="queryCondition.style"  placeholder="请选择风格"   filterable="true"
+							   align="left"  size="small" :clearable="true"  :multiple="true" style="width: 100%;">
+							   	<el-option v-for="(item,index) in styleItems" :key="index" align="left"
+							          :label="item.svalue" :value="item.skey"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">商品层</div>
+	  <el-select  v-model="queryCondition.goodsLevel"  placeholder="请选择商品层"    :multiple="true" filterable="true"
+							   align="left"  size="small" :clearable="true"  style="width: 100%;">
+							   	<el-option v-for="(item,key) in goodsLevelItems" :key="key" align="left"
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>
+	<el-row>
+     <el-col :span="12">
+	  <div class="ur-stack-label">品类</div>
+	  <el-select  v-model="queryCondition.category"  placeholder="请选择品类"  :multiple="true" v-on:change="changeCategory" filterable="true"
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,key) in categoryItems" :key="key" align="left" 
+							          :label="item" :value="key"></el-option>
+			</el-select>
+	  </el-col>
+	  <el-col :span="12">
+	  <div class="ur-stack-label">中品类</div>
+	  <el-select  v-model="queryCondition.subCategory"  placeholder="请选择品类"  :multiple="true" filterable="true"
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,index)  in subCategoryItems" :key="index" align="left"
+							          :label="item.svalue" :value="item.skey"></el-option>
+			</el-select>
+	  </el-col>
+	</el-row>
+	 <div class="search-panel-btn">
+		<el-button v-on:click="clickSearchBtn"><i class="fa fa-search" aria-hidden="true" style="padding-right:5px"></i>查询</el-button>
+		<el-button v-on:click="clickResetBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>重置</el-button>   	
+	</div>
+</Drawer>
+<div class="clearfix" style="margin-bottom: 5px;"></div>
+
+  <div class="row" >
+	<div class="col-md-12">
+<el-dialog :visible.sync="uploadDialogVisible" :close-on-click-modal="false">
+		 <a href="template/SecondPlanNonProportionMasterDataTemplate.xlsx" style="font-size: 15px; color: red;">模版下载</a>
+		 <div style="margin-top: 10px; margin-left: -5px; color: #000;">请按同一年份，季节，月份，系列的数据导入。</div>
+			    <div style="height: 50px;"></div>
+         		<el-form  style="width: 30rem;" v-loading="importing" element-loading-text="导入数据中，请耐心等待..."
+         		  class="form uploadform">
+	         		 <el-form-item>
+		         		<el-upload  ref="upload"  :action="importActionUrl" 
+		         		 	  :before-upload="beforeUpload" :limit="1"
+			         		:file-list="fileList"  :auto-upload='true' :show-upload-list="false" 
+			         		:on-success="handleUploadSuccess"
+			         		:on-error="handleUploadError">
+			                <el-button slot="trigger"  type="primary" :disabled="importing">点击上传</el-button>
+			           		<div slot="tip" class="el-upload__tip">只能上传xls/xlsx 文件,每次只能上传一个</div>
+		            	</el-upload>
+	            	</el-form-item>
+            	</el-form>
+      </el-dialog>
+      
+      
+           <!-- 计算begin -->
+<el-dialog title="计算"  v-if="showCalculate===true" :visible.sync="showCalculateDialog" :close-on-click-modal="false">
+	  <el-form :inline="true" label-position="right" v-loading="calculateData" element-loading-text="计算中...请耐心等待。">	  
+		  <el-form-item label="年份" label-width="70px">
+		     <el-date-picker v-model="calculateCondition.year" size="small" type="year" value-format="yyyy" placeholder="选择年份" style="width: 100%;"></el-date-picker>
+		  </el-form-item>
+		  <el-form-item label="月份" label-width="70px">
+		  <el-select  v-model="calculateCondition.month"  placeholder="请选择月份"   
+							   align="left"  size="small" :clearable="true" style="width: 100%;">
+							   	<el-option v-for="(item,index) in monthItems" :key="index" align="left" 
+							          :label="item" :value="item"></el-option>
+			</el-select>
+		  </el-form-item>
+		  <el-form-item label="系列" label-width="70px">
+			  <el-select  v-model="calculateCondition.serial"   style="width: 100%;"
+								   align="left"  size="small" :clearable="true">
+								   	<el-option v-for="(item,key) in serialItems" align="left"  
+								          :label="item" :value="key"></el-option>
+			 </el-select>
+		  </el-form-item>
+	  </el-form>
+	  <span slot="footer" class="dialog-footer">
+	    <el-button v-on:click="showCalculateDialog = false" :disabled="calculateData">关闭</el-button>
+	    <el-button type="primary" v-on:click="calculate" :disabled="calculateData">开始计算</el-button>
+	  </span>
+	</el-dialog>
+<!-- 计算end-->
+<nav class="navbar">
+
+    <ul class="nav">
+      <li>
+        <el-button v-on:click="clickImportBtn"><i class="fa fa-upload" aria-hidden="true" style="padding-right:5px"></i>导入</el-button>
+        <el-button v-on:click="clickExportBtn()"><i class="fa fa-download" aria-hidden="true" style="padding-right:5px"></i>导出</el-button>
+        <el-button v-on:click="clickDeleteBtn"><i class="fa fa-trash" aria-hidden="true" style="padding-right:5px"></i>删除</el-button>
+        <el-button v-if="showCalculate===true" v-on:click="clickCalculateBtn"><i class="fa fa-calculator" aria-hidden="true" style="padding-right:5px"></i>计算</el-button>
+      </li>
+    </ul>
+		<el-pagination :page-size="20" :total="queryResult.totalRecordNum" :current-page="queryResult.currPage" v-on:current-change="handleCurrentChange" v-on:size-change="handleSizeChange" layout="total, sizes, prev, pager, next, jumper">
+		</el-pagination>
+</nav>
+
+        <el-table id="data_table" stripe="" :data="this.queryResult.data" :border="true" :highlight-current-row="true" :height="this.tableHeight">          
+          <el-table-column fixed="left" v-if="visibleColumns.dataTypeName" property="dataTypeName" label="数据类型" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column fixed="left" property="year" label="年" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column fixed="left" property="seasonName" label="季节" min-width="60" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column fixed="left" v-if="configMasterDataTableMapping.monthEmpty===0" property="month" label="月" min-width="60" :show-overflow-tooltip="true"></el-table-column>          
+          <!-- <el-table-column fixed="left" property="rangeTypeName" label="范围类型" min-width="100" :show-overflow-tooltip="true"></el-table-column> -->
+          <el-table-column fixed="left" v-if="configMasterDataTableMapping.rangeType!=null" property="rangeValueName" :label="configMasterDataTableMapping.rangeTypeName" min-width="200" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="brandName" label="品牌" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="serialName" label="系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="originalSerialName" label="原系列" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="styleName" label="风格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="goodsLevelName" label="商品层" min-width="70" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="categoryName" label="品类" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="subCategoryName" label="中品类" min-width="80" :show-overflow-tooltip="true"></el-table-column>   
+          <el-table-column v-for="(item, index) in this.valueColumns" v-if="item.display" :property="item.valueField" :label="item.valueFieldName" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.createTime" property="createTime" label="创建时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.createByName" property="createByName" label="创建者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.modifyTime" property="modifyTime" label="修改时间" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column v-if="visibleColumns.modifyByName" property="modifyByName" label="修改者" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+
+	</div>
+</div>
+</div>
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+   <script  th:inline="javascript">
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+          queryCondition:{
+        	  year:"",
+        	  season:"",
+        	  month:"",
+        	  rangeType:"",
+        	  rangeValue:[],
+        	  brand:"",
+        	  serial:"",
+        	  originalSerial:"",
+        	  style:[],
+        	  goodsLevel:[],
+        	  category:[],
+        	  subCategory:[],
+          },
+          queryResult:{
+        	  totalRecordNum:0,
+        	  currPage:1,
+        	  pageSize:20
+          },
+          expandText:"展开查询面板",
+          expandCondition:false,
+          tableHeight:500,
+          monthItems:[1,2,3,4,5,6,7,8,9,10,11,12],
+          seasonItems:[[${seasonItems}]],
+          serialItems:[[${serialItems}]],
+          allStyleItems:[[${styleItems}]],
+          styleItems:[],
+          goodsLevelItems:[[${goodsLevelItems}]],
+          categoryItems:[[${categoryItems}]],
+          allSubCategoryItems:[[${subCategoryItems}]],
+          subCategoryItems:[],          
+          brandItems:[[${brandItems}]],
+          dataTypeItems:[[${dataTypeItems}]],
+          loading:false,
+          loadText:"查询数据中。。。",
+          uploadDialogVisible:false,
+          fileList:[],
+          importing:false,
+          dataType:[[${dataType}]],
+          visibleColumns:{
+        	  dataTypeName:false,
+        	  createTime:false,
+        	  createByName:false,
+        	  modifyTime:true,
+        	  modifyByName:true,
+          },
+          valueColumns:[[${valueColumns}]],
+          importActionUrl:"SecondPlanNonProportionMasterData/importExcel/OTB_amount",
+          rangeValueDictionaryItems:[[${rangeValueDictionaryItems}]],
+          showCalculate:[[${showCalculate}]],
+          taskResult:{
+        	  status:"",
+        	  message:"",
+              percentage:0,
+              progressStatus:""
+          },
+          showCalculateDialog:false,
+          calculateData:false,
+          calculateCondition:{
+        	  year:"",
+        	  //season:"",
+        	  month:"",
+        	  serial:"",
+        	  //country:[],
+          },
+          //countryItems:[[${countryItems}]],
+          configMasterDataTableMapping:[[${configMasterDataTableMapping}]],
+        }
+      },
+      mounted: function(){
+    	  this.importActionUrl="SecondPlanNonProportionMasterData/importExcel/"+this.dataType;
+      },
+      created: function() {
+    	  this.isLoad = true;
+    	  this_let = this;
+    	  this.queryCondition.year=new Date();
+      },
+      methods: {
+    	handleCurrentChange(val){
+    		this.queryResult.currPage = val;
+    		this.queryData();
+    	},
+    	handleSizeChange(val){
+    		this.queryResult.pageSize = val;
+    		this.queryData();
+    	},
+    	clickSearchBtn(){
+    		this.queryResult.currPage = 1;
+    		this.queryData();
+    	},
+    	changeSerial(){		
+          	this.styleItems=[];
+          	this.queryCondition.style=[];
+          	if(this.queryCondition.serial){
+          		var serial=this.queryCondition.serial;
+          		for(var i=0;i<this.allStyleItems.length;i++){
+          			if(this.allStyleItems[i].parentKey===serial){
+          				this.styleItems.push(this.allStyleItems[i]);
+          			}
+          		}
+          	}
+      },changeCategory(){
+    	  this.subCategoryItems=[];
+	      	if(this.queryCondition.category){
+	      		var category = this.queryCondition.category;
+	          	for(var i=0;i<this.allSubCategoryItems.length;i++){
+	          		for(var j=0;j<category.length;j++){
+	          			if(category[j]===this.allSubCategoryItems[i].parentKey){
+	          				this.subCategoryItems.push(this.allSubCategoryItems[i]);
+	          			}
+	          		}
+	          	}	
+	      	}
+      },
+        queryData() {
+          _this = this;
+
+          var url = '/SecondPlanNonProportionMasterData/search';
+          var page = this.queryResult.currPage;
+
+          if(page==null){
+        	  page = 1;
+          }
+
+          var restRequest = new URRestRequest();
+          restRequest.setCurrPage(page);
+          restRequest.setPageSize(this.queryResult.pageSize);
+
+          //可以指定排序字段
+          //restRequest.addOrderBy("columnName??? desc");
+
+	     //condition参数：字段名、值、运算符(eq,like,in,ne,lt,gt,le,ge)
+	     restRequest.addCondition("a.data_type",this.dataType,"eq");
+	     restRequest.addCondition("a.year",this.queryCondition.year,"eq");
+	     restRequest.addCondition("a.season",this.queryCondition.season,"eq");
+	     restRequest.addCondition("a.month",this.queryCondition.month,"eq");
+	     restRequest.addCondition("a.range_type",this.configMasterDataTableMapping.rangeType,"eq");
+	     restRequest.addCondition("a.range_value",this.queryCondition.rangeValue.join(","),"in");
+	     restRequest.addCondition("b.brand",this.queryCondition.brand,"eq");
+	     restRequest.addCondition("b.serial",this.queryCondition.serial,"eq");
+	     restRequest.addCondition("b.original_serial",this.queryCondition.originalSerial,"eq");
+	     restRequest.addCondition("b.style",this.queryCondition.style.join(","),"in");
+	     restRequest.addCondition("b.goods_level",this.queryCondition.goodsLevel.join(","),"in");
+	     restRequest.addCondition("b.category",this.queryCondition.category.join(","),"in");
+	     restRequest.addCondition("b.sub_category",this.queryCondition.subCategory.join(","),"in");
+
+         this.loading = true;
+         this.loadText = "查询数据中...";
+
+          axios.post(url,restRequest.getRequestData())
+            .then(function (response) {
+             _this.$data.queryResult.data=[];
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '查询数据失败',message: response.data.message,offset: 100});
+			    	_this.$data.loading = false;
+			    }else{
+			    	if(!response.data.data){
+			    		_this.$notify({title: '警告',message: "没有满足查询条件的数据！",offset: 100,type:'warning'});
+			    	}
+	              _this.$data.queryResult = response.data;
+	              _this.$data.loading = false;
+	              _this.expandCondition=false;
+			    }
+            })
+            .catch(function (error) {
+              _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+            });
+          },
+	  		clickExportBtn(){
+		          _this = this;
+		          var url = '/SecondPlanNonProportionMasterData/export/'+this.dataType;
+		          if(!this.queryCondition.year){
+	        		  this.$notify({title: '警告',message: "请选择年份！",offset: 100,type:'warning'});
+	        		  return;
+	        	  }
+	        	  if(!this.queryCondition.month && this.configMasterDataTableMapping.monthEmpty===0){
+	        		  this.$notify({title: '警告',message: "请选择月份！",offset: 100,type:'warning'});
+	        		  return;
+	        	  }
+	        	  if(!this.queryCondition.serial){
+	        		  this.$notify({title: '警告',message: "请选择系列！",offset: 100,type:'warning'});
+	        		  return;
+	        	  }
+	        	  if(!this.queryResult.data){
+	    			  this.$notify({title: '警告',message: "请先查询出数据再导出！",offset: 100,type:'warning'});
+	    			  return;
+	    		  }
+
+		          var restRequest = new URRestRequest();
+		 	     restRequest.addCondition("a.data_type",this.dataType,"eq");
+			     restRequest.addCondition("a.year",this.queryCondition.year,"eq");
+			     restRequest.addCondition("a.season",this.queryCondition.season,"eq");
+			     restRequest.addCondition("a.month",this.queryCondition.month,"eq");
+			     restRequest.addCondition("a.range_type",this.configMasterDataTableMapping.rangeType,"eq");
+			     restRequest.addCondition("a.range_value",this.queryCondition.rangeValue.join(","),"in");
+			     restRequest.addCondition("b.brand",this.queryCondition.brand,"eq");
+			     restRequest.addCondition("b.serial",this.queryCondition.serial,"eq");
+			     restRequest.addCondition("b.original_serial",this.queryCondition.originalSerial,"eq");
+			     restRequest.addCondition("b.style",this.queryCondition.style.join(","),"in");
+			     restRequest.addCondition("b.goods_level",this.queryCondition.goodsLevel.join(","),"in");
+			     restRequest.addCondition("b.category",this.queryCondition.category.join(","),"in");
+			     restRequest.addCondition("b.sub_category",this.queryCondition.subCategory.join(","),"in");
+          
+
+		          this.$data.loading = true;
+		          this.$data.loadText = "导出数据中...";
+
+		          axios.post(url,restRequest.getRequestData())
+		            .then(function (response) {
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '导出失败',message: response.data.message,offset: 100});
+					    	_this.$data.loading = false;
+					    }else{
+			              var downloadLink = "/DownloadFile/"+response.data.data.fileName+"/"+response.data.data.extName;
+			              _this.$data.loading = false;
+			              downloadFile(downloadLink);
+					    }
+
+		            })
+		            .catch(function (error) {
+		              console.log(error);
+		              _this.$notify.error({title: '错误',message: '导出数据失败，请联系系统管理员',offset: 100});
+		            });
+			},
+          clickResetBtn() {
+				this.queryCondition.year="";
+				this.queryCondition.season="";
+				this.queryCondition.month="";
+				this.queryCondition.rangeValue=[];
+				this.queryCondition.brand="";
+				this.queryCondition.serial="";
+				this.queryCondition.originalSerial="";
+				this.queryCondition.style=[];
+				this.queryCondition.goodsLevel=[];
+				this.queryCondition.category=[];
+				this.queryCondition.subCategory=[];
+          },
+          clickDeleteBtn(){
+        	 
+	          if(!this.queryCondition.year){
+        		  this.$notify({title: '警告',message: "请选择年份！",offset: 100,type:'warning'});
+        		  return;
+        	  }
+	          if(!this.queryCondition.month && this.configMasterDataTableMapping.monthEmpty===0){
+        		  this.$notify({title: '警告',message: "请选择月份！",offset: 100,type:'warning'});
+        		  return;
+        	  }
+        	  if(!this.queryCondition.serial){
+        		  this.$notify({title: '警告',message: "请选择系列！",offset: 100,type:'warning'});
+        		  return;
+        	  }
+        	  if(!this.queryResult.data){
+    			  this.$notify({title: '警告',message: "请先查询出数据再删除！",offset: 100,type:'warning'});
+    			  return;
+    		  }
+        	  
+        	  this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning',
+		          center: true
+		        }).then(() => {
+		          this.deleteData();
+		        }).catch(() => {});
+          },
+          deleteData(){
+        	  _this = this;
+	          var url = '/SecondPlanNonProportionMasterData/delete';
+        	  var restRequest = new URRestRequest();
+ 	 	     restRequest.addCondition("a.data_type",this.dataType,"eq");
+ 		     restRequest.addCondition("a.year",this.queryCondition.year,"eq");
+ 		     restRequest.addCondition("a.season",this.queryCondition.season,"eq");
+ 		     restRequest.addCondition("a.month",this.queryCondition.month,"eq");
+ 		     restRequest.addCondition("a.range_type",this.configMasterDataTableMapping.rangeType,"eq");
+ 		     restRequest.addCondition("a.range_value",this.queryCondition.rangeValue.join(","),"in");
+ 		     restRequest.addCondition("b.brand",this.queryCondition.brand,"eq");
+ 		     restRequest.addCondition("b.serial",this.queryCondition.serial,"eq");
+ 		     restRequest.addCondition("b.original_serial",this.queryCondition.originalSerial,"eq");
+ 		     restRequest.addCondition("b.style",this.queryCondition.style.join(","),"in");
+ 		     restRequest.addCondition("b.goods_level",this.queryCondition.goodsLevel.join(","),"in");
+ 		     restRequest.addCondition("b.category",this.queryCondition.category.join(","),"in");
+ 		     restRequest.addCondition("b.sub_category",this.queryCondition.subCategory.join(","),"in");
+ 	          
+ 	          this.loading = true;
+ 	          this.loadText = "删除数据中...";
+ 	          
+ 	          axios.post(url,restRequest.getRequestData())
+ 	            .then(function (response) {
+ 	              console.log(response);
+ 				    if(response.data.code==null||response.data.code!=0){
+ 				    	_this.$notify.error({title: '删除失败',message: response.data.message,offset: 100});
+ 				    	_this.$data.loading = false;
+ 				    }else{
+ 				    	_this.$notify({title: '删除成功',message: response.data.message,offset: 100,type:"success"});
+ 				    	_this.queryResult.currPage = 1;
+ 						_this.queryData();
+ 		              _this.$data.loading = false;
+ 				    }
+ 	            })
+ 	            .catch(function (error) {
+ 	              console.log(error);
+ 	              _this.$notify.error({title: '错误',message: '删除失败，请联系系统管理员',offset: 100});
+ 	            });
+          },
+          clickImportBtn(){
+	          this.uploadDialogVisible=true;
+		  }
+	      ,beforeUpload(file) {
+              let Xls = file.name.split('.');
+              if(Xls[1] === 'xls'||Xls[1] === 'xlsx'){
+            	  this.importing=true;
+                  return file
+              }else {
+                  this.$message.error('只能上传   xls、xlsx 文件');
+                  return false;
+              }
+          },handleUploadSuccess(res,file,fileList){
+				this.fileList=[];
+				this.uploadDialogVisible=false;
+				this.importing=false;
+				if(JSON.stringify(res.success)==="false"){
+					this.$message({message: '导入失败: ' + JSON.stringify(res.message), type: 'error',duration:0,showClose:true });
+				}else{
+					this.$message({ message: JSON.stringify(res.message),type: 'success' });
+					this.queryResult.currPage = 1;
+					this.clickResetBtn();
+					this.queryData();
+				}
+			},handleUploadError(err, file, fileList){
+				this.importing=false;
+ 			    this.fileList=[];
+				this.uploadDialogVisible=false;
+				this.$message({message: '导入失败' + err, type: 'error' });
+			},changeRangeType(){
+				this.rangeValueItems=[];
+	          	this.queryCondition.rangeValue="";
+	          	debugger;
+	          	if(this.queryCondition.rangeType){
+	          		var rangeType=this.queryCondition.rangeType;
+	          		console.log(this.allRangeValueItems);
+	          		this.rangeValueItems=this.allRangeValueItems[rangeType];	          		
+	          	}
+			}
+			,clickCalculateBtn(){
+	      		this.showCalculateDialog=true;
+	      	},
+	      	calculate(){
+	        	  if(!this.calculateCondition.year){
+	        		  this.$notify({title: '警告',message: "请选择年份！",offset: 100,type:'warning'});
+	        		  return;
+	        	  }
+	        	  if(!this.calculateCondition.month){
+	        		  this.$notify({title: '警告',message: "请选择月份！",offset: 100,type:'warning'});
+	        		  return;
+	        	  }
+	        	  if(!this.calculateCondition.serial){
+	        		  this.$notify({title: '警告',message: "请选择系列！",offset: 100,type:'warning'});
+	    			  return;
+	    		  }
+	        	  
+	        	  var _this=this;
+	        	  this.$confirm('确定计算吗?', '提示', {
+	                  confirmButtonText: '确定',
+	                  cancelButtonText: '取消',
+	                  type: 'warning'
+	                }).then(() => {
+	                	this.calculateData=true;
+	                	var restRequest = new URRestRequest();
+	   			     restRequest.addCondition("year",this.calculateCondition.year,"eq");
+	   			     restRequest.addCondition("month",this.calculateCondition.month,"eq");
+	   			     restRequest.addCondition("serial",this.calculateCondition.serial,"eq");
+	                	var url="/SecondPlanNonProportionMasterData/calculate/" +this.dataType;
+	                	axios.post(url,restRequest.getRequestData())
+			            .then(function (response) {
+			            	    _this.calculateData=false;
+		                    	if(response.data.code==null||response.data.code!=0){
+		          			    	_this.$notify.error({title: '失败',message: response.data.message,offset: 100,duration:0});		          			    	
+		          			    }else{
+		          			    	_this.$notify.success({title: '成功',message: response.data.message,offset: 100,duration:0});		          			    	
+		          			    }
+		                    })
+		                    .catch(function (error) {
+		                  	  _this.calculateData=false;
+		                      _this.$notify.error({title: '错误',message: '计算失败，请联系系统管理员',offset: 100,duration:0});
+		                    });
+	                }).catch(() => {
+	                    
+	                });  
+		      }
+        }
+    });
+    $(document).ready(function(){    
+    	$(document).keydown(function (e) {
+    	    if ( e.which == 13) {	   
+    	    	if(this_let.expandCondition===true){
+    	    		this_let.clickSearchBtn();	
+    	    	}else{
+    	    		this_let.expandCondition=true;
+    	    	}
+    	    }else if(e.which == 46){
+    	    	if(this_let.expandCondition===false){
+    	    		this_let.clickDeleteBtn();	
+    	    	}else{
+    	    		this_let.clickResetBtn();
+    	    	}
+    	    }
+    	});  
+    	
+    	$(window).load(function(){
+    		this_let.tableHeight =$(window).height() -$("#data_table").offset().top-1;
+        });
+    	
+    	$(window).resize(function(){
+    		this_let.tableHeight =$(window).height() -$("#data_table").offset().top-1;
+    	});  
+    });
+    /*]]>*/
+  </script>
+</html>

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.mat.mappers.MaterialInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.mat.model.MaterialInfo" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="GROUP_ID" property="groupId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="ROW_NO" property="rowNo" jdbcType="INTEGER" javaType="Integer" />
+    <result column="MAT_CODE" property="matCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_NAME" property="matName" jdbcType="VARCHAR" javaType="String" />
+    <result column="MAT_SPEC" property="matSpec" jdbcType="VARCHAR" javaType="String" />
+    <result column="BASIC_QUT" property="basicQut" jdbcType="NUMERIC" javaType="Double" />
+    <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="COMMENTS" property="comments" jdbcType="VARCHAR" javaType="String" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SUPPLIER_ID" property="supplierId" jdbcType="INTEGER" javaType="Integer" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID,GROUP_ID,ROW_NO,MAT_CODE,MAT_NAME,MAT_SPEC,BASIC_QUT,BASE_UNIT,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,COMMENTS,DELETED,SUPPLIER_ID
+  </sql>
+  
+  <select id="getMaterialInfoByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from SRM_MAT_MATERIAL_INFO
+    where DELETED = 0 AND  ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getMaterialInfoListBySupplierId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from SRM_MAT_MATERIAL_INFO
+    where DELETED = 0 AND SUPPLIER_ID = #{supplierId,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertMaterialInfo" parameterType="com.ur.mro.mat.model.MaterialInfo" >
+  insert into SRM_MAT_MATERIAL_INFO (
+  GROUP_ID,ROW_NO,MAT_CODE,MAT_NAME,MAT_SPEC,BASIC_QUT,BASE_UNIT,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,COMMENTS,DELETED,SUPPLIER_ID
+  )values(
+  #{groupId,jdbcType=INTEGER},#{rowNo,jdbcType=INTEGER},#{matCode,jdbcType=VARCHAR},#{matName,jdbcType=VARCHAR},#{matSpec,jdbcType=VARCHAR},#{basicQut,jdbcType=NUMERIC},#{baseUnit,jdbcType=VARCHAR},#{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{comments,jdbcType=VARCHAR},#{deleted,jdbcType=INTEGER},#{supplierId,jdbcType=INTEGER}
+  )
+</insert>
+
+  <insert id="insertBatchMaterialInfo" parameterType="com.ur.mro.mat.model.MaterialInfo" >
+    insert into SRM_MAT_MATERIAL_INFO (
+    GROUP_ID,ROW_NO,MAT_CODE,MAT_NAME,MAT_SPEC,BASIC_QUT,BASE_UNIT,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,COMMENTS,DELETED,SUPPLIER_ID
+    )values
+    <foreach collection ="list" item="item" separator =",">
+    (
+    #{item.groupId,jdbcType=INTEGER},#{item.rowNo,jdbcType=INTEGER},#{item.matCode,jdbcType=VARCHAR},#{item.matName,jdbcType=VARCHAR},#{item.matSpec,jdbcType=VARCHAR},#{item.basicQut,jdbcType=NUMERIC},#{item.baseUnit,jdbcType=VARCHAR},#{item.createdBy,jdbcType=VARCHAR},#{item.createdTime,jdbcType=TIMESTAMP},#{item.lastUpdatedBy,jdbcType=VARCHAR},#{item.lastUpdatedTime,jdbcType=TIMESTAMP},#{item.comments,jdbcType=VARCHAR},#{item.deleted,jdbcType=INTEGER},#{item.supplierId,jdbcType=INTEGER}
+    )
+    </foreach>
+  </insert>
+
+  <update id="updateBatchMaterialInfo" parameterType="java.util.List" >
+    update SRM_MAT_MATERIAL_INFO
+    <trim prefix="set" suffixOverrides=",">
+    <trim prefix="GROUP_ID =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        when id=#{i.id} then #{i.groupId,jdbcType=INTEGER}
+      </foreach>
+    </trim>
+    <trim prefix="ROW_NO =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        when id=#{i.id} then #{i.rowNo,jdbcType=INTEGER}
+      </foreach>
+    </trim>
+      <trim prefix="MAT_CODE =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        when id=#{i.id} then #{i.matCode,jdbcType=VARCHAR}
+      </foreach>
+    </trim>
+      <trim prefix="MAT_NAME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{i.matName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="MAT_SPEC =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{i.matSpec,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="BASIC_QUT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{i.basicQut,jdbcType=NUMERIC}
+        </foreach>
+      </trim>
+        <trim prefix="BASE_UNIT =case" suffix="end,">
+          <foreach collection="list" item="i" index="index">
+            when id=#{i.id} then #{i.baseUnit,jdbcType=VARCHAR}
+          </foreach>
+      </trim>
+        <trim prefix="CREATED_BY =case" suffix="end,">
+          <foreach collection="list" item="i" index="index">
+            when id=#{i.id} then #{i.createdBy,jdbcType=VARCHAR}
+          </foreach>
+        </trim>
+        <trim prefix="CREATED_TIME =case" suffix="end,">
+          <foreach collection="list" item="i" index="index">
+            when id=#{i.id} then #{i.createdTime,jdbcType=TIMESTAMP}
+          </foreach>
+        </trim>
+        <trim prefix="LAST_UPDATED_BY =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{i.lastUpdatedBy,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="LAST_UPDATED_TIME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{i.lastUpdatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+        <trim prefix="COMMENTS =case" suffix="end,">
+          <foreach collection="list" item="i" index="index">
+            when id=#{i.id} then #{i.comments,jdbcType=VARCHAR}
+          </foreach>
+        </trim>
+        <trim prefix="DELETED =case" suffix="end,">
+          <foreach collection="list" item="i" index="index">
+            when id=#{i.id} then #{i.deleted,jdbcType=INTEGER}
+          </foreach>
+        </trim>
+        <trim prefix="SUPPLIER_ID =case" suffix="end,">
+          <foreach collection="list" item="i" index="index">
+            when id=#{i.id} then #{i.supplierId,jdbcType=INTEGER}
+          </foreach>
+        </trim>
+
+    </trim>
+    where DELETED = 0 AND id in
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+      #{item.id}
+    </foreach>
+  </update>
+
+
+  <update id="updateMaterialInfoByPKSelective" parameterType="com.ur.mro.mat.model.MaterialInfo" >
+    update SRM_MAT_MATERIAL_INFO
+    <set>
+      <if test="groupId != null" >
+        GROUP_ID = #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="rowNo != null" >
+        ROW_NO = #{rowNo,jdbcType=INTEGER},
+      </if>
+      <if test="matCode != null" >
+        MAT_CODE = #{matCode,jdbcType=VARCHAR},
+      </if>
+      <if test="matName != null" >
+        MAT_NAME = #{matName,jdbcType=VARCHAR},
+      </if>
+      <if test="matSpec != null" >
+        MAT_SPEC = #{matSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="basicQut != null" >
+        BASIC_QUT = #{basicQut,jdbcType=NUMERIC},
+      </if>
+      <if test="baseUnit != null" >
+        BASE_UNIT = #{baseUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="comments != null" >
+        COMMENTS = #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="supplierId != null" >
+        SUPPLIER_ID = #{supplierId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where DELETED = 0 AND ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchMaterialInfoCount" resultType="int" >
+    select count(*) from SRM_MAT_MATERIAL_INFO
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchMaterialInfo" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from SRM_MAT_MATERIAL_INFO
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by ID
+    	</if>
+    <if test="pageBean != null" >
+     	   Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+  
+  <!-- manual added -->
+  
+</mapper>

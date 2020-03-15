@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+<!-- include 公共head -->
+<head th:charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>URBAN REVIVO</title>
+
+    <link rel="stylesheet" type="text/css" href="/resources/css/index_original.css"/>
+    <link rel="stylesheet" type="text/css" href="/resources/css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="/resources/css/font-awesome/css/font-awesome.css"/>
+    <link rel="shortcut icon" type="image/x-icon" href="/resources/css/favicon.ico"/>
+    <style>
+        .el-dialog__body {
+            padding: 20px 10px 10px 10px;
+            color: #48576a;
+            font-size: 14px;
+
+        }
+
+        .noticeDialogContent {
+            padding: 20px 10px 10px 10px;
+            color: #48576a;
+            font-size: 14px;
+        }
+
+        #rightFrameBox .fa-question-circle-o {
+            font-size: 18px;
+        }
+
+        .el-button--primary.is-plain {
+            background: #fff;
+            border: 0px;
+            color: #1f2d3d;
+        }
+    </style>
+</head>
+<body class="body_bg">
+<div id="app">
+    <div class="header_bg">
+        <!--<iframe name="logoFrame" frameborder="no" scrolling="NO"/>-->
+        <div class="header_logo">
+            <a href="/admin/AdminIndex">
+                <img src="/resources/images/logo3.png" height="40" alt="logo" class="logo-default"/>
+            </a>
+            <i class="fa fa-bars" id="menuToggler" onclick="leftMenuToggler()"></i>
+        </div>
+
+        <ul class="header_nav" id="header_nav">
+            <!-- 顶级菜单-->
+            <li th:each="topMenu,topMenuStat:${topMenuList}">
+                <a href="javascript:;"
+                   th:if="${topMenu.displayType==null or topMenu.displayType=='' or topMenu.displayType=='PC'}"
+                   class="header_nav_link active"
+                   th:id="${topMenu.menuId}"><span th:text="${topMenu.menuName}"></span></a>
+            </li>
+            <!-- 顶级菜单结束-->
+
+            <li class="li3" id='quitLink'>
+                <img src="/resources/images/portrait.png"/>
+                <el-dropdown trigger="hover" style="" v-on:command="handleCommand">
+		              <span class="el-dropdown-link">
+		                <a href="#">	                  
+		                  <small>您好</small>
+		                  <span th:text="${adminUserInfo.adminUserName}"></span><i
+                                class="el-icon-caret-bottom el-icon--right"></i>
+		                </a>
+		              </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <!--
+                      <el-dropdown-item command="info">个人资料</el-dropdown-item>
+                       -->
+                        <el-dropdown-item command="logout">注销</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+
+                <el-dropdown trigger="hover" style="" v-on:command="handleCommand" th:if="${adminLanguage == 'zh_CN'}">
+		              <span class="el-dropdown-link">
+		                <a href="#">
+		                	<small>CHS</small>
+		                </a>
+		              </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="en_US">English(US)</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+
+                <el-dropdown trigger="hover" style="" v-on:command="handleCommand" th:if="${adminLanguage == 'en_US'}">
+		              <span class="el-dropdown-link">
+		                <a href="#">
+		                	<small>EN</small>
+		                </a>
+		              </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="zh_CN">简体中文</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </li>
+        </ul>
+    </div>
+
+    <div class="cell aside_bg" id="asideLeft" style="overflow-x:hidden; overflow-y:auto;">
+        <ul class="aside_nav"
+            v-for="(menu1,key) in adminMenuInfo.children"
+            :id="returnId_1(menu1)">
+            <li v-for="menu2 in menu1.children"
+                v-show="judgeMenu2_1(menu2)">
+                <p class="tit">
+                    <template v-if="judgeMenu2_2(menu2)">
+                        <i :class="['fa ', rtnClass_2(menu2)]">
+                        </i>
+                        <span>{{menu2.menuEnglishName}}</span>
+                    </template>
+                    <template v-else="judgeMenu2_2(menu2)">
+                        <i :class="['fa ', rtnClass_2(menu2)]">
+                        </i>
+                        <span>{{menu2.menuName}}</span>
+                    </template>
+                </p>
+
+                <template v-for="menu3 in menu2.children"
+                          v-if="menu3.menuType == 1">
+                    <p class="tit2">
+                        <a v-if="judgeMenu3(menu3)">
+                            &nbsp;&nbsp;<span>{{menu3.menuEnglishName}}</span>
+                        </a>
+                        <a v-else="judgeMenu3(menu3)"
+                           :class="['fa ',rtnClass_3(menu3)]">
+                            &nbsp;&nbsp;<span>{{menu3.menuName}}</span>
+                        </a>
+                    </p>
+                    <p class="submenu">
+                        <template v-for="menu4 in menu3.children">
+                            <a v-if="judgeMenu4(menu3.children,menu4)"
+                               v-on:click="addTab(editableTabsValue2,menu4.menuEnglishName,menu4.menuId,menu4.menuUrlFormat,2)"
+                               :target="menu4.menuId"
+                               :href="menu4.hrefUrlFormat">
+                                <span>{{menu4.menuEnglishName}}</span></a>
+                            <a v-if="!judgeMenu4(menu3.children,menu4)"
+                               v-on:click="addTab(editableTabsValue2,menu4.menuName,menu4.menuId,menu4.menuUrlFormat,1)"
+                               :target="menu4.menuId"
+                               :href="menu4.hrefUrlFormat">
+                                <span>{{menu4.menuName}}</span></a>
+                        </template>
+                    </p>
+                </template>
+
+                <p class="submenu">
+                    <template v-for="menu3 in menu2.children">
+                        <a v-if="judgeMenu3_2(menu2.children,menu3)"
+                           v-on:click="addTab(editableTabsValue2,menu3.menuEnglishName,menu3.menuId,menu3.menuUrlFormat,2)"
+                           :target="menu3.menuId"
+                           :href="menu3.hrefUrlFormat">
+                            {{menu3.menuEnglishName}}
+                        </a>
+                    </template>
+
+                    <template v-for="menu3 in menu2.children">
+                        <a v-if="!judgeMenu3_2(menu2.children,menu3)"
+                           v-on:click="addTab(editableTabsValue2,menu3.menuName,menu3.menuId,menu3.menuUrlFormat,1)"
+                           :target="menu3.menuId"
+                           :href="menu3.hrefUrlFormat">
+                            {{menu3.menuName}}
+                        </a>
+                    </template>
+
+                </p>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="cell right-frame-box" id='rightFrameBox'>
+        <div style="position: absolute;top: 0;bottom: 0;left: 0; right: 0; margin: auto; height:550px;"
+             class="block" v-show="isShowCarousel">
+            <!--  :onmouseover="carouselOver()" -->
+            <el-carousel ref="carousel" height="550px" indicator-position="none"
+                         :interval="5000" arrow="hover">
+                <el-carousel-item style="background: #ffffff;"
+                                  v-for="item in imgList" :key="item">
+                    <center>
+                        <img :src="item" width="1000px"/>
+                    </center>
+                </el-carousel-item>
+            </el-carousel>
+        </div>
+
+        <el-tabs v-model="editableTabsValue2" type="card" v-on:tab-remove="removeTab" :closable="true">
+            <el-tab-pane
+                    v-for="(item, index) in editableTabs2"
+                    :key="item.name"
+                    :label="item.title"
+                    :name="item.name"
+                    v-html="item.content"
+            >
+            </el-tab-pane>
+        </el-tabs>
+
+        <!-- <el-dropdown @command="handleCommand" style="display:none;right: 60px">
+          <el-button  type="primary" plain>
+            <i class="fa fa-question-circle-o fa-6"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="labelDescription">标签说明</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown> -->
+        <!-- <el-dropdown style="display:none;right: 60px"> -->
+        <div class="el-dropdown" style="display:none;right: 60px">
+            <el-button v-on:click="showDescription()" type="primary" :plain="true">
+                <!--<i class="fa fa-question-circle-o"></i>-->
+                <i class="fa fa-question-circle-o"></i>
+            </el-button>
+        </div>
+        <!-- </el-dropdown> -->
+        <el-dropdown v-on:command="handleCommand" style="display:none">
+            <el-button type="primary" :plain="true">
+                <i class="fa fa-bars"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="removeAll">关闭全部</el-dropdown-item>
+                <el-dropdown-item command="removeElse">关闭其他标签</el-dropdown-item>
+            </el-dropdown-menu>
+        </el-dropdown>
+    </div>
+
+
+    <el-dialog style="display:none"
+               :model="noticeTitle"
+               :visible.sync="dialogVisible"
+               :close-on-click-modal="false"
+               width="30%"
+               :before-close="handleClose">
+        <span slot="title" class="el-dialog__title">{{this.noticeTitle}}</span>
+        <div style="background-color:black; height:2px"></div>
+        <div class="noticeDialogContent">{{this.noticeContent}}
+            <br>
+            <p style="text-align:right; padding: 10px 0px 0px 0px;">{{this.noticeModifyDate}}</p>
+        </div>
+    </el-dialog>
+
+    <el-dialog style="display:none"
+               :visible.sync="labelDescriptionDialogVisible"
+               :close-on-click-modal="false"
+               width="30%"
+               :before-close="handleClose">
+        <span slot="title" class="el-dialog__title">{{this.labelDescriptionTitle}}</span>
+        <div style="background-color:black; height:2px"></div>
+        <div class="noticeDialogContent" v-html="labelDescriptionValue">
+        </div>
+    </el-dialog>
+
+</div>
+
+</body>
+
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    //浏览器窗口发生变化时同时变化DIV高度
+    autodivheight();
+
+    function autodivheight() { //函数：获取尺寸
+        //获取浏览器窗口高度
+        var winHeight = 0;
+        if (window.innerHeight)
+            winHeight = window.innerHeight;
+        else if ((document.body) && (document.body.clientHeight))
+            winHeight = document.body.clientHeight;
+        //通过深入Document内部对body进行检测，获取浏览器窗口高度
+        if (document.documentElement && document.documentElement.clientHeight)
+            winHeight = document.documentElement.clientHeight;
+        //console.log("winHeight:"+winHeight)
+        //DIV高度为浏览器窗口的高度
+        //document.getElementById("test").style.height= winHeight +"px";
+        //DIV高度为浏览器窗口高度的一半
+        document.getElementById("asideLeft").style.height = winHeight - 40 + "px";
+    }
+
+    var winHeight, winWidth, setSubmenuCloseTime, submenuObj, isNavOpen = false;
+    $(document).ready(function () {
+        _boxInitial()
+    })
+    leftMenuToggler();
+    window.onload = function () {
+        //页面加载好，再显示弹层公告信息
+        vm.dialogVisible = vm.dialogVisibleTemp
+    }
+
+
+    var vm = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                loadingMessages: true,
+                editableTabsValue2: '1',
+                editableTabs2: [],
+                tabIndex: 1,
+                dialogVisible: false,
+                dialogVisibleTemp: [[${noticeDialogVisible}]],
+                noticeTitle: [[${noticeTitle}]],
+                noticeContent: [[${noticeContent}]],
+                noticeModifyDate: [[${noticeModifyDate}]],
+                labelDescriptionDialogVisible: false,
+                labelDescriptionTitle: '',
+                labelDescriptionValue: '',
+                isShowCarousel: true,
+                imgList: ["https://gw-img.ur.com.cn///urmall/b0b2d2aa-78b5-4c19-a19c-6cd6c48f0189.jpg",
+                    "https://gw-img.ur.com.cn///urmall/d0c6ac95-d125-44ba-8e50-4dbcb01046f3.jpg",
+                    "https://gw-img.ur.com.cn///urmall/03b087d5-f907-4fb4-baf3-020351de24ce.jpg",
+                    "https://gw-img.ur.com.cn///urmall/3487a30d-1a92-4637-9d7f-80ffbb3fd55f.jpg",
+                    "https://gw-img.ur.com.cn///urmall/12cd0569-9f04-4ee9-96d2-910a8f21598b.jpg",
+                    "https://gw-img.ur.com.cn///urmall/9192a01f-efdc-46ce-95d1-baf9d406b5f5.jpg"]
+                ,
+                adminLanguage: [[${adminLanguage}]],
+                adminMenuInfo: [[${adminMenuInfo}]]
+            };
+        },
+        methods: {
+            handleCommand: function (command) {
+                if (command == 'info') {
+                    // $(location).attr('href', '/admin/AdminUserInfoManage.do?userId=1<%=adminHelper.getAdminUserInfo().getUserId()%>');
+                }
+                else if (command == 'logout') {
+                    $(window).attr('location', '/logout');
+                }
+                else if (command === 'removeAll') {
+                    this.editableTabs2 = [];
+                    $('#rightFrameBox .el-dropdown').css('display', 'none');
+                    $('#rightFrameBox').css({
+                        backgroundImage: "url('/resources/images/index/img1.png')",
+                        backgroundSize: "30%",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundColor: "#fff"
+                        //backgroundColor: "rgb(189,231,255)"
+                    });
+                }
+                else if (command === 'removeElse') {
+                    this.editableTabs2 = this.editableTabs2.filter(function (tab) {
+                        debugger;
+                        return tab.title == $('#rightFrameBox .is-active').text();
+                    })
+                }
+                else if (command === 'zh_CN') {
+                    $(location).attr('href', '/admin/AdminIndex?lang=zh_CN');
+                }
+                else if (command === 'en_US') {
+                    $(location).attr('href', '/admin/AdminIndex?lang=en_US');
+                }
+            },
+            setActive: function () {
+                $('.aside_bg ul').eq(0).addClass('active');
+            },
+            addTab: function (targetName, menuName, menuId, url, languageCode) {
+                if (this.editableTabs2.length == 0) {
+                    this.isShowCarousel = false;
+                }
+                $('#rightFrameBox').css('background', '#fff');
+                var againName = this.editableTabs2.filter(function (tab) {
+                    return tab.title == menuName;
+                })
+
+                var newTabName = '';
+                if (againName.length == 0) {
+                    newTabName = ++this.tabIndex + '';
+                } else {
+                    newTabName = againName[0].name;
+                }
+                ;
+                this.editableTabs2 = this.editableTabs2.filter(function (tab) {
+                    return tab.title !== menuName
+                })
+
+
+                $('#rightFrameBox .el-dropdown').css('display', 'block');
+                this.editableTabs2.push({
+                    title: menuName,
+                    name: newTabName,
+                    menuId: menuId,
+                    languageCode: languageCode,
+                    /* content: '<IFRAME SRC='+url+' frameBorder="0" '+ */
+                    /* 出现两次请求，a标签已经有href请求数据了，这里的src可去掉 ,modify:lanqy*/
+                    content: '<IFRAME frameBorder="0" ' +
+                    'name=' + menuId + ' id=' + menuId + ' width="100%" height="100%"' +
+                    'style="background-color: #FFF">'
+                });
+                this.editableTabsValue2 = newTabName;
+                setTimeout(function () {
+                    iframeSize()
+                }, 200);
+            },
+            removeTab: function (targetName) {
+                let tabs = this.editableTabs2;
+                let activeName = this.editableTabsValue2;
+                if (activeName === targetName) {
+                    tabs.forEach(function (tab, index) {
+                        if (tab.name === targetName) {
+                            let nextTab = tabs[index + 1] || tabs[index - 1];
+                            if (nextTab) {
+                                activeName = nextTab.name;
+                            }
+                        }
+                    });
+                }
+
+                this.editableTabsValue2 = activeName;
+                this.editableTabs2 = tabs.filter(function (tab) {
+                    return tab.name !== targetName;
+                });
+                if (this.editableTabs2.length == 0) {
+                    $('#rightFrameBox .el-dropdown').css('display', 'none');
+                    $('#rightFrameBox').css({
+                        backgroundImage: "url('/resources/images/index/img1.png')",
+                        backgroundSize: "30%",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundColor: "#fff"
+                        //backgroundColor: "rgb(189,231,255)"
+                    });
+                    this.isShowCarousel = true;
+                }
+            },
+            fanRuanLogin: function () {
+                $.ajax({
+                	//url: "http://bi-ims.ur.com.cn:8090/FineReport/ReportServer?op=fs_load&cmd=sso&fr_username=IMSReader&fr_password=ims889093",//单点登录的报表服务器
+                    url: "http://fr.ur.com.cn:9083/FineReport/ReportServer?op=fs_load&cmd=sso&fr_username=FR_IMS_READ&fr_password=imsfr_189093",//单点登录的报表服务器
+                    type: "GET",
+                    dataType: "jsonp",//跨域采用jsonp方式
+                    timeout: 5000,//超时时间（单位：毫秒）
+                    success: function (data) {
+                        if (data.status === "success") {
+                            //登录成功
+                            console.log("帆软已登录");
+                        } else if (data.status === "fail") {
+                            //登录失败（用户名或密码错误）
+                            console.log("帆软用户名或密码错误");
+                        }
+                    },
+                    error: function () {
+                        // 登录失败（超时或服务器其他错误）
+                        console.log("帆软登录超时");
+                    }
+                });
+            }, carouselOver: function () {
+                //alert(this.$refs["carousel"]);
+                //this.$refs.carousel.setActiveItem(0);
+            },
+            showDescription: function () {
+                _this = this;
+                var labelDescription = "";
+                var menuId = "0";
+                var languageCode = "";
+                this.editableTabs2.filter(function (tab) {
+                    if (tab.title == $('#rightFrameBox .is-active').text()) {
+                        menuId = tab.menuId;
+                        languageCode = tab.languageCode;
+                    }
+                })
+                var url = "/admin/adminMenuDescriptionManage?menuId=" + menuId + "&languageCode=" + languageCode;
+                axios.get(url).then(function (response) {
+                    console.log(response);
+                    if (response.data.data != null) {
+                        _this.labelDescriptionTitle = response.data.data.title;
+                        _this.labelDescriptionValue = response.data.data.description;
+                        _this.labelDescriptionDialogVisible = true;
+                    } else {
+                        // _this.$notify.warning({title: '提示!', message: response.data.message, offset: 100});
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                    _this.$notify.error({title: '错误', message: '请求数据失败，请联系系统管理员!', offset: 100});
+                });
+                // $.ajax({
+                //     url: "/admin/AdminMenuDescriptionManage.do?menuId=" + menuId + "&languageCode=" + languageCode,
+                //     type: "GET",
+                //     timeout: 5000,//超时时间（单位：毫秒）
+                //     success: function (data) {
+                //         //debugger;
+                //         if (data) {
+                //             var documentObj = $.parseJSON(data);
+                //             _this.labelDescriptionTitle = documentObj.title;
+                //             _this.labelDescriptionValue = documentObj.description;
+                //             _this.labelDescriptionDialogVisible = true;
+                //         }
+                //     },
+                //     error: function () {
+                //         //debugger;
+                //         console.log("HelpDocumentBO " + menuId + "/" + languageCode + "请求失败");
+                //     }
+                // });
+                // debugger;
+            },
+            returnId_1: function (menu1) {
+                return "asideNav" + menu1.menuId;
+            },
+            judgeMenu2_1: function (menu2) {
+                var flag = false;
+                if (this.adminLanguage != 'en_US' || (menu2.menuEnglishName != null && menu2.menuEnglishName != '')) {
+                    flag = true;
+                }
+                return flag;
+            },
+            judgeMenu2_2: function (menu2) {
+                if (this.adminLanguage == 'en_US' && (menu2.menuEnglishName != null && menu2.menuEnglishName)) return true;
+                else return false;
+            },
+            judgeMenu3(menu3) {
+                if (this.adminLanguage == 'en_US' && (menu3.menuEnglishName != null && menu3.menuEnglishName != '')) return true;
+                else return false;
+            },
+            judgeMenu3_2(menu2List, menu3) {
+                var flag = false;
+                if (menu3.menuType != 1) {
+                    if (menu2List != null && (this.adminLanguage == 'en_US' && menu3.menuEnglishName != null && menu3.menuEnglishName != '')) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                    }
+                }
+                return flag;
+            },
+            judgeMenu4(menu3List, menu4) {
+                if ((menu3List != null && menu3List.size > 0) && (adminLanguage == 'en_US' && menu4.menuEnglishName != null && menu4.menuEnglishName != '')) return true;
+                else return false;
+            },
+            returnMenu2Class: function (menu2) {
+                var flag = false;
+                if (menu2.menuDesc != null && menu2.menuDesc != '') {
+                    flag = true;
+                }
+                return flag;
+            },
+            returnMenu3Class: function (menu3) {
+                var flag = false;
+                if (menu3.menuDesc != null && menu3.menuDesc != '') {
+                    flag = true;
+                }
+                return flag;
+            },
+            rtnClass_2(menu2) {
+                if (this.returnMenu2Class(menu2)) return menu2.menuDesc;
+                else return 'fa-hand-o-right';
+            },
+            rtnClass_3(menu3) {
+                if (this.returnMenu3Class(menu3)) return menu3.menuDesc;
+                else return 'fa-hand-o-right';
+            },
+
+            handleClose(done) {
+                done();
+            }
+        },
+        created: function () {
+            this.fanRuanLogin();
+            console.log(this.adminMenuInfo);
+        },
+        mounted: function () {
+            this.setActive();
+        }
+
+    })
+    /*]]>*/
+</script>
+</html>

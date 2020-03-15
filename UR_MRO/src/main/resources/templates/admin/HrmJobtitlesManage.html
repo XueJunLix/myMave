@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head th:include="common/common_head :: commonHeader('角色管理')"></head>
+
+<body class="article_bg">
+
+<div id="app" style="padding-top: 5px">
+    <p class="article_tit">职位管理</p>
+    <div class="clearfix" style="margin-bottom: 5px;"></div>
+    <div class="card-title">
+        <el-button v-on:click="clickSaveBtn"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>保存
+        </el-button>
+        <el-button v-on:click="clickCancelBtn"><i class="fa fa-eraser" aria-hidden="true" style="padding-right:5px"></i>取消
+        </el-button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <el-form label-width="80px">
+                        <el-row>
+                            <el-col :span="5">
+                                <el-form-item label="职位编码" prop="esapkcode">
+                                    <el-input v-model="hrmJobtitles.esapkcode" placeholder="职位编码"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="5">
+                                <el-form-item label="职位名称" prop="jobtitlename">
+                                    <el-input v-model="hrmJobtitles.jobtitlename" placeholder="职位名称"></el-input>
+                                </el-form-item>
+                            </el-col>
+                            <!--<el-col :span="3">-->
+                                <!--<el-form-item label-width="20px">-->
+                                    <!--<el-button v-on:click="clickSaveBtn()">提交</el-button>-->
+                                <!--</el-form-item>-->
+                            <!--</el-col>-->
+                        </el-row>
+                    </el-form>
+                    <el-tree
+                            :data="nodeList"
+                            :props="defaultProps"
+                            :show-checkbox="true"
+                            node-key="id"
+                            ref="tree"
+                            :default-checked-keys="jobtitleOperationList"
+                            :expand-on-click-node="true">
+                    </el-tree>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                nodeList: [[${nodeList}]],
+                jobtitleOperationList: [[${jobtitleOperationList}]],
+                hrmJobtitles: [[${hrmJobtitles}]],
+                defaultProps: {
+                    children: 'children',
+                    label: 'label'
+                }
+            }
+        },
+        created: function () {
+        },
+        methods: {
+            clickCancelBtn() {
+                window.history.back(-1);
+            },
+            clickSaveBtn() {
+                _this = this;
+                console.log(_this.$refs.tree.getCheckedKeys());
+                this.hrmJobtitles.checkedKeys = _this.$refs.tree.getCheckedKeys();
+                var url = "/admin/updateOrInsertHrmJobtitles";
+                axios.post(url, this.hrmJobtitles)
+                    .then(function (response) {
+                        if (response.data.code == null || response.data.code != 0) {
+                            _this.$notify.warning({title: '提示!', message: response.data.message, offset: 100});
+                        } else {
+                            alert("操作成功!");
+                            // window.location.href = "/admin/hrmJobtitlesList"
+                            window.history.back(-1);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        _this.$notify.error({title: '错误', message: '操作数据异常，请联系系统管理员', offset: 100});
+                    });
+
+            }
+
+        }
+    })
+    /*]]>*/
+</script>
+</html>

@@ -1,0 +1,313 @@
+@charset "utf-8";
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+button,
+textarea,
+p,
+blockquote,
+th,
+td {
+	margin: 0;
+	padding: 0;
+	font-family: "微软雅黑";
+}
+
+fieldset,
+img {
+	vertical-align: middle;
+	border: 0;
+}
+
+ul,
+ol,
+li {
+	list-style: none;
+	font-family: 'Microsoft YaHei';
+}
+
+
+/* remember to define focus styles! */
+
+:focus {
+	outline: 0;
+}
+
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var,
+optgroup {
+	font-style: normal;
+	font-weight: normal;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-size: 100%;
+	font-weight: normal;
+}
+
+abbr,
+acronym {
+	border: 0;
+	font-variant: normal;
+}
+
+input,
+button,
+textarea,
+select,
+optgroup,
+option {
+	font-family: inherit;
+	font-size: inherit;
+	font-style: inherit;
+	font-weight: inherit;
+	background-color: #fff;
+	border: none;
+}
+
+code,
+kbd,
+samp,
+tt {
+	font-size: 100%;
+}
+
+a {
+	text-decoration: none;
+	color: unset;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+.container{
+	/*background: yellow;*/
+	/*width: 1200px;*/
+	/*height: 100%;*/
+	margin:0 auto;
+	box-sizing: border-box;
+	padding: 0 20px;
+}
+/*@purpose To enable resizing for IE */
+
+
+/*@branch For IE6-Win, IE7-Win */
+
+input,
+button,
+textarea {
+	*font-size: 100%;
+}
+
+ol,
+ul {
+	list-style: none;
+}
+
+
+/* tables still need 'cellspacing="0"' in the markup */
+
+table,
+tr,
+td {
+	border-collapse: collapse;
+	border-spacing: 0;
+	margin: 0;
+	padding: 0;
+}
+
+caption,
+th {
+	text-align: left;
+}
+
+sup,
+sub {
+	font-size: 100%;
+	vertical-align: baseline;
+}
+
+
+/* remember to highlight anchors and inserts somehow! */
+
+blockquote,
+q {
+	quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+	content: '';
+	content: none;
+}
+
+
+/**Common Css**/
+
+.fr {
+	float: right;
+	*display: inline;
+}
+
+.fl {
+	float: left;
+	*display: inline;
+}
+
+
+/*文本超出显示省略号*/
+
+.ehn,
+.otw,
+.tow {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+
+/*清除浮动*/
+
+.clearfix {
+	clear: both;
+	*zoom: 1;
+}
+
+.clearfix:after {
+	display: block;
+	clear: both;
+	content: "\0020";
+	visibility: hidden;
+	height: 0;
+}
+.el-table th{
+	background: linear-gradient(to bottom, #fdfdfd, #f1f7ff);
+}
+
+/*!*滚动条*!*/
+
+			/*::-webkit-scrollbar  */
+/*{  */
+    /*width: 10px;  */
+    /*height: 10px;  */
+    /*background-color: #F5F5F5;  */
+/*}  */
+/*!*定义滚动条轨道 内阴影+圆角*!  */
+/*::-webkit-scrollbar-track  */
+/*{  */
+    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  */
+    /*border-radius: 10px;  */
+    /*background-color: #F5F5F5;  */
+/*}    */
+/*!*定义滑块 内阴影+圆角*!  */
+/*::-webkit-scrollbar-thumb  */
+/*{  */
+    /*border-radius: 10px;  */
+    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  */
+    /*background-color: #EBEEF5;  */
+/*}  */
+/*!*滑块效果*!*/
+/*::-webkit-scrollbar-thumb:hover*/
+/*{*/
+/*border-radius: 5px;*/
+/*-webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);*/
+/*background: rgba(0,0,0,0.4);*/
+/*}*/
+
+.el-table tr {
+				height: 40px;
+				min-height: 40px !important;
+			}
+.el-switch__label.is-active{
+color: black !important;	
+}		
+
+/*.el-table{
+	background: linear-gradient(to bottom, #fdfdfd, #f1f7ff) !important;
+}	*/
+
+.el-step__icon{
+	    width: 20px !important;
+    height: 20px !important;
+}
+.dingdanbox-step-danhao-jindu .el-step__title{
+	font-size: 12px !important;
+}
+.el-table .cell{
+	font-size: 12px ;
+}
+
+.dingdanbox .daibanbox-lists{
+	font-size: 12px ;
+}
+.el-step__icon-inner{
+	font-size: 12px;
+}
+
+.daibanbox-tittle {
+	font-size: 12px;	
+}
+.el-table td, .el-table th{
+	padding: 0px !important;
+	}
+	
+	.formtitle{
+		    width: 100%;
+    height: 30px !important;
+    text-align: center;
+    line-height: 30px !important;
+    margin-bottom: 0px !important;
+    /*font-size: 14px  !important;*/
+    border-radius: 10px;
+    
+	}
+.el-select .el-input.is-disabled .el-input__inner{
+font-size: 12px;	
+}
+
+.el-input.is-disabled .el-input__inner,.el-textarea.is-disabled .el-textarea__inner{
+	font-size: 12px;
+}
+.el-form-item__label{
+font-size: 12px !important;	
+}
+.el-input--prefix .el-input__inner{
+	font-size: 12px;
+}

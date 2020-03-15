@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <title>Hello World!</title>
+    </head>
+    <body>
+        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+        <span sec:authorize="isAuthenticated()">
+	        <form th:action="@{/logout}" method="post">
+	            <input type="submit" value="注销"/>
+	        </form>
+        </span>
+        
+<span sec:authentication="name"></span>      
+Roles: <span sec:authentication="principal.authorities"></span>  
+    <div sec:authorize="hasRole('1111')">
+        This will only be displayed if authenticated user has role 1111.
+    </div>     
+    </body>
+</html>

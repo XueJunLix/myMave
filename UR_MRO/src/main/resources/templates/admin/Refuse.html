@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('访问错误')"></head>
+<body>
+<div id="app">
+
+
+    <div class="card">
+        <div class="card-body">
+            <div class="text-center">
+                <div class="col-md-12"><h4 style="color: #bd2130">对不起,您无访问权限!</h4></div>
+            </div>
+            <br/>
+            <br/>
+            <div class="text-center">
+                <el-button v-on:click="clickReturnBtn"></i>返回
+                </el-button>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+
+<div th:include="common/onload_js :: onloadJS"></div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var vm = new Vue({
+        el: '#app',
+        data: function () {
+            return {};
+        },
+
+        methods: {
+            clickReturnBtn() {
+                history.back(-1);
+            }
+        }
+
+    });
+
+
+    /*]]>*/
+</script>
+</html>

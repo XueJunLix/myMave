@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+      
+<head th:fragment="commonHeader(title)">
+  <meta charset="UTF-8"/>
+  <meta http-equiv="pragma" content="no-cache"/>
+  <meta http-equiv="cache-control" content="no-cache"/>
+  <meta http-equiv="expires" content="0"/>
+  <title th:text="${title}"></title>
+
+  <!-- 引入样式 -->
+  <link rel="stylesheet" type="text/css" href="/resources/css/bootstrap.min.css"/>
+  <link rel="stylesheet" type="text/css" href="/resources/element/index_original.css"/>
+  <link rel="stylesheet" type="text/css" href="/resources/css/common.css"/>
+  <link rel="stylesheet" type="text/css" href="/resources/css/swiper.min.css"/>
+
+
+  <link rel="stylesheet" type="text/css" href="/resources/font-awesome/css/font-awesome.min.css"/>
+  
+</head>
+
+<!-- 2019-04-26 茂海大大要求加的 百度访问统计 -->
+	<script>
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?ca6dfb6bf554733cf2d5b782b82dc2df";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+    </script>
+</html>

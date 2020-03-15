@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.sup.mappers.SupplierHbMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.sup.model.SupplierHb" >
+    <id column="ID" />
+    <association property="supplier" resultMap="supplierResultMap" />
+    <collection property="supContractInfoList" ofType="com.ur.mro.sup.model.SupContractInfo" resultMap="supContractInfoResultMap">
+    </collection>
+  </resultMap>
+  
+  <resultMap id="supplierResultMap" type="com.ur.mro.sup.model.Supplier" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" javaType="String" />
+    <result column="CODE" property="code" jdbcType="VARCHAR" javaType="String" />
+    <result column="OLD_CODE" property="oldCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" javaType="String" />
+    <result column="SHORT_NAME" property="shortName" jdbcType="NVARCHAR" javaType="String" />
+    <result column="FULL_NAME" property="fullName" jdbcType="NVARCHAR" javaType="String" />
+    <result column="PROCESSING_MODE" property="processingMode" jdbcType="VARCHAR" javaType="String" />
+    <result column="SITE_ADD" property="siteAdd" jdbcType="NVARCHAR" javaType="String" />
+    <result column="INDUSTRY_TYPE" property="industryType" jdbcType="VARCHAR" javaType="String" />
+    <result column="ARTIFICIAL_PERSOR" property="artificialPersor" jdbcType="VARCHAR" javaType="String" />
+    <result column="GENERAL_MANAGER" property="generalManager" jdbcType="VARCHAR" javaType="String" />
+    <result column="FOUNDING_TIME" property="foundingTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="REGISTERED_CAPITAL" property="registeredCapital" jdbcType="INTEGER" javaType="Integer" />
+    <result column="FLOOR_AREA" property="floorArea" jdbcType="INTEGER" javaType="Integer" />
+    <result column="COVERED_AREA" property="coveredArea" jdbcType="INTEGER" javaType="Integer" />
+    <result column="ENTERPRISE_PROPERTY" property="enterpriseProperty" jdbcType="VARCHAR" javaType="String" />
+    <result column="OWNER" property="owner" jdbcType="NVARCHAR" javaType="String" />
+    <result column="BUSINESS_CONCEPTS" property="businessConcepts" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="NATION" property="nation" jdbcType="NVARCHAR" javaType="String" />
+    <result column="PROVINCE" property="province" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CITY" property="city" jdbcType="NVARCHAR" javaType="String" />
+    <result column="ADDRESS" property="address" jdbcType="NVARCHAR" javaType="String" />
+    <result column="ZIP_CODE" property="zipCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="COMMENTS_ADDS" property="commentsAdds" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_PAPERS" property="commentsPapers" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_CERTIFICATES" property="commentsCertificates" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_MANAGERS" property="commentsManagers" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_WORKERS" property="commentsWorkers" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_EQUIPMENTS" property="commentsEquipments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_CUSTOMERS" property="commentsCustomers" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_BIZSCOPE" property="commentsBizscope" jdbcType="NVARCHAR" javaType="String" />
+    <result column="COMMENTS_PARTNERS" property="commentsPartners" jdbcType="NVARCHAR" javaType="String" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="SUP_TYPE" property="supType" jdbcType="VARCHAR" javaType="String" />
+    <result column="BUY_GROUP" property="buyGroup" jdbcType="VARCHAR" javaType="String" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="SUP_GROUP" property="supGroup" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUP_CAL_STATUS" property="supCalStatus" jdbcType="VARCHAR" javaType="String" />
+    <result column="MONTH_SETTLE" property="monthSettle" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUP_COOPERATION_WAY" property="supCooperationWay" jdbcType="VARCHAR" javaType="String" />
+    <result column="DJ_TYPE" property="djType" jdbcType="VARCHAR" javaType="String" />
+    <result column="COORDINATION" property="coordination" jdbcType="VARCHAR" javaType="String" />
+    <result column="EARNEST_STATUS" property="earnestStatus" jdbcType="VARCHAR" javaType="String" />
+    <result column="REGISTERNO" property="registerno" jdbcType="VARCHAR" javaType="String" />
+    <result column="QG_NUMBER" property="qgNumber" jdbcType="VARCHAR" javaType="String" />
+    <result column="LXR" property="lxr" jdbcType="VARCHAR" javaType="String" />
+    <result column="LXR_NUMBER" property="lxrNumber" jdbcType="VARCHAR" javaType="String" />
+    <result column="JX_COMMENTS" property="jxComments" jdbcType="VARCHAR" javaType="String" />
+    <result column="JX_ADDRESS" property="jxAddress" jdbcType="VARCHAR" javaType="String" />
+    <result column="LXR_EMAIL" property="lxrEmail" jdbcType="VARCHAR" javaType="String" />
+    <result column="UR_KFY" property="urKfy" jdbcType="VARCHAR" javaType="String" />
+  </resultMap>
+  
+  <resultMap id="supContractInfoResultMap" type="com.ur.mro.sup.model.SupContractInfo" >
+    <id column="T2_ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="T2_CONTRACT_NO" property="contractNo" jdbcType="VARCHAR" javaType="String" />
+    <result column="T2_COMMENTS" property="comments" jdbcType="NVARCHAR" javaType="String" />
+    <result column="T2_SUP_ID" property="supId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="T2_CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="T2_CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="T2_LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="T2_LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="T2_DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="T2_PRICE_START_DATE" property="priceStartDate" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="T2_PRICE_END_DATE" property="priceEndDate" jdbcType="TIMESTAMP" javaType="Date" />
+  </resultMap>
+  
+  <select id="getSupplierHbByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    T1.ID,T1.GROUP_ID,T1.CODE,T1.OLD_CODE,T1.STATUS,T1.SHORT_NAME,T1.FULL_NAME,T1.PROCESSING_MODE,T1.SITE_ADD,T1.INDUSTRY_TYPE,T1.ARTIFICIAL_PERSOR,T1.GENERAL_MANAGER,T1.FOUNDING_TIME,T1.REGISTERED_CAPITAL,T1.FLOOR_AREA,T1.COVERED_AREA,T1.ENTERPRISE_PROPERTY,T1.OWNER,T1.BUSINESS_CONCEPTS,T1.COMMENTS,T1.NATION,T1.PROVINCE,T1.CITY,T1.ADDRESS,T1.ZIP_CODE,T1.COMMENTS_ADDS,T1.COMMENTS_PAPERS,T1.COMMENTS_CERTIFICATES,T1.COMMENTS_MANAGERS,T1.COMMENTS_WORKERS,T1.COMMENTS_EQUIPMENTS,T1.COMMENTS_CUSTOMERS,T1.COMMENTS_BIZSCOPE,T1.COMMENTS_PARTNERS,T1.CREATED_BY,T1.CREATED_TIME,T1.LAST_UPDATED_BY,T1.LAST_UPDATED_TIME,T1.SUP_TYPE,T1.BUY_GROUP,T1.DELETED,T1.SUP_GROUP,T1.SUP_CAL_STATUS,T1.MONTH_SETTLE,T1.SUP_COOPERATION_WAY,T1.DJ_TYPE,T1.COORDINATION,T1.EARNEST_STATUS,T1.REGISTERNO,T1.QG_NUMBER,T1.LXR,T1.LXR_NUMBER,T1.JX_COMMENTS,T1.JX_ADDRESS,T1.LXR_EMAIL,T1.UR_KFY,T2.ID as T2_ID,T2.CONTRACT_NO as T2_CONTRACT_NO,T2.COMMENTS as T2_COMMENTS,T2.SUP_ID as T2_SUP_ID,T2.CREATED_BY as T2_CREATED_BY,T2.CREATED_TIME as T2_CREATED_TIME,T2.LAST_UPDATED_BY as T2_LAST_UPDATED_BY,T2.LAST_UPDATED_TIME as T2_LAST_UPDATED_TIME,T2.DELETED as T2_DELETED,T2.PRICE_START_DATE as T2_PRICE_START_DATE,T2.PRICE_END_DATE as T2_PRICE_END_DATE
+     from SRM_SUP_SUPPLIER T1
+    left join SRM_SUP_CONTRACT T2 on
+      T1.ID = T2.SUP_ID
+    where T1.ID = #{id,jdbcType=INTEGER}
+  </select>
+
+    <select id="getSupCodeNum" resultType="java.lang.String" parameterType="java.lang.String" >
+        select MAX(subCode) as NUMB from
+        (select right(t.CODE,4) as subCode,t.*
+        from SRM_SUP_SUPPLIER t where  t.SUP_TYPE= #{type}
+        and t.CODE != 'ZD01XX')  tt group by tt.SUP_TYPE
+    </select>
+
+
+    <!-- List<CommonSearchCondition> condList -->
+  <select id="searchSupplierHbCount" resultType="int" >
+      select count(*) from(
+    select * from SRM_SUP_SUPPLIER
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT('%',#{cond.value}),'%')
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+      )T1
+      left join SRM_SUP_CONTRACT T2 on
+      T1.ID = T2.SUP_ID AND  t2.DELETED = 0
+      WHERE T1.DELETED = 0
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchSupplierHb" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            T1.${field}
+          </foreach>
+        </when>
+        <otherwise>
+          T1.ID,T1.GROUP_ID,T1.CODE,T1.OLD_CODE,T1.STATUS,T1.SHORT_NAME,T1.FULL_NAME,T1.PROCESSING_MODE,T1.SITE_ADD,T1.INDUSTRY_TYPE,T1.ARTIFICIAL_PERSOR,T1.GENERAL_MANAGER,T1.FOUNDING_TIME,T1.REGISTERED_CAPITAL,T1.FLOOR_AREA,T1.COVERED_AREA,T1.ENTERPRISE_PROPERTY,T1.OWNER,T1.BUSINESS_CONCEPTS,T1.COMMENTS,T1.NATION,T1.PROVINCE,T1.CITY,T1.ADDRESS,T1.ZIP_CODE,T1.COMMENTS_ADDS,T1.COMMENTS_PAPERS,T1.COMMENTS_CERTIFICATES,T1.COMMENTS_MANAGERS,T1.COMMENTS_WORKERS,T1.COMMENTS_EQUIPMENTS,T1.COMMENTS_CUSTOMERS,T1.COMMENTS_BIZSCOPE,T1.COMMENTS_PARTNERS,T1.CREATED_BY,T1.CREATED_TIME,T1.LAST_UPDATED_BY,T1.LAST_UPDATED_TIME,T1.SUP_TYPE,T1.BUY_GROUP,T1.DELETED,T1.SUP_GROUP,T1.SUP_CAL_STATUS,T1.MONTH_SETTLE,T1.SUP_COOPERATION_WAY,T1.DJ_TYPE,T1.COORDINATION,T1.EARNEST_STATUS,T1.REGISTERNO,T1.QG_NUMBER,T1.LXR,T1.LXR_NUMBER,T1.JX_COMMENTS,T1.JX_ADDRESS,T1.LXR_EMAIL,T1.UR_KFY,T2.ID as T2_ID,T2.CONTRACT_NO as T2_CONTRACT_NO,T2.COMMENTS as T2_COMMENTS,T2.SUP_ID as T2_SUP_ID,T2.CREATED_BY as T2_CREATED_BY,T2.CREATED_TIME as T2_CREATED_TIME,T2.LAST_UPDATED_BY as T2_LAST_UPDATED_BY,T2.LAST_UPDATED_TIME as T2_LAST_UPDATED_TIME,T2.DELETED as T2_DELETED,T2.PRICE_START_DATE as T2_PRICE_START_DATE,T2.PRICE_END_DATE as T2_PRICE_END_DATE
+        </otherwise>
+      </choose>
+    from
+      (select * from SRM_SUP_SUPPLIER
+    	<if test="condList != null" >
+     	 <where>
+        	<foreach item="cond" index="index" collection="condList" separator="and">
+        	  <if test="cond.operator=='like'">
+        	    ${cond.columnName}
+        	    like CONCAT(CONCAT('%',#{cond.value}),'%')
+        	  </if>
+        	  <if test="cond.operator =='in'">
+         	   ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+        	  </if>
+       	   <if test="cond.operator!='like' and cond.operator!='in'">
+         	   ${cond.columnName}
+         	   <if test="cond.operator=='eq'">
+         	     =
+          	   </if>
+          	   <if test="cond.operator=='ne'">
+          	     !=
+           	   </if>
+          	   <if test="cond.operator=='lt'">
+          	     &lt;
+          	   </if>
+          	   <if test="cond.operator=='gt'">
+         	      &gt;
+          	   </if>
+          	   <if test="cond.operator=='le'">
+          	     &lt;=
+          	   </if>
+          	   <if test="cond.operator=='ge'">
+          	     &gt;=
+          	   </if>
+         	     #{cond.value}
+         	   </if>
+       	 </foreach>
+      	</where>
+    	</if>
+    	<if test='orderByList != null'>
+     	   order by
+      	<foreach item="order" index="index" collection="orderByList" separator=",">
+      	   ${order}
+      	</foreach>
+    	</if>
+      ) T1
+    left join (SELECT * FROM SRM_SUP_CONTRACT ct WHERE CONVERT(varchar(100), GETDATE()) BETWEEN ct.PRICE_START_DATE AND ct.PRICE_END_DATE) T2 on
+      T1.ID = T2.SUP_ID
+      WHERE T1.DELETED = 0
+      <if test='orderByList == null'>
+          order by ID DESC
+      </if>
+      <if test="pageBean != null" >
+          Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+      </if>
+  </select>
+  
+  <!-- manual added -->
+  
+</mapper>

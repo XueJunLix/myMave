@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('下单深度审核')"></head>
+
+<body>
+
+<div id="app" class="container-fluid" style="display: none;"
+ v-show="isLoad" v-loading="depAuditLoading" :element-loading-text="loadText" >
+   <div class="card-title" >
+			        <el-button v-if="canAudit" v-on:click="showAuditDialog = true"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>审核</el-button>			        
+			        <el-button v-if="!canAudit" v-on:click="reverseAudit"><i class="fa fa-save" aria-hidden="true" style="padding-right:5px"></i>反审</el-button>
+   </div>
+   <div class="card">
+				  	<div class="card-body">
+				<div class="row" >
+	<div class="col-md-12">
+<el-card>
+<div>
+<el-row :gutter="20">
+  <el-col :span="18">
+<el-row :gutter="20">
+<el-col :span="6">中品类：{{this.uniqueCodeDepAudit.subCategoryName}}</el-col>
+<el-col :span="6">面料：{{this.uniqueCodeDepAudit.fabricFeaturesName}}</el-col>
+<el-col :span="6">厚薄：{{this.uniqueCodeDepAudit.thicknessName}}</el-col>
+<el-col :span="6">版型：{{this.uniqueCodeDepAudit.sampleName}}</el-col>
+</el-row>
+<el-row :gutter="20">
+<el-col :span="6">廓型：{{this.uniqueCodeDepAudit.silhouetteName}}</el-col>
+<el-col :span="6">设计元素：{{this.uniqueCodeDepAudit.designElementsName}}</el-col>
+<el-col :span="6">袖型：{{this.uniqueCodeDepAudit.sleeveTypeName}}</el-col>
+<el-col :span="6">衣长：{{this.uniqueCodeDepAudit.longClothingName}}</el-col>
+</el-row>
+<el-row :gutter="20">
+<el-col :span="6">袖长：{{this.uniqueCodeDepAudit.sleeveLengthName}}</el-col>
+<el-col :span="6">领型：{{this.uniqueCodeDepAudit.collarTypeName}}</el-col>
+<el-col :span="6">鞋跟高度：{{this.uniqueCodeDepAudit.heelHeightName}}</el-col>
+<el-col :span="6"></el-col>
+</el-row >
+  </el-col>
+  <el-col :span="6">
+  <el-popover
+    placement="right"
+    title=""
+    trigger="click">
+    <img :src="this.cyImageZUrl+this.designNo+'_M'" style="width:450px;height:600px; border: 1px solid #eee;"/>
+    <img slot="reference" :src="this.cyImageZUrl+this.designNo+'_M'" :alt="this.cyImageZUrl+this.designNo+'_M'" style="width:80px;height:118px; border: 1px solid #eee;" />
+  </el-popover>
+  <!-- <img v-bind:src="this.cyImageZUrl+this.designNo+'_M'" style="width:80px;height:118px; border: 1px solid #eee;" /> -->
+  </el-col>
+</el-row>
+</div>
+</el-card>
+	</div></div>  	
+				  	  <div class="row" >
+	<div class="col-md-12">
+        <el-table :data="this.uniqueCodeDepAudit.uniqueCodeList" :highlight-current-row="true" show-summary="true" stripe="" sum-text="合计">
+          <el-table-column type="expand">
+			  <template slot-scope="scope">
+			  <el-table :data="scope.row.uniqueCodeAreaList" :highlight-current-row="true" stripe="" show-summary="true" :sum-text="scope.row.uniqueCode+' 合计'" >
+			  <el-table-column property="goodsAreaName" label="商品分区" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+			  <el-table-column property="depth" label="SKU深度" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="proportionFormat" label="区域占比" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+	          <el-table-column property="minDepth" label="最低企划深度" min-width="120" :show-overflow-tooltip="true"></el-table-column>	          
+			  </el-table>
+			  </template>
+          </el-table-column>
+          <el-table-column property="uniqueCode" label="唯一码" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="intDepth" label="SKU深度取整" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="depth" label="SKU深度" min-width="120" :show-overflow-tooltip="true"></el-table-column>          
+          <el-table-column property="minDepth" label="最低企划深度" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="designNo" label="设计号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="colorName" label="色号" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column property="orderDepth" label="色号深度" min-width="120" :show-overflow-tooltip="true"></el-table-column>
+        </el-table>
+	</div>
+</div>
+				  	</div></div>
+				  	
+				  	<div class="card">
+				  	<div class="card-body">
+				<div class="row" >流程详情<div class="col-md-12">
+				<el-table :data="this.uniqueCodeDepAudit.auditItemList" :highlight-current-row="true" stripe="" >
+				<el-table-column property="sort" label="序号" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+				<el-table-column property="name" label="环节" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+				<el-table-column property="auditRoleStr" label="角色" min-width="150" :show-overflow-tooltip="true"></el-table-column>
+				</el-table>
+				</div></div>
+				<div class="row">处理记录<div class="col-md-12" style="margin-bottom: 20px;">
+				<el-table :data="this.uniqueCodeDepAudit.auditLogList" :highlight-current-row="true" stripe="" >
+				<el-table-column property="auditItemName" label="环节" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+				<el-table-column property="auditUserName" label="处理人" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+				<el-table-column property="handleResultStr" label="操作" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+				<el-table-column property="createTime" label="时间" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+				<el-table-column property="handleComments" label="意见" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+				</el-table>
+				</div></div>
+				</div></div>
+
+<!-- 审核弹出 -->
+<el-dialog title="审核"  :visible.sync="showAuditDialog" v-loading="depAuditLoading"  :close-on-click-modal="false">
+	  <el-form :inline="true" label-position="right">	 
+		  <el-form-item label="审核意见" label-width="70px">
+		  <el-input placeholder="请输入审核意见" maxlength="50" minlength="2" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }" clearable="true"  v-model="uniqueCodeDepAudit.handleComments">
+			</el-input>
+		  </el-form-item>
+	  </el-form>
+	  <span slot="footer" class="dialog-footer">
+	    
+	    <el-button v-on:click="showAuditDialog = false" :disabled="confirmAuditClick"> 取 消 </el-button>
+	    <el-button type="primary" v-on:click="ConfirmAudit" :disabled="confirmAuditClick" >审核通过</el-button>
+	  </span>
+	</el-dialog>
+</div>
+
+</body>
+
+<!-- include 公共js库 -->
+<div th:include="common/onload_js :: onloadJS"></div>
+  <script  th:inline="javascript">
+  /*<![CDATA[*/
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {   
+        	isLoad: false,
+        	uniqueCodeDepAudit:{
+        		designNo:"",
+        		subCategory:"",
+        		fabricFeatures:"",
+        		sample:"",
+        		silhouette:"",
+        		designElements:"",
+        		sleeveType:"",
+        		longClothing:"",
+        		sleeveLength:"",
+        		collarType:"",
+        		heelHeight:"",
+        		serial:"",
+        		category:"",
+        		type:"",
+        		originalserial:"",
+        		style:"",
+        		businessLevel:"",
+        		uniqueCodeList:[],
+        		handleComments:"",
+        		auditItemList:[],
+        		auditLogList:[],
+        	},
+        	designNo:[[${designNo}]],
+        	cyImageZUrl:[[${cyImageZUrl}]],
+        	className:[[${className}]],
+        	showAuditDialog:false,        	
+        	confirmAuditClick:false,
+        	auditLogList:[],
+        	canAudit:false,
+        	depAuditLoading:false,
+            loadText:"查询数据中...",
+        }
+      },
+      created: function() {    
+    	  
+    	  if(!this.designNo){
+    		  this.$alert('未对应设计号，请先对应设计号！', '提示', {
+    	          confirmButtonText: '确定',
+    	          callback: action => {
+    	             this.backUniqueCodeIndex(); 
+    	          }
+    	        });
+    	  }else{
+    		  this.SearchAuditBO();
+    	  }
+      },
+      methods: {
+    	  SearchAuditBO(){
+    		  
+    		  _this = this;
+    		  this.depAuditLoading=true;
+    		  var url="/UniqueCodeDepAudit/SearchAuditBO/"+this.designNo;
+    		  axios.get(url)
+			  .then(function (response) {
+			    console.log(response);
+			    _this.depAuditLoading=false;
+			    if(response.data.code==null||response.data.code!=0){
+			    	_this.$notify.error({title: '失败',message: response.data.message,offset: 100});
+			    }else{
+			    	_this.isLoad=true;
+			    	_this.uniqueCodeDepAudit=response.data.data;
+			    	if(!_this.uniqueCodeDepAudit.auditLogList || _this.uniqueCodeDepAudit.auditLogList.length==0){
+			    		_this.canAudit=true;
+			    	}else{
+			    		var lastLog=_this.uniqueCodeDepAudit.auditLogList[0];
+			    		if(lastLog.auditItemEnded===1 && lastLog.handleResult===1){
+			    			_this.canAudit=false;
+			    		}else{
+			    			_this.canAudit=true;
+			    		}
+			    		console.log($("#card").height());
+			    	}
+			    }
+			  })
+			  .catch(function (error) {
+			    console.log(error);
+			    _this.$notify.error({title: '错误',message: '查询数据失败，请联系系统管理员',offset: 100});
+			  });
+    	  },
+    	  backUniqueCodeIndex(){
+    		  window.parent.dialogCallback();
+    	  },
+    	  ConfirmAudit(){    		 
+    		  this.$confirm('确定审核通过吗?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		        	 _this=this;
+		    		  /* if(!this.uniqueCodeDepAudit.handleComments){
+		    			  this.$notify.error({title: '失败',message: "请填写审核意见！",offset: 100,duration: 0});
+		    			  return;
+		    		  } */
+		    		  var url="/UniqueCodeDepAudit/Audit";
+		    		  this.uniqueCodeDepAudit.handleResult=1;
+
+		    		  this.depAuditLoading=true;
+		    		  axios.post(url,this.uniqueCodeDepAudit)
+					  .then(function (response) {
+					    //console.log(response);
+					    _this.depAuditLoading=false;
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '失败',message: response.data.message,offset: 100});
+					    }else{
+					    	/* _this.$notify({title: '成功',message: response.data.message,offset: 100,type:'success',duration: 0});
+					    	_this.showAuditDialog=false;				        	
+				        	_this.confirmAuditClick=false;
+				        	_this.uniqueCodeDepAudit.handleComments="";
+				        	_this.backUniqueCodeIndex();  */
+					    	_this.$alert(response.data.message, '提示', {
+				    	          confirmButtonText: '确定',
+				    	          callback: action => {
+				    	             _this.backUniqueCodeIndex(); 
+				    	          }
+				    	        });
+					    }
+					  })
+					  .catch(function (error) {
+					    _this.$notify.error({title: '错误',message: '失败，请联系系统管理员',offset: 100});
+					  });
+		        }).catch(() => {}); 
+    		  
+    		  
+    	  },
+    	  //反审
+    	  reverseAudit(){
+    		  this.$confirm('确定反审吗?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+		        	 _this=this;
+		        	 var url="/UniqueCodeDepAudit/reverseAudit";
+		        	 /* var uniqueCodeList=[];
+		        	 for(var i=0;i<this.uniqueCodeDepAudit.uniqueCodeList.length;i++){
+		        		 uniqueCodeList.push(this.uniqueCodeDepAudit.uniqueCodeList[i].uniqueCode);
+		        	 } */
+		        	 axios.post(url,this.uniqueCodeDepAudit)
+					  .then(function (response) {
+					    console.log(response);
+					    if(response.data.code==null||response.data.code!=0){
+					    	_this.$notify.error({title: '失败',message: response.data.message,offset: 100});
+					    }else{
+					    	/* _this.$notify({title: '成功',message: response.data.message,offset: 100,type:'success',duration: 0});
+					    	_this.backUniqueCodeIndex();  */
+					    	_this.$alert(response.data.message, '提示', {
+				    	          confirmButtonText: '确定',
+				    	          callback: action => {
+				    	             _this.backUniqueCodeIndex(); 
+				    	          }
+				    	     });
+					    }
+					  })
+					  .catch(function (error) {
+					    _this.$notify.error({title: '错误',message: '失败，请联系系统管理员',offset: 100});
+					  });
+		        	 
+		        }).catch(() => {}); 
+    	  }
+      }
+    })
+    /*]]>*/
+  </script>
+</html>

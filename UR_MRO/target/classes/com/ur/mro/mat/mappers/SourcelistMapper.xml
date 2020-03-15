@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ur.mro.mat.mappers.SourcelistMapper" >
+  <resultMap id="BaseResultMap" type="com.ur.mro.mat.model.Sourcelist" >
+    <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer" />
+    <result column="CREATED_BY" property="createdBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="LAST_UPDATED_BY" property="lastUpdatedBy" jdbcType="VARCHAR" javaType="String" />
+    <result column="LAST_UPDATED_TIME" property="lastUpdatedTime" jdbcType="TIMESTAMP" javaType="Date" />
+    <result column="DELETED" property="deleted" jdbcType="INTEGER" javaType="Integer" />
+    <result column="DETAULTED" property="detaulted" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUPPLIER_CAPACITY" property="supplierCapacity" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SUPPLIER_CODE" property="supplierCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="SUPPLIER_LEVEL" property="supplierLevel" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SUPPLIER_NAME" property="supplierName" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SUPPLIER_PCODE" property="supplierPcode" jdbcType="NVARCHAR" javaType="String" />
+    <result column="SUPPLIER_PCOLOR" property="supplierPcolor" jdbcType="NVARCHAR" javaType="String" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" javaType="String" />
+    <result column="MATERIAL_ID" property="materialId" jdbcType="INTEGER" javaType="Integer" />
+    <result column="PANTONE_COLOR" property="pantoneColor" jdbcType="VARCHAR" javaType="String" />
+    <result column="ZT_CODE" property="ztCode" jdbcType="VARCHAR" javaType="String" />
+    <result column="REMARKS" property="remarks" jdbcType="VARCHAR" javaType="String" />
+    <result column="MIN_ORDER_COUNT" property="minOrderCount" jdbcType="NUMERIC" javaType="String" />
+    <result column="DELIVERY_TIME" property="deliveryTime" jdbcType="INTEGER" javaType="Integer" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" javaType="String" />
+    <result column="FREEZE" property="freeze" jdbcType="VARCHAR" javaType="String" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    ID,CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,DETAULTED,SUPPLIER_CAPACITY,SUPPLIER_CODE,SUPPLIER_LEVEL,SUPPLIER_NAME,SUPPLIER_PCODE,SUPPLIER_PCOLOR,TYPE,MATERIAL_ID,PANTONE_COLOR,ZT_CODE,REMARKS,MIN_ORDER_COUNT,DELIVERY_TIME,UNIT,FREEZE
+  </sql>
+  
+  <select id="getSourcelistByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+     from SRM_MAT_SOURCELIST
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insertSourcelist" parameterType="com.ur.mro.mat.model.Sourcelist" >
+    insert into SRM_MAT_SOURCELIST (
+        CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,DETAULTED,SUPPLIER_CAPACITY,SUPPLIER_CODE,SUPPLIER_LEVEL,SUPPLIER_NAME,SUPPLIER_PCODE,SUPPLIER_PCOLOR,TYPE,MATERIAL_ID,PANTONE_COLOR,ZT_CODE,REMARKS,MIN_ORDER_COUNT,DELIVERY_TIME,UNIT,FREEZE
+    )values(
+        #{createdBy,jdbcType=VARCHAR},#{createdTime,jdbcType=TIMESTAMP},#{lastUpdatedBy,jdbcType=VARCHAR},#{lastUpdatedTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=INTEGER},#{detaulted,jdbcType=VARCHAR},#{supplierCapacity,jdbcType=NVARCHAR},#{supplierCode,jdbcType=VARCHAR},#{supplierLevel,jdbcType=NVARCHAR},#{supplierName,jdbcType=NVARCHAR},#{supplierPcode,jdbcType=NVARCHAR},#{supplierPcolor,jdbcType=NVARCHAR},#{type,jdbcType=VARCHAR},#{materialId,jdbcType=INTEGER},#{pantoneColor,jdbcType=VARCHAR},#{ztCode,jdbcType=VARCHAR},#{remarks,jdbcType=VARCHAR},#{minOrderCount,jdbcType=NUMERIC},#{deliveryTime,jdbcType=INTEGER},#{unit,jdbcType=VARCHAR},#{freeze,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <insert id="insertBatchSourcelist" parameterType="java.util.List" >
+    insert into SRM_MAT_SOURCELIST (
+    CREATED_BY,CREATED_TIME,LAST_UPDATED_BY,LAST_UPDATED_TIME,DELETED,DETAULTED,SUPPLIER_CAPACITY,SUPPLIER_CODE,SUPPLIER_LEVEL,SUPPLIER_NAME,SUPPLIER_PCODE,SUPPLIER_PCOLOR,TYPE,MATERIAL_ID,PANTONE_COLOR,ZT_CODE,REMARKS,MIN_ORDER_COUNT,DELIVERY_TIME,UNIT,FREEZE
+    )values
+    <foreach collection ="list" item="item" separator =",">
+    (
+    #{item.createdBy,jdbcType=VARCHAR},#{item.createdTime,jdbcType=TIMESTAMP},#{item.lastUpdatedBy,jdbcType=VARCHAR},#{item.lastUpdatedTime,jdbcType=TIMESTAMP},#{item.deleted,jdbcType=INTEGER},#{item.detaulted,jdbcType=VARCHAR},#{item.supplierCapacity,jdbcType=NVARCHAR},#{item.supplierCode,jdbcType=VARCHAR},#{item.supplierLevel,jdbcType=NVARCHAR},#{item.supplierName,jdbcType=NVARCHAR},#{item.supplierPcode,jdbcType=NVARCHAR},#{item.supplierPcolor,jdbcType=NVARCHAR},#{item.type,jdbcType=VARCHAR},#{item.materialId,jdbcType=INTEGER},#{item.pantoneColor,jdbcType=VARCHAR},#{item.ztCode,jdbcType=VARCHAR},#{item.remarks,jdbcType=VARCHAR},#{item.minOrderCount,jdbcType=NUMERIC},#{item.deliveryTime,jdbcType=INTEGER},#{item.unit,jdbcType=VARCHAR},#{item.freeze,jdbcType=VARCHAR}
+    )
+    </foreach>
+  </insert>
+
+  <update id="updateBatchSourcelist"  >
+    update SRM_MAT_SOURCELIST
+    <trim prefix="set" suffixOverrides=",">
+    <trim prefix="CREATED_BY =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        when id=#{i.id} then #{createdBy,jdbcType=VARCHAR}
+      </foreach>
+    </trim>
+      <trim prefix="CREATED_TIME =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        when id=#{i.id} then #{createdTime,jdbcType=TIMESTAMP}
+      </foreach>
+    </trim>
+      <trim prefix="LAST_UPDATED_BY =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{lastUpdatedBy,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="LAST_UPDATED_TIME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{lastUpdatedTime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="DELETED =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then  #{deleted,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="DETAULTED =case" suffix="end,">
+      <foreach collection="list" item="i" index="index">
+        when id=#{i.id} then   #{detaulted,jdbcType=VARCHAR}
+      </foreach>
+    </trim>
+      <trim prefix="SUPPLIER_CAPACITY =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then   #{supplierCapacity,jdbcType=NVARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="SUPPLIER_CODE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then  #{supplierCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="SUPPLIER_LEVEL =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{supplierLevel,jdbcType=NVARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="SUPPLIER_NAME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{supplierName,jdbcType=NVARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="SUPPLIER_PCODE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{supplierPcode,jdbcType=NVARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="SUPPLIER_NAME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{supplierName,jdbcType=NVARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="ZT_CODE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{ztCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="REMARKS =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then  #{remarks,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="DELIVERY_TIME =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then  #{deliveryTime,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="UNIT =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then  #{unit,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="FREEZE =case" suffix="end,">
+        <foreach collection="list" item="i" index="index">
+          when id=#{i.id} then #{freeze,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+
+    </trim>
+
+    SUPPLIER_PCODE = #{supplierPcode,jdbcType=NVARCHAR},
+  </update>
+  
+  <update id="updateSourcelistByPKSelective" parameterType="com.ur.mro.mat.model.Sourcelist" >
+    update SRM_MAT_SOURCELIST
+    <set>
+      <if test="createdBy != null" >
+        CREATED_BY = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        CREATED_TIME = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null" >
+        LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedTime != null" >
+        LAST_UPDATED_TIME = #{lastUpdatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null" >
+        DELETED = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="detaulted != null" >
+        DETAULTED = #{detaulted,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCapacity != null" >
+        SUPPLIER_CAPACITY = #{supplierCapacity,jdbcType=NVARCHAR},
+      </if>
+      <if test="supplierCode != null" >
+        SUPPLIER_CODE = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierLevel != null" >
+        SUPPLIER_LEVEL = #{supplierLevel,jdbcType=NVARCHAR},
+      </if>
+      <if test="supplierName != null" >
+        SUPPLIER_NAME = #{supplierName,jdbcType=NVARCHAR},
+      </if>
+      <if test="supplierPcode != null" >
+        SUPPLIER_PCODE = #{supplierPcode,jdbcType=NVARCHAR},
+      </if>
+      <if test="supplierPcolor != null" >
+        SUPPLIER_PCOLOR = #{supplierPcolor,jdbcType=NVARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="materialId != null" >
+        MATERIAL_ID = #{materialId,jdbcType=INTEGER},
+      </if>
+      <if test="pantoneColor != null" >
+        PANTONE_COLOR = #{pantoneColor,jdbcType=VARCHAR},
+      </if>
+      <if test="ztCode != null" >
+        ZT_CODE = #{ztCode,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        REMARKS = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="minOrderCount != null" >
+        MIN_ORDER_COUNT = #{minOrderCount,jdbcType=NUMERIC},
+      </if>
+      <if test="deliveryTime != null" >
+        DELIVERY_TIME = #{deliveryTime,jdbcType=INTEGER},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="freeze != null" >
+        FREEZE = #{freeze,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- List<CommonSearchCondition> condList -->
+  <select id="searchSourcelistCount" resultType="int" >
+    select count(*) from SRM_MAT_SOURCELIST
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+  
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <select id="searchSourcelist" resultMap="BaseResultMap" >
+    select
+      <choose>
+        <when test="selectFields != null">
+          <foreach item="field" index="index" collection="selectFields" separator=",">
+            ${field}
+          </foreach>
+        </when>
+        <otherwise>
+          <include refid="Base_Column_List" />
+        </otherwise>
+      </choose>
+    from SRM_MAT_SOURCELIST
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in 
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+          #{item}
+      </foreach> 
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+             ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    	<if test='orderByList == null'>
+    		order by ID
+    	</if>
+    <if test="pageBean != null" >
+     	   Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+  </select>
+  
+  <!--货源清单物料主数据列表 -->
+  <select id="searchMaterialHb" resultMap="BaseResultMap" >
+    select
+    <choose>
+      <when test="selectFields != null">
+        <foreach item="field" index="index" collection="selectFields" separator=",">
+          T1.${field}
+        </foreach>
+      </when>
+      <otherwise>
+        T1.ID,T1.GROUP_ID,T1.MAT_TYPE,T1.DESIGN_NO,T1.CODE,T1.GRID_NO,T1.DEV_CODE_MAT,T1.OLD_CODE_MAT,T1.NAME,T1.UNIT,T1.SIDESEAL,T1.GPERM2,T1.BRAND_TYPE,T1.MODULE_NO,T1.CATEGORY_A,T1.CATEGORY_B,T1.CATEGORY_C,T1.CATEGORY_D,T1.DENSITY,T1.YARN_SPEC,T1.SHRINK_RATE,T1.ING_DESCRIPTION,T1.ING_COMMENTS,T1.MAT_SOURCE,T1.YEAR,T1.SEASON,T1.ORDER_NO,T1.PLAN_ORDER_NO,T1.TYPE,T1.ORDER_TYPE,T1.SERIAL,T1.STYLE,T1.BUSINESS_LEVEL,T1.CATEGORY,T1.SUB_CATEGORY,T1.DESIGNER,T1.STYLENAME_AUTO,T1.STYLENAME_CUSTOM,T1.SAMPLE,T1.SILHOUETTE,T1.FABRIC_FEATURES,T1.ELEMENT,T1.SLEEVE_TYPE,T1.COLLAR_TYPE,T1.CLO_LENGTH,T1.SLEEVE_PANT_LENGTH,T1.THICKNESS,T1.BRAND,T1.COMMENTS,T1.STATUS,T1.SIZEGROUP_CODE,T1.CREATED_BY,T1.CREATED_TIME,T1.LAST_UPDATED_BY,T1.LAST_UPDATED_TIME,T1.COST_PRICE,T1.SPEC,T1.DELETED,T1.EDITION,T1.EDITION_TYPE,T1.INSALE_DATE,T1.ITEM_NO,T1.LENDER,T1.MADER,T1.MARK,T1.OLD_STYLE_NO,T1.PAPER_SAMPLE,T1.PIC_DATE,T1.PLATE_TYPE,T1.POST_PROCESS,T1.PRICE,T1.PRODUCT_NAME,T1.QC,T1.SAMPLE_SIZE,T1.SKU,T1.SMP_STATUS_MARK,T1.STOCK_SPACE,T1.STYLE_SOURCE,T1.TAIL,T1.TAILOR,T1.ATTACHMENT_ID,T1.MAT_GROUP,T1.buy_Group,T1.REMARKS,T1.DESIGNER_NAME,T1.SB_STATUS,T1.SKU_COUNT,T1.MONTH_SETTLE,T1.DEM_FLAG,T1.SLEEVE_LENGTH,T1.DB_TYPE,T1.REF_SAMPLE_CODE,T1.OLD_STYLE,T1.APPLY_NO,T1.APPLY_SAMPLE,T1.BELOW_DATE,T1.ESTIMATE_PRICE,T1.PROCESSING_MODE,T1.SIZE_MARK,T1.PRODUCT_CODE,T1.PURCHASE_BY,T1.PURCHASE_AMOUMT,T1.ORIGINAL_CUSTOMER,T1.REF_DESIGN_NO,T1.IS_PRO,T1.ESTIMATE_COST,T1.RETAIL_PRICE,T1.IN_OQR_MAKE_ORDER,T1.COMPREHENSIVE_COST,T1.APPLICATION_CATEGORY,T1.PURCHASED_COLOR,T1.OVERSEAS_PURCHASE,T1.SALES_TRACKING,T1.CURRENT_HOLDER,T1.DELIVER_GOODS,T1.CONSIGNOR,T1.DELIVERY_TIME,T1.GOODS_RECEIP,T1.CONSIGNEE,T1.RECEIP_TIME,T1.SHIPPING_NOTE,T1.RECEIPT_NOTE,T1.PROCUREMENT_TIME,T1.CHARACTERISTIC,T1.PRODUCTION_CATEGORY,T1.PARTICIPATE_PRICE,T1.PRICING_PEOPLE,T1.PRICING_TIME,T1.IS_PRICED,T1.MATERIAL_CZ,T1.PO_TYPE,T1.MAKE_IE,T1.SAFE_INV,T1.STANDER_PRICE,T1.PO_TQDATE,T1.DJ_TYPE,T1.COLOR,T1.CLOPURCHASE,T1.CLOPURCHASE_TIME,T1.SHOP_IMAGE,T1.SHOP_IMAGE_NAME,T1.IS_ZCGL,T1.MAT_DEPICT,T1.SYQY,T1.GLDBD,T1.CHANG,T1.KUAN,T1.GAO,T1.CKG_UNIT,T2.ID as T2_ID,T2.CREATED_BY as T2_CREATED_BY,T2.CREATED_TIME as T2_CREATED_TIME,T2.LAST_UPDATED_BY as T2_LAST_UPDATED_BY,T2.LAST_UPDATED_TIME as T2_LAST_UPDATED_TIME,T2.DELETED as T2_DELETED,T2.DETAULTED as T2_DETAULTED,T2.SUPPLIER_CAPACITY as T2_SUPPLIER_CAPACITY,T2.SUPPLIER_CODE as T2_SUPPLIER_CODE,T2.SUPPLIER_LEVEL as T2_SUPPLIER_LEVEL,T2.SUPPLIER_NAME as T2_SUPPLIER_NAME,T2.SUPPLIER_PCODE as T2_SUPPLIER_PCODE,T2.SUPPLIER_PCOLOR as T2_SUPPLIER_PCOLOR,T2.TYPE as T2_TYPE,T2.MATERIAL_ID as T2_MATERIAL_ID,T2.PANTONE_COLOR as T2_PANTONE_COLOR,T2.ZT_CODE as T2_ZT_CODE,T2.REMARKS as T2_REMARKS,T2.MIN_ORDER_COUNT as T2_MIN_ORDER_COUNT,T2.DELIVERY_TIME as T2_DELIVERY_TIME,T2.UNIT as T2_UNIT,T2.FREEZE as T2_FREEZE
+      </otherwise>
+    </choose>
+    from
+    (select * from SRM_MAT_MATERIAL
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT('%',#{cond.value}),'%')
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    <if test='orderByList == null'>
+      order by ID
+    </if>
+    <if test="pageBean != null" >
+      Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+    ) T1
+    left join SRM_MAT_SOURCELIST T2 on
+    <!--TODO add join expression here -->
+  </select>
+
+  <!--货源清单物料主总数量 -->
+  <select id="searchMaterialHbCount" resultType="int" >
+    select count(*) from SRM_MAT_MATERIAL
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+  </select>
+
+
+  <!-- List<String> selectFields, List<CommonSearchCondition> condList, List<String> orderByList, PageBean pageBean -->
+  <!--<select id="searchMaterialHb" resultMap="BaseResultMap" >
+    select
+    <choose>
+      <when test="selectFields != null">
+        <foreach item="field" index="index" collection="selectFields" separator=",">
+          T1.${field}
+        </foreach>
+      </when>
+      <otherwise>
+        T1.ID,T1.GROUP_ID,T1.MAT_TYPE,T1.DESIGN_NO,T1.CODE,T1.GRID_NO,T1.DEV_CODE_MAT,T1.OLD_CODE_MAT,T1.NAME,T1.UNIT,T1.SIDESEAL,T1.GPERM2,T1.BRAND_TYPE,T1.MODULE_NO,T1.CATEGORY_A,T1.CATEGORY_B,T1.CATEGORY_C,T1.CATEGORY_D,T1.DENSITY,T1.YARN_SPEC,T1.SHRINK_RATE,T1.ING_DESCRIPTION,T1.ING_COMMENTS,T1.MAT_SOURCE,T1.YEAR,T1.SEASON,T1.ORDER_NO,T1.PLAN_ORDER_NO,T1.TYPE,T1.ORDER_TYPE,T1.SERIAL,T1.STYLE,T1.BUSINESS_LEVEL,T1.CATEGORY,T1.SUB_CATEGORY,T1.DESIGNER,T1.STYLENAME_AUTO,T1.STYLENAME_CUSTOM,T1.SAMPLE,T1.SILHOUETTE,T1.FABRIC_FEATURES,T1.ELEMENT,T1.SLEEVE_TYPE,T1.COLLAR_TYPE,T1.CLO_LENGTH,T1.SLEEVE_PANT_LENGTH,T1.THICKNESS,T1.BRAND,T1.COMMENTS,T1.STATUS,T1.SIZEGROUP_CODE,T1.CREATED_BY,T1.CREATED_TIME,T1.LAST_UPDATED_BY,T1.LAST_UPDATED_TIME,T1.COST_PRICE,T1.SPEC,T1.DELETED,T1.EDITION,T1.EDITION_TYPE,T1.INSALE_DATE,T1.ITEM_NO,T1.LENDER,T1.MADER,T1.MARK,T1.OLD_STYLE_NO,T1.PAPER_SAMPLE,T1.PIC_DATE,T1.PLATE_TYPE,T1.POST_PROCESS,T1.PRICE,T1.PRODUCT_NAME,T1.QC,T1.SAMPLE_SIZE,T1.SKU,T1.SMP_STATUS_MARK,T1.STOCK_SPACE,T1.STYLE_SOURCE,T1.TAIL,T1.TAILOR,T1.ATTACHMENT_ID,T1.MAT_GROUP,T1.buy_Group,T1.REMARKS,T1.DESIGNER_NAME,T1.SB_STATUS,T1.SKU_COUNT,T1.MONTH_SETTLE,T1.DEM_FLAG,T1.SLEEVE_LENGTH,T1.DB_TYPE,T1.REF_SAMPLE_CODE,T1.OLD_STYLE,T1.APPLY_NO,T1.APPLY_SAMPLE,T1.BELOW_DATE,T1.ESTIMATE_PRICE,T1.PROCESSING_MODE,T1.SIZE_MARK,T1.PRODUCT_CODE,T1.PURCHASE_BY,T1.PURCHASE_AMOUMT,T1.ORIGINAL_CUSTOMER,T1.REF_DESIGN_NO,T1.IS_PRO,T1.ESTIMATE_COST,T1.RETAIL_PRICE,T1.IN_OQR_MAKE_ORDER,T1.COMPREHENSIVE_COST,T1.APPLICATION_CATEGORY,T1.PURCHASED_COLOR,T1.OVERSEAS_PURCHASE,T1.SALES_TRACKING,T1.CURRENT_HOLDER,T1.DELIVER_GOODS,T1.CONSIGNOR,T1.DELIVERY_TIME,T1.GOODS_RECEIP,T1.CONSIGNEE,T1.RECEIP_TIME,T1.SHIPPING_NOTE,T1.RECEIPT_NOTE,T1.PROCUREMENT_TIME,T1.CHARACTERISTIC,T1.PRODUCTION_CATEGORY,T1.PARTICIPATE_PRICE,T1.PRICING_PEOPLE,T1.PRICING_TIME,T1.IS_PRICED,T1.MATERIAL_CZ,T1.PO_TYPE,T1.MAKE_IE,T1.SAFE_INV,T1.STANDER_PRICE,T1.PO_TQDATE,T1.DJ_TYPE,T1.COLOR,T1.CLOPURCHASE,T1.CLOPURCHASE_TIME,T1.SHOP_IMAGE,T1.SHOP_IMAGE_NAME,T1.IS_ZCGL,T1.MAT_DEPICT,T1.SYQY,T1.GLDBD,T1.CHANG,T1.KUAN,T1.GAO,T1.CKG_UNIT,T2.ID as T2_ID,T2.CREATED_BY as T2_CREATED_BY,T2.CREATED_TIME as T2_CREATED_TIME,T2.LAST_UPDATED_BY as T2_LAST_UPDATED_BY,T2.LAST_UPDATED_TIME as T2_LAST_UPDATED_TIME,T2.DELETED as T2_DELETED,T2.DETAULTED as T2_DETAULTED,T2.SUPPLIER_CAPACITY as T2_SUPPLIER_CAPACITY,T2.SUPPLIER_CODE as T2_SUPPLIER_CODE,T2.SUPPLIER_LEVEL as T2_SUPPLIER_LEVEL,T2.SUPPLIER_NAME as T2_SUPPLIER_NAME,T2.SUPPLIER_PCODE as T2_SUPPLIER_PCODE,T2.SUPPLIER_PCOLOR as T2_SUPPLIER_PCOLOR,T2.TYPE as T2_TYPE,T2.MATERIAL_ID as T2_MATERIAL_ID,T2.PANTONE_COLOR as T2_PANTONE_COLOR,T2.ZT_CODE as T2_ZT_CODE,T2.REMARKS as T2_REMARKS,T2.MIN_ORDER_COUNT as T2_MIN_ORDER_COUNT,T2.DELIVERY_TIME as T2_DELIVERY_TIME,T2.UNIT as T2_UNIT,T2.FREEZE as T2_FREEZE
+      </otherwise>
+    </choose>
+    from
+    (select * from SRM_MAT_MATERIAL
+    <if test="condList != null" >
+      <where>
+        <foreach item="cond" index="index" collection="condList" separator="and">
+          <if test="cond.operator=='like'">
+            ${cond.columnName}
+            like CONCAT(CONCAT("%",#{cond.value}),"%")
+          </if>
+          <if test="cond.operator =='in'">
+            ${cond.columnName} in
+            <foreach item="item" index="index" collection="cond.value.split(',')"  open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="cond.operator!='like' and cond.operator!='in'">
+            ${cond.columnName}
+            <if test="cond.operator=='eq'">
+              =
+            </if>
+            <if test="cond.operator=='ne'">
+              !=
+            </if>
+            <if test="cond.operator=='lt'">
+              &lt;
+            </if>
+            <if test="cond.operator=='gt'">
+              &gt;
+            </if>
+            <if test="cond.operator=='le'">
+              &lt;=
+            </if>
+            <if test="cond.operator=='ge'">
+              &gt;=
+            </if>
+            #{cond.value}
+          </if>
+        </foreach>
+      </where>
+    </if>
+    <if test='orderByList != null'>
+      order by
+      <foreach item="order" index="index" collection="orderByList" separator=",">
+        ${order}
+      </foreach>
+    </if>
+    <if test='orderByList == null'>
+      order by ID
+    </if>
+    <if test="pageBean != null" >
+      Offset #{pageBean.startRecordNum} Row Fetch Next #{pageBean.perPageSize} Rows Only
+    </if>
+    ) T1
+    left join SRM_MAT_SOURCELIST T2 on
+    &lt;!&ndash;TODO add join expression here &ndash;&gt;
+  </select>-->
+</mapper>

@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- include 公共head -->
+<head th:include="common/common_head :: commonHeader('demo')"></head>
+
+<style scoped>
+	[v-cloak] {
+		display: none;
+	}
+
+	.el-button {
+		box-shadow: 2px 2px 2px #CCCCCC
+	}
+	.el-table .el-button{
+		box-shadow: 0px 0px 0px #CCCCCC !important;
+	}
+	.el-input.is-disabled .el-input__inner{
+		color: #060505cc;
+		border-color: #dcdfe6;
+		background-color: white;
+	}
+	.el-form-item.is-error .el-input__inner, .el-form-item.is-error .el-input__inner:focus, .el-form-item.is-error .el-textarea__inner, .el-form-item.is-error .el-textarea__inner:focus, .el-message-box__input input.invalid, .el-message-box__input input.invalid:focus{
+		border-color: #F56C6C !important;
+	}
+	.el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus{
+		border-color: #67C23A !important;
+	}
+
+	html,
+	body {
+		height: 100%;
+	}
+
+	#app {
+		width: 100%;
+		height: 100%;
+		/*display: flex;*/
+	}
+
+	#app1 {
+		width: 100%;
+		display: flex;
+		height: 100%;
+		flex-direction: column;
+	}
+
+	.titlebox {
+		height: 40px;
+		line-height: 40px;
+		padding: 0px 10px;
+		font-size: 18px;
+		font-weight: bold;
+	}
+
+	.titlebox .MYcontainer {
+		font-size: 18px;
+		font-weight: bold;
+		border-bottom: 1px dashed #CCCCCC;
+	}
+	body .el-table th.gutter{
+		display: table-cell!important;
+	}
+	.ctrbox {
+		height: 45px;
+		padding: 0 10px;
+	}
+
+	.ctrbox .MYcontainer {
+		background: white;
+		/*border-bottom: 1px dashed #CCCCCC;*/
+	}
+	.info-container{
+		min-height: 50px;
+		width: 100%;
+		height: 100%;
+		background: white;
+		padding: 7px;
+		border-radius: 5px;
+	}
+	.mainbox {
+		flex: 1;
+		width: 100%;
+		overflow: auto;
+	}
+	.tupian-bigbox{
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.mainbox .MYcontainer {
+		padding: 0px 7px;
+		background: linear-gradient(to top, rgb(255, 255, 255), rgb(218, 232, 251));
+		border-radius: 10px;
+		margin-bottom: 10px;
+		box-shadow: 2px 2px 2px #ccc;
+		padding-bottom: 10px;
+	}
+
+	.formtitle {
+		width: 100%;
+		height: 40px;
+		line-height: 40px;
+		text-align: center;
+		/* background: #f8f1f2; */
+		border-radius: 0px;
+		/* margin-bottom: 10px !important; */
+		/* border-bottom: 1px solid #ccc; */
+		font-size: 16px;
+
+	}
+
+	.el-form-item {
+		margin-left: 0px;
+		margin-bottom: 0px;
+		margin-bottom: 2px;
+	}
+
+	.el-form-item__label {
+		color: #666666 !important;
+	}
+
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+	}
+
+	.ckg .el-form-item__content {
+
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.itembox .ckg {
+		flex: 1;
+
+		display: flex;
+	}
+
+	.el-form {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.el-form-item {
+		flex: 1;
+	}
+
+	.itembigbox {
+		flex: 1;
+		display: flex;
+	}
+
+	.itembox {
+		flex: 1;
+		display: flex;
+		/*background: yellow;*/
+		display: flex;
+		justify-content: flex-start;
+	}
+	.el-input--small .el-input__inner{
+		height: 32px;
+		line-height: 32px;
+		border: 0;
+		border-bottom: 1px solid #ccc;
+		border-radius: 0;
+	}
+	.el-input-group__append{
+		border-left: 1px solid #dcdfe6  !important;
+	}
+	.el-textarea__inner {
+		/*min-height: 80px !important;*/
+		/*max-height: 80px !important;*/
+		border: 0;
+		border-bottom: 1px solid #CCCCCC;
+	}
+
+	.itembox .el-input__inner {
+		font-size: 12px;
+		border: 0;
+		border-bottom: 1px solid #ccc;
+		border-radius: 0;
+	}
+
+	.el-select-dropdown__item {
+		font-size: 12px;
+	}
+
+	.el-upload-list--picture .el-upload-list__item {
+		width: 400px;
+	}
+
+	.el-upload-list__item {
+		width: 400px;
+	}
+
+	.el-dialog__body {
+		padding: 5px 20px;
+		flex: 1;
+		height: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	fieldset, img{
+		max-height: 100%;
+		max-width: 100%;
+		height: 100%;
+	}
+	.el-dialog {
+		height: 90%;
+		display: flex;
+		flex-direction: column;
+	}
+	.el-icon-arrow-up:before{
+		display: none;
+	}
+	.el-image {
+		width: 100%;
+		height: 100%;
+	}
+
+	.tupiantextbox {
+		padding: 5px;
+	}
+
+	.el-progress.is-success .el-progress__text .el-icon-circle-check:before {
+		color: #67c23a;
+	}
+
+	.icontupian:hover {
+		color: blue;
+		cursor: pointer;
+	}
+
+	.tupian-box {
+		max-width: 249px;
+		margin: 5px;
+		width: 500px;
+		height: 87px;
+		display: flex;
+		border: 1px solid #ccc;
+		background: white;
+		border-radius: 5px;
+		overflow: hidden;
+		margin-bottom: 5px;
+		position: relative;
+
+	}
+
+	.tupian-info-desc {
+		height: 50px;
+		border-bottom: 1px dashed #ebecf1;
+	}
+
+	.tupian-img {
+		width: 85px;
+		height: 85px;
+		background: #fcfcfc;
+		display: flex;
+		text-align: center;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.tupian-img > img {
+		max-width: 100%;
+		height: 100%;
+
+	}
+
+	.tupian-info {
+		width: 100px;
+		flex: 1;
+		padding: 5px;
+		border-left: 1px dashed #ebecf1;
+	}
+
+	.tupian-info-name, .tupian-info-time {
+		height: 25px;
+		line-height: 25px;
+		text-align: left;
+		font-size: 12px;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	.tupian-info-icon {
+		height: 30px;
+		line-height: 14px;
+		text-align: right;
+		font-size: 42px;
+
+	}
+
+	.el-progress {
+		position: absolute;
+		bottom: -2px;
+		left: 70px;
+		line-height: 1;
+		width: 329px;
+	}
+	.PEIjian .el-table .cell{
+		height: 39px;
+		line-height: 39px;
+		font-size: 12px;
+	}
+	.el-form-item__error{
+		top: 76%;
+	}
+	.el-table .el-textarea__inner{
+		max-height: 32px !important;
+		min-height: 32px !important;
+	}
+	.el-table .el-form-item__content{
+		flex: 1;
+		height:39px;
+		display: flex !important;
+		align-items: center !important;
+	}
+	.red{
+		color: red;
+	}
+	.el-select .el-tag{
+		margin: 4px 0 2px 6px;
+	}
+	.el-progress-bar{
+		padding-right: 0px;
+		width: 277px !important;
+		margin-right: 0px;
+		box-sizing: border-box;
+	}
+	.el-upload__tip{
+		font-size: 12px;
+		color: #606266;
+		margin-top: 7px;
+		position: absolute;
+		left: 100px;
+		top: -6px;
+	}
+	.Filebox{
+		/*background: linear-gradient(to top, rgb(251, 241, 241), rgb(236, 244, 251));*/
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 5px;
+	}
+	.listbox{
+		background: linear-gradient(to top, rgb(255, 255, 255), rgb(218, 232, 251));;
+		flex: 1;
+		width: 0;
+		margin: 6px;
+		border-radius: 10px;
+		padding: 6px 8px;
+		height: 100%;
+		min-height: 100px;
+		padding-top: 0;
+		box-shadow: 2px 2px 2px #e0e0df;
+	}
+	.upload-demo{
+		display: none;
+	}
+	.el-textarea.is-disabled .el-textarea__inner{
+		background: white;
+	}
+</style>
+
+</head>
+
+<body>
+
+<div id='app' v-cloak v-loading="Submitloading">
+	<div id='app1'  v-show="showapp">
+		<div class="titlebox">
+			{{tittletip}}
+		</div>
+		<!--<div class="ctrbox">-->
+			<!--<div class="MYcontainer">-->
+				<!--<el-button  @click="submitForm('form')" type="primary" plain>保存</el-button>-->
+				<!--<el-button  type="info" plain @click="toback">-->
+					<!--返回-->
+				<!--</el-button>-->
+			<!--</div>-->
+		<!--</div>-->
+		<div class="mainbox">
+			<el-form class="demo-ruleForm"
+					 :line-message="true"
+					 label-position='right'
+					 ref="form"
+					 :model="form"
+					 label-width="100px"
+					 enctype="multipart/form-data"
+					 style='display: flex;margin:2px 10px;border-radius:10px'
+			>
+				<div class="MYcontainer">
+					<div class="formtitle">
+						基本信息
+					</div>
+
+					<div class="info-container">
+						<div class="itembigbox">
+							<div class="itembox">
+								<el-form-item label="物料编码">
+									<el-input
+											size='small'
+											v-model.trim="form.code"
+											type='text'
+											disabled>
+									</el-input>
+								</el-form-item>
+							</div>
+							<div class="itembox">
+								<el-form-item
+										label="物料类型"
+										prop="matType"
+										:rules="[{ required: true, message: '不能为空', trigger:['change','blur'] }]">
+									<el-select
+											size='small'
+											v-model="form.matType"
+											placeholder="请选择"
+											disabled
+											style='width:100%;'>
+										<el-option
+												v-for="(item,key) in matTypes"
+												:label="item" :value="key">
+										</el-option>
+									</el-select>
+								</el-form-item>
+							</div>
+							<div class="itembox">
+								<el-form-item label="状态" prop="status" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+									<el-select
+											disabled
+											size='small'
+											v-model="form.status"
+											style='width:100%;'>
+										<el-option v-for="(item,key) in matStatus" :label="item" :value="key"></el-option>
+									</el-select>
+								</el-form-item>
+
+							</div>
+							<div class="itembox">
+								<el-form-item label="品牌" prop="brandType" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+									<el-select size="small"
+											   disabled
+											   @change="tochangebrandType" v-model="form.brandType" placeholder="请选择"
+											   style='width:100%;'>
+										<el-option v-for="(item,key) in brandTypes" :label="item" :value="key"></el-option>
+									</el-select>
+
+									</el-select>
+								</el-form-item>
+							</div>
+						</div>
+
+						<div class="itembigbox">
+							<div class="itembox">
+								<el-form-item label="大类" prop="categoryA" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+									<el-select
+											disabled
+											size="small"
+											@change="tochangeL"
+											v-model="form.categoryA"
+											placeholder="请选择"
+											style='width:100%;'>
+										<el-option v-for="(item,key) in categoryAs" :label="item" :value="key"></el-option>
+									</el-select>
+								</el-form-item>
+							</div>
+							<div class="itembox">
+								<el-form-item label="中类" prop="categoryB" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+									<el-select
+											disabled
+											size="small"
+											@change="tochangeM"
+											v-model="form.categoryB"
+											placeholder="请选择"
+											style='width:100%;'>
+										<el-option v-for="(item,key) in allCategoryB[form.categoryA]" :label="item"
+												   :value="key"></el-option>
+									</el-select>
+								</el-form-item>
+							</div>
+							<div class="itembox">
+								<el-form-item label="小类" prop="categoryC" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+									<el-select
+											disabled
+											size="small"
+											v-model="form.categoryC"
+											placeholder="请选择"
+											style='width:100%;'
+											@change="tochangeS">
+										<el-option
+												v-for="(item,key) in allCategoryC[form.categoryB]"
+												:label="item"
+												:value="key"
+
+										></el-option>
+									</el-select>
+								</el-form-item>
+							</div>
+							<div class="itembox">
+								<el-form-item label="物料名称" prop="name" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+									<el-popover
+
+											size="small"
+											placement="top-start"
+											title="物料命名:"
+											width="400"
+											trigger="hover"
+
+											:content="form.xiaolei">
+										<div>
+                                        <span style="display:inline-block;width:60px;text-align: end">
+                                            规则：
+
+                                        </span>
+											<span>
+                                            {{WLguizeinfo}}
+												<!--{{form.categoryC==''?'':WLguize[form.categoryC].guize}}-->
+                                        </span>
+
+										</div>
+										<div>
+											<span style="display:inline-block;width:60px;text-align: end">示例：</span>
+											<span>
+                                              {{WLshiliinfo}}
+												<!--{{form.categoryC==''?'':WLguize[form.categoryC].shili}}-->
+                                        </span>
+
+										</div>
+										<el-input
+												disabled
+												size="small"
+												v-model.trim="form.name"
+												slot="reference"></el-input>
+									</el-popover>
+								</el-form-item>
+
+							</div>
+
+						</div>
+
+						<div class="itembigbox">
+							<div class="itembox">
+								<el-form-item label="基本单位" prop="unit" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+									<el-select
+											disabled
+											size="small"
+											v-model="form.unit"
+											placeholder="请选择" style='width:100%;'>
+										<el-option v-for="(item,key) in units" :label="item" :value="key"></el-option>
+									</el-select>
+								</el-form-item>
+							</div>
+							<div class="itembox">
+								<el-form-item label="使用区域" prop="syqy" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]" style='width:100%;'>
+									<el-select
+											size="small"
+											v-model="form.syqy"
+											disabled
+											placeholder="请选择"
+											style='width:100%;'>
+										<el-option v-for="(item,key) in useAreas" :label="item" :value="key"></el-option>
+									</el-select>
+								</el-form-item>
+							</div>
+							<div class="itembox">
+								<el-form-item label="旧物料编码" prop="oldCodeMat"  style='width:100%;'>
+									<!--<el-input v-model="form.oldCodeMat"></el-input>-->
+									<el-select size="small" style="width: 100%;"
+											   v-model="form.oldCodeMat"
+											   filterable
+											   remote
+											   clearable
+											   disabled
+											   reserve-keyword
+											   placeholder=""
+											   :remote-method="remoteMethod"
+											   :loading="oldCodeMatloading">
+										<el-option
+												v-for="item in options4"
+												:key="item.value"
+												:label="item.label"
+												:value="item.value"
+										>
+											<!--<span style="float: left;padding: 0 10px;">{{ item}}</span>-->
+
+
+										</el-option>
+									</el-select>
+								</el-form-item>
+							</div>
+							<div class="itembox">
+								<el-form-item label="制作工艺" style='width:100%;' prop="makeIe" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+									<el-input
+											disabled
+											size="small"
+											v-model="form.makeIe"></el-input>
+								</el-form-item>
+							</div>
+
+						</div>
+
+						<div class="itembigbox">
+							<div class="itembox">
+								<el-form-item label="材质" style='width:100%;' prop="materialCz" :rules="[
+      { required: true, message: '不能为空', trigger:['change','blur'] }]">
+									<el-input
+											size="small"
+											disabled
+											v-model.trim="form.materialCz"
+									></el-input>
+								</el-form-item>
+							</div>
+							<div class="itembox">
+								<el-form-item label="规格" style='width:100%;'>
+									<el-input
+											disabled
+											size="small"
+											v-model.trim="form.spec"
+											spellcheck='false'></el-input>
+								</el-form-item>
+							</div>
+
+							<div class="itembox" style='display: flex;justify-content: flex-end;justify-content: flex-end'>
+								<el-form-item label="长" label-width='30px' style='max-width: 120px'>
+									<!--<el-input-number v-model="form.chang" :precision="2" :step="1" control="false"></el-input-number>-->
+									<el-input
+											size="small"
+											type='number'
+											v-model="form.chang"
+											placeholder="毫米"
+											disabled
+											@keypress.native="if((event.keyCode<48 || event.keyCode>57) && event.keyCode!=46 || /\.\d\d$/.test(form.chang)){event.returnValue=false}"></el-input>
+									<!--<el-input type='number' size="9" v-model="form.chang" placeholder="" @keyup.native="num('chang',form.chang)"> </el-input>-->
+
+									<!--<el-input type='number' size="9" v-model="form.chang" placeholder="" onkeyup="value=value.replace(/[^\0-9\.]/g,'')" onpaste="value=value.replace(/[^\0-9\.]/g,'')" oncontextmenu = "value=value.replace(/[^\0-9\.]/g,'')"> </el-input>-->
+
+								</el-form-item>
+
+								<el-form-item label="宽" label-width='30px' style='max-width: 120px'>
+									<el-input
+											size="small"
+											type='number'
+											v-model="form.kuan"
+											placeholder="毫米"
+											disabled
+											@keypress.native="if((event.keyCode<48 || event.keyCode>57) && event.keyCode!=46 || /\.\d\d$/.test(form.kuan)){event.returnValue=false}"></el-input>
+								</el-form-item>
+
+								<el-form-item label="高" label-width='30px' style='max-width: 120px'>
+									<el-input
+											size="small"
+											type='number'
+											disabled
+											v-model="form.gao"
+											placeholder="毫米"
+											@keypress.native="if((event.keyCode<48 || event.keyCode>57) && event.keyCode!=46 || /\.\d\d$/.test(form.gao)){event.returnValue=false}"></el-input>
+								</el-form-item>
+
+							</div>
+
+							<div class="itembox">
+								<el-form-item label="颜色" style='width:100%;'>
+									<el-input
+											size="small"
+											type='text'
+											disabled
+											v-model.trim="form.color"></el-input>
+								</el-form-item>
+							</div>
+						</div>
+
+						<div class="itembigbox">
+							<div class="itembox">
+								<el-form-item label="采购组" style='width:100%;'>
+
+									<el-select
+											size="small"
+											disabled
+											v-model="form.buyGroup"
+											placeholder="请选择" style='width:100%;'>
+										<el-option :label="item"
+												   :value="key"
+												   v-for="(item,key) in buyGroup"></el-option>
+									</el-select>
+								</el-form-item>
+							</div>
+
+							<div class="itembox">
+								<el-form-item label="采购提前期" style='width:100%;'>
+									<el-input
+											disabled
+											size="small"
+											type='number'
+											v-model="form.poTqdate"
+											placeholder="单位：天"
+											@keydown.native="onlyNum()"></el-input>
+
+									<!--<el-input type='number' v-model.trim="form.caigoutqq" placeholder="请输入天数，纯数字：1,5,9.."></el-input>-->
+
+								</el-form-item>
+							</div>
+							<div class="itembox ckg">
+								<el-form-item label="店铺形象" style='width:100%;'>
+									<el-select
+											disabled
+											size="small"
+											v-model="form.shopImage"
+											multiple
+											placeholder="请先选品牌"
+											style='width:100%;'
+											@change="changebrandType">
+										<el-option v-for="(item,key) in shopImage[form.brandType]" :label="item"
+												   :value="key"></el-option>
+									</el-select>
+								</el-form-item>
+							</div>
+							<div class="itembox">
+								<el-form-item label="安全库存" style='width:100%;'>
+									<el-input
+											disabled
+											size="small"
+											type='number'
+											v-model="form.safeInv"
+											@keydown.native="onlyNum()"></el-input>
+								</el-form-item>
+							</div>
+						</div>
+
+						<div class="itembigbox">
+							<div class="itembox">
+								<el-form-item label="下单类别" style='width:100%;'>
+									<el-select
+											disabled
+											size="small"
+											v-model="form.poType"
+											placeholder="请选择"
+											style='width:100%;'
+											clearable>
+										<el-option v-for="(item,key) in oldCodeMat" :label="item" :value="key"></el-option>
+									</el-select>
+								</el-form-item>
+							</div>
+
+							<div class="itembox">
+								<el-form-item label="关联打板单" style='width:100%;'>
+									<el-input
+											disabled
+											size="small"
+											v-model="form.gldbd"
+											type='textarea' ></el-input>
+								</el-form-item>
+
+							</div>
+
+							<div class="itembox">
+								<el-form-item label="英文描述" style='width:100%;'>
+									<el-input
+											disabled
+											size="small"
+											v-model="form.matDepict"
+											type='textarea'></el-input>
+								</el-form-item>
+							</div>
+							<div class="itembox">
+								<el-form-item label="备注" style='width:100%;'>
+									<el-input
+											disabled
+											size="small"
+											type='textarea'
+											v-model="form.remarks"></el-input>
+								</el-form-item>
+							</div>
+
+							<!--<div class="itembox ckg">
+                                <el-form-item label="备注" style='width:100%;'>
+                                    <el-input type='textarea' v-model="form.beizhu" ></el-input>
+                                </el-form-item>
+                            </div>-->
+
+
+						</div>
+						<div class="itembigbox">
+							<div class="itembox ckg">
+
+							</div>
+							<div class="itembox" style='width:100%;'>
+							</div>
+						</div>
+
+						<div class="itembigbox">
+
+						</div>
+
+					</div>
+			</el-form>
+
+		</div>
+		<div class="MYcontainer PEIjian">
+			<div class="formtitle">
+				配件明细
+			</div>
+			<el-table
+					:row-key="tablekey"
+					border
+					@selection-change="handleSelectionChange"
+					ref="multipleTable"
+					:data="form.materialInfoList"
+					tooltip-effect="dark"
+					style="width: 100%;
+    border-radius: 10px;
+    overflow: hidden;"
+			>
+
+				<el-table-column
+						label="配件编码"
+						min-width='150'
+						align='center'
+						:render-header="renderHeader">
+					<template slot-scope="scope">
+						<el-form-item
+								label-width="0px"
+								:prop="'materialInfoList.' + scope.$index + '.matCode'"
+								:rules="[{ required: true, message: '  ', trigger:['change','blur'] }]">
+							<el-input
+									disabled
+									size='small'
+									placeholder=""
+									v-model="scope.row.matCode">
+								<!--<el-button-->
+										<!--disabled-->
+										<!--size='small'-->
+										<!--slot="append"-->
+										<!--icon="el-icon-search"-->
+										<!--@click="tanchuWLbox(scope.$index)"-->
+								<!--&gt;</el-button>-->
+							</el-input>
+						</el-form-item>
+					</template>
+				</el-table-column>
+
+				<el-table-column
+						label="配件名称"
+						min-width='150'
+						align='center'
+						:render-header="renderHeader">
+					<template slot-scope="scope">
+						<el-form-item
+								label-width="0px"
+								ref="matName"
+								:prop="'materialInfoList.' + scope.$index + '.matName'"
+								:rules="[{ required: true, message: '  ', trigger:['blur','change'] }]">
+							<el-input
+									disabled
+									size='small'
+									placeholder=""
+									v-model="scope.row.matName"
+							></el-input>
+						</el-form-item>
+					</template>
+				</el-table-column>
+
+				<el-table-column
+						label="规格"
+						min-width='100'
+						align='center'
+				>
+					<template slot-scope="scope">
+						<el-form-item
+								label-width="0px"
+								ref="mobilephone"
+						>
+							<el-input
+									disabled
+									size='small'
+									placeholder=""
+									v-model="scope.row.matSpec"
+									@keyup.native="scope.row.matSpec=scope.row.matSpec.replace(/[^0-9]/ig,'')"
+							></el-input>
+						</el-form-item>
+					</template>
+				</el-table-column>
+				<el-table-column
+						label="基本数量"
+						min-width='60'
+						align='center'>
+					<template slot-scope="scope">
+						<el-form-item style='daiplay:flex' label-width="0px">
+							<el-input
+									disabled
+									size='small'
+									placeholder=""
+									v-model="scope.row.basicQut"
+									@keyup.native="scope.row.basicQut=scope.row.basicQut.replace(/[^0-9]/ig,'')"
+							></el-input>
+						</el-form-item>
+					</template>
+				</el-table-column>
+
+				<el-table-column
+						label="基本单位"
+						min-width='60'
+						align='center'>
+					<template slot-scope="scope">
+						<el-form-item label-width="0px">
+							<el-input
+									disabled
+									size='small'
+									placeholder=""
+									v-model="scope.row.baseUnit"
+									@keyup.native="scope.row.matSpec=scope.row.matSpec.replace(/[^0-9]/ig,'')"
+							></el-input>
+						</el-form-item>
+					</template>
+				</el-table-column>
+
+				<el-table-column
+						label="备注"
+						width='250'
+						align='center'>
+					<template slot-scope="scope">
+						<el-form-item
+								label-width="0px"
+						>
+							<el-input
+									disabled
+									type="textarea"
+									size='small'
+									v-model="scope.row.comments"
+									placeholder=""></el-input>
+
+						</el-form-item>
+					</template>
+				</el-table-column>
+
+				<!--<el-table-column-->
+						<!--label="操作"-->
+						<!--min-width="100"-->
+						<!--align='center' >-->
+					<!--<template slot-scope="scope">-->
+						<!--&lt;!&ndash;<el-button size='small'>维护采购价格</el-button>&ndash;&gt;-->
+						<!--<el-button-->
+								<!--disabled-->
+								<!--size='small'-->
+								<!--@click.native.prevent="deleteRow(scope.$index,scope.row, form.materialInfoList,)"-->
+								<!--type="danger" plain>-->
+							<!--删除-->
+						<!--</el-button>-->
+					<!--</template>-->
+				<!--</el-table-column>-->
+
+			</el-table>
+			<div>
+				<!--<el-button @click='addhuoyuan' icon='el-icon-folder-add' size='small' type="primary">新增</el-button>-->
+			</div>
+		</div>
+		<div class='Filebox' style="display：flex;">
+			<div class="listbox" style="margin-left: 0;">
+				<div class="formtitle">
+					制作文件列表
+				</div>
+				<div class="info-container">
+					<div style="flex: 1;">
+						<el-form-item label="" label-width="0">
+							<el-upload
+									multiple
+									class="upload-demo"
+									:action="uploadUrl"
+									:on-preview="handlePreview"
+									:on-success="handlesuccess1"
+									:on-remove="handleRemove"
+									:before-remove="beforeRemove"
+									:on-exceed="handleExceed"
+									:file-list="form.wenjianlist"
+									:show-file-list='false'
+							>
+								<div slot="tip" class="el-upload__tip"></div>
+								<!--<el-button size="small" type="primary">点击上传</el-button>-->
+							</el-upload>
+							<div class="tupian-bigbox">
+								<div v-for="(item,index) in form.doCfiles" class="tupian-box">
+									<div class="tupian-img">
+										<img :src="totypeflie(item.fileType,item)" alt="" style="height: 64px;"/>
+									</div>
+									<div class="tupian-info">
+										<div class="tupian-info-desc">
+											<div class="tupian-info-name">{{item.name}}</div>
+											<div class="tupian-info-time">{{item.lastUpdatedTime}}</div>
+										</div>
+										<div class="tupian-info-icon">
+											<el-progress v-show='item.percentage' :percentage="item.percentage"
+														 :status="item.status=='success'?'success':'exception'"></el-progress>
+											<i class="el-icon-zoom-in icontupian" style="font-size:20px;" v-show="item.fileType=='jpg'||item.fileType=='jpeg'||item.fileType=='png'?true:false"
+											   @click="tolook(item,index)"></i>
+											<a :href="downURL + item.filaName">
+												<i class="el-icon-download icontupian" style="font-size:20px;"></i>
+											</a>
+											<!--<i class="el-icon-delete icontupian" style="font-size:20px;"-->
+											   <!--@click="todelete2(item,index)"></i>-->
+										</div>
+									</div>
+								</div>
+							</div>
+						</el-form-item>
+					</div>
+				</div>
+			</div>
+
+			<div class="listbox" style="margin-right: 0;">
+				<div class="formtitle">
+					图片列表
+				</div>
+				<div class="info-container">
+					<div style="flex: 1;">
+						<el-form-item
+								ref='tupian'
+								label=""
+								label-width="0"
+
+						>
+							<el-upload
+									class="upload-demo"
+									multiple
+									:action="uploadUrl"
+									:on-preview="handlePreview"
+									:on-remove="handleRemove"
+									:on-success="handlesuccess2"
+									:on-error="handleerrors"
+									:file-list="fileList"
+									:on-progress="handleprogress"
+									list-type="picture"
+									:show-file-list='false'
+									accept="image/jpeg,image/png,image/jpg,"
+							>
+								<!--<el-button size="small" type="primary">点击上传</el-button>-->
+								<div slot="tip" class="el-upload__tip"></div>
+							</el-upload>
+							<div class="tupian-bigbox">
+								<div v-for="(item,index) in form.files" class="tupian-box">
+									<div class="tupian-img">
+										<img :src="imageUrl+item.abbFileName" alt=""/>
+									</div>
+									<div class="tupian-info">
+										<div class="tupian-info-desc">
+											<div class="tupian-info-name">{{item.name}}</div>
+											<div class="tupian-info-time">{{item.lastUpdatedTime}}</div>
+										</div>
+										<div class="tupian-info-icon">
+											<el-progress v-show='item.percentage' :percentage="item.percentage"
+														 :status="item.status=='success'?'success':'exception'"></el-progress>
+											<i class="el-icon-zoom-in icontupian" style="font-size:20px;"
+											   @click="tolook(item,index)"></i>
+											<a :href="downURL+item.abbFileName">
+												<i class="el-icon-download icontupian" style="font-size:20px;"></i>
+											</a>
+											<!--<i class="el-icon-delete icontupian" style="font-size:20px;"-->
+											   <!--@click="todelete1(item,index)"></i>-->
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+							<el-dialog :visible.sync="dialogVisible" title="图片预览" top="5vh">
+								<img  :src="dialogImageUrl" alt=""/>
+							</el-dialog>
+						</el-form-item>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+
+		<div class="itembigbox" style="display: flex;flex-direction: row;flex-wrap: nowrap">
+
+
+
+
+		</div>
+		</el-form>
+
+		<el-dialog :visible.sync="dialogTableVisible" width="95%" :fullscreen='fullscreen'>
+
+
+
+			<div slot="title">
+				<el-button size="small" @click="tofullscreen" type="primary">全屏|缩小</el-button>
+			</div>
+			<iframe :src="WLtkurl" frameborder="0" style="width: 100%;height: 100%;">
+
+			</iframe>
+		</el-dialog>
+
+	</div>
+
+
+</div>
+</div>
+<div th:include="common/onload_js :: onloadJS"></div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            // 图片上传url
+            imageUrl: [[${imageUrl}]],
+            uploadUrl: [[${uploadUrl}]],
+            downURL: [[${downloadUrl}]],
+            deleteUrl: [[${deleteUrl}]],
+            // deleteUrl:'http://192.168.13.38:8286/admin/sys/file/delete/',
+            WLMXdeleteUrl:'deletedMaterialInfo',
+            editWLurl:'/mat/editMaterial',
+            WLtkurl:'/mat/tkMaterialList',
+            WLguizeinfo:'',
+            WLshiliinfo:'',
+            WLguize:{
+                DMZ:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'灰色通体砖S001'},
+                QMZ:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'灰色通体砖S001'},
+                DMSC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'蓝天碧玉大理石'},
+                QMSC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'蓝天碧玉大理石'},
+                DMBC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'格纹铝型材饰面板'},
+                QMBC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'ABS造型板'},
+                THBC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'沙面不锈钢板'},
+                DMJC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'深灰格纹地毯'},
+                QMJC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'咖啡色漆软陶板'},
+                THJC:{WLguizeinfo:'特性（颜色+工艺）供应商物料名称',WLshiliinfo:'咖啡色肌理漆软陶板'},
+                GDHJ:{WLguizeinfo:'名称+型号',WLshiliinfo:'墙身架A(A为型号)'},
+                HDHJ:{WLguizeinfo:'名称+型号',WLshiliinfo:'中岛展台A(A为型号)'},
+                DX:{WLguizeinfo:'型号+名称',WLshiliinfo:'900*800*180电箱,IC65N1P16A空开'},
+                BGJS:{WLguizeinfo:'物料原有名称',WLshiliinfo:'A4文件柜'},
+                SYJDJ:{WLguizeinfo:'物料原有名称',WLshiliinfo:'大摆码车'},
+                XFSB:{WLguizeinfo:'按供应商物料名称',WLshiliinfo:'消防门报警装置'},
+                YJSB:{WLguizeinfo:'按供应商物料名称',WLshiliinfo:'应急灯'},
+                FDSB:{WLguizeinfo:'按供应商物料名称',WLshiliinfo:'1170声磁系统天线'},
+                DSP:{WLguizeinfo:'型号+名称',WLshiliinfo:'P5LED屏,P5LED弧形屏'},
+                JKXT:{WLguizeinfo:'品牌/供应商+小类',WLshiliinfo:'海视康威监控系统'},
+                YXXT:{WLguizeinfo:'品牌/供应商+小类',WLshiliinfo:'BOSE音响系统'},
+                SD:{WLguizeinfo:'区域/功能+名称',WLshiliinfo:'入口射灯(名称是由供应商提供应商物料名称)'},
+                SD:{WLguizeinfo:'区域/功能+名称',WLshiliinfo:'入口筒灯(名称是由供应商提供应商物料名称)'},
+                ZSD:{WLguizeinfo:'区域/功能+名称',WLshiliinfo:'男装中岛展台吊灯'},
+                BSP:{WLguizeinfo:'内容/形式+小类名称',WLshiliinfo:'男试衣间MALE FITTING ROOM导向标识牌；非员工勿入标识牌…'},
+                LOGO:{WLguizeinfo:'名称+安装工艺+发光工艺',WLshiliinfo:'H150全称背装亚克力无边正发光字'},
+                WJPJ:{WLguizeinfo:'按供应商物料名称',WLshiliinfo:'大U型收边条'}
+            },
+
+            // 加载loding
+            oldCodeMatloading: false,  //旧物料编码loading
+            Submitloading: false,  //提交loading
+
+            showapp:false,
+            // 图片预览
+            dialogVisible: false, //图片预览弹框
+            dialogImageUrl: '',   //图片预览地址
+            form: [[${material}]],
+            // 远程搜索
+            fullscreen:false,
+
+            options4:[[${tenStrArray}]],   //旧物料编码下拉数据
+            list: [],  //旧物料编码全部数据
+            states: [[${strArray}]],  //旧物料编码全部数据
+
+            //					表单信息
+            // form: {
+            // 	code:'', //物料编码
+            // 	matType:'', //物料类型
+            // 	name:'',  //物料名称
+            // 	brandType:'111', //品牌类型
+            // 	categoryA:'', //大类
+            // 	categoryB:'', //中类
+            // 	categoryC:'', //小类
+            // 	unit:'', //基本单位
+            // 	status:'启用', //状态
+            // 	shiyongquyu:'', //使用区域
+            // 	oldCodeMat:'', //旧物料编码
+            // 	makeIe:'', //制作工艺
+            // 	materialCz:'', //材质
+            // 	spec:'', //规格
+            // 	matlong:'', //长
+            // 	matwidth:'', //宽
+            // 	matheight:'', //高
+            // 	color:'', //颜色
+            // 	caigouzu:'', //采购组
+            // 	poTqdate:'', //采购提前期
+            // 	shopImageName:'', //店铺形象名称
+            // 	safeInv:'',  //安全库存
+            // 	poType:'', //下单类别
+            //    ImageUrl:[], //图片
+            //    wenjianlist:[] //图片
+            // },
+            brandTypes: [[${brandType}]], //品牌
+            units: [[${unit}]],  //单位
+            categoryAs: [[${categoryA}]],  //大类
+            allCategoryB: [[${allCategoryB}]],  //所有中类
+            allCategoryC: [[${allCategoryC}]],  //所有小类
+            matTypes: [[${matType}]],  ///物料类型
+            useAreas: [[${useArea}]],  //使用区域
+            matStatus: [[${matStatus}]],   //物料状态
+            shopImage: [[${shopImage}]],   //店铺形象
+            oldCodeMat: [[${oldCodeMat}]],   //旧物料编码
+            tittletip:'查看',   //新增|编辑
+            buyGroup:[[${buyGroup}]],   //采购组
+            fileList: [],  //图片列表
+            tablekey(row){
+                return row
+            },
+            selectData:[],
+            dialogTableVisible:false
+        },
+
+        created(){
+            this.Submitloading = true;
+        },
+        mounted() {
+            console.log([[${useArea}]])
+            setTimeout(()=>{
+                this.Submitloading = false;
+            this.showapp=true;
+        },300)
+            this.tochangeS(this.form.categoryC)
+
+            // 旧物料编码所有数据处理成｛label value｝形式
+            this.handelOldCodeMat();
+
+            // 处理店铺形象的数据格式
+            this.changeshopImageName();
+
+            console.log(this.form)
+
+
+
+        },
+        methods: {
+
+
+            // 处理旧物料编码
+            handelOldCodeMat(){
+                this.list = this.states.map(item => {
+                    return { value: item, label: item };
+            });
+            },
+
+            // 旧物料编码搜索
+            remoteMethod(query) {
+                if (query !== '') {
+                    this.oldCodeMatloading = true;
+                    setTimeout(() => {
+                        this.oldCodeMatloading = false;
+                    this.options4 = this.list.filter(item => {
+                        return item.label.toLowerCase()
+                            .indexOf(query.toLowerCase()) > -1;
+
+                });
+                }, 200);
+                } else {
+                    this.options4 = [];
+                }
+            },
+
+            // 只输入数字
+            onlyNum() {
+                if (!(event.keyCode == 46) && !(event.keyCode == 8) && !(event.keyCode == 37) && !(event.keyCode == 39)) {
+                    if (!((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105))) {
+                        event.returnValue = false;
+                    }
+                }
+            },
+
+            // 处理店铺形象数据格式
+            changeshopImageName() {
+                // console.log(this.form.shopImage)
+                if ([[${material.shopImage}]] == '' || [[${material.shopImage}]] == null) {
+
+                    this.form.shopImage = [];
+                } else {
+                    this.form.shopImage=[[${material.shopImage}]].split(',');
+                }
+
+
+
+            },
+            num(dataname, obj) {
+                console.log(dataname, obj)
+                // this.form.long = obj.replace(/[^\d.]/g, "");
+                this.form[dataname] = obj.replace(/[^\d]/g, ""); //清除"数字"和"."以外的字符
+                this.form[dataname] = obj.replace(/^\./g, ""); //验证第一个字符是数字
+                this.form[dataname] = obj.replace(/\.{2,}/g, "."); //只保留第一个, 清除多余的
+                this.form[dataname] = obj.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+                this.form[dataname] = obj.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+
+            },
+
+            //					文件上传
+            handlePreview(file) {
+                // console.log(file);
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            },
+            beforeRemove(file, fileList) {
+                return this.$confirm(`确定移除 ${ file.name }？`);
+            },
+            //	图片列表删除方法_________________________________
+            handletupianRemove(file, fileList){
+                // 进行图片列表赋值
+                this.form.ImageUrl = fileList;
+                // 进行图片列表校验
+                this.$refs.form.validateField('ImageUrl');
+            },
+            handlePictureCardPreview2(file) {
+                console.log(file)
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+                console.log(file)
+            },
+
+            // 表单保存————————————————————————————
+            submitForm(formName) {
+
+                // 表单校验
+                this.$refs[formName].validate((valid) => {
+
+
+                    // 如果校验成功
+                    if (valid) {
+
+                        let arr=[];
+                        let result=[];
+                        this.form.materialInfoList.forEach((item,index)=>{
+                            arr.push(item.matCode);
+                    })
+                        var i,j,temp;
+                        for(i=0;i<arr.length-1;i++){
+                            for(j=i+1;j<arr.length;j++){
+                                if(arr[i]==arr[j]){
+                                    this.$message.error('配件明细第'+(i*1+1)+'行和第'+(j*1+1)+'行重复,请修改后再保存！')
+                                    result.push(j*1+1);
+                                    return;
+                                }
+                            }
+                        }
+
+                        // 开启提交loding弹层
+                        this.Submitloading = true;
+                        if(this.form.files.length==0){
+                            this.$message.error('必须要上传一张图片')
+                            this.Submitloading = false;
+                            return
+                        }
+                        // 1先处理店铺形象数据格式
+                        // 复制一份表单数据
+                        let formcopy = JSON.stringify(this.form);
+                        formcopy = JSON.parse(formcopy);
+
+                        // 处理店铺形象：数组转字符串
+                        formcopy.shopImage = formcopy.shopImage.toString();
+                        console.log(formcopy)
+                        //发送表单保存
+                        axios.post('saveMaterial', formcopy, {headers: {'Content-Type': 'application/json;charset=UTF-8'}})
+                            .then(response => {
+                            if(response.data.code==null||response.data.code!=0){
+                            this.Submitloading = false;
+                            this.$message.error('保存失败');
+                        }else{
+                            this.Submitloading = false;
+                            this.$message.success('保存成功');
+                            setTimeout(()=>{
+                                if(this.tittletip=='新增'||this.tittletip=='复制'){
+                                window.open(`${this.editWLurl}?id=${response.data.data}`,'_self')
+                            }else if(this.tittletip=='编辑'){
+                                window.open('materialList','_self')
+
+                            }
+                        },300)
+                        }
+                    }).catch(response => {
+                            this.Submitloading = false;
+                        this.$message.error('系统异常,新增失败');
+                    });
+                    } else {
+
+                        this.$message.error('必填项不能为空');
+                return false;
+            }
+            });
+            },
+
+            tochangeL(val, row) {
+                this.form.categoryB = '';
+                this.form.categoryC = '';
+                this.tochangeS(this.form.categoryC)
+            },
+            tochangeM(val, row) {
+
+                this.form.categoryC = '';
+                this.tochangeS(this.form.categoryC)
+            },
+            tochangebrandType() {
+                this.form.shopImage = [];
+            },
+
+            handlePreview(file) {
+                console.log(file);
+            },
+
+
+            handlePictureCardPreview(file) {
+                this.dialogImageUrl = file.url;
+                this.dialogVisible = true;
+            },
+            handleDownload(file) {
+                console.log(file)
+                // window.open()
+                // alert('我要下载：'+file.name)
+            },
+            // 图片上传成功
+            handlesuccess2(response, file, fileList) {
+                this.$message.success('上传成功！！');
+                response.returnObject[0].image=1;
+                this.form.files.push(response.returnObject[0])
+                console.log(this.form.files)
+                this.loading=false;
+            },
+
+            // 文件上传成功
+            handlesuccess1(response, file, fileList) {
+                console.log(response)
+                this.$message.success('上传成功！！');
+                response.returnObject[0].image=1;
+                this.form.doCfiles.push(response.returnObject[0])
+                console.log(this.form.files)
+                this.loading=false;
+            },
+
+            // 图片上传失败
+            handleerrors(err, file, fileList) {
+
+                // this.$message.error(file.name+'上传失败！！');
+                //
+                // this.loading=false;
+            },
+
+            // 图片删除
+
+            handleRemove(file) {
+
+                console.log(file)
+                this.fileList.forEach((item, index) => {
+                    if (file.uid == item.uid) {
+                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.fileList.splice(index, 1)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }).catch(() => {
+                        this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+
+                }
+            });
+            },
+            handleprogress(event, file, fileList){
+                // this.form.files.push(file)
+
+            },
+            tolook(item, index) {
+                // console.log()
+                this.dialogImageUrl = this.imageUrl+item.abbFileName;
+                this.dialogVisible = true;
+            },
+            todelete2(item, index){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`${this.deleteUrl}${item.id}`)
+                    .then(response => {
+                    if (response.data.success == true) {
+                    this.form.doCfiles.splice(index, 1)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败!'
+                    });
+                }
+            }).catch(response => {
+                    this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+                return
+            });
+
+
+            },
+
+            todelete1(item, index) {
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.get(`${this.deleteUrl}${item.id}`)
+                    .then(response => {
+                    if (response.data.success == true) {
+                    this.form.files.splice(index, 1)
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败!'
+                    });
+                }
+            }).catch(response => {
+                    this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+
+            })
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+                return
+            });
+            },
+            toback(){
+                window.open('materialList','_self')
+            },
+            changebrandType(val){
+
+                let UR = this.shopImage['01'];
+                let JGO = this.shopImage['03'];
+                let newObj = {};
+
+                Object.assign(newObj,UR,JGO);
+                console.log(newObj)
+                let array = []
+                val.forEach(item=>{
+                    array.push(newObj[item]);
+            })
+                this.form.shopImageName=array;
+                this.form.shopImageName=this.form.shopImageName.join(',')
+                // console.log(this.form.shopImageName)
+            },
+            tochangeS(value){
+                if(this.WLguize[value]==undefined){
+                    this.WLguizeinfo='暂无';
+                    this.WLshiliinfo='暂无';
+                }else{
+                    this.WLguizeinfo=this.WLguize[value].WLguizeinfo;
+                    this.WLshiliinfo=this.WLguize[value].WLshiliinfo;
+                }
+            },
+            deleteRow(index, rows,form){
+                this.$confirm('此操作将永久删除该行物料, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    if(rows.id){
+                    axios.post(this.WLMXdeleteUrl, rows)
+                        .then(response=>{
+                        if(response.data.code==null||response.data.code!=0){
+                        this.$message({
+                            message: '删除失败',
+                            type: 'error',
+                            center: true
+                        });
+                    }else{
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success',
+                            center: true
+                        });
+                        form.splice(index, 1);
+                    }
+                    // console.log(response);
+                })
+                .catch(error=>{
+                        this.$message({
+                        message: '删除失败',
+                        type: 'error',
+                        center: true
+                    });
+                });
+                }else{
+                    form.splice(index, 1);
+                }
+            }).catch(() => {
+                    this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+            },
+            addhuoyuan(){
+                let gooditem = {
+                    rowNo:'',
+                    matCode:'',
+                    matName:'',
+                    matSpec:'',
+                    basicQut:'',
+                    baseUnit:'',
+                    comments:'',
+                    deleted:'',
+                }
+                this.form.materialInfoList.push(gooditem)
+                console.log(this.form.materialInfoList)
+            },
+            tanchuWLbox(index){
+                console.log(index);
+                let WLtkurl ='/mat/tkMaterialList'
+                this.WLtkurl=WLtkurl + '?index='+index;
+                this.dialogTableVisible=true;
+
+            },
+
+            handleSelectionChange(data) {
+                this.selectData = data;
+                //
+            }, // 多选高亮选中行
+            tofullscreen(){
+                this.fullscreen=!this.fullscreen;
+            },
+            totypeflie(val,item){
+                console.log(val)
+                if(val=='xlsx'||val=='xls'){
+                    return '/resources/images/xml.jpg'
+                }else if(val=='word'||val=='docx'){
+                    return '/resources/images/word.jpg'
+                }else if(val=='pdf'){
+                    return '/resources/images/pdf.jpg'
+                }else if(val=='txt'){
+                    return '/resources/images/txt.jpg'
+                }else if(val=='dwg'||val=='dxf'){
+                    return '/resources/images/cad.jpg'
+                }else if(val=='jpg'||val=='png'||val=='jpeg'){
+                    this.isshowtupianbtn=true;
+                    return this.imageUrl+item.filaName
+
+                }
+            },
+
+            renderHeader(h, {
+                column,
+                $index
+            }) {
+                return h('div', {
+                    attrs: {
+                        class: 'cell' //ele原来样式
+                    },
+                    domProps: {
+                        innerHTML: '<span class="red">* </span>' + column.label
+                    }
+                })
+            }
+        }
+
+    })
+    /*]]>*/
+</script>
+
+</body>
+
+</html>
