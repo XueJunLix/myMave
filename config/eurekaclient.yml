@@ -3,11 +3,15 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8071/eureka/
 server:
-  port: 8090
+  port: 8087
 spring:
   application:
     name: eurekaclient
 management:
-  security:
-    #关闭安全验证，否则访问refresh端点时会提示权限不足
-    enabled: false
+ server:
+   port: 8087
+ endpoints:
+   web:
+     base-path: /
+     exposure:
+       include: refresh,health,info #打开部分
