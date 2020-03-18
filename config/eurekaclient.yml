@@ -1,17 +1,19 @@
+server:
+  port: 8087
+  
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8071/eureka/
-server:
-  port: 8087
 spring:
   application:
     name: eurekaclient
+    
 management:
- server:
-   port: 8087
- endpoints:
-   web:
+  server:
+    port: 8087
+  endpoints:
+    web:
      base-path: /
      exposure:
        include: refresh,health,info #打开部分
